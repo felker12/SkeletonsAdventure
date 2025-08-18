@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:ItemClasses="RpgLibrary.ItemClasses">
+  <Asset Type="ItemClasses:WeaponData">
+    <Name>Sword</Name>
+    <Type>Slashing</Type>
+    <Description>A Sword</Description>
+    <Price>40</Price>
+    <Weight>15</Weight>
+    <Equipped>false</Equipped>
+    <Stackable>false</Stackable>
+    <Consumable>false</Consumable>
+    <Position>0 0</Position>
+    <Quantity>1</Quantity>
+    <SourceRectangle>1952 1472 32 32</SourceRectangle>
+    <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+    <NumberHands>Main</NumberHands>
+    <AttackValue>10</AttackValue>
+  </Asset>
+</XnaContent>

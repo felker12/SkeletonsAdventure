@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:QuestClasses="RpgLibrary.QuestClasses">
+  <Asset Type="QuestClasses:QuestData">
+    <Name>sadfa</Name>
+    <Description>dasfdsaf</Description>
+    <IsCompleted>false</IsCompleted>
+    <Active>false</Active>
+    <RequirementData>
+      <Level>0</Level>
+      <Defence>0</Defence>
+      <Attack>0</Attack>
+    </RequirementData>
+    <RewardData>
+      <XP>0</XP>
+      <Gold>0</Gold>
+      <Items />
+    </RewardData>
+    <RequiredQuestNameData />
+    <BaseTasksData />
+  </Asset>
+</XnaContent>

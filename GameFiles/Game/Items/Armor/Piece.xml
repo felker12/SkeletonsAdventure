@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:ItemClasses="RpgLibrary.ItemClasses">
+  <Asset Type="ItemClasses:ArmorData">
+    <Name>Piece</Name>
+    <Type>123</Type>
+    <Description>t4r3rtffgs</Description>
+    <Price>5</Price>
+    <Weight>4</Weight>
+    <Equipped>true</Equipped>
+    <Stackable>true</Stackable>
+    <Consumable>true</Consumable>
+    <Position>3 30</Position>
+    <Quantity>12</Quantity>
+    <SourceRectangle>3 30 222 0</SourceRectangle>
+    <TexturePath>TileSetsgagad</TexturePath>
+    <ArmorLocation>Head</ArmorLocation>
+    <DefenseValue>6</DefenseValue>
+  </Asset>
+</XnaContent>

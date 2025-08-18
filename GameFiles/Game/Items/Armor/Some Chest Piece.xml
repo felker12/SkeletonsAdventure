@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:ItemClasses="RpgLibrary.ItemClasses">
+  <Asset Type="ItemClasses:ArmorData">
+    <Name>Some Chest Piece</Name>
+    <Type>plate</Type>
+    <Description></Description>
+    <Price>1</Price>
+    <Weight>1</Weight>
+    <Equipped>false</Equipped>
+    <Stackable>false</Stackable>
+    <Consumable>false</Consumable>
+    <Position>0 0</Position>
+    <Quantity>0</Quantity>
+    <SourceRectangle>0 0 0 0</SourceRectangle>
+    <TexturePath></TexturePath>
+    <ArmorLocation>Body</ArmorLocation>
+    <DefenseValue>5</DefenseValue>
+  </Asset>
+</XnaContent>

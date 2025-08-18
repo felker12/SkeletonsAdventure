@@ -1,0 +1,531 @@
+
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+/reference:..\pipeline-references\MonoGame.Extended.Content.Pipeline.dll
+/reference:..\pipeline-references\MonoGame.Extended.dll
+/reference:..\..\RpgLibrary\obj\Debug\net6.0\RpgLibrary.dll
+
+#---------------------------------- Content ---------------------------------#
+
+#begin AttackData/BasicAttack.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/BasicAttack.xml
+
+#begin AttackData/FireBall.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/FireBall.xml
+
+#begin AttackData/IceBullet.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/IceBullet.xml
+
+#begin AttackData/IcePillar.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/IcePillar.xml
+
+#begin AttackSprites/FireBall_01.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AttackSprites/FireBall_01.png
+
+#begin AttackSprites/FireBallSpriteSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AttackSprites/FireBallSpriteSheet.png
+
+#begin AttackSprites/IceBullet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AttackSprites/IceBullet.png
+
+#begin AttackSprites/IcePillar.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AttackSprites/IcePillar.PNG
+
+#begin AttackSprites/IcePillarSpriteSheet.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AttackSprites/IcePillarSpriteSheet.PNG
+
+#begin Controls/Button.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Controls/Button.png
+
+#begin EntityData/EliteSkeletonData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/EliteSkeletonData.xml
+
+#begin EntityData/SkeletonData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/SkeletonData.xml
+
+#begin EntityData/SpiderData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/SpiderData.xml
+
+#begin EntitySprites/spider.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:EntitySprites/spider.png
+
+#begin Fonts/Arial10.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Arial10.spritefont
+
+#begin Fonts/Arial12.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Arial12.spritefont
+
+#begin Fonts/Arial14.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Arial14.spritefont
+
+#begin Fonts/Arial16.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Arial16.spritefont
+
+#begin Fonts/Arial18.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Arial18.spritefont
+
+#begin Fonts/Arial20.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Arial20.spritefont
+
+#begin Items/Armor/Robes.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Items/Armor/Robes.xml
+
+#begin Items/Bones.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Items/Bones.png
+
+#begin Items/Bones3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Items/Bones3.png
+
+#begin Items/Consumables/Bones.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Items/Consumables/Bones.xml
+
+#begin Items/Currency/Coins.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Items/Currency/Coins.xml
+
+#begin Items/Weapons/Sword.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Items/Weapons/Sword.xml
+
+#begin Player/SkeletonAttackSprites.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Player/SkeletonAttackSprites.png
+
+#begin Player/SkeletonSpriteSheet.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Player/SkeletonSpriteSheet.PNG
+
+#begin TiledFiles/BackpackBackground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/BackpackBackground.png
+
+#begin TiledFiles/Catacombs.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/Catacombs.tmx
+
+#begin TiledFiles/Catacombs1.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/Catacombs1.tmx
+
+#begin TiledFiles/Dungeon/decorative_cracks_coasts_animation.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/Dungeon/decorative_cracks_coasts_animation.png
+
+#begin TiledFiles/Dungeon/decorative_cracks_floor.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/Dungeon/decorative_cracks_floor.png
+
+#begin TiledFiles/Dungeon/decorative_cracks_walls.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/Dungeon/decorative_cracks_walls.png
+
+#begin TiledFiles/Dungeon/doors_lever_chest_animation.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/Dungeon/doors_lever_chest_animation.png
+
+#begin TiledFiles/Dungeon/Dungeon.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/Dungeon/Dungeon.tmx
+
+#begin TiledFiles/Dungeon/fire_animation.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/Dungeon/fire_animation.png
+
+#begin TiledFiles/Dungeon/fire_animation.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TiledFiles/Dungeon/fire_animation.tsx
+
+#begin TiledFiles/Dungeon/fire_animation2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/Dungeon/fire_animation2.png
+
+#begin TiledFiles/Dungeon/Objects.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/Dungeon/Objects.png
+
+#begin TiledFiles/Dungeon/trap_animation.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/Dungeon/trap_animation.png
+
+#begin TiledFiles/Dungeon/walls_floor.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/Dungeon/walls_floor.png
+
+#begin TiledFiles/Dungeon/walls_floor.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TiledFiles/Dungeon/walls_floor.tsx
+
+#begin TiledFiles/Dungeon/Water_coasts_animation.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/Dungeon/Water_coasts_animation.png
+
+#begin TiledFiles/Dungeon/water_details_animation.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/Dungeon/water_details_animation.png
+
+#begin TiledFiles/Level0_Old.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/Level0_Old.tmx
+
+#begin TiledFiles/Level0.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/Level0.tmx
+
+#begin TiledFiles/Level1_Old.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/Level1_Old.tmx
+
+#begin TiledFiles/mainlevbuild.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/mainlevbuild.png
+
+#begin TiledFiles/mainlevbuild.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TiledFiles/mainlevbuild.tsx
+
+#begin TiledFiles/ProjectUtumno_full.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TiledFiles/ProjectUtumno_full.tsx
+
+#begin TiledFiles/SidePanel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/SidePanel.tmx
+
+#begin TiledFiles/stone_ground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/stone_ground.png
+
+#begin TiledFiles/stone_ground.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TiledFiles/stone_ground.tsx
+
+#begin TiledFiles/stone_stairs.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/stone_stairs.png
+
+#begin TiledFiles/stone_stairs.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TiledFiles/stone_stairs.tsx
+
+#begin TiledFiles/stone_wall.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/stone_wall.png
+
+#begin TiledFiles/stone_wall.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TiledFiles/stone_wall.tsx
+
+#begin TiledFiles/Testing.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/Testing.tmx
+
+#begin TiledFiles/TestLevel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/TestLevel.tmx
+
+#begin TileSets/ProjectUtumno_full.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileSets/ProjectUtumno_full.png
+

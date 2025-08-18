@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:MenuClasses="RpgLibrary.MenuClasses">
+  <Asset Type="MenuClasses:TabbedMenuData">
+    <Title>ExitScreenMenu</Title>
+    <Visible>true</Visible>
+    <Width>1280</Width>
+    <Height>720</Height>
+    <Position>0 0</Position>
+    <TintColor>FFFFFFFF</TintColor>
+    <BackgroundColor>FF191970</BackgroundColor>
+    <ActiveMenu>Save</ActiveMenu>
+    <MenuDatas>
+      <Item>
+        <Title>Save</Title>
+        <Visible>true</Visible>
+        <Width>1280</Width>
+        <Height>689</Height>
+        <Position>0 31</Position>
+        <TintColor>FFFFFFFF</TintColor>
+        <BackgroundColor>FF191970</BackgroundColor>
+      </Item>
+      <Item>
+        <Title>Settings</Title>
+        <Visible>true</Visible>
+        <Width>1280</Width>
+        <Height>689</Height>
+        <Position>0 31</Position>
+        <TintColor>FFFFFFFF</TintColor>
+        <BackgroundColor>FF191970</BackgroundColor>
+      </Item>
+      <Item>
+        <Title>Player</Title>
+        <Visible>true</Visible>
+        <Width>1280</Width>
+        <Height>689</Height>
+        <Position>0 31</Position>
+        <TintColor>FFFFFFFF</TintColor>
+        <BackgroundColor>FF191970</BackgroundColor>
+      </Item>
+      <Item>
+        <Title>Quests</Title>
+        <Visible>true</Visible>
+        <Width>1280</Width>
+        <Height>689</Height>
+        <Position>0 31</Position>
+        <TintColor>FFFFFFFF</TintColor>
+        <BackgroundColor>FF191970</BackgroundColor>
+      </Item>
+    </MenuDatas>
+  </Asset>
+</XnaContent>

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:ItemClasses="RpgLibrary.ItemClasses">
+  <Asset Type="ItemClasses:WeaponData">
+    <Name>weapon</Name>
+    <Type>stab</Type>
+    <Description>12312312</Description>
+    <Price>1</Price>
+    <Weight>2</Weight>
+    <Equipped>false</Equipped>
+    <Stackable>false</Stackable>
+    <Consumable>false</Consumable>
+    <Position>10 3</Position>
+    <Quantity>5</Quantity>
+    <SourceRectangle>10 3 20 221</SourceRectangle>
+    <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+    <NumberHands>Off</NumberHands>
+    <AttackValue>12</AttackValue>
+  </Asset>
+</XnaContent>

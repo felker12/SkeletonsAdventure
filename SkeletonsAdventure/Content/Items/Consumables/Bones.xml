@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:ItemClasses="RpgLibrary.ItemClasses">
+  <Asset Type="ItemClasses:ConsumableData">
+    <Name>Bones</Name>
+    <Type>Consumable</Type>
+    <Description>Bones of a creature</Description>
+    <Price>1</Price>
+    <Weight>1</Weight>
+    <Equipped>false</Equipped>
+    <Stackable>true</Stackable>
+    <Consumable>true</Consumable>
+    <Position>0 0</Position>
+    <Quantity>1</Quantity>
+    <SourceRectangle>0 0 32 32</SourceRectangle>
+    <TexturePath>Items/Bones</TexturePath>
+    <Effect>Heal</Effect>
+    <EffectDuration>0</EffectDuration>
+    <EffectBonus>5</EffectBonus>
+  </Asset>
+</XnaContent>

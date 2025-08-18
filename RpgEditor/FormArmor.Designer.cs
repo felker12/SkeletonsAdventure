@@ -1,0 +1,61 @@
+﻿namespace RpgEditor
+{
+    partial class FormArmor
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            SuspendLayout();
+            // 
+            // btnDelete
+            // 
+            btnDelete.Location = new Point(470, 397);
+            // 
+            // btnEdit
+            // 
+            btnEdit.Location = new Point(372, 397);
+            // 
+            // btnAdd
+            // 
+            btnAdd.Location = new Point(282, 397);
+            // 
+            // lbDetails
+            // 
+            lbDetails.Size = new Size(779, 349);
+            // 
+            // FormArmor
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Name = "FormArmor";
+            Text = "FormArmor";
+            ResumeLayout(false);
+        }
+
+        #endregion
+    }
+}

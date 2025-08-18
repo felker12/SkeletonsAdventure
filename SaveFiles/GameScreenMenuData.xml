@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:MenuClasses="RpgLibrary.MenuClasses">
+  <Asset Type="MenuClasses:MenuManagerData">
+    <Menus>
+      <Item>
+        <Title>Backpack</Title>
+        <Visible>true</Visible>
+        <Width>192</Width>
+        <Height>672</Height>
+        <Position>1088 0</Position>
+        <TintColor>FFFFFFFF</TintColor>
+        <BackgroundColor>FFFFFFFF</BackgroundColor>
+      </Item>
+    </Menus>
+  </Asset>
+</XnaContent>
