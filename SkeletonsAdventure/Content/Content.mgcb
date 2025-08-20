@@ -113,6 +113,11 @@
 /processor:PassThroughProcessor
 /build:EntityData/EliteSkeletonData.xml
 
+#begin EntityData/GoblinData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/GoblinData.xml
+
 #begin EntityData/SkeletonData.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
@@ -122,6 +127,30 @@
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:EntityData/SpiderData.xml
+
+#begin EntitySprites/goblin.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:EntitySprites/goblin.png
+
+#begin EntitySprites/spider.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:EntitySprites/spider.png
 
 #begin EntitySprites/spider.png
 /importer:TextureImporter
@@ -319,6 +348,11 @@
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:TiledFiles/Dungeon/Dungeon.tmx
+
+#begin TiledFiles/Dungeon/Dungeon2.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/Dungeon/Dungeon2.tmx
 
 #begin TiledFiles/Dungeon/fire_animation.png
 /importer:TextureImporter

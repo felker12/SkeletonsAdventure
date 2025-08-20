@@ -66,6 +66,7 @@ namespace SkeletonsAdventure.GameWorld
         //Entity Textures
         public static Texture2D SkeletonTexture { get; private set; }
         public static Texture2D SpiderTexture { get; private set; }
+        public static Texture2D GoblinTexture { get; private set; }
 
         //Attack Textures
         public static Texture2D AttackAreaTexture { get; private set; }
@@ -349,6 +350,8 @@ namespace SkeletonsAdventure.GameWorld
             SkeletonTexture = Content.Load<Texture2D>(@"Player/SkeletonSpriteSheet");
             SkeletonAttackTexture = Content.Load<Texture2D>(@"Player/SkeletonAttackSprites");
             SpiderTexture = Content.Load<Texture2D>(@"EntitySprites/spider");
+            GoblinTexture = Content.Load<Texture2D>(@"EntitySprites/goblin");
+
             FireBallTexture = Content.Load<Texture2D>(@"AttackSprites/FireBall_01");
             FireBallTexture2 = Content.Load<Texture2D>(@"AttackSprites/FireBallSpriteSheet");
             IcePillarTexture = Content.Load<Texture2D>(@"AttackSprites/IcePillar");
@@ -481,6 +484,11 @@ namespace SkeletonsAdventure.GameWorld
                 Enemy en = (Enemy)Activator.CreateInstance(Type.GetType(data.Type), data);
 
                 Enemies.Add(en.GetType().FullName, en); //Add the entity to the dictionary of enemies
+            }
+
+            foreach (var enemy in Enemies.Values)
+            {
+                Debug.WriteLine(enemy.GetType().Name + $": width: {enemy.Width}, height: {enemy.Height}");
             }
 
             //TODO this is used for testing

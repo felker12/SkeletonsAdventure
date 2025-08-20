@@ -87,13 +87,25 @@ namespace SkeletonsAdventure.GameWorld
             _tiledMapRenderer.Draw(Camera.Transformation);
 
             spriteBatch.Begin(
-                SpriteSortMode.Immediate,
-                BlendState.AlphaBlend,
-                SamplerState.PointClamp,
-                null,
-                null,
-                null,
-                Camera.Transformation);
+                       SpriteSortMode.Immediate,
+                       BlendState.AlphaBlend,
+                       SamplerState.PointClamp,
+                       null,
+                       null,
+                       null,
+                       Camera.Transformation);
+
+
+            //foreach (var layer in TiledMap.Layers) //Draw entities on the correct layer
+            //{
+            //    _tiledMapRenderer.Draw(layer, Camera.Transformation);
+
+            //    if (layer.Name == "Floor")
+            //    {
+            //        EntityManager.Draw(spriteBatch);
+            //        DamagePopUpManager.Draw(spriteBatch);
+            //    }
+            //}
 
             ChestManager.Draw(spriteBatch);
             InteractableObjectManager.Draw(spriteBatch);
@@ -107,7 +119,7 @@ namespace SkeletonsAdventure.GameWorld
             if (LevelExit is not null && LevelExit.ExitTextVisible)
                 spriteBatch.DrawString(GameManager.Arial12, LevelExit.ExitText, LevelExit.ExitPosition, Color.White);
 
-            EntityManager.Draw(spriteBatch);
+            EntityManager.Draw(spriteBatch); //TODO
             DamagePopUpManager.Draw(spriteBatch);
 
             spriteBatch.End();

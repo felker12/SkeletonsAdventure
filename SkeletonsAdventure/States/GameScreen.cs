@@ -237,6 +237,7 @@ namespace SkeletonsAdventure.States
             if (itemUnderMouse == null)
                 GameItemPopUpBox.Visible = false;
 
+            //TODO
             //if (_mouseState.LeftButton == ButtonState.Released && _lastMouseState.LeftButton == ButtonState.Pressed)
             //{
             //    // Only try to pick up items if they're in the game world (not in backpack)
