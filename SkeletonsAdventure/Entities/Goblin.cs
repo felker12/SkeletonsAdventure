@@ -18,7 +18,7 @@ namespace SkeletonsAdventure.Entities
         private void Initialize()
         {
             Texture = GameManager.GoblinTexture;
-            SetFrames(4, 23, 40, 0, 40);
+            SetFrames(4, 23, 40, 0, 0);
             BasicAttackColor = Color.DarkGreen;
             EnemyType = EnemyType.Goblin;
         }

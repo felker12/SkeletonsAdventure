@@ -18,7 +18,7 @@ namespace SkeletonsAdventure.Entities
         private void Initialize()
         {
             Texture = GameManager.SpiderTexture;
-            SetFrames(6, 32, 32, 0, 32);
+            SetFrames(6, 32, 32, 0, 0);
             BasicAttackColor = Color.Gray;
             EnemyType = EnemyType.Spider;
         }

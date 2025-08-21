@@ -13,7 +13,7 @@ namespace SkeletonsAdventure.Entities
         //Constructors
         public AnimatedSprite() : base()
         {
-            SetFrames(3, 32, 54, 0, 64); //This is the default which is used by the skeleton spritesheet
+            SetFrames(3, 32, 54, 0, 10); //This is the default which is used by the skeleton spritesheet
         }
 
         //Methods
@@ -73,11 +73,11 @@ namespace SkeletonsAdventure.Entities
 
             SpriteAnimation animation = new(frameCount, frameWidth, frameHeight, 0, 0);
             _Animations.Add(AnimationKey.Down, animation);
-            animation = new(frameCount, frameWidth, frameHeight, xOffset, yOffset);
+            animation = new(frameCount, frameWidth, frameHeight, xOffset, frameHeight + yOffset);
             _Animations.Add(AnimationKey.Left, animation);
-            animation = new(frameCount, frameWidth, frameHeight, xOffset * 2, yOffset * 2);
+            animation = new(frameCount, frameWidth, frameHeight, xOffset * 2, (frameHeight + yOffset) * 2);
             _Animations.Add(AnimationKey.Right, animation);
-            animation = new(frameCount, frameWidth, frameHeight, xOffset * 3 , yOffset * 3);
+            animation = new(frameCount, frameWidth, frameHeight, xOffset * 3 , (frameHeight + yOffset) * 3);
             _Animations.Add(AnimationKey.Up, animation);
 
             return _Animations;
