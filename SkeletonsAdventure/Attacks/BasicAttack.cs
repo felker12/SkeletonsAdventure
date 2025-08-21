@@ -88,24 +88,18 @@ namespace SkeletonsAdventure.Attacks
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (AttackVisible is false)
-                spriteBatch.Draw(GameManager.AttackAreaTexture, new Vector2(DamageHitBox.X, DamageHitBox.Y), DamageHitBox, Color.White * 0.5f); //TODO
-             
-            //TODO if popup attack draw the correct hitbox for the attack if the hit box size isn't the whole texture
-
+            {
+                //spriteBatch.Draw(GameManager.AttackAreaTexture, new Vector2(DamageHitBox.X, DamageHitBox.Y), DamageHitBox, Color.White * 0.5f); //TODO
+            }
 
             if (AttackVisible)
             {
                 spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
                 spriteBatch.DrawRectangle(DamageHitBox, Color.OrangeRed, 1, 0); //TODO
 
-
                 Vector2 FrameCenter = new(Frame.Width / 2, Frame.Height / 2);
 
                 spriteBatch.Draw(Texture, Position + FrameCenter, Frame, SpriteColor, RotationAngle, FrameCenter, Scale, SpriteEffects.None, 1);
-                //spriteBatch.Draw(Texture, Position, Frame, SpriteColor);
-                //spriteBatch.Draw(Texture, Position, Frame, SpriteColor, 0f, GetCenter(), 1.0f, SpriteEffects.None, 0f);
-
-                Info.Draw(spriteBatch);
             }
         }
 
@@ -128,14 +122,6 @@ namespace SkeletonsAdventure.Attacks
             {
                 if (AnimatedAttack)
                     base.Update(gameTime);
-
-                Info.Position = Position + new Vector2(1, 1);
-
-               //draw the info with a different color for the player //TODO: delete this
-                if (Source is Player)
-                    Info.TextColor = Color.Cyan;
-                else
-                    Info.TextColor = new Color(255, 81, 89, 255);
             }
 
             //Prevent the source from moving during an attack with a build up
@@ -187,28 +173,28 @@ namespace SkeletonsAdventure.Attacks
             {
                 Width = 48;
                 Height = 32;
-                AttackOffset = new(-6, -Height);
+                AttackOffset = new(Source.Width / 2 - Width / 2, -Height);
                 Frame = new(10, 160, Width, Height);
             }
             else if (Source.CurrentAnimation == AnimationKey.Down)
             {
                 Width = 48;
                 Height = 32;
-                AttackOffset = new(-6, Source.Height);
+                AttackOffset = new(Source.Width / 2 - Width / 2, Source.Height);
                 Frame = new(10, 230, Width, Height);
             }
             if (Source.CurrentAnimation == AnimationKey.Left)
             {
                 Width = 32;
                 Height = 60;
-                AttackOffset = new(-Source.Width, 0);
+                AttackOffset = new(-Width, Source.Height / 2 - Height / 2);
                 Frame = new(15, 5, Width, Height);
             }
             else if (Source.CurrentAnimation == AnimationKey.Right)
             {
                 Width = 32;
                 Height = 60;
-                AttackOffset = new(Source.Width, 0);
+                AttackOffset = new(Source.Width, Source.Height / 2 - Height / 2);
                 Frame = new(20, 80, Width, Height);
             }
         }
@@ -217,27 +203,28 @@ namespace SkeletonsAdventure.Attacks
         {
             if(Duration.TotalMilliseconds > AttackLength)
                 return true;
+
             return false;
         }
 
         public override string ToString()
         {
             string ToString = 
-            $"Position: {Position}, " + 
-            $"Attack Length: {AttackLength}, " +
-            $"Start Time: {StartTime}, " +
-            $"Duration: {Duration}, " +
-            $"Attack Offset: {AttackOffset}, " +
-            $"Last Attack Time: {LastAttackTime}, " +
-            $"Attack Cool Down Length: {AttackCoolDownLength}, " +
-            $"Speed: {Speed}, " +
-            $"Damage Modifier: {DamageModifier}, " +
-            $"Mana Cost: {ManaCost}, " +
-            $"AttackDelay: {AttackDelay}, " +
-            $"Visible: {AttackVisible}, " + 
-            $"Motion: {Motion}, " +
-            $"DamageHitBox: {DamageHitBox}, " +
-            $"Rectangle: {Rectangle}, ";
+                $"Position: {Position}, " + 
+                $"Attack Length: {AttackLength}, " +
+                $"Start Time: {StartTime}, " +
+                $"Duration: {Duration}, " +
+                $"Attack Offset: {AttackOffset}, " +
+                $"Last Attack Time: {LastAttackTime}, " +
+                $"Attack Cool Down Length: {AttackCoolDownLength}, " +
+                $"Speed: {Speed}, " +
+                $"Damage Modifier: {DamageModifier}, " +
+                $"Mana Cost: {ManaCost}, " +
+                $"AttackDelay: {AttackDelay}, " +
+                $"Visible: {AttackVisible}, " + 
+                $"Motion: {Motion}, " +
+                $"DamageHitBox: {DamageHitBox}, " +
+                $"Rectangle: {Rectangle}, ";
 
             return ToString;
         }

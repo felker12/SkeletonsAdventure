@@ -228,7 +228,6 @@ namespace SkeletonsAdventure.Entities
                     SetEntityAttackMotion(entityAttack);
 
                 entityAttack.SetUpAttack(gameTime, BasicAttackColor, Position);
-
                 AttackManager.AddAttack(entityAttack.Clone(), gameTime);
             }
         }

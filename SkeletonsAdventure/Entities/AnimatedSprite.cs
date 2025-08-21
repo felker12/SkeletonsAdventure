@@ -6,7 +6,6 @@ namespace SkeletonsAdventure.Entities
     {
         protected Dictionary<AnimationKey, SpriteAnimation> _animations;
 
-
         //Get/Set
         protected bool IsAnimating { get; set; }
         public AnimationKey CurrentAnimation { get; set; }
@@ -76,7 +75,7 @@ namespace SkeletonsAdventure.Entities
             _Animations.Add(AnimationKey.Down, animation);
             animation = new(frameCount, frameWidth, frameHeight, xOffset, yOffset);
             _Animations.Add(AnimationKey.Left, animation);
-            animation = new(frameCount, frameWidth, frameHeight, xOffset * 2, yOffset* 2);
+            animation = new(frameCount, frameWidth, frameHeight, xOffset * 2, yOffset * 2);
             _Animations.Add(AnimationKey.Right, animation);
             animation = new(frameCount, frameWidth, frameHeight, xOffset * 3 , yOffset * 3);
             _Animations.Add(AnimationKey.Up, animation);
