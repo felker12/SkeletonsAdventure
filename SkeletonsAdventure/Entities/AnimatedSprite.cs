@@ -64,10 +64,36 @@ namespace SkeletonsAdventure.Entities
         /// Extra vertical space (in pixels) inside the frame cell that should be 
         /// trimmed off the actual sprite’s visual height.
         /// </param>
-        public void SetFrames(int frameCount, int frameWidth, int frameHeight, int xOffset = 0, int yOffset = 0, int paddingX = 0, int paddingY = 0)
+        /// <summary>
+        /// Defines the sprite sheet layout and initializes animations.
+        /// </summary>
+        /// <param name="frameCount">Number of frames per animation row.</param>
+        /// <param name="frameWidth">Width of each frame in pixels.</param>
+        /// <param name="frameHeight">Height of each frame in pixels.</param>
+        /// <param name="xOffset">Horizontal offset before the first frame begins.</param>
+        /// <param name="yOffset">Vertical offset between rows of animations.</param>
+        /// <param name="paddingX">Horizontal padding to subtract from the visible frame width.</param>
+        /// <param name="paddingY">Vertical padding to subtract from the visible frame height.</param>
+        /// <param name="order">
+        /// Optional custom order of <see cref="AnimationKey"/> values.  
+        /// Defaults to Down, Left, Right, Up if not provided.
+        /// </param>
+        public void SetFrames(
+            int frameCount,
+            int frameWidth,
+            int frameHeight,
+            int xOffset = 0,
+            int yOffset = 0,
+            int paddingX = 0,
+            int paddingY = 0,
+            AnimationKey[] order = null)
         {
             _animations = [];
-            CloneAnimations(CreateAnimations(frameCount, frameWidth, frameHeight, xOffset, yOffset, paddingX, paddingY));
+
+            // Default order if not supplied
+            order ??= [AnimationKey.Down, AnimationKey.Left, AnimationKey.Right, AnimationKey.Up];
+
+            CloneAnimations(CreateAnimations(order, frameCount, frameWidth, frameHeight, xOffset, yOffset, paddingX, paddingY));
             UpdateFrame();
         }
 
@@ -134,21 +160,38 @@ namespace SkeletonsAdventure.Entities
         private Dictionary<AnimationKey, SpriteAnimation> CreateAnimations
             (int frameCount, int frameWidth, int frameHeight, int xOffset = 0, int yOffset = 0, int paddingX = 0, int paddingY = 0)
         {
+            return CreateAnimations([AnimationKey.Down, AnimationKey.Left, AnimationKey.Right, AnimationKey.Up],
+                frameCount, frameWidth, frameHeight, xOffset, yOffset, paddingX, paddingY);
+        }
+
+        /// <summary>
+        /// Creates directional animations in a custom order, 
+        /// so that the sprite sheet rows can be arranged flexibly.
+        /// </summary>
+        /// <param name="order">
+        /// The order of <see cref="AnimationKey"/> values. 
+        /// Each key corresponds to a row in the sprite sheet.
+        /// </param>
+        private Dictionary<AnimationKey, SpriteAnimation> CreateAnimations(
+            AnimationKey[] order,
+            int frameCount,
+            int frameWidth,
+            int frameHeight,
+            int xOffset = 0,
+            int yOffset = 0,
+            int paddingX = 0,
+            int paddingY = 0)
+        {
             Dictionary<AnimationKey, SpriteAnimation> _Animations = [];
             Width = frameWidth - paddingX;
             Height = frameHeight - paddingY;
 
-            _Animations.Add(AnimationKey.Down, 
-                new SpriteAnimation(frameCount, frameWidth, frameHeight, xOffset, 0));
-
-            _Animations.Add(AnimationKey.Left, 
-                new SpriteAnimation(frameCount, frameWidth, frameHeight, xOffset, frameHeight + yOffset));
-
-            _Animations.Add(AnimationKey.Right, 
-                new SpriteAnimation(frameCount, frameWidth, frameHeight, xOffset, (frameHeight + yOffset) * 2));
-
-            _Animations.Add(AnimationKey.Up, 
-                new SpriteAnimation(frameCount, frameWidth, frameHeight, xOffset, (frameHeight + yOffset) * 3));
+            for (int i = 0; i < order.Length; i++)
+            {
+                int rowY = (frameHeight + yOffset) * i;
+                _Animations.Add(order[i],
+                    new SpriteAnimation(frameCount, frameWidth, frameHeight, xOffset, rowY));
+            }
 
             return _Animations;
         }

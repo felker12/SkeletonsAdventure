@@ -1,4 +1,5 @@
 ﻿using RpgLibrary.EntityClasses;
+using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities
@@ -18,8 +19,8 @@ namespace SkeletonsAdventure.Entities
         private void Initialize()
         {
             Texture = GameManager.SkeletalBruiserTexture;
-            SetFrames(4, 48, 48, paddingX: 20);
-            BasicAttackColor = Color.AntiqueWhite;
+            SetFrames(4, 48, 48, paddingX: 20, xOffset: 10, order: [AnimationKey.Up, AnimationKey.Right, AnimationKey.Down, AnimationKey.Left]);
+            BasicAttackColor = Color.Bisque;
             EnemyType = EnemyType.Skeleton;
         }
 
