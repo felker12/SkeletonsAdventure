@@ -67,6 +67,7 @@ namespace SkeletonsAdventure.Animations
                 currentFrame = (currentFrame + 1) % frames.Length;
             }
         }
+
         public void Reset()
         {
             currentFrame = 0;

@@ -2,11 +2,5 @@
 <XnaContent xmlns:Generic="System.Collections.Generic">
   <Asset Type="Generic:List[string]">
     <Item>Welcome!</Item>
-    <Item>Skeleton was killed by Player with BasicAttack. 157 XP was gained.</Item>
-    <Item>You leveled up! You are now level 1!</Item>
-    <Item>Tottal Attribute Points: 5</Item>
-    <Item>Skeleton was killed by Player with BasicAttack. 157 XP was gained.</Item>
-    <Item>You leveled up! You are now level 2!</Item>
-    <Item>Tottal Attribute Points: 10</Item>
   </Asset>
 </XnaContent>

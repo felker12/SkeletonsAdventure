@@ -67,6 +67,7 @@ namespace SkeletonsAdventure.GameWorld
         public static Texture2D SkeletonTexture { get; private set; }
         public static Texture2D SpiderTexture { get; private set; }
         public static Texture2D GoblinTexture { get; private set; }
+        public static Texture2D SkeletalBruiserTexture { get; private set; } 
 
         //Attack Textures
         public static Texture2D AttackAreaTexture { get; private set; }
@@ -351,6 +352,7 @@ namespace SkeletonsAdventure.GameWorld
             SkeletonAttackTexture = Content.Load<Texture2D>(@"Player/SkeletonAttackSprites");
             SpiderTexture = Content.Load<Texture2D>(@"EntitySprites/spider");
             GoblinTexture = Content.Load<Texture2D>(@"EntitySprites/goblin");
+            SkeletalBruiserTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletalBruiser");
 
             FireBallTexture = Content.Load<Texture2D>(@"AttackSprites/FireBall_01");
             FireBallTexture2 = Content.Load<Texture2D>(@"AttackSprites/FireBallSpriteSheet");

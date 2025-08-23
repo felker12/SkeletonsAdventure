@@ -33,10 +33,41 @@ namespace SkeletonsAdventure.Entities
             base.Draw(spriteBatch);
         }
 
-        public void SetFrames(int frameCount, int frameWidth, int frameHeight, int xOffset, int yOffset)
+        /// <summary>
+        /// Initializes the animations for the sprite by defining frame layout, size, 
+        /// offsets, and optional padding.
+        /// </summary>
+        /// <param name="frameCount">
+        /// The number of frames in each row of the sprite sheet for this animation.
+        /// </param>
+        /// <param name="frameWidth">
+        /// The full width (in pixels) of a single frame cell in the sprite sheet, 
+        /// including any empty space/padding within that cell.
+        /// </param>
+        /// <param name="frameHeight">
+        /// The full height (in pixels) of a single frame cell in the sprite sheet, 
+        /// including any empty space/padding within that cell.
+        /// </param>
+        /// <param name="xOffset">
+        /// Horizontal offset (in pixels) from the left edge of the sprite sheet 
+        /// where the first frame begins.
+        /// </param>
+        /// <param name="yOffset">
+        /// Vertical offset (in pixels) from the top edge of the sprite sheet 
+        /// where the first animation row begins.
+        /// </param>
+        /// <param name="paddingX">
+        /// Extra horizontal space (in pixels) inside the frame cell that should be 
+        /// trimmed off the actual sprite’s visual width.
+        /// </param>
+        /// <param name="paddingY">
+        /// Extra vertical space (in pixels) inside the frame cell that should be 
+        /// trimmed off the actual sprite’s visual height.
+        /// </param>
+        public void SetFrames(int frameCount, int frameWidth, int frameHeight, int xOffset = 0, int yOffset = 0, int paddingX = 0, int paddingY = 0)
         {
             _animations = [];
-            CloneAnimations(CreateAnimations(frameCount, frameWidth, frameHeight, xOffset, yOffset));
+            CloneAnimations(CreateAnimations(frameCount, frameWidth, frameHeight, xOffset, yOffset, paddingX, paddingY));
             UpdateFrame();
         }
 
@@ -65,20 +96,59 @@ namespace SkeletonsAdventure.Entities
                 IsAnimating = false;
         }
 
-        private Dictionary<AnimationKey, SpriteAnimation> CreateAnimations(int frameCount, int frameWidth, int frameHeight, int xOffset, int yOffset)
+        /// <summary>
+        /// Creates the directional sprite animations (Up, Down, Left, Right) 
+        /// based on frame layout, offsets, and optional padding.
+        /// </summary>
+        /// <param name="frameCount">
+        /// The number of frames in each row of the sprite sheet for this animation.
+        /// </param>
+        /// <param name="frameWidth">
+        /// The full width (in pixels) of a single frame cell in the sprite sheet, 
+        /// including any empty space/padding within that cell.
+        /// </param>
+        /// <param name="frameHeight">
+        /// The full height (in pixels) of a single frame cell in the sprite sheet, 
+        /// including any empty space/padding within that cell.
+        /// </param>
+        /// <param name="xOffset">
+        /// Horizontal offset (in pixels) from the left edge of the sprite sheet 
+        /// where the first frame begins.
+        /// </param>
+        /// <param name="yOffset">
+        /// Vertical offset (in pixels) from the top edge of the sprite sheet 
+        /// where the first animation row begins.
+        /// </param>
+        /// <param name="paddingX">
+        /// Extra horizontal space (in pixels) inside the frame cell that should be 
+        /// trimmed off the actual sprite’s visual width.
+        /// </param>
+        /// <param name="paddingY">
+        /// Extra vertical space (in pixels) inside the frame cell that should be 
+        /// trimmed off the actual sprite’s visual height.
+        /// </param>
+        /// <returns>
+        /// A dictionary mapping each <see cref="AnimationKey"/> (direction) 
+        /// to its corresponding <see cref="SpriteAnimation"/> sequence.
+        /// </returns>
+        private Dictionary<AnimationKey, SpriteAnimation> CreateAnimations
+            (int frameCount, int frameWidth, int frameHeight, int xOffset = 0, int yOffset = 0, int paddingX = 0, int paddingY = 0)
         {
             Dictionary<AnimationKey, SpriteAnimation> _Animations = [];
-            Width = frameWidth;
-            Height = frameHeight;
+            Width = frameWidth - paddingX;
+            Height = frameHeight - paddingY;
 
-            SpriteAnimation animation = new(frameCount, frameWidth, frameHeight, 0, 0);
-            _Animations.Add(AnimationKey.Down, animation);
-            animation = new(frameCount, frameWidth, frameHeight, xOffset, frameHeight + yOffset);
-            _Animations.Add(AnimationKey.Left, animation);
-            animation = new(frameCount, frameWidth, frameHeight, xOffset * 2, (frameHeight + yOffset) * 2);
-            _Animations.Add(AnimationKey.Right, animation);
-            animation = new(frameCount, frameWidth, frameHeight, xOffset * 3 , (frameHeight + yOffset) * 3);
-            _Animations.Add(AnimationKey.Up, animation);
+            _Animations.Add(AnimationKey.Down, 
+                new SpriteAnimation(frameCount, frameWidth, frameHeight, xOffset, 0));
+
+            _Animations.Add(AnimationKey.Left, 
+                new SpriteAnimation(frameCount, frameWidth, frameHeight, xOffset, frameHeight + yOffset));
+
+            _Animations.Add(AnimationKey.Right, 
+                new SpriteAnimation(frameCount, frameWidth, frameHeight, xOffset, (frameHeight + yOffset) * 2));
+
+            _Animations.Add(AnimationKey.Up, 
+                new SpriteAnimation(frameCount, frameWidth, frameHeight, xOffset, (frameHeight + yOffset) * 3));
 
             return _Animations;
         }

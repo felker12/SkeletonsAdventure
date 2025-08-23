@@ -118,6 +118,11 @@
 /processor:PassThroughProcessor
 /build:EntityData/GoblinData.xml
 
+#begin EntityData/SkeletalBruiserData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/SkeletalBruiserData.xml
+
 #begin EntityData/SkeletonData.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
@@ -140,7 +145,7 @@
 /processorParam:TextureFormat=Color
 /build:EntitySprites/goblin.png
 
-#begin EntitySprites/spider.png
+#begin EntitySprites/SkeletalBruiser.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -150,7 +155,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:EntitySprites/spider.png
+/build:EntitySprites/SkeletalBruiser.png
 
 #begin EntitySprites/spider.png
 /importer:TextureImporter
