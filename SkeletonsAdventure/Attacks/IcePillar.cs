@@ -14,27 +14,19 @@ namespace SkeletonsAdventure.Attacks
             Width = Texture.Width;
             Height = Texture.Height;
             Frame = new(0, 0, Width, Height);
-
-            AnimatedAttack = true;
+            AnimatedAttack = true; 
+            Initalize();
         }
 
         public IcePillar(IcePillar attack) : base(attack)
         {
-            Width = attack.Width;
-            Height = attack.Height;
-            AnimatedAttack = attack.AnimatedAttack;
-            Frame = attack.Frame;
-            DamageHitBox = attack.DamageHitBox;
-
-            if(AnimatedAttack)
-                SetFrames(4, 62, 62, 0, 62);
+            Initalize();
         }
 
-        public IcePillar(AttackData attackData, Texture2D texture, Entity source, int width, int height) : base(attackData, texture, source)
+        private void Initalize()
         {
-            Width = width;
-            Height = height;
-            Frame = new(0, 0, Width, Height);
+            if (AnimatedAttack)
+                SetFrames(4, 62, 62);
         }
 
         public override IcePillar Clone()

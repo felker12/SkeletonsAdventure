@@ -13,7 +13,7 @@ namespace SkeletonsAdventure.Entities
         //Constructors
         public AnimatedSprite() : base()
         {
-            SetFrames(3, 32, 54, 0, 10); //This is the default which is used by the skeleton spritesheet
+            SetFrames(3, 32, 64, paddingY: 10); //This is the default which is used by the skeleton spritesheet
         }
 
         //Methods
@@ -153,25 +153,14 @@ namespace SkeletonsAdventure.Entities
         /// Extra vertical space (in pixels) inside the frame cell that should be 
         /// trimmed off the actual sprite’s visual height.
         /// </param>
-        /// <returns>
-        /// A dictionary mapping each <see cref="AnimationKey"/> (direction) 
-        /// to its corresponding <see cref="SpriteAnimation"/> sequence.
-        /// </returns>
-        private Dictionary<AnimationKey, SpriteAnimation> CreateAnimations
-            (int frameCount, int frameWidth, int frameHeight, int xOffset = 0, int yOffset = 0, int paddingX = 0, int paddingY = 0)
-        {
-            return CreateAnimations([AnimationKey.Down, AnimationKey.Left, AnimationKey.Right, AnimationKey.Up],
-                frameCount, frameWidth, frameHeight, xOffset, yOffset, paddingX, paddingY);
-        }
-
-        /// <summary>
-        /// Creates directional animations in a custom order, 
-        /// so that the sprite sheet rows can be arranged flexibly.
-        /// </summary>
         /// <param name="order">
         /// The order of <see cref="AnimationKey"/> values. 
         /// Each key corresponds to a row in the sprite sheet.
         /// </param>
+        /// <returns>
+        /// A dictionary mapping each <see cref="AnimationKey"/> (direction) 
+        /// to its corresponding <see cref="SpriteAnimation"/> sequence.
+        /// </returns>
         private Dictionary<AnimationKey, SpriteAnimation> CreateAnimations(
             AnimationKey[] order,
             int frameCount,
@@ -188,7 +177,7 @@ namespace SkeletonsAdventure.Entities
 
             for (int i = 0; i < order.Length; i++)
             {
-                int rowY = (frameHeight + yOffset) * i;
+                int rowY = yOffset + frameHeight * i;
                 _Animations.Add(order[i],
                     new SpriteAnimation(frameCount, frameWidth, frameHeight, xOffset, rowY));
             }

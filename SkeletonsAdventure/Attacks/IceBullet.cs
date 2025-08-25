@@ -1,13 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using RpgLibrary.AttackData;
-using SkeletonsAdventure.Animations;
+﻿using RpgLibrary.AttackData;
 using SkeletonsAdventure.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SkeletonsAdventure.Attacks
 {

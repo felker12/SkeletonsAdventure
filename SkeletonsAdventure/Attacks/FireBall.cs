@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using SkeletonsAdventure.Entities;
-using SkeletonsAdventure.Animations;
+﻿using SkeletonsAdventure.Entities;
 using RpgLibrary.AttackData;
 
 namespace SkeletonsAdventure.Attacks
@@ -11,6 +8,7 @@ namespace SkeletonsAdventure.Attacks
         public FireBall(AttackData attackData, Texture2D texture, Entity source) : base(attackData, texture, source)
         {
             Initialize();
+            AnimatedAttack = true;
         }
 
         public FireBall(FireBall attack) : base(attack)
@@ -20,12 +18,8 @@ namespace SkeletonsAdventure.Attacks
 
         private void Initialize()
         {
-            Width = 32;
-            Height = 28;
-
-            AnimatedAttack = true;
-
-            SetFrames(3, Width, Height, 0, Height); 
+            if (AnimatedAttack)
+                SetFrames(3, 32, 28); 
         }
 
         public override FireBall Clone()

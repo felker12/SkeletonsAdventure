@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
+﻿using MonoGame.Extended;
 using RpgLibrary.AttackData;
 using SkeletonsAdventure.Entities;
-using System;
-using System.Collections.Generic;
 
 namespace SkeletonsAdventure.Attacks
 {
@@ -42,8 +38,6 @@ namespace SkeletonsAdventure.Attacks
 
         private void DrawPath(SpriteBatch spriteBatch)
         {
-            //spriteBatch.DrawLine(StartPosition + new Vector2(Width / 2, Height / 2), PathPoints[0], Color.Aquamarine, 1);
-
             for (int i = 0; i < PathPoints.Count - 1; i++)
                 spriteBatch.DrawLine(PathPoints[i], PathPoints[i + 1], Color.Aquamarine, 1);
         }

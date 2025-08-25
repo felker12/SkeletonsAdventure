@@ -17,7 +17,6 @@ namespace SkeletonsAdventure.Entities
         public Rectangle Frame { get; set; } = new(0, 0, 32, 32);
         public float RotationAngle { get; set; } = 0.0f;
         public float Scale { get; set; } = 1.0f;
-        //TODO make use of the CanMove property. For example when the entity is stunned or frozen or casting a spell
         public bool CanMove { get; set; } = true;
         public Label Info { get; set; } = new(string.Empty)
         {
