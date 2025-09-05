@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:WorldClasses="RpgLibrary.WorldClasses" xmlns:ItemClasses="RpgLibrary.ItemClasses">
   <Asset Type="WorldClasses:WorldData">
-    <TotalTimeInWorld>PT19.6167059S</TotalTimeInWorld>
+    <TotalTimeInWorld>PT9.6166859S</TotalTimeInWorld>
     <CurrentLevel>Dungeon\Dungeon2</CurrentLevel>
     <PlayerData>
       <Type>SkeletonsAdventure.Entities.Player</Type>
@@ -11,7 +11,7 @@
       <EntityLevel>0</EntityLevel>
       <BaseXP>1</BaseXP>
       <CurrentHealth>3000</CurrentHealth>
-      <Position>334.2036 649.20374</Position>
+      <Position>513.5975 875.8153</Position>
       <RespawnPosition>80 80</RespawnPosition>
       <IsDead>false</IsDead>
       <LastDeathTime>PT0S</LastDeathTime>

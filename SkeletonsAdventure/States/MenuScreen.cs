@@ -65,7 +65,6 @@ namespace SkeletonsAdventure.States
 
         public override void HandleInput(PlayerIndex playerIndex)
         {
-
         }
 
         private void LoadGameButton_Click(object sender, EventArgs e)

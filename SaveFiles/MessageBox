@@ -2,7 +2,5 @@
 <XnaContent xmlns:Generic="System.Collections.Generic">
   <Asset Type="Generic:List[string]">
     <Item>Welcome!</Item>
-    <Item>Welcome!</Item>
-    <Item>Welcome!</Item>
   </Asset>
 </XnaContent>

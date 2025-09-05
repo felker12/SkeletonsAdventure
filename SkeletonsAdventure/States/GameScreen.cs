@@ -38,11 +38,12 @@ namespace SkeletonsAdventure.States
         };
         public MessageBox MessageBox { get; private set; } = new();
 
-        private FPSCounter FPS { get; set; } = new();
+        //private FPSCounter FPS { get; set; } = new();
 
         public GameScreen(Game1 game) : base(game)
         {
             Initialize();
+            MessageBox.AddMessage("Welcome!");
         }
 
         public GameScreen(Game1 game, WorldData worldData) : base(game)
@@ -70,7 +71,6 @@ namespace SkeletonsAdventure.States
             QuestToDisplay.Position = new(10, XPProgress.Position.Y + XPProgress.Height + 10);
             ControlManager.Add(QuestToDisplay);
             MessageBox.Position = new(4, Game1.ScreenHeight - MessageBox.Height - 4);
-            MessageBox.AddMessage("Welcome!");
         }
 
         public override void Draw(SpriteBatch spriteBatch)
