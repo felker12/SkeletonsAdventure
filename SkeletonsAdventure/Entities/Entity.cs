@@ -40,14 +40,14 @@ namespace SkeletonsAdventure.Entities
         {
             Health = baseHealth;
             Position = new();
-            Type = this.GetType().FullName;
+            Type = GetType().FullName;
 
             Initialize();
         }
 
         public Entity(EntityData data) : base()
         {
-            Type = this.GetType().FullName;
+            Type = GetType().FullName;
             UpdateEntityWithData(data);
             Initialize();
         }
@@ -138,8 +138,8 @@ namespace SkeletonsAdventure.Entities
             return new(GetEntityData())
             {
                 Position = Position,
-                Level = this.Level,
-                SpriteColor = this.SpriteColor,
+                Level = Level,
+                SpriteColor = SpriteColor,
             };
         }
 
@@ -188,7 +188,7 @@ namespace SkeletonsAdventure.Entities
 
         public virtual void EntityDiedByAttack(BasicAttack attack) //TODO change how the timer for dead entities works
         {
-            string message = $"{this.GetType().Name} was killed by {attack.Source.GetType().Name} with {attack.GetType().Name}.";
+            string message = $"{GetType().Name} was killed by {attack.Source.GetType().Name} with {attack.GetType().Name}.";
             AttacksHitBy.Clear();
 
             if (attack.Source is Player player)
@@ -202,7 +202,7 @@ namespace SkeletonsAdventure.Entities
 
                     if (quest.ActiveTask is not null && quest.ActiveTask is SlayTask slayTask)
                     {
-                        if (slayTask.GetEntityToSlay().GetType() == this.GetType())
+                        if (slayTask.GetEntityToSlay().GetType() == GetType())
                             quest.ProgressTask();
                     }
                 }
@@ -249,7 +249,7 @@ namespace SkeletonsAdventure.Entities
 
         public bool AttackingIsOnCoolDown(GameTime gameTime)
         {
-            return ((gameTime.TotalGameTime - AttackManager.LastAttackTime).TotalMilliseconds < AttackCoolDownLength);
+            return (gameTime.TotalGameTime - AttackManager.LastAttackTime).TotalMilliseconds < AttackCoolDownLength;
         }
 
         public virtual void PathToPoint(Vector2 target)

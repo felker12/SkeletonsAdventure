@@ -122,10 +122,10 @@ namespace SkeletonsAdventure.Entities
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,
-                Level = this.Level,
-                SpriteColor = this.SpriteColor,
-                DefaultColor = this.DefaultColor,
-                DropTableName = this.DropTableName,
+                Level = Level,
+                SpriteColor = SpriteColor,
+                DefaultColor = DefaultColor,
+                DropTableName = DropTableName,
             };
         }
 

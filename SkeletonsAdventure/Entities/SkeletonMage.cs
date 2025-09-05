@@ -1,38 +1,33 @@
 ﻿using RpgLibrary.EntityClasses;
+using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities
 {
-    internal class Goblin : Enemy
+    internal class SkeletonMage : Skeleton
     {
-        public Goblin(EnemyData data) : base(data)
-        {
-            Initialize();
-        }
-
-        public Goblin() : base()
+        public SkeletonMage(EnemyData data) : base(data)
         {
             Initialize();
         }
 
         private void Initialize()
         {
-            Texture = GameManager.GoblinTexture;
-            SetFrames(4, 23, 40);
-            BasicAttackColor = Color.DarkGreen;
-            EnemyType = EnemyType.Goblin;
+            //TODO
+            Texture = GameManager.SkeletonMageTexture;
+            SetFrames(6, 64, 64, paddingX: 36, xOffset: 20, yOffset: 8, paddingY: 14);
+            BasicAttackColor = Color.DarkBlue; //TODO
         }
 
-        public override Goblin Clone()
+        public override SkeletonMage Clone()
         {
-            Goblin goblin = new(GetEntityData())
+            return new(GetEntityData())
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,
                 SpriteColor = SpriteColor,
                 DefaultColor = DefaultColor,
             };
-            return goblin;
         }
     }
 }

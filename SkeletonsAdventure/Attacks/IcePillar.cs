@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using SkeletonsAdventure.Entities;
 using RpgLibrary.AttackData;
+using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {

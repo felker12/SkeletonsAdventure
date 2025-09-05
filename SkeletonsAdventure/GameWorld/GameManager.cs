@@ -13,9 +13,11 @@ using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.NPCs;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.Quests;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 
@@ -68,6 +70,9 @@ namespace SkeletonsAdventure.GameWorld
         public static Texture2D SpiderTexture { get; private set; }
         public static Texture2D GoblinTexture { get; private set; }
         public static Texture2D SkeletalBruiserTexture { get; private set; } 
+        public static Texture2D ArmoredSkeletonTexture { get; private set; }
+        public static Texture2D SkeletonWarriorTexture { get; private set; }
+        public static Texture2D SkeletonMageTexture { get; private set; }
 
         //Attack Textures
         public static Texture2D AttackAreaTexture { get; private set; }
@@ -353,6 +358,8 @@ namespace SkeletonsAdventure.GameWorld
             SpiderTexture = Content.Load<Texture2D>(@"EntitySprites/spider");
             GoblinTexture = Content.Load<Texture2D>(@"EntitySprites/goblin");
             SkeletalBruiserTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletalBruiser");
+            SkeletonWarriorTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletonWarrior");
+            SkeletonMageTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletonMage");
 
             FireBallTexture = Content.Load<Texture2D>(@"AttackSprites/FireBall_01");
             FireBallTexture2 = Content.Load<Texture2D>(@"AttackSprites/FireBallSpriteSheet");
@@ -488,6 +495,7 @@ namespace SkeletonsAdventure.GameWorld
                 Enemies.Add(en.GetType().FullName, en); //Add the entity to the dictionary of enemies
             }
 
+            //TODO this is just for testing
             foreach (var enemy in Enemies.Values)
             {
                 Debug.WriteLine(enemy.GetType().Name + $": width: {enemy.Width}, height: {enemy.Height}");

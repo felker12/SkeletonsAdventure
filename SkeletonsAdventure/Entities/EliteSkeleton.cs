@@ -15,9 +15,9 @@ namespace SkeletonsAdventure.Entities
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,
-                Level = this.Level,
-                SpriteColor = this.SpriteColor,
-                DefaultColor = this.DefaultColor,
+                Level = Level,
+                SpriteColor = SpriteColor,
+                DefaultColor = DefaultColor,
             };
             return skeleton;
         }

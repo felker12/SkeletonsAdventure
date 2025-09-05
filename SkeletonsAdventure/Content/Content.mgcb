@@ -113,6 +113,16 @@
 /processor:PassThroughProcessor
 /build:EntityData/EliteSkeletonData.xml
 
+#begin EntityData/EliteSkeletonData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/EliteSkeletonData.xml
+
+#begin EntityData/GoblinData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/GoblinData.xml
+
 #begin EntityData/GoblinData.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
@@ -123,10 +133,40 @@
 /processor:PassThroughProcessor
 /build:EntityData/SkeletalBruiserData.xml
 
+#begin EntityData/SkeletalBruiserData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/SkeletalBruiserData.xml
+
 #begin EntityData/SkeletonData.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:EntityData/SkeletonData.xml
+
+#begin EntityData/SkeletonData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/SkeletonData.xml
+
+#begin EntityData/SkeletonMageData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/SkeletonMageData.xml
+
+#begin EntityData/SkeletonWarriorData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/SkeletonWarriorData.xml
+
+#begin EntityData/SkeletonWarriorData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/SkeletonWarriorData.xml
+
+#begin EntityData/SpiderData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/SpiderData.xml
 
 #begin EntityData/SpiderData.xml
 /importer:XmlImporter
@@ -156,6 +196,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:EntitySprites/SkeletalBruiser.png
+
+#begin EntitySprites/SkeletonMage.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:EntitySprites/SkeletonMage.png
+
+#begin EntitySprites/SkeletonWarrior.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:EntitySprites/SkeletonWarrior.png
 
 #begin EntitySprites/spider.png
 /importer:TextureImporter

@@ -1,5 +1,5 @@
-﻿using SkeletonsAdventure.Entities;
-using RpgLibrary.AttackData;
+﻿using RpgLibrary.AttackData;
+using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:EntityClasses="RpgLibrary.EntityClasses">
+  <Asset Type="EntityClasses:EnemyData">
+    <Type>SkeletonsAdventure.Entities.SkeletonMage</Type>
+    <ID>4734</ID>
+    <BaseHealth>15</BaseHealth>
+    <BaseDefence>2</BaseDefence>
+    <BaseAttack>15</BaseAttack>
+    <EntityLevel>0</EntityLevel>
+    <BaseXP>5</BaseXP>
+    <CurrentHealth>20</CurrentHealth>
+    <Position>0 0</Position>
+    <RespawnPosition>0 0</RespawnPosition>
+    <IsDead>false</IsDead>
+    <LastDeathTime>PT0S</LastDeathTime>
+    <DropTableName>BasicDropTable</DropTableName>
+    <GuaranteedItems />
+  </Asset>
+</XnaContent>

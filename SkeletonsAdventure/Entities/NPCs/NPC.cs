@@ -1,7 +1,7 @@
 ﻿using RpgLibrary.EntityClasses;
 using SkeletonsAdventure.Quests;
 
-namespace SkeletonsAdventure.Entities
+namespace SkeletonsAdventure.Entities.NPCs
 {
     internal class NPC : AnimatedSprite
     {
