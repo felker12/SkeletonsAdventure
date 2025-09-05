@@ -33,6 +33,7 @@ namespace SkeletonsAdventure.Entities
         public int NumberOfItemsToDrop { get; set; } = 2; //Number of items to drop from the drop table
         public DropTable DropTable => GetDropTable();
         public ItemList GuaranteedDrops { get; set; } = new();
+        public string Name { get; set; }
 
         public Enemy(EnemyData data) : base(data)
         {
@@ -51,6 +52,8 @@ namespace SkeletonsAdventure.Entities
             walkDistance = 200;
             detectionWidth = 300;
             detectionHeight = 300;
+
+            Name = this.GetType().Name;
         }
 
         public void SetEnemyLevel(MinMaxPair levels)

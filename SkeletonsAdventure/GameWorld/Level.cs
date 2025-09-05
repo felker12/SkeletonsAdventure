@@ -39,7 +39,8 @@ namespace SkeletonsAdventure.GameWorld
         public TeleporterManager TeleporterManager { get; set; } = new(); // used to manage teleporters in the level
 
         private TiledMapRenderer _tiledMapRenderer;
-        private TiledMapTileLayer _mapCollisionLayer, _mapSpawnerLayer;
+        private TiledMapTileLayer _mapCollisionLayer;
+        private TiledMapObjectLayer _mapSpawnerLayer;
         private readonly Dictionary<string, Enemy> Enemies = [];
 
         public List<Rectangle> EnterExitLayerObjectRectangles { get; set; } = []; //TODO used to temporarily see where hitboxes are for exits
@@ -58,7 +59,7 @@ namespace SkeletonsAdventure.GameWorld
             EntityManager.Add(Player);
 
             if(_mapSpawnerLayer != null)
-            AddEnemys();
+                AddEnemys();
 
             LoadInteractableObjects();
             LoadTeleporters();
@@ -70,7 +71,7 @@ namespace SkeletonsAdventure.GameWorld
             _tiledMapRenderer = new(GraphicsDevice);
             _tiledMapRenderer.LoadMap(TiledMap);
             _mapCollisionLayer = TiledMap.GetLayer<TiledMapTileLayer>("CollisionLayer");
-            _mapSpawnerLayer = tiledMap.GetLayer<TiledMapTileLayer>("SpawnerLayer");
+            _mapSpawnerLayer = tiledMap.GetLayer<TiledMapObjectLayer>("SpawnerLayer");
             ChestManager = new(tiledMap.GetLayer<TiledMapTileLayer>("ChestLayer"));
             EnterExitLayer = TiledMap.GetLayer<TiledMapObjectLayer>("EnterExitLayer");
             InteractableObjectLayer = TiledMap.GetLayer<TiledMapObjectLayer>("InteractableObjectLayerObjects");

@@ -690,5 +690,16 @@ namespace SkeletonsAdventure.GameWorld
             }
             return mapTiles;
         }
+
+        public static List<TiledMapObject> ObjectLocations(string name, TiledMapObject[] objects)
+        {
+            List<TiledMapObject> mapObjects = [];
+            foreach (var obj in objects)
+            {
+                if (obj.Name == name)
+                    mapObjects.Add(obj);
+            }
+            return mapObjects;
+        }
     }
 }
