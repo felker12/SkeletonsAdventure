@@ -2,7 +2,6 @@
 <XnaContent xmlns:EntityClasses="RpgLibrary.EntityClasses">
   <Asset Type="EntityClasses:EnemyData">
     <Type>SkeletonsAdventure.Entities.EliteSkeleton</Type>
-    <ID>842</ID>
     <BaseHealth>20</BaseHealth>
     <BaseDefence>2</BaseDefence>
     <BaseAttack>9</BaseAttack>

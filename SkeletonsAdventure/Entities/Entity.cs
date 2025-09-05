@@ -20,7 +20,6 @@ namespace SkeletonsAdventure.Entities
         public AttackManager AttackManager { get; set; } 
         public BasicAttack BasicAttack { get; set; }
         public List<BasicAttack> AttacksHitBy { get; set; } = [];
-        public int ID { get; protected set; } = 0;
         public int XP { get; set; } //Xp gained for killing the entity
         public int MaxHealth { get; set; }
         public int Health { get; set; } 
@@ -98,7 +97,6 @@ namespace SkeletonsAdventure.Entities
         {
             return new()
             {
-                ID = ID,
                 Type = Type,
                 BaseHealth = baseHealth,
                 BaseDefence = baseDefence,
@@ -115,7 +113,6 @@ namespace SkeletonsAdventure.Entities
 
         public virtual void UpdateEntityWithData(EntityData entityData)
         {
-            ID = entityData.ID;
             Type = entityData.Type;
             baseHealth = entityData.BaseHealth;
             baseAttack = entityData.BaseAttack;

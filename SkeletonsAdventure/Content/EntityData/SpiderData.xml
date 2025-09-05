@@ -2,7 +2,6 @@
 <XnaContent xmlns:EntityClasses="RpgLibrary.EntityClasses">
   <Asset Type="EntityClasses:EnemyData">
     <Type>SkeletonsAdventure.Entities.Spider</Type>
-    <ID>4126</ID>
     <BaseHealth>15</BaseHealth>
     <BaseDefence>2</BaseDefence>
     <BaseAttack>7</BaseAttack>

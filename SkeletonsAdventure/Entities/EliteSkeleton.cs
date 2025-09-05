@@ -6,7 +6,9 @@ namespace SkeletonsAdventure.Entities
     {
         public EliteSkeleton(EnemyData data) : base(data)
         {
-            IsElite = true;
+            EnemyClass = EnemyClass.Elite;
+            DefaultColor = new Color(Color.Black, 255);
+            SpriteColor = DefaultColor;
         }
 
         public override EliteSkeleton Clone()

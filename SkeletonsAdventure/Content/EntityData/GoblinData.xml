@@ -2,7 +2,6 @@
 <XnaContent xmlns:EntityClasses="RpgLibrary.EntityClasses">
   <Asset Type="EntityClasses:EnemyData">
     <Type>SkeletonsAdventure.Entities.Goblin</Type>
-    <ID>4546</ID>
     <BaseHealth>15</BaseHealth>
     <BaseDefence>2</BaseDefence>
     <BaseAttack>7</BaseAttack>

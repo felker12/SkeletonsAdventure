@@ -1,5 +1,4 @@
 ﻿using RpgLibrary.EntityClasses;
-using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities
@@ -16,7 +15,7 @@ namespace SkeletonsAdventure.Entities
             //TODO
             Texture = GameManager.SkeletonMageTexture;
             SetFrames(6, 64, 64, paddingX: 36, xOffset: 20, yOffset: 8, paddingY: 14);
-            BasicAttackColor = Color.DarkBlue; //TODO
+            BasicAttackColor = new(11,29,131); //TODO
         }
 
         public override SkeletonMage Clone()

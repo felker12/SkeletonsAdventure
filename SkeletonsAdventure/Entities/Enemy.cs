@@ -17,11 +17,15 @@ namespace SkeletonsAdventure.Entities
         Goblin,
     }
 
+    public enum EnemyClass
+    {
+        Regular, Elite, Boss
+    }
+
     internal class Enemy : Entity
     {
         private int x, y, x2, y2, walkDistance, detectionWidth, detectionHeight;
 
-        public bool IsElite { get; set; } = false;
         public bool CheckedLastAtackArea { get; set; } = false;
         public Rectangle DetectionArea => new((int)Position.X - (detectionWidth - Width) / 2,
             (int)Position.Y - (detectionHeight - Height) / 2, detectionWidth, detectionHeight);
@@ -29,9 +33,9 @@ namespace SkeletonsAdventure.Entities
             (int)Position.Y - Width, Width * 3, Height + Width * 2);
 
         public EnemyType EnemyType { get; set; }
+        public EnemyClass EnemyClass { get; set; } = EnemyClass.Regular;
         public string DropTableName { get; set; } = string.Empty;
         public int NumberOfItemsToDrop { get; set; } = 2; //Number of items to drop from the drop table
-        public DropTable DropTable => GetDropTable();
         public ItemList GuaranteedDrops { get; set; } = new();
         public string Name { get; set; }
 
@@ -58,7 +62,7 @@ namespace SkeletonsAdventure.Entities
 
         public void SetEnemyLevel(MinMaxPair levels)
         {
-            if (IsElite) //If the enemy is elite, set the level to the max of the range
+            if (EnemyClass != EnemyClass.Regular) //If the enemy is elite or a boss, set the level to the max of the range
                 Level = levels.Max;
             else //Otherwise, set the level to a random number in the range
                 Level = levels.GetRandomNumberInRange();
@@ -80,7 +84,7 @@ namespace SkeletonsAdventure.Entities
             Attack = (int)(baseAttack + Level * 1.5);
             XP = baseXP + Level * 2;
 
-            if(IsElite)
+            if(EnemyClass is EnemyClass.Elite)
             {
                 int healthBonus =(int)(Health * 1.5);
                 int Bonus = (int)Math.Ceiling((double)Defence / 4);
@@ -90,13 +94,15 @@ namespace SkeletonsAdventure.Entities
 
                 Defence += Bonus;
                 Attack += Bonus;
-                DefaultColor = new Color(Color.Black, 255);
-                SpriteColor = DefaultColor;
                 XP *= 2;
                 NumberOfItemsToDrop += 1; //Elite enemies drop more items
             }
+            else if(EnemyClass is EnemyClass.Boss)
+            {
 
-            UpdateEntityWithData(GetEntityData()); //TODO: check if this is needed
+            }
+
+                UpdateEntityWithData(GetEntityData()); //TODO: check if this is needed
         }
         public override void Update(GameTime gameTime)
         {
@@ -174,7 +180,7 @@ namespace SkeletonsAdventure.Entities
         // this includes the items from the drop table and the guaranteed drops
         public virtual List<GameItem> GetDrops()
         {
-            List<GameItem> items = DropTable.GetDropsList(NumberOfItemsToDrop);
+            List<GameItem> items = GetDropTable().GetDropsList(NumberOfItemsToDrop);
 
             //Add guaranteed drops to the list
             foreach (GameItem item in GuaranteedDrops.Items)
@@ -207,7 +213,7 @@ namespace SkeletonsAdventure.Entities
             base.Respawn();
         }
 
-        public void AutoAttack(Player player, GameTime gameTime)
+        public virtual void AutoAttack(Player player, GameTime gameTime)
         {
             //attack the player if the player is close enough
             if (AttackArea.Intersects(player.Rectangle))

@@ -6,6 +6,7 @@ using RpgLibrary.WorldClasses;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.ItemClasses;
+using System.IO;
 
 namespace SkeletonsAdventure.GameWorld
 {
@@ -28,10 +29,11 @@ namespace SkeletonsAdventure.GameWorld
             //TODO
             //SetCurrentLevel(Levels["Level0"], Levels["Level0"].PlayerStartPosition);
             //SetCurrentLevel(Levels["TestLevel"], Levels["TestLevel"].PlayerStartPosition);
-            //SetCurrentLevel(Levels["Dungeon/Dungeon"], new(100,100));
+            //SetCurrentLevel(Levels["Dungeon\Dungeon"], new(100,100));
             //SetCurrentLevel(Levels["Catacombs"], new(100, 100));
             //SetCurrentLevel(Levels["Catacombs1"], new(100, 100));
-            SetCurrentLevel(Levels["Dungeon/Dungeon2"], new(100, 100));
+            SetCurrentLevel(Levels[@"Dungeon\Dungeon2"], new(100, 100));
+
         }
 
         public static void Update(GameTime gameTime)
@@ -134,7 +136,7 @@ namespace SkeletonsAdventure.GameWorld
             };
         }
 
-        public static void SetCurrentLevel(Level level, Vector2 playerPosition)
+        public static void SetCurrentLevel(Level level, Vector2 playerPosition = new())
         {
             Player.Position = playerPosition;
             Player.RespawnPosition = level.PlayerRespawnPosition;
@@ -149,58 +151,40 @@ namespace SkeletonsAdventure.GameWorld
         private static void AddLevel(Level level)
         {
             Levels.Add(level.Name, level);
+
+            //TODO
+            Debug.WriteLine($"Level Added: {level.Name}");
         }
 
         public static void CreateLevels(ContentManager content, GraphicsDevice graphics)
         {
-            TiledMap tiledMap;
+            string tiledMapRoot = Path.Combine(GameManager.GamePath, "Content", "TiledFiles");
+            string[] tiledMapFiles = Directory.GetFiles(tiledMapRoot, "*.tmx", SearchOption.AllDirectories);
 
-            //Test Level
-            tiledMap = content.Load<TiledMap>(@"TiledFiles/TestLevel");
-            Level level = new(graphics, tiledMap, GameManager.EnemiesClone, new MinMaxPair(76, 76));
-            AddLevel(level);
+            foreach (string filePath in tiledMapFiles)
+            {
+                // Get the relative path for Content.Load (remove GamePath\Content\ and extension)
+                string relativePath = Path.GetRelativePath(Path.Combine(GameManager.GamePath, "Content"), filePath);
+                relativePath = Path.ChangeExtension(relativePath, null); // Remove extension
 
-            //Test Level
-            tiledMap = content.Load<TiledMap>(@"TiledFiles/Testing");
-            level = new(graphics, tiledMap, GameManager.EnemiesClone, new MinMaxPair(76, 76));
-            AddLevel(level);
+                TiledMap tiledMap = content.Load<TiledMap>(relativePath);
+                MinMaxPair pair = new();
 
-            //Level 1_Old
-            tiledMap = content.Load<TiledMap>(@"TiledFiles/Level1_Old");
-            level = new(graphics, tiledMap, GameManager.EnemiesClone, new MinMaxPair(0, 100));
-            AddLevel(level);
+                if (tiledMap.Properties.TryGetValue("MinLevel", out TiledMapPropertyValue value))
+                    pair.Min = int.Parse(value.ToString());
 
-            //Level 0_Old
-            tiledMap = content.Load<TiledMap>(@"TiledFiles/Level0_Old");
-            level = new(graphics, tiledMap, GameManager.EnemiesClone, new MinMaxPair(0, 100));
-            AddLevel(level);
+                if (tiledMap.Properties.TryGetValue("MaxLevel", out value))
+                    pair.Max = int.Parse(value.ToString());
+                else
+                    pair.Max = pair.Min; //the max level is the same as the min level if not specified
 
-            //Level 0
-            tiledMap = content.Load<TiledMap>(@"TiledFiles/Level0");
-            level = new(graphics, tiledMap, GameManager.EnemiesClone, new MinMaxPair(0, 1));
-            AddLevel(level);
+                Level level = new(graphics, tiledMap, GameManager.EnemiesClone, pair);
+                AddLevel(level);
+            }
 
-            //Level Dungeon
-            tiledMap = content.Load<TiledMap>(@"TiledFiles/Dungeon/Dungeon");
-            level = new(graphics, tiledMap, GameManager.EnemiesClone, new MinMaxPair(0, 100));
-            AddLevel(level);
-
-            //Level Catacombs
-            tiledMap = content.Load<TiledMap>(@"TiledFiles/Catacombs");
-            level = new(graphics, tiledMap, GameManager.EnemiesClone, new MinMaxPair(0, 1));
-            AddLevel(level);
-
-            //Level Catacombs1
-            tiledMap = content.Load<TiledMap>(@"TiledFiles/Catacombs1");
-            level = new(graphics, tiledMap, GameManager.EnemiesClone, new MinMaxPair(0, 1));
-            AddLevel(level);
-
-            //Level Dungeon2
-            tiledMap = content.Load<TiledMap>(@"TiledFiles/Dungeon/Dungeon2");
-            level = new(graphics, tiledMap, GameManager.EnemiesClone, new MinMaxPair(0, 100));
-            AddLevel(level);
-
-            //Initialize Levels
+            
+            // Initialize Levels: this should happen after all levels have been added
+            // so that a level can reference another level as the enter or exit level
             foreach (Level lvl in Levels.Values)
                 InitializeLevel(lvl);
         }
@@ -235,9 +219,7 @@ namespace SkeletonsAdventure.GameWorld
 
             //if there is no level exit positin set it to the level entrance position
             if (level.LevelExit is null)
-            {
                 level.PlayerEndPosition = level.PlayerStartPosition;
-            }
         }
 
         public static void AddMessage(string message)

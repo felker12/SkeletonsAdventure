@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="14">
+ <properties>
+  <property name="MaxLevel" type="int" value="70"/>
+  <property name="MinLevel" type="int" value="70"/>
+ </properties>
  <tileset firstgid="1" source="ProjectUtumno_full.tsx"/>
  <layer id="1" name="Floor" width="40" height="40">
   <data encoding="csv">
