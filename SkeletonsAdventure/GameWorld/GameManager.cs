@@ -17,7 +17,6 @@ using SkeletonsAdventure.Entities.NPCs;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.Quests;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 
@@ -150,6 +149,15 @@ namespace SkeletonsAdventure.GameWorld
         {
             GamePath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName; //Project Directory
             SavePath = Path.GetFullPath(Path.Combine(GamePath, @"..\SaveFiles")); //Directory of the saved files
+
+            /*
+            //TODO
+            string path = Path.Combine(GamePath, "Content", "EntityData");
+            string contentDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Content.RootDirectory);
+            Debug.WriteLine($"AppDomain: {AppDomain.CurrentDomain.BaseDirectory}");
+            Debug.WriteLine($"Path: {path}");
+            Debug.WriteLine($"Content Path: {contentDirectoryPath}");
+            */
         }
 
         //Load data from saved files
@@ -493,12 +501,6 @@ namespace SkeletonsAdventure.GameWorld
                 Enemy en = (Enemy)Activator.CreateInstance(Type.GetType(data.Type), data);
 
                 Enemies.Add(en.GetType().FullName, en); //Add the entity to the dictionary of enemies
-            }
-
-            //TODO this is just for testing
-            foreach (var enemy in Enemies.Values)
-            {
-                Debug.WriteLine(enemy.GetType().Name + $": width: {enemy.Width}, height: {enemy.Height}");
             }
 
             //TODO this is used for testing

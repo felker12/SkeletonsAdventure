@@ -23,6 +23,7 @@ namespace SkeletonsAdventure.Entities
             if (entity is Player player)
                 Player = player;
         }
+
         public void Remove(Entity entity)
         {
             Entities.Remove(entity);

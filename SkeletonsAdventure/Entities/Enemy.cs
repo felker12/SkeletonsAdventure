@@ -99,10 +99,10 @@ namespace SkeletonsAdventure.Entities
             }
             else if(EnemyClass is EnemyClass.Boss)
             {
-
+                //TODO
             }
 
-                UpdateEntityWithData(GetEntityData()); //TODO: check if this is needed
+            UpdateEntityWithData(GetEntityData()); //TODO: check if this is needed
         }
         public override void Update(GameTime gameTime)
         {

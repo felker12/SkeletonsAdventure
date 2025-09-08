@@ -33,7 +33,6 @@ namespace SkeletonsAdventure.GameWorld
             //SetCurrentLevel(Levels["Catacombs"], new(100, 100));
             //SetCurrentLevel(Levels["Catacombs1"], new(100, 100));
             SetCurrentLevel(Levels[@"Dungeon\Dungeon2"], new(100, 100));
-
         }
 
         public static void Update(GameTime gameTime)
@@ -148,14 +147,6 @@ namespace SkeletonsAdventure.GameWorld
             CurrentLevel.EntityManager.Player = Player;
         }
 
-        private static void AddLevel(Level level)
-        {
-            Levels.Add(level.Name, level);
-
-            //TODO
-            Debug.WriteLine($"Level Added: {level.Name}");
-        }
-
         public static void CreateLevels(ContentManager content, GraphicsDevice graphics)
         {
             string tiledMapRoot = Path.Combine(GameManager.GamePath, "Content", "TiledFiles");
@@ -168,25 +159,29 @@ namespace SkeletonsAdventure.GameWorld
                 relativePath = Path.ChangeExtension(relativePath, null); // Remove extension
 
                 TiledMap tiledMap = content.Load<TiledMap>(relativePath);
-                MinMaxPair pair = new();
 
-                if (tiledMap.Properties.TryGetValue("MinLevel", out TiledMapPropertyValue value))
-                    pair.Min = int.Parse(value.ToString());
-
-                if (tiledMap.Properties.TryGetValue("MaxLevel", out value))
-                    pair.Max = int.Parse(value.ToString());
-                else
-                    pair.Max = pair.Min; //the max level is the same as the min level if not specified
+                GetMinMaxPairFromTiledMap(tiledMap, out MinMaxPair pair);
 
                 Level level = new(graphics, tiledMap, GameManager.EnemiesClone, pair);
-                AddLevel(level);
-            }
 
+                Levels.Add(level.Name, level);
+            }
             
             // Initialize Levels: this should happen after all levels have been added
             // so that a level can reference another level as the enter or exit level
             foreach (Level lvl in Levels.Values)
                 InitializeLevel(lvl);
+        }
+
+        private static void GetMinMaxPairFromTiledMap(TiledMap tiledMap, out MinMaxPair pair)
+        {
+            pair = new();
+            if (tiledMap.Properties.TryGetValue("MinLevel", out TiledMapPropertyValue value))
+                pair.Min = int.Parse(value.ToString());
+            if (tiledMap.Properties.TryGetValue("MaxLevel", out value))
+                pair.Max = int.Parse(value.ToString());
+            else
+                pair.Max = pair.Min; //the max level is the same as the min level if not specified
         }
 
         private static void InitializeLevel(Level level)
