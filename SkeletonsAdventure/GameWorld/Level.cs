@@ -52,7 +52,15 @@ namespace SkeletonsAdventure.GameWorld
             CreateMap(tiledMap);
 
             if(ChestManager.TiledMapTileLayer != null)
-                ChestManager.Chests = ChestManager.GetChestsFromTiledMapTileLayer(GameManager.ChestsClone["BasicChest"]);
+            {
+                //ChestManager.Chests = ChestManager.GetChestsFromTiledMapTileLayer(GameManager.ChestsClone["BasicChest"]);
+                ChestManager.Clear();
+
+                foreach (Chest chest in GameManager.ChestsClone.Values)
+                {
+                    ChestManager.Add(ChestManager.GetChestsFromTiledMapTileLayer(chest));
+                }
+            }
 
             EntityManager = new();
             EnemyLevels = enemyLevels;

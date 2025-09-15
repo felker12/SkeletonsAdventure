@@ -579,6 +579,17 @@ namespace SkeletonsAdventure.GameWorld
             string name = nameof(BasicChest);
             if (Chests.ContainsKey(name) == false)
                 Chests.Add(name, BasicChest);
+
+            Chest BasicChest2 = new()
+            {
+                ID = 784,
+                ChestType = ChestType.Basic,
+                Loot = loots.Clone()
+            };
+
+            name = nameof(BasicChest2);
+            if (Chests.ContainsKey(name) == false)
+                Chests.Add(name, BasicChest2);
         }
 
         private static void CreateAttacks()
