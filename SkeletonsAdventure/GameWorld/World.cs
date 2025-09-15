@@ -32,7 +32,7 @@ namespace SkeletonsAdventure.GameWorld
             //SetCurrentLevel(Levels["Dungeon\Dungeon"], new(100,100));
             //SetCurrentLevel(Levels["Catacombs"], new(100, 100));
             //SetCurrentLevel(Levels["Catacombs1"], new(100, 100));
-            SetCurrentLevel(Levels[@"Dungeon\Dungeon2"], new(100, 100));
+            SetCurrentLevel(Levels["Dungeon\\Dungeon_Level0"], Levels["Dungeon\\Dungeon_Level0"].PlayerStartPosition);
         }
 
         public static void Update(GameTime gameTime)
@@ -60,6 +60,14 @@ namespace SkeletonsAdventure.GameWorld
             if (InputHandler.KeyReleased(Keys.NumPad7))
             {
                 SetCurrentLevel(Levels["Level0"], Levels["Level0"].PlayerStartPosition);
+            }
+            if (InputHandler.KeyReleased(Keys.NumPad6))
+            {
+                SetCurrentLevel(Levels["Dungeon\\Dungeon_Level0"], Levels["Dungeon\\Dungeon_Level0"].PlayerStartPosition);
+            }
+            if (InputHandler.KeyReleased(Keys.NumPad5))
+            { 
+                SetCurrentLevel(Levels[@"Dungeon\Dungeon2"], new(100, 100));
             }
             //=======================================================================
         }

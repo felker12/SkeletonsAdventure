@@ -86,40 +86,7 @@ namespace SkeletonsAdventure.GameWorld
         //Then draw everything with the call. end it. loop through the rest of the layers
         public void Draw(SpriteBatch spriteBatch)  {
             GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp; //prevents wierd yellow lines between tiles
-            //_tiledMapRenderer.Draw(Camera.Transformation);
-
-/*
-            spriteBatch.Begin(
-                       SpriteSortMode.Immediate,
-                       BlendState.AlphaBlend,
-                       SamplerState.PointClamp,
-                       null,
-                       null,
-                       null,
-                       Camera.Transformation);
-*/
-
-            foreach (var layer in TiledMap.Layers) //Draw entities on the correct layer
-            {
-                _tiledMapRenderer.Draw(layer, Camera.Transformation);
-
-                if (layer.Name == "Floor")
-                {
-                    spriteBatch.Begin(
-                       SpriteSortMode.Immediate,
-                       BlendState.AlphaBlend,
-                       SamplerState.PointClamp,
-                       null,
-                       null,
-                       null,
-                       Camera.Transformation);
-
-                    EntityManager.Draw(spriteBatch);
-                    DamagePopUpManager.Draw(spriteBatch);
-
-                    spriteBatch.End();
-                }
-            }
+            _tiledMapRenderer.Draw(Camera.Transformation);
 
             spriteBatch.Begin(
                        SpriteSortMode.Immediate,
@@ -129,6 +96,9 @@ namespace SkeletonsAdventure.GameWorld
                        null,
                        null,
                        Camera.Transformation);
+
+            EntityManager.Draw(spriteBatch);
+            DamagePopUpManager.Draw(spriteBatch);
 
             ChestManager.Draw(spriteBatch);
             InteractableObjectManager.Draw(spriteBatch);

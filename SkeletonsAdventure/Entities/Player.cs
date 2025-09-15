@@ -4,7 +4,6 @@ using RpgLibrary.EntityClasses;
 using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Engines;
-using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.Quests;
@@ -26,14 +25,12 @@ namespace SkeletonsAdventure.Entities
         public int BaseMana { get; set; } = 0;
         public int MaxMana { get; set; } = 0;
         public int AttributePoints { get; set; } = 0;
-        public StatusBar ManaBar { get; set; } = new();
         public float XPModifier { get; set; } = 1.0f; //TODO
         public FireBall FireBall { get; set; }
         //public FireBall FireBall2 { get; set; }
         public IcePillar IcePillar { get; set; }
         //public IcePillar IcePillar2 { get; set; }
         public IceBullet IceBullet { get; set; } 
-        public bool ManaBarVisible { get; set; } = true;
         public bool AimVisible { get; set; } = false;
         public List<Quest> ActiveQuests { get; set; } = [];
         public List<Quest> CompletedQuests { get; set; } = [];
@@ -65,8 +62,6 @@ namespace SkeletonsAdventure.Entities
             Backpack = new();
             EquippedItems = new();
 
-            ManaBar.BarColor = Color.Blue;
-
             //TODO delete this line
             Info.TextColor = Color.Aqua;
 
@@ -74,7 +69,6 @@ namespace SkeletonsAdventure.Entities
 
             //TODO
             HealthBarVisible = false;
-            ManaBarVisible = false;
         }
 
         private void InitializeAttacks()
@@ -144,9 +138,6 @@ namespace SkeletonsAdventure.Entities
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-            
-            if(ManaBarVisible)
-                ManaBar.Draw(spriteBatch);
 
             //spriteBatch.DrawRectangle(GetRectangle, SpriteColor, 1, 0); //TODO
 
@@ -161,12 +152,6 @@ namespace SkeletonsAdventure.Entities
 
             CheckInput(gameTime);
             base.Update(gameTime); //keep the update call after updating motion
-
-            if (ManaBarVisible)
-            {
-                HealthBar.Position -= new Vector2(0, ManaBar.Height + ManaBar.BorderWidth + 2);
-                ManaBar.Update(Mana, MaxMana, HealthBar.Position + new Vector2(0, ManaBar.Height + ManaBar.BorderWidth + 2));
-            }
             
             Backpack.Update();
             UpdateStatsWithBonusses();
