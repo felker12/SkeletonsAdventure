@@ -325,6 +325,11 @@
 /processorParam:TextureFormat=Color
 /build:TiledFiles/BackpackBackground.png
 
+#begin TiledFiles/Catacombs_Level0.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/Catacombs_Level0.tmx
+
 #begin TiledFiles/Catacombs.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
@@ -335,7 +340,7 @@
 /processor:TiledMapProcessor
 /build:TiledFiles/Catacombs1.tmx
 
-#begin TiledFiles/Dungeon/decorative_cracks_coasts_animation.png
+#begin TiledFiles/CrossedOffBlock.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -345,7 +350,12 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:TiledFiles/Dungeon/decorative_cracks_coasts_animation.png
+/build:TiledFiles/CrossedOffBlock.png
+
+#begin TiledFiles/CrossedOffBlock.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TiledFiles/CrossedOffBlock.tsx
 
 #begin TiledFiles/Dungeon/decorative_cracks_coasts_animation.png
 /importer:TextureImporter
@@ -371,18 +381,6 @@
 /processorParam:TextureFormat=Color
 /build:TiledFiles/Dungeon/decorative_cracks_floor.png
 
-#begin TiledFiles/Dungeon/decorative_cracks_floor.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TiledFiles/Dungeon/decorative_cracks_floor.png
-
 #begin TiledFiles/Dungeon/decorative_cracks_walls.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -394,30 +392,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:TiledFiles/Dungeon/decorative_cracks_walls.png
-
-#begin TiledFiles/Dungeon/decorative_cracks_walls.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TiledFiles/Dungeon/decorative_cracks_walls.png
-
-#begin TiledFiles/Dungeon/doors_lever_chest_animation.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TiledFiles/Dungeon/doors_lever_chest_animation.png
 
 #begin TiledFiles/Dungeon/doors_lever_chest_animation.png
 /importer:TextureImporter
@@ -441,32 +415,10 @@
 /processor:TiledMapProcessor
 /build:TiledFiles/Dungeon/Dungeon.tmx
 
-#begin TiledFiles/Dungeon/Dungeon.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:TiledFiles/Dungeon/Dungeon.tmx
-
 #begin TiledFiles/Dungeon/Dungeon2.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:TiledFiles/Dungeon/Dungeon2.tmx
-
-#begin TiledFiles/Dungeon/Dungeon2.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:TiledFiles/Dungeon/Dungeon2.tmx
-
-#begin TiledFiles/Dungeon/fire_animation.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TiledFiles/Dungeon/fire_animation.png
 
 #begin TiledFiles/Dungeon/fire_animation.png
 /importer:TextureImporter
@@ -485,11 +437,6 @@
 /processor:TiledMapTilesetProcessor
 /build:TiledFiles/Dungeon/fire_animation.tsx
 
-#begin TiledFiles/Dungeon/fire_animation.tsx
-/importer:TiledMapTilesetImporter
-/processor:TiledMapTilesetProcessor
-/build:TiledFiles/Dungeon/fire_animation.tsx
-
 #begin TiledFiles/Dungeon/fire_animation2.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -501,30 +448,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:TiledFiles/Dungeon/fire_animation2.png
-
-#begin TiledFiles/Dungeon/fire_animation2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TiledFiles/Dungeon/fire_animation2.png
-
-#begin TiledFiles/Dungeon/Objects.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TiledFiles/Dungeon/Objects.png
 
 #begin TiledFiles/Dungeon/Objects.png
 /importer:TextureImporter
@@ -555,30 +478,6 @@
 /processorParam:TextureFormat=Color
 /build:TiledFiles/Dungeon/trap_animation.png
 
-#begin TiledFiles/Dungeon/trap_animation.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TiledFiles/Dungeon/trap_animation.png
-
-#begin TiledFiles/Dungeon/walls_floor.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TiledFiles/Dungeon/walls_floor.png
-
 #begin TiledFiles/Dungeon/walls_floor.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -596,11 +495,6 @@
 /processor:TiledMapTilesetProcessor
 /build:TiledFiles/Dungeon/walls_floor.tsx
 
-#begin TiledFiles/Dungeon/walls_floor.tsx
-/importer:TiledMapTilesetImporter
-/processor:TiledMapTilesetProcessor
-/build:TiledFiles/Dungeon/walls_floor.tsx
-
 #begin TiledFiles/Dungeon/Water_coasts_animation.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -612,30 +506,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:TiledFiles/Dungeon/Water_coasts_animation.png
-
-#begin TiledFiles/Dungeon/Water_coasts_animation.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TiledFiles/Dungeon/Water_coasts_animation.png
-
-#begin TiledFiles/Dungeon/water_details_animation.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TiledFiles/Dungeon/water_details_animation.png
 
 #begin TiledFiles/Dungeon/water_details_animation.png
 /importer:TextureImporter

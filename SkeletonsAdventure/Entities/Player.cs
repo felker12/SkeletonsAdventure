@@ -27,9 +27,7 @@ namespace SkeletonsAdventure.Entities
         public int AttributePoints { get; set; } = 0;
         public float XPModifier { get; set; } = 1.0f; //TODO
         public FireBall FireBall { get; set; }
-        //public FireBall FireBall2 { get; set; }
         public IcePillar IcePillar { get; set; }
-        //public IcePillar IcePillar2 { get; set; }
         public IceBullet IceBullet { get; set; } 
         public bool AimVisible { get; set; } = false;
         public List<Quest> ActiveQuests { get; set; } = [];
@@ -67,18 +65,11 @@ namespace SkeletonsAdventure.Entities
 
             InitializeAttacks();
 
-            //TODO
             HealthBarVisible = false;
         }
 
         private void InitializeAttacks()
         {
-            //FireBall ??= new(GameManager.FireBallData, GameManager.FireBallTexture, this);
-            //FireBall2 ??= new(GameManager.FireBallData, GameManager.FireBallTexture2, this);
-            //IcePillar ??= new(GameManager.IcePillarData, GameManager.IcePillarTexture, this);
-            //IcePillar2 ??= new(GameManager.IcePillarData, GameManager.IcePillarSpriteSheetTexture, this, 62, 62);
-            //IceBullet ??= new(GameManager.IceBulletData, GameManager.IceBulletTexture, this);
-
             FireBall = (FireBall)GameManager.EntityAttackClone["FireBall"];
             IcePillar = (IcePillar)GameManager.EntityAttackClone["IcePillar"];
             IceBullet = (IceBullet)GameManager.EntityAttackClone["IceBullet"];
@@ -87,10 +78,6 @@ namespace SkeletonsAdventure.Entities
             FireBall.Source = this;
             IceBullet.Source = this;
             IcePillar.Source = this;
-
-            //TODO
-            //IcePillar2.AnimatedAttack = true;
-            //IcePillar2.SetFrames(4, 62, 62, 0, 62);
         }
 
         public void UpdatePlayerWithData(PlayerData playerData)
@@ -174,6 +161,8 @@ namespace SkeletonsAdventure.Entities
 
             //Info.Text += $"{Position}";
             //Info.Text += $"\nbonusAttackFromLevel = {bonusAttackFromLevel}";
+
+            Info.Text += $"\nAttacks Hit by: {AttacksHitBy.Count}";
         }
 
         private protected void UpdateStatsWithBonusses()
@@ -464,11 +453,9 @@ namespace SkeletonsAdventure.Entities
             }
 
             if (motion != Vector2.Zero)
-            {
                 motion.Normalize();
-            }
 
-            Motion = motion;
+            Motion = motion; //(motion is normalized in collision detection of EntityManager)
         }
 
         public override void Respawn()

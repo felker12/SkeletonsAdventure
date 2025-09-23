@@ -66,6 +66,7 @@ namespace SkeletonsAdventure.Entities
         public override void Update(GameTime gameTime)
         {
             AttackManager.Update(gameTime);
+            ClearOldAttacksHitBy();
             base.Update(gameTime);
 
             //make the entity red for a time when hit
@@ -163,7 +164,24 @@ namespace SkeletonsAdventure.Entities
             }
         }
 
+        private void ClearOldAttacksHitBy()
+        {
+            List<BasicAttack> oldAttacks = [];
 
+            foreach (var atk in AttacksHitBy)
+            {
+                if (atk.AttackTimedOut()) //removes attacks that have timed out
+                    oldAttacks.Add(atk);
+                else if (atk.Source.IsDead) //removes attacks from dead entities
+                    oldAttacks.Add(atk);
+            }
+
+            if (oldAttacks.Count > 0)
+            {
+                foreach (var oldAttack in oldAttacks)
+                    AttacksHitBy.Remove(oldAttack);
+            }
+        }
         public virtual void Respawn()
         {
             Health = MaxHealth;

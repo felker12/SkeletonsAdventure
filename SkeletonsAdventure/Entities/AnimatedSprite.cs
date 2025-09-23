@@ -6,17 +6,14 @@ namespace SkeletonsAdventure.Entities
     {
         protected Dictionary<AnimationKey, SpriteAnimation> _animations;
 
-        //Get/Set
         protected bool IsAnimating { get; set; }
         public AnimationKey CurrentAnimation { get; set; }
 
-        //Constructors
         public AnimatedSprite() : base()
         {
             SetFrames(3, 32, 64, paddingY: 10); //This is the default which is used by the skeleton spritesheet
         }
 
-        //Methods
         public override void Update(GameTime gameTime)
         {
             if (IsAnimating)
@@ -185,9 +182,20 @@ namespace SkeletonsAdventure.Entities
             return _Animations;
         }
 
+        /// <summary>
+        /// Sets the current animation direction based on the normalized motion vector.
+        /// Chooses the appropriate <see cref="AnimationKey"/> (Up, Down, Left, Right)
+        /// depending on the direction of movement.
+        ///
+        /// For pure horizontal or vertical movement, selects the matching direction.
+        /// For diagonal movement, defaults to Left or Right based on the X component.
+        /// (Diagonal-specific animations can be added in the future.)
+        /// </summary>
+        /// <param name="motion">
+        /// The normalized motion vector, typically with components in the range [-1, 1].
+        /// </param>
         protected void SetCurrentAnimationBasedOffMotion(Vector2 motion)
         {
-            //TODO   
             //Left movement
             if (motion.X == -1 && motion.Y >= -.5 && motion.Y <= .5)
                 CurrentAnimation = AnimationKey.Left;
@@ -215,7 +223,19 @@ namespace SkeletonsAdventure.Entities
                 CurrentAnimation = AnimationKey.Right;
         }
 
-        public static Vector2 CalculateReducedMotion(Vector2 Motion)
+        /// <summary>
+        /// Normalizes the input motion vector to ensure consistent movement speed,
+        /// especially for diagonal movement, and clamps each component to -1, 0, or 1.
+        /// If the input component is greater than 1 or less than -1, it is reduced to its sign.
+        /// For diagonal movement, the dominant axis is used to scale the other axis,
+        /// preventing faster movement along diagonals.
+        /// </summary>
+        /// <param name="Motion">The original motion vector (can be any float values).</param>
+        /// <returns>
+        /// A normalized motion vector with each component in the range [-1, 1], 
+        /// suitable for use in direction-based animation and movement logic.
+        /// </returns>
+        private static Vector2 CalculateReducedMotion(Vector2 Motion)
         {
             Vector2 motion = Vector2.Zero;
 

@@ -7,7 +7,6 @@ using RpgLibrary.EntityClasses;
 using RpgLibrary.WorldClasses;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
-using SkeletonsAdventure.EntitySpawners;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.Quests;
@@ -51,24 +50,8 @@ namespace SkeletonsAdventure.GameWorld
             Enemies = enemies;
             CreateMap(tiledMap);
 
-            if(ChestManager.TiledMapTileLayer != null)
-            {
-                //ChestManager.Chests = ChestManager.GetChestsFromTiledMapTileLayer(GameManager.ChestsClone["BasicChest"]);
-                ChestManager.Clear();
-
-                foreach (Chest chest in GameManager.ChestsClone.Values)
-                {
-                    ChestManager.Add(ChestManager.GetChestsFromTiledMapTileLayer(chest));
-                }
-            }
-
-            EntityManager = new();
-            EnemyLevels = enemyLevels;
-            EntityManager.Add(Player);
-
-            if(_mapSpawnerLayer != null)
-                AddEnemys();
-
+            LoadChestsFromTiledMap();
+            CreateEntityManager(enemyLevels);
             LoadInteractableObjects();
             LoadTeleporters();
         }
@@ -90,8 +73,26 @@ namespace SkeletonsAdventure.GameWorld
             Name = tiledMap.Name[11..]; //trim "TiledFiles/" from the tiledmap name to use as the level name
         }
 
-        //TODO if necessary for performance remove the extra draw call by looping through the layers until floor.
-        //Then draw everything with the call. end it. loop through the rest of the layers
+        private void LoadChestsFromTiledMap()
+        {
+            if (ChestManager.TiledMapTileLayer is null)
+                return;
+
+            ChestManager.Clear();
+
+            foreach (Chest chest in GameManager.ChestsClone.Values)
+                ChestManager.Add(ChestManager.GetChestsFromTiledMapTileLayer(chest));
+        }
+
+        private void CreateEntityManager(MinMaxPair enemyLevels)
+        {
+            EntityManager = new();
+            EnemyLevels = enemyLevels;
+            EntityManager.Add(Player);
+
+            AddEnemys();
+        }
+
         public void Draw(SpriteBatch spriteBatch)  {
             GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp; //prevents wierd yellow lines between tiles
             _tiledMapRenderer.Draw(Camera.Transformation);
@@ -106,9 +107,9 @@ namespace SkeletonsAdventure.GameWorld
                        Camera.Transformation);
 
             EntityManager.Draw(spriteBatch);
+            ChestManager.Draw(spriteBatch);
             DamagePopUpManager.Draw(spriteBatch);
 
-            ChestManager.Draw(spriteBatch);
             InteractableObjectManager.Draw(spriteBatch);
             TeleporterManager.Draw(spriteBatch);
 
@@ -119,9 +120,6 @@ namespace SkeletonsAdventure.GameWorld
                 spriteBatch.DrawString(GameManager.Arial12, LevelEntrance.ExitText, LevelEntrance.ExitPosition, Color.White);
             if (LevelExit is not null && LevelExit.ExitTextVisible)
                 spriteBatch.DrawString(GameManager.Arial12, LevelExit.ExitText, LevelExit.ExitPosition, Color.White);
-
-            EntityManager.Draw(spriteBatch); //TODO
-            DamagePopUpManager.Draw(spriteBatch);
 
             spriteBatch.End();
         }
@@ -197,9 +195,9 @@ namespace SkeletonsAdventure.GameWorld
             }
         }
 
-        private void LoadInteractableObjects()
+        private void LoadInteractableObjects()//TODO 
         {
-            if (InteractableObjectLayer != null) //TODO 
+            if (InteractableObjectLayer is not null)
             {
                 foreach (TiledMapObject obj in InteractableObjectLayer.Objects)
                 {
@@ -266,16 +264,60 @@ namespace SkeletonsAdventure.GameWorld
 
         private void AddEnemys()
         {
-            Spawner spawner = new(_mapSpawnerLayer);
-
             foreach (Enemy enemy in Enemies.Values)
             {
-                foreach (Enemy spawnerEnemy in spawner.CreateEnemiesForSpawners(enemy))
-                {
-                    spawnerEnemy.SetEnemyLevel(EnemyLevels);
-                    EntityManager.Add(spawnerEnemy);
-                }
+                List<Enemy> enemiesFromMap = LoadEnemyFromTiledMap(enemy);
+                if (enemiesFromMap is null)
+                    continue;
+
+                foreach (Enemy e in enemiesFromMap)
+                    EntityManager.Add(e);
             }
+        }
+
+        private List<Enemy> LoadEnemyFromTiledMap(Enemy Enemy)
+        {
+            if (_mapSpawnerLayer is null)
+                return null;
+
+            List<Enemy> enemies = [];
+
+            foreach (TiledMapObject obj in GameManager.ObjectLocations(Enemy.Name, _mapSpawnerLayer.Objects))
+            {
+                Enemy enemy = Enemy.Clone();
+                enemy.Position = obj.Position;
+                enemy.RespawnPosition = enemy.Position;
+
+                int levelFromMap = GetLevelFromTiledMap(obj);
+                //Clamp the level to be within the max range
+                if (levelFromMap > EnemyLevels.Max)
+                    levelFromMap = EnemyLevels.Max;
+
+                enemy.SetEnemyLevel(levelFromMap);
+
+                //If the level was not set from the map, set it to the default for the level
+                if (enemy.Level == 0) 
+                    enemy.SetEnemyLevel(EnemyLevels);
+
+                enemies.Add(enemy);
+            }
+
+            return enemies;
+        }
+
+        private static int GetLevelFromTiledMap(TiledMapObject obj)
+        {
+            obj.Properties.TryGetValue("level", out string level);
+            if (level is null)
+                obj.Properties.TryGetValue("lvl", out level);
+
+            if (level is not null)
+            {
+                if (int.TryParse(level, out int lvl))//parse the level to an int to be used for the enemy level
+                    return lvl;
+            }
+
+            return 0; //level not found or could not be parsed
         }
 
         private void CheckIfPlayerNearChest()

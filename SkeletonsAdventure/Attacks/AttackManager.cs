@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using SkeletonsAdventure.Entities;
+﻿using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
@@ -14,32 +10,17 @@ namespace SkeletonsAdventure.Attacks
 
         private bool _attacked = false;
 
-        public List<BasicAttack> ToRemove = [];
-
         public void Draw(SpriteBatch spriteBatch)
         {
+            if(SourceEntity.IsDead)
+                return;
+
             foreach (var attack in Attacks)
                 attack.Draw(spriteBatch);
         }
 
         public void Update(GameTime gameTime)
         {
-            ToRemove = [];
-            foreach (var attack in Attacks)
-            {
-                attack.Update(gameTime);
-                if (attack.AttackTimedOut())
-                {
-                    attack.AttackVisible = false;
-                    ToRemove.Add(attack);
-                }
-            }
-
-            foreach (var atk in ToRemove)
-            {
-                RemoveAttack(atk);
-            }
-
             if (_attacked)
             {
                 LastAttackTime = gameTime.TotalGameTime;
@@ -70,7 +51,25 @@ namespace SkeletonsAdventure.Attacks
         {
             Attacks.Clear();
         }
-        
+
+        public void ClearExpiredAttacks(GameTime gameTime)
+        {
+            List<BasicAttack> toRemove = [];
+
+            foreach (var attack in Attacks)
+            {
+                attack.Update(gameTime);
+                if (attack.AttackTimedOut() || attack.Source.IsDead)
+                {
+                    attack.AttackVisible = false;
+                    toRemove.Add(attack);
+                }
+            }
+
+            foreach (var atk in toRemove)
+                RemoveAttack(atk);
+        }
+
         public void CheckAttackHit(List<Entity> entities, GameTime gameTime)
         {
             //check to see if the attack hit an entity
@@ -91,29 +90,6 @@ namespace SkeletonsAdventure.Attacks
                         if (entity.Rectangle.Intersects(attack.DamageHitBox))
                             entity.GetHitByAttack(attack, gameTime);
                     }
-                }
-            }
-        }
-
-        public static void ClearOldAttacks(List<Entity> entities)
-        {
-            List<BasicAttack> oldAttacks = [];
-
-            foreach (var entity in entities)
-            {
-                foreach (var atk in entity.AttacksHitBy)
-                {
-                    if (atk.AttackTimedOut())
-                        oldAttacks.Add(atk);
-                }
-
-                if(oldAttacks.Count > 0)
-                {
-                    foreach (var oldAttack in oldAttacks)
-                    {
-                        entity.AttacksHitBy.Remove(oldAttack);
-                    }
-                    oldAttacks.Clear();
                 }
             }
         }
