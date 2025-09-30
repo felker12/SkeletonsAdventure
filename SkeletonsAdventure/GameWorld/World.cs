@@ -32,7 +32,7 @@ namespace SkeletonsAdventure.GameWorld
             //SetCurrentLevel(Levels["Dungeon\Dungeon"], new(100,100));
             //SetCurrentLevel(Levels["Catacombs"], new(100, 100));
             //SetCurrentLevel(Levels["Catacombs1"], new(100, 100));
-            SetCurrentLevel(Levels["Dungeon\\Dungeon_Level0"], Levels["Dungeon\\Dungeon_Level0"].PlayerStartPosition);
+            SetCurrentLevel(Levels["Level0"]);
         }
 
         public static void Update(GameTime gameTime)
@@ -43,11 +43,10 @@ namespace SkeletonsAdventure.GameWorld
             //TODO delete this after adding a way to move from level to level to the game
             if (InputHandler.KeyReleased(Keys.NumPad0))
             {
-                //SetCurrentLevel(Levels["Level0_Old"], Levels["Level0_Old"].PlayerStartPosition);
+                SetCurrentLevel(Levels["Level0_V2"]);
             }
             if (InputHandler.KeyReleased(Keys.NumPad1))
             {
-                //SetCurrentLevel(Levels["Level1_Old"], Levels["Level1_Old"].PlayerStartPosition);
             }
             if (InputHandler.KeyReleased(Keys.NumPad9))
             {
@@ -55,23 +54,22 @@ namespace SkeletonsAdventure.GameWorld
             }
             if (InputHandler.KeyReleased(Keys.NumPad8))
             {
-                //SetCurrentLevel(Levels["Testing"], Levels["Testing"].PlayerStartPosition);
+                SetCurrentLevel(Levels["Level0"], Levels["Level0"].PlayerStartPosition);
             }
             if (InputHandler.KeyReleased(Keys.NumPad7))
             {
-                SetCurrentLevel(Levels["Level0"], Levels["Level0"].PlayerStartPosition);
             }
             if (InputHandler.KeyReleased(Keys.NumPad6))
             {
-                SetCurrentLevel(Levels["Dungeon\\Dungeon_Level0"], Levels["Dungeon\\Dungeon_Level0"].PlayerStartPosition);
             }
             if (InputHandler.KeyReleased(Keys.NumPad5))
             { 
-                //SetCurrentLevel(Levels[@"Dungeon\Dungeon2"], new(100, 100));
             }
             if (InputHandler.KeyReleased(Keys.NumPad2))
             {
-                SetCurrentLevel(Levels[@"Catacombs_Level0"], Levels["Catacombs_Level0"].PlayerStartPosition);
+            }
+            if (InputHandler.KeyReleased(Keys.NumPad3))
+            {
             }
             //=======================================================================
         }
@@ -159,6 +157,11 @@ namespace SkeletonsAdventure.GameWorld
             CurrentLevel.EntityManager.Player = Player;
         }
 
+        public static void SetCurrentLevel(Level level)
+        {
+            SetCurrentLevel(level, level.PlayerStartPosition);
+        }
+
         public static void CreateLevels(ContentManager content, GraphicsDevice graphics)
         {
             string tiledMapRoot = Path.Combine(GameManager.GamePath, "Content", "TiledFiles");
@@ -206,7 +209,7 @@ namespace SkeletonsAdventure.GameWorld
 
             foreach (TiledMapObject obj in level.EnterExitLayer.Objects)
             {
-                if (obj.Name == "Entrance")
+                if (obj.Name == "Entrance" || obj.Name == "Enter")
                 {
                     if (obj.Properties.TryGetValue("ToLocation", out TiledMapPropertyValue value))
                         level.LevelEntrance = new(obj, Levels[value]);
@@ -214,7 +217,7 @@ namespace SkeletonsAdventure.GameWorld
                     level.PlayerStartPosition = new((int)obj.Position.X, (int)obj.Position.Y);
                     level.PlayerRespawnPosition = level.PlayerStartPosition;
                 }
-                if (obj.Name == "Exit")
+                else if (obj.Name == "Exit")
                 {
                     level.LevelExit = new(obj, Levels[obj.Properties["ToLocation"]]);
                     level.PlayerEndPosition = new((int)obj.Position.X, (int)obj.Position.Y);

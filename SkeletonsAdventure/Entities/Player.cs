@@ -51,7 +51,7 @@ namespace SkeletonsAdventure.Entities
             MaxHealth = baseHealth;
             Defence = baseDefence;
             Attack = baseAttack;
-            Speed = 6; //TODO
+            Speed = 12; //TODO
 
             BaseMana = 1000; //TODO
             MaxMana = BaseMana;
