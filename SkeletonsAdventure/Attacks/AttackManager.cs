@@ -7,6 +7,7 @@ namespace SkeletonsAdventure.Attacks
         public Entity SourceEntity { get; set; } = entity;
         public List<BasicAttack> Attacks { get; private set; } = [];
         public TimeSpan LastAttackTime { get; set; } = new(0, 0, 0, 0);
+        public BasicAttack LastAttack { get; set; } = null;
 
         private bool _attacked = false;
 
@@ -37,6 +38,7 @@ namespace SkeletonsAdventure.Attacks
 
             Attacks.Add(atk);
             LastAttackTime = gameTime.TotalGameTime;
+            LastAttack = atk;
             _attacked = true;
         }
 
@@ -50,6 +52,7 @@ namespace SkeletonsAdventure.Attacks
         public void ClearAttacks()
         {
             Attacks.Clear();
+            LastAttack = null;
         }
 
         public void ClearExpiredAttacks(GameTime gameTime)

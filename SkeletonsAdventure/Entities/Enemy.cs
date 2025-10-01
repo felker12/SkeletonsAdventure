@@ -1,5 +1,4 @@
-﻿using MonoGame.Extended;
-using RpgLibrary.DataClasses;
+﻿using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Engines;

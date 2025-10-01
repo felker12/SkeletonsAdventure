@@ -54,7 +54,7 @@ namespace SkeletonsAdventure.Attacks
         }
 
         //TODO
-        public void MoveInPositionDirection(Vector2 target)
+        public void MoveInDirectionOfPosition(Vector2 target)
         {
             Motion = Vector2.Normalize(target - Center) * Speed;
         }

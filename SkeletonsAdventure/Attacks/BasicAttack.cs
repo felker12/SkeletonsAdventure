@@ -2,7 +2,6 @@
 using RpgLibrary.AttackData;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Attacks
 {
@@ -75,9 +74,7 @@ namespace SkeletonsAdventure.Attacks
             DamageHitBox = new((int)Position.X, (int)Position.Y, Width, Height);
 
             if (AttackDelay > 0)
-            {
                 AttackVisible = false;
-            }
         }
 
         public virtual BasicAttack Clone()
@@ -210,7 +207,8 @@ namespace SkeletonsAdventure.Attacks
         public override string ToString()
         {
             string ToString = 
-                $"Position: {Position}, " + 
+                $"Position: {Position}, " +
+                $"Start Position: {StartPosition}, " +
                 $"Attack Length: {AttackLength}, " +
                 $"Start Time: {StartTime}, " +
                 $"Duration: {Duration}, " +
@@ -223,6 +221,7 @@ namespace SkeletonsAdventure.Attacks
                 $"AttackDelay: {AttackDelay}, " +
                 $"Visible: {AttackVisible}, " + 
                 $"Motion: {Motion}, " +
+                $"Initial Motion: {InitialMotion}, " +
                 $"DamageHitBox: {DamageHitBox}, " +
                 $"Rectangle: {Rectangle}, ";
 

@@ -17,7 +17,7 @@ namespace SkeletonsAdventure.GameUI
         public Color TextColor { get; set; } = Color.White;
         public SpriteFont Font { get; set; } = GameManager.Arial12;
         public Vector2 Position { get; set; } = new Vector2(0, 0);
-        public int Width { get; set; } = 500;
+        public int Width { get; set; } = 550;
         public int Height => (int)Font.MeasureString($"1").Y * MaxLines + BorderWidth * 2 + MessageBoxPadding;
         public Rectangle Rectangle => new((int)Position.X, (int)Position.Y, Width, Height);
 

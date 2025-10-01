@@ -33,6 +33,7 @@ namespace SkeletonsAdventure.Entities
         public List<Quest> ActiveQuests { get; set; } = [];
         public List<Quest> CompletedQuests { get; set; } = [];
         public string DisplayQuestName { get; private set; } = string.Empty;
+        private BasicAttack AttackToAim { get; set; } = null;
 
         public Player() : base()
         {
@@ -51,7 +52,7 @@ namespace SkeletonsAdventure.Entities
             MaxHealth = baseHealth;
             Defence = baseDefence;
             Attack = baseAttack;
-            Speed = 12; //TODO
+            Speed = 6; //TODO
 
             BaseMana = 1000; //TODO
             MaxMana = BaseMana;
@@ -129,7 +130,25 @@ namespace SkeletonsAdventure.Entities
             //spriteBatch.DrawRectangle(GetRectangle, SpriteColor, 1, 0); //TODO
 
             if (AimVisible)
-                spriteBatch.DrawLine(GetMousePosition(), Center, Color.White, 1);
+            {
+                switch(AttackToAim)
+                {
+                    case null:
+                        break;
+                    case ShootingAttack:
+                        spriteBatch.DrawLine(GetMousePosition(), Center, Color.White, 1);
+                        break;
+                    case PopUpAttack attack:
+                        Rectangle rect = new((int)(GetMousePosition().X - attack.DamageHitBox.Width / 2),
+                            (int)(GetMousePosition().Y - attack.DamageHitBox.Height / 2), 
+                            attack.DamageHitBox.Width, 
+                            attack.DamageHitBox.Height);
+
+                        spriteBatch.DrawRectangle(rect, Color.GhostWhite);
+                        break;
+                }
+
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -162,7 +181,7 @@ namespace SkeletonsAdventure.Entities
             //Info.Text += $"{Position}";
             //Info.Text += $"\nbonusAttackFromLevel = {bonusAttackFromLevel}";
 
-            Info.Text += $"\nAttacks Hit by: {AttacksHitBy.Count}";
+            //Info.Text += $"\nAttacks Hit by: {AttacksHitBy.Count}";
         }
 
         private protected void UpdateStatsWithBonusses()
@@ -463,36 +482,46 @@ namespace SkeletonsAdventure.Entities
             base.Respawn();
         }
 
+        public override void PerformAttack(GameTime gameTime, BasicAttack entityAttack)
+        {
+            base.PerformAttack(gameTime, entityAttack.Clone());
+        }
+
         public virtual void PerformAimedAttack(GameTime gameTime, ShootingAttack entityAttack, Vector2 targetPosition)
         {
             if (AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
             {
                 if (AimVisible == true)
                 { 
-                    AimVisible = false; 
-                    
+                    AimVisible = false;
+                    AttackToAim = null;
+
                     if (Mana < entityAttack.ManaCost)
                         return;
                     else
                         Mana -= entityAttack.ManaCost;
 
                     entityAttack.SetUpAttack(gameTime, BasicAttackColor, Position);
-                    entityAttack.MoveInPositionDirection(targetPosition);
+                    entityAttack.MoveInDirectionOfPosition(targetPosition);
 
-                    AttackManager.AddAttack(entityAttack, gameTime); //TODO
+                    AttackManager.AddAttack(entityAttack.Clone(), gameTime); //TODO
                 }
                 else
+                {
                     AimVisible = true;
+                    AttackToAim = entityAttack;
+                }
             }
         }
 
-        public virtual void PerformPopUpAttack(GameTime gameTime, ShootingAttack entityAttack, Vector2 targetPosition)
+        public virtual void PerformPopUpAttack(GameTime gameTime, PopUpAttack entityAttack, Vector2 targetPosition)
         {
             if (AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
             {
                 if (AimVisible == true)
                 {
                     AimVisible = false;
+                    AttackToAim = null;
 
                     if (Mana < entityAttack.ManaCost)
                         return;
@@ -504,7 +533,11 @@ namespace SkeletonsAdventure.Entities
                     AttackManager.AddAttack(entityAttack.Clone(), gameTime);
                 }
                 else
+                {
                     AimVisible = true;
+                    AttackToAim = entityAttack;
+                    entityAttack.ResetAttack();
+                }
             }
         }
 

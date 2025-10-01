@@ -5,7 +5,7 @@ using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class IcePillar : ShootingAttack
+    internal class IcePillar : PopUpAttack
     {
         private int AnimationFrames => _animations.Count;
 
@@ -27,6 +27,8 @@ namespace SkeletonsAdventure.Attacks
         {
             if (AnimatedAttack)
                 SetFrames(4, 62, 62);
+
+            ResetDamageHitBox();
         }
 
         public override IcePillar Clone()
@@ -43,15 +45,10 @@ namespace SkeletonsAdventure.Attacks
         {
             base.Update(gameTime);
             
-            if (AnimatedAttack)
-            {
-                if(Duration.TotalMilliseconds > AttackDelay)
-                    AnimatePillar();
-                else
-                    DamageHitBox = new((int)Position.X + Width / 4, (int)(Position.Y), Width / 2, Height);
-            }
+            if (AnimatedAttack && Duration.TotalMilliseconds > AttackDelay)
+                AnimatePillar();
             else
-                DamageHitBox = new((int)Position.X + Width / 4, (int)(Position.Y), Width / 2, Height);
+                ResetDamageHitBox();
         }
 
         public override void Offset()
@@ -67,6 +64,22 @@ namespace SkeletonsAdventure.Attacks
 
             Frame = new Rectangle(0 + (currentFrame * Width), 0, Width, Height);
             DamageHitBox = new((int)Position.X + Width / 4, (int)(Position.Y + Height * progressPercent), Width / 2, (int)(Height * (1.0 - progressPercent)));
+        }
+
+        public override void ResetAttack()
+        {
+            ResetDamageHitBox();
+        }
+
+        private void ResetDamageHitBox()
+        {
+            DamageHitBox = new((int)Position.X + Width / 4, (int)(Position.Y), Width / 2, Height);
+        }
+
+        public override void SetUpAttack(GameTime gameTime, Color attackColor, Vector2 originPosition)
+        {
+            base.SetUpAttack(gameTime, attackColor, originPosition);
+            //ResetDamageHitBox();
         }
     }
 }

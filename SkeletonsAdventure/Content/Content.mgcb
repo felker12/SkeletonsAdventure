@@ -371,15 +371,20 @@
 /processorParam:TextureFormat=Color
 /build:TiledFiles/fire_animation2.png
 
-#begin TiledFiles/Level0_V2.tmx
+#begin TiledFiles/Level0_Test.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
-/build:TiledFiles/Level0_V2.tmx
+/build:TiledFiles/Level0_Test.tmx
 
 #begin TiledFiles/Level0.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:TiledFiles/Level0.tmx
+
+#begin TiledFiles/Level1.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledFiles/Level1.tmx
 
 #begin TiledFiles/Objects.png
 /importer:TextureImporter

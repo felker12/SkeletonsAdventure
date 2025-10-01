@@ -43,33 +43,37 @@ namespace SkeletonsAdventure.GameWorld
             //TODO delete this after adding a way to move from level to level to the game
             if (InputHandler.KeyReleased(Keys.NumPad0))
             {
-                SetCurrentLevel(Levels["Level0_V2"]);
+                SetCurrentLevel(Levels["Level0"]);
             }
             if (InputHandler.KeyReleased(Keys.NumPad1))
             {
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad9))
-            {
-                SetCurrentLevel(Levels["TestLevel"], Levels["TestLevel"].PlayerStartPosition);
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad8))
-            {
-                SetCurrentLevel(Levels["Level0"], Levels["Level0"].PlayerStartPosition);
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad7))
-            {
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad6))
-            {
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad5))
-            { 
+                SetCurrentLevel(Levels["Level1"]);
             }
             if (InputHandler.KeyReleased(Keys.NumPad2))
             {
             }
             if (InputHandler.KeyReleased(Keys.NumPad3))
             {
+            }
+            if (InputHandler.KeyReleased(Keys.NumPad4))
+            {
+            }
+            if (InputHandler.KeyReleased(Keys.NumPad5))
+            {
+            }
+            if (InputHandler.KeyReleased(Keys.NumPad6))
+            {
+            }
+            if (InputHandler.KeyReleased(Keys.NumPad7))
+            {
+            }
+            if (InputHandler.KeyReleased(Keys.NumPad8))
+            {
+                SetCurrentLevel(Levels["Level0_Test"]);
+            }
+            if (InputHandler.KeyReleased(Keys.NumPad9))
+            {
+                SetCurrentLevel(Levels["TestLevel"], Levels["TestLevel"].PlayerStartPosition);
             }
             //=======================================================================
         }

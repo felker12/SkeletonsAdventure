@@ -203,7 +203,7 @@ namespace SkeletonsAdventure.Entities
 
         public virtual void EntityDiedByAttack(BasicAttack attack) //TODO change how the timer for dead entities works
         {
-            string message = $"{GetType().Name} was killed by {attack.Source.GetType().Name} with {attack.GetType().Name}.";
+            string message = $"{GetType().Name} level {Level} was killed by {attack.Source.GetType().Name} with {attack.GetType().Name}.";
             AttacksHitBy.Clear();
 
             if (attack.Source is Player player)
