@@ -18,6 +18,7 @@ namespace SkeletonsAdventure.GameWorld
         public static Camera Camera { get; set; } = new(Game1.ScreenWidth, Game1.ScreenHeight);
         public static GameTime TotalTimeInWorld { get; set; } = new();
         public static List<string> MessagesToAdd { get; private set; } = [];
+        private static double updateTimeMs = 0;// TODO remove this after testing
 
         public World(ContentManager content, GraphicsDevice graphics)
         {
@@ -38,7 +39,16 @@ namespace SkeletonsAdventure.GameWorld
         public static void Update(GameTime gameTime)
         {
             TotalTimeInWorld.TotalGameTime += gameTime.ElapsedGameTime;
+
+
+
+
             CurrentLevel.Update(gameTime, TotalTimeInWorld);
+
+
+
+
+            Player.Info.Text += $"\nDraw Time: {updateTimeMs:N2} ms"; //TODO remove this after testing
 
             //TODO delete this after adding a way to move from level to level to the game
             if (InputHandler.KeyReleased(Keys.NumPad0))
@@ -85,7 +95,14 @@ namespace SkeletonsAdventure.GameWorld
 
         public static void Draw(SpriteBatch spriteBatch)
         {
+            var sw = Stopwatch.StartNew();
+
             CurrentLevel.Draw(spriteBatch);
+
+
+
+            sw.Stop();
+            updateTimeMs = sw.Elapsed.TotalMilliseconds;
         }
 
         public static void LoadWorldDataIntoLevels(WorldData worldData)
