@@ -4,40 +4,31 @@ namespace SkeletonsAdventure.TileEngine
 {
     internal class TileMap
     {
-        public List<Layer> Layers { get; private set; } = [];
-        public List<TileSet> TileSets { get; private set; } = [];
-        private ContentManager Content { get; set; }
+        public string Name { get; set; } = "Unnamed TileMap";
+        public List<Layer> Layers { get; set; } = [];
+        public List<TileSet> TileSets { get; set; } = [];
         public float LongestLayerWidthInTiles { get; set; } = 0;
         public float LongestLayerWidthInPixels { get; set; } = 0;
         public float LongestLayerHeightInTiles { get; set; } = 0;
         public float LongestLayerHeightInPixels { get; set; } = 0;
 
-        public TileMap(ContentManager content, string tmxPath, GraphicsDevice graphicsDevice)
+        public TileMap()
         {
-            Content = content;
-            XDoc xDoc = new(tmxPath);
-
-            // Load tilesets first as they're needed for tile layers
-            TileSets = TmxReader.LoadTileSetsFromTmx(xDoc, tmxPath, content);
-            Layers = TmxReader.LoadLayersFromTmx(xDoc, TileSets, graphicsDevice);
-
-            CalculateLongestLayerDimensions();
         }
 
-        public TileMap(List<Layer> layers, List<TileSet> tileSets, ContentManager content)
+        public TileMap(List<Layer> layers, List<TileSet> tileSets)
         {
             Layers = layers;
             TileSets = tileSets;
-            Content = content;
 
             CalculateLongestLayerDimensions();
         }
 
         public TileMap(TileMap tileMap)
         {
+            Name = tileMap.Name;
             Layers = [.. tileMap.Layers];
             TileSets = [.. tileMap.TileSets];
-            Content = tileMap.Content;
             LongestLayerWidthInTiles = tileMap.LongestLayerWidthInTiles;
             LongestLayerHeightInTiles = tileMap.LongestLayerHeightInTiles;
         }

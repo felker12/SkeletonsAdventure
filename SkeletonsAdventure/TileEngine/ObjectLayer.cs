@@ -1,4 +1,5 @@
 ﻿using SkeletonsAdventure.ShapeEngine;
+using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.TileEngine
 {
@@ -6,13 +7,11 @@ namespace SkeletonsAdventure.TileEngine
     {
         public List<MapObject> MapObjects { get; set; } = [];
 
-        private readonly Texture2D texture;
+        private readonly Texture2D texture = GameManager.CreateTextureFromColor(Color.White);
         private Color color = Color.White;
 
-        public ObjectLayer(GraphicsDevice graphicsDevice) : base()
+        public ObjectLayer() : base()
         {
-            texture = new Texture2D(graphicsDevice, 1, 1);
-            texture.SetData([Color.White]);
         }
 
         public override void Update(GameTime gameTime)

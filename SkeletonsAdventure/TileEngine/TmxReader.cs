@@ -7,15 +7,15 @@ namespace SkeletonsAdventure.TileEngine
 {
     internal class TmxReader
     {
-        public static TileMap LoadMapFromTmx(string tmxPath, ContentManager content, GraphicsDevice graphicsDevice)
+        public static TileMap LoadMapFromTmx(string tmxPath, ContentManager content)
         {
             XDoc xDoc = new(tmxPath);
 
             // Load tilesets first as they're needed for tile layers
             List<TileSet> tileSets = LoadTileSetsFromTmx(xDoc, tmxPath, content);
-            List<Layer> layers = LoadLayersFromTmx(xDoc, tileSets, graphicsDevice);
+            List<Layer> layers = LoadLayersFromTmx(xDoc, tileSets);
 
-            return new(layers, tileSets, content);
+            return new(layers, tileSets);
         }
 
         public static List<TileSet> LoadTileSetsFromTmx(XDoc xDoc, string tmxPath, ContentManager content)
@@ -26,52 +26,55 @@ namespace SkeletonsAdventure.TileEngine
             int tileHeight = xDoc.TileHeight;
 
             foreach (var tilesetElem in map.Elements("tileset"))
-            {
-                int firstGid = int.Parse(tilesetElem.Attribute("firstgid").Value);
-
-                // Handle external TSX reference
-                string tsxSource = tilesetElem.Attribute("source")?.Value;
-                string imageSource;
-                Texture2D texture;
-
-                if (!string.IsNullOrEmpty(tsxSource))
-                {
-                    // Load TSX file to get image source
-                    var tsxPath = Path.Combine(Path.GetDirectoryName(tmxPath) ?? "", tsxSource);
-                    var tsxDoc = XDocument.Load(tsxPath);
-                    var tsxTileset = tsxDoc.Element("tileset");
-                    imageSource = tsxTileset.Element("image").Attribute("source").Value;
-                    texture = content.Load<Texture2D>(Path.GetFileNameWithoutExtension(imageSource));
-                }
-                else
-                {
-                    imageSource = tilesetElem.Element("image").Attribute("source").Value;
-                    texture = content.Load<Texture2D>(Path.GetFileNameWithoutExtension(imageSource));
-                }
-
-                var tileSet = new TileSet
-                {
-                    FirstGid = firstGid,
-                    TileWidth = tileWidth,
-                    TileHeight = tileHeight,
-                    Texture = texture,
-                    Source = imageSource
-                };
-
-                // If using external TSX, load animated tiles
-                if (!string.IsNullOrEmpty(tsxSource))
-                {
-                    var tsxPath = Path.Combine(Path.GetDirectoryName(tmxPath) ?? "", tsxSource);
-                    tileSet.LoadAnimatedTiles(tsxPath);
-                }
-
-                tileSets.Add(tileSet);
-            }
+                tileSets.Add(LoadTileSetFromTmx(tmxPath, tileWidth, tileHeight, tilesetElem, content));
 
             return tileSets;
         }
 
-        public static List<Layer> LoadLayersFromTmx(XDoc xDoc, List<TileSet> tileSets, GraphicsDevice graphicsDevice)
+        private static TileSet LoadTileSetFromTmx(string tmxPath, int tileWidth, int tileHeight, XElement tilesetElem, ContentManager content)
+        {
+            int firstGid = int.Parse(tilesetElem.Attribute("firstgid").Value);
+
+            // Handle external TSX reference
+            string tsxSource = tilesetElem.Attribute("source")?.Value;
+            string imageSource;
+            Texture2D texture;
+
+            if (!string.IsNullOrEmpty(tsxSource))
+            {
+                // Load TSX file to get image source
+                var tsxPath = Path.Combine(Path.GetDirectoryName(tmxPath) ?? "", tsxSource);
+                var tsxDoc = XDocument.Load(tsxPath);
+                var tsxTileset = tsxDoc.Element("tileset");
+                imageSource = tsxTileset.Element("image").Attribute("source").Value;
+                texture = content.Load<Texture2D>(Path.GetFileNameWithoutExtension(imageSource));
+            }
+            else
+            {
+                imageSource = tilesetElem.Element("image").Attribute("source").Value;
+                texture = content.Load<Texture2D>(Path.GetFileNameWithoutExtension(imageSource));
+            }
+
+            var tileSet = new TileSet
+            {
+                FirstGid = firstGid,
+                TileWidth = tileWidth,
+                TileHeight = tileHeight,
+                Texture = texture,
+                Source = imageSource
+            };
+
+            // If using external TSX, load animated tiles
+            if (!string.IsNullOrEmpty(tsxSource))
+            {
+                var tsxPath = Path.Combine(Path.GetDirectoryName(tmxPath) ?? "", tsxSource);
+                tileSet.LoadAnimatedTiles(tsxPath);
+            }
+
+            return tileSet;
+        }
+
+        public static List<Layer> LoadLayersFromTmx(XDoc xDoc, List<TileSet> tileSets)
         {
             List<Layer> layers = [];
             var map = xDoc.Map;
@@ -134,7 +137,7 @@ namespace SkeletonsAdventure.TileEngine
                 else if (layerElement.Name == "objectgroup")
                 {
                     // Handle object layer
-                    ObjectLayer objectLayer = new(graphicsDevice)
+                    ObjectLayer objectLayer = new()
                     {
                         ID = (int?)layerElement.Attribute("id") ?? 0,
                         Name = (string)layerElement.Attribute("name") ?? string.Empty,
