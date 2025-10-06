@@ -11,6 +11,7 @@ namespace SkeletonsAdventure.GameObjects
     {
         public string TypeOfObject { get; set; } = string.Empty;
         public bool Active { get; set; } = true;
+        public bool Visible { get; set; } = true;
 
         public InteractableObject(TiledMapObject obj) : base()
         {
@@ -32,6 +33,7 @@ namespace SkeletonsAdventure.GameObjects
             Width = obj.Width;
             Height = obj.Height;
             Position = obj.Position;
+            Visible = obj.Visible;
         }
 
         public InteractableObject(InteractableObjectData obj)
@@ -41,6 +43,7 @@ namespace SkeletonsAdventure.GameObjects
             Width = obj.Width;
             Height = obj.Height;
             Position = obj.Position;
+            Visible = obj.Visible;
 
             Initialize();
         }
@@ -55,12 +58,18 @@ namespace SkeletonsAdventure.GameObjects
 
         public virtual void Update(GameTime gameTime, Player player)
         {
-            if (CheckPlayerNear(player) && Active)
+            if (!Visible || !Active)
+                return;
+
+            if (CheckPlayerNear(player))
                 HandleInput(player);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (Visible is false)
+                return;
+
             if (Info.Visible)
                 Info.Draw(spriteBatch);
 
@@ -81,6 +90,7 @@ namespace SkeletonsAdventure.GameObjects
                 Width = Width,
                 Height = Height,
                 Active = Active,
+                Visible = Visible,
             };
         }
 

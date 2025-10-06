@@ -17,6 +17,8 @@ namespace SkeletonsAdventure.GameWorld
     {
         public int Width { get; set; }
         public int Height { get; set; }
+        public int TileWidth { get; set; }
+        public int TileHeight { get; set; }
         public string Name { get; set; } = string.Empty;
         public Player Player { get; set; } = World.Player; 
         public Camera Camera { get; set; } = World.Camera; 
@@ -31,6 +33,7 @@ namespace SkeletonsAdventure.GameWorld
         public TiledMapObjectLayer EnterExitLayer { get; set; } = null;
         public TiledMapObjectLayer InteractableObjectLayer { get; set; } = null;
         public TiledMapObjectLayer TeleporterLayer { get; set; } = null;
+        public TiledMapTileLayer ConditionalLayer { get; set; } = null;
         public LevelExit LevelExit { get; set; } = null;
         public LevelExit LevelEntrance { get; set; } = null;
         internal InteractableObjectManager InteractableObjectManager { get; set; } = new();
@@ -41,6 +44,7 @@ namespace SkeletonsAdventure.GameWorld
         private TiledMapTileLayer _mapCollisionLayer;
         private TiledMapObjectLayer _mapSpawnerLayer;
         private readonly Dictionary<string, Enemy> Enemies = [];
+        TiledMapTileLayer[] collisionLayers = [];
 
         public List<Rectangle> EnterExitLayerObjectRectangles { get; set; } = []; //TODO used to temporarily see where hitboxes are for exits
 
@@ -67,10 +71,28 @@ namespace SkeletonsAdventure.GameWorld
             EnterExitLayer = TiledMap.GetLayer<TiledMapObjectLayer>("EnterExitLayer");
             InteractableObjectLayer = TiledMap.GetLayer<TiledMapObjectLayer>("InteractableObjectLayerObjects");
             TeleporterLayer = TiledMap.GetLayer<TiledMapObjectLayer>("TeleporterLayer");
+            ConditionalLayer = TiledMap.GetLayer<TiledMapTileLayer>("ConditionalLayer");
 
             Width = tiledMap.WidthInPixels;
             Height = tiledMap.HeightInPixels;
+            TileWidth = tiledMap.TileWidth;
+            TileHeight = tiledMap.TileHeight;
             Name = tiledMap.Name[11..]; //trim "TiledFiles/" from the tiledmap name to use as the level name
+
+            if(ConditionalLayer is not null)
+            {
+                collisionLayers = [_mapCollisionLayer, ConditionalLayer];
+            }
+            else
+            {
+                collisionLayers = [_mapCollisionLayer];
+            }
+
+            Debug.WriteLine($"Level: {Name}");
+            foreach (var layer in collisionLayers)
+            {
+                Debug.WriteLine($"Collision Layer: {layer.Name}");
+            }
         }
 
         private void LoadChestsFromTiledMap()
@@ -127,7 +149,11 @@ namespace SkeletonsAdventure.GameWorld
         public void Update(GameTime gameTime, GameTime totalTimeInWorld) 
         {
             EntityManager.Update(gameTime, totalTimeInWorld);
-            EntityManager.CheckEntityBoundaryCollisions(TiledMap, _mapCollisionLayer);
+
+            //EntityManager.CheckEntityBoundaryCollisions(_mapCollisionLayer, TileWidth, TileHeight);
+
+            EntityManager.CheckEntityBoundaryCollisions(collisionLayers, TileWidth, TileHeight);
+
 
             Camera.Update(Player.Position);
 
@@ -154,7 +180,7 @@ namespace SkeletonsAdventure.GameWorld
 
         public void LoadLevelDataFromLevelData(LevelData levelData)
         {
-            EntityManager.RemoveAll();
+            EntityManager.Clear();
 
             EntityManager.Add(Player);
             EntityManager.DroppedLootManager.Items = GameManager.LoadGameItemsFromItemData(levelData.DroppedItemDatas);
@@ -222,6 +248,17 @@ namespace SkeletonsAdventure.GameWorld
                         else if (value == "Resource")
                         {
                             InteractableObjectManager.Add(new ResourceNode(obj)); //TODO resource logic still needs added
+                        }
+                        else if (value == "Lever")
+                        {
+                            Lever lever = new(obj);
+
+                            if (obj.Properties.TryGetValue("LeverPurpose", out TiledMapPropertyValue purpose))
+                            {
+                                lever.LeverPurpose = purpose;
+                            }
+
+                            InteractableObjectManager.Add(lever); //TODO resource logic still needs added
                         }
                         else
                         {

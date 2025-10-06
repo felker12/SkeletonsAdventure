@@ -420,11 +420,6 @@
 /processor:TiledMapTilesetProcessor
 /build:TiledFiles/ProjectUtumno_full.tsx
 
-#begin TiledFiles/SidePanel.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:TiledFiles/SidePanel.tmx
-
 #begin TiledFiles/TestLevel.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor

@@ -9,6 +9,7 @@ namespace RpgLibrary.GameObjectClasses
         public int Width { get; set; } = 32;
         public int Height { get; set; } = 32;
         public bool Active { get; set; } = true;
+        public bool Visible { get; set; } = true;
 
         public InteractableObjectData() { }
 
@@ -19,6 +20,7 @@ namespace RpgLibrary.GameObjectClasses
             Width = interactableObjectData.Width;
             Height = interactableObjectData.Height;
             Active = interactableObjectData.Active;
+            Visible = interactableObjectData.Visible;
         }
 
         public virtual InteractableObjectData Clone()

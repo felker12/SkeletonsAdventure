@@ -5,6 +5,7 @@ namespace SkeletonsAdventure.GameObjects
     internal class InteractableObjectManager
     {
         private List<InteractableObject> InteractableObjects { get; set; } = [];
+        public int Count => InteractableObjects.Count;
 
         public InteractableObjectManager() { }
 
