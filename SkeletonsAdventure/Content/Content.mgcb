@@ -342,6 +342,23 @@
 /processor:TiledMapTilesetProcessor
 /build:TiledFiles/CrossedOffBlock.tsx
 
+#begin TiledFiles/doors_lever_chest_animation.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TiledFiles/doors_lever_chest_animation.png
+
+#begin TiledFiles/doors_lever_chest_animation.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TiledFiles/doors_lever_chest_animation.tsx
+
 #begin TiledFiles/fire_animation.png
 /importer:TextureImporter
 /processor:TextureProcessor

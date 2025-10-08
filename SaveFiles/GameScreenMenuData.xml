@@ -4,7 +4,7 @@
     <Menus>
       <Item>
         <Title>Backpack</Title>
-        <Visible>false</Visible>
+        <Visible>true</Visible>
         <Width>192</Width>
         <Height>672</Height>
         <Position>1088 0</Position>

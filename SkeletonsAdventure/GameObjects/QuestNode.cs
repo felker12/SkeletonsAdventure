@@ -48,7 +48,7 @@ namespace SkeletonsAdventure.GameObjects
         public override void Update(GameTime gameTime, Player player)
         {
             if (CheckPlayerNear(player) && Active && CheckAvailableQuestsToStart(player) > 0)
-                HandleInput(player);
+                HandleInput(gameTime, player);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -90,7 +90,7 @@ namespace SkeletonsAdventure.GameObjects
             return Info.Visible;
         }
 
-        public override void Interact(Player player)
+        public override void Interact(GameTime gameTime, Player player)
         {
             foreach (var quest in Quests)
             {

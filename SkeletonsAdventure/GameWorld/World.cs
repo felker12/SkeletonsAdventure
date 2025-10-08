@@ -5,6 +5,7 @@ using RpgLibrary.ItemClasses;
 using RpgLibrary.WorldClasses;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.GameEvents;
 using SkeletonsAdventure.ItemClasses;
 using System.IO;
 
@@ -39,14 +40,7 @@ namespace SkeletonsAdventure.GameWorld
         public static void Update(GameTime gameTime)
         {
             TotalTimeInWorld.TotalGameTime += gameTime.ElapsedGameTime;
-
-
-
-
             CurrentLevel.Update(gameTime, TotalTimeInWorld);
-
-
-
 
             Player.Info.Text += $"\nDraw Time: {updateTimeMs:N2} ms"; //TODO remove this after testing
 
@@ -95,7 +89,7 @@ namespace SkeletonsAdventure.GameWorld
 
         public static void Draw(SpriteBatch spriteBatch)
         {
-            var sw = Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();//TODO remove this after testing
 
             CurrentLevel.Draw(spriteBatch);
 
@@ -103,6 +97,11 @@ namespace SkeletonsAdventure.GameWorld
 
             sw.Stop();
             updateTimeMs = sw.Elapsed.TotalMilliseconds;
+        }
+
+        public static void AddGameEventToCurrentLevel(GameEvent gameEvent)
+        {
+            CurrentLevel.GameEventManager.AddEvent(gameEvent);
         }
 
         public static void LoadWorldDataIntoLevels(WorldData worldData)

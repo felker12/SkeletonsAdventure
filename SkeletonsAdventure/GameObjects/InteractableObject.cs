@@ -62,7 +62,7 @@ namespace SkeletonsAdventure.GameObjects
                 return;
 
             if (CheckPlayerNear(player))
-                HandleInput(player);
+                HandleInput(gameTime, player);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -104,20 +104,20 @@ namespace SkeletonsAdventure.GameObjects
             return Info.Visible;
         }
 
-        public virtual void HandleInput(Player player)
+        public virtual void HandleInput(GameTime gameTime, Player player)
         {
             // This method can be overridden in derived classes to handle specific input logic
             if (InputHandler.KeyReleased(Keys.R) || InputHandler.ButtonDown(Buttons.A, PlayerIndex.One))
             {
-                Interact(player);
+                Interact(gameTime, player);
             }
         }
 
-        public virtual void Interact(Player player)
+        public virtual void Interact(GameTime gameTime, Player player)
         {
             // This method can be overridden in derived classes to provide specific interaction logic
             Debug.WriteLine($"Interacting with {TypeOfObject} at {Position}" +
-                $", of type {this.GetType().Name}");
+                $", of type {this.GetType().Name}, at GameTime: {gameTime.TotalGameTime}");
         }
     }
 }

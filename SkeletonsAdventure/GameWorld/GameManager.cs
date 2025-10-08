@@ -90,6 +90,11 @@ namespace SkeletonsAdventure.GameWorld
         public static Texture2D StatusBarTexture { get; set; }
         public static Texture2D ButtonTexture { get; set; }
         public static Texture2D TextBoxTexture { get; set; }
+
+        //Miscellaneous Textures
+        public static Texture2D DoorLeverAndChestAnimationTexture { get; private set; }
+
+
         //==========
 
         //Colors
@@ -361,6 +366,7 @@ namespace SkeletonsAdventure.GameWorld
 
         private static void LoadTextures()
         {
+            //Entity Textures
             SkeletonTexture = Content.Load<Texture2D>(@"Player/SkeletonSpriteSheet");
             SkeletonAttackTexture = Content.Load<Texture2D>(@"Player/SkeletonAttackSprites");
             SpiderTexture = Content.Load<Texture2D>(@"EntitySprites/spider");
@@ -369,6 +375,7 @@ namespace SkeletonsAdventure.GameWorld
             SkeletonWarriorTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletonWarrior");
             SkeletonMageTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletonMage");
 
+            //Attack Textures
             FireBallTexture = Content.Load<Texture2D>(@"AttackSprites/FireBall_01");
             FireBallTexture2 = Content.Load<Texture2D>(@"AttackSprites/FireBallSpriteSheet");
             IcePillarTexture = Content.Load<Texture2D>(@"AttackSprites/IcePillar");
@@ -378,6 +385,7 @@ namespace SkeletonsAdventure.GameWorld
             AttackAreaTexture = new(GraphicsDevice, 1, 1);
             AttackAreaTexture.SetData([new Color(153, 29, 20, 250)]);
 
+            //UI Textures
             ButtonBoxTexture = new(GraphicsDevice, 1, 1);
             ButtonBoxTexture.SetData([new Color(83, 105, 140, 230)]);
 
@@ -394,6 +402,9 @@ namespace SkeletonsAdventure.GameWorld
             ButtonTexture = Content.Load<Texture2D>("Controls/Button");
 
             TextBoxTexture = CreateTextureFromColor(TextBoxColor);
+
+            //Miscellaneous Textures
+            DoorLeverAndChestAnimationTexture = Content.Load<Texture2D>(@"TiledFiles/doors_lever_chest_animation_0");
         }
 
         private static void LoadAttacks()

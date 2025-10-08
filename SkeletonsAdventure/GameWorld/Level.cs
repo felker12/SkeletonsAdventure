@@ -7,6 +7,7 @@ using RpgLibrary.EntityClasses;
 using RpgLibrary.WorldClasses;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.GameEvents;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.Quests;
@@ -31,7 +32,8 @@ namespace SkeletonsAdventure.GameWorld
         public Vector2 PlayerRespawnPosition { get; set; } = new(80, 80);
         public ChestManager ChestManager { get; set; }
         public TiledMapObjectLayer EnterExitLayer { get; set; } = null;
-        public TiledMapObjectLayer InteractableObjectLayer { get; set; } = null;
+        public TiledMapObjectLayer InteractableObjectLayerObjects { get; set; } = null;
+        public TiledMapTileLayer InteractableObjectLayerTiles { get; set; } = null;
         public TiledMapObjectLayer TeleporterLayer { get; set; } = null;
         public TiledMapTileLayer ConditionalLayer { get; set; } = null;
         public LevelExit LevelExit { get; set; } = null;
@@ -39,6 +41,7 @@ namespace SkeletonsAdventure.GameWorld
         internal InteractableObjectManager InteractableObjectManager { get; set; } = new();
         public DamagePopUpManager DamagePopUpManager { get; } = new(); //used to show damage popups when an entity is hit by an attack
         public TeleporterManager TeleporterManager { get; set; } = new(); // used to manage teleporters in the level
+        public GameEventManager GameEventManager { get; } = new(); //used to manage timed game events
 
         private TiledMapRenderer _tiledMapRenderer;
         private TiledMapTileLayer _mapCollisionLayer;
@@ -69,7 +72,8 @@ namespace SkeletonsAdventure.GameWorld
             _mapSpawnerLayer = tiledMap.GetLayer<TiledMapObjectLayer>("SpawnerLayer");
             ChestManager = new(tiledMap.GetLayer<TiledMapTileLayer>("ChestLayer"));
             EnterExitLayer = TiledMap.GetLayer<TiledMapObjectLayer>("EnterExitLayer");
-            InteractableObjectLayer = TiledMap.GetLayer<TiledMapObjectLayer>("InteractableObjectLayerObjects");
+            InteractableObjectLayerObjects = TiledMap.GetLayer<TiledMapObjectLayer>("InteractableObjectLayerObjects");
+            InteractableObjectLayerTiles = TiledMap.GetLayer<TiledMapTileLayer>("InteractableObjectLayer");
             TeleporterLayer = TiledMap.GetLayer<TiledMapObjectLayer>("TeleporterLayer");
             ConditionalLayer = TiledMap.GetLayer<TiledMapTileLayer>("ConditionalLayer");
 
@@ -80,21 +84,9 @@ namespace SkeletonsAdventure.GameWorld
             Name = tiledMap.Name[11..]; //trim "TiledFiles/" from the tiledmap name to use as the level name
 
             if(ConditionalLayer is not null)
-            {
                 collisionLayers = [_mapCollisionLayer, ConditionalLayer];
-            }
             else
-            {
                 collisionLayers = [_mapCollisionLayer];
-            }
-
-            Debug.WriteLine($"Level: {Name}");
-            foreach (var layer in collisionLayers)
-            {
-                Debug.WriteLine($"Collision Layer: {layer.Name}");
-            }
-
-            TiledMapTileset tileset;
         }
 
         private void LoadChestsFromTiledMap()
@@ -137,7 +129,9 @@ namespace SkeletonsAdventure.GameWorld
             InteractableObjectManager.Draw(spriteBatch);
             TeleporterManager.Draw(spriteBatch);
 
-            foreach(Rectangle rec in EnterExitLayerObjectRectangles) //TODO delete this 
+            GameEventManager.Draw(spriteBatch);
+
+            foreach (Rectangle rec in EnterExitLayerObjectRectangles) //TODO delete this 
                 spriteBatch.DrawRectangle(rec, Color.White, 1, 0); //used to see where the hitboxes are for the exits
 
             if (LevelEntrance is not null && LevelEntrance.ExitTextVisible)
@@ -150,6 +144,7 @@ namespace SkeletonsAdventure.GameWorld
 
         public void Update(GameTime gameTime, GameTime totalTimeInWorld) 
         {
+            GameEventManager.Update(gameTime);
             EntityManager.Update(gameTime, totalTimeInWorld);
 
             //EntityManager.CheckEntityBoundaryCollisions(_mapCollisionLayer, TileWidth, TileHeight);
@@ -178,6 +173,11 @@ namespace SkeletonsAdventure.GameWorld
         public void HandleInput(PlayerIndex playerIndex)
         {
             ChestManager.HandleInput(playerIndex);
+        }
+
+        public void AddGameEvent(GameEvent gameEvent)
+        {
+            GameEventManager.AddEvent(gameEvent);
         }
 
         public void LoadLevelDataFromLevelData(LevelData levelData)
@@ -225,9 +225,9 @@ namespace SkeletonsAdventure.GameWorld
 
         private void LoadInteractableObjects()//TODO 
         {
-            if (InteractableObjectLayer is not null)
+            if (InteractableObjectLayerObjects is not null)
             {
-                foreach (TiledMapObject obj in InteractableObjectLayer.Objects)
+                foreach (TiledMapObject obj in InteractableObjectLayerObjects.Objects)
                 {
                     if (obj.Properties.TryGetValue("TypeOfObject", out TiledMapPropertyValue value))
                     {
@@ -256,17 +256,31 @@ namespace SkeletonsAdventure.GameWorld
                             Lever lever = new(obj);
 
                             if (obj.Properties.TryGetValue("LeverPurpose", out TiledMapPropertyValue purpose))
-                            {
                                 lever.LeverPurpose = purpose;
-                            }
+
+                            if (obj.Properties.TryGetValue("GameEventName", out TiledMapPropertyValue eventName))
+                                lever.GameEventName = eventName;
 
                             InteractableObjectManager.Add(lever); //TODO resource logic still needs added
+
+
+                            List<TiledMapTile> tiledMapTiles = GetTiledMapTiles(InteractableObjectLayerTiles, lever.Rectangle);
+
+                            Debug.WriteLine(lever.Rectangle);
+                            Debug.WriteLine(tiledMapTiles.Count);
+
+                            foreach(var tile in tiledMapTiles)
+                            {
+                                Debug.WriteLine($"Tile GID: {tile.GlobalIdentifier} at position {tile.X},{tile.Y}, coordinates {tile.X * 16},{tile.Y * 16}");
+                            }
+
                         }
                         else
                         {
                             InteractableObjectManager.Add(new InteractableObject(obj));
                         }
                     }
+
                 }
             }
         }
@@ -394,6 +408,30 @@ namespace SkeletonsAdventure.GameWorld
             }
             else
                 exit.ExitTextVisible = false;
+        }
+
+        public static List<TiledMapTile> GetTiledMapTiles(TiledMapTileLayer layer, Rectangle rec)
+        {
+            if (layer == null)
+                return null;
+
+            List<TiledMapTile> tiles = [];
+
+            int startX = Math.Max(rec.Left / layer.TileWidth, 0);
+            int endX = Math.Min((rec.Right - 1) / layer.TileWidth, layer.Width - 1);
+            int startY = Math.Max(rec.Top / layer.TileHeight, 0);
+            int endY = Math.Min((rec.Bottom - 1) / layer.TileHeight, layer.Height - 1);
+
+            for (int y = startY; y <= endY; y++)
+            {
+                for (int x = startX; x <= endX; x++)
+                {
+                    if (layer.TryGetTile((ushort)x, (ushort)y, out TiledMapTile? tile) && tile.Value.GlobalIdentifier != 0)
+                        tiles.Add(tile.Value);
+                }
+            }
+
+            return tiles;
         }
     }
 }
