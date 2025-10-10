@@ -10,6 +10,7 @@ using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
 using RpgLibrary.GameObjectClasses;
 using RpgLibrary.ItemClasses;
+using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
@@ -17,6 +18,7 @@ using SkeletonsAdventure.Entities.NPCs;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.Quests;
+using SkeletonsAdventure.TileEngine;
 using System.IO;
 using System.Linq;
 
@@ -62,6 +64,9 @@ namespace SkeletonsAdventure.GameWorld
 
         private static Dictionary<string, NPC> NPCs { get; set; } = [];
         public static Dictionary<string, NPC> NPCClone => GetNPCClone();
+
+        private static Dictionary<string, TiledAnimation> TiledAnimations { get; set; } = [];
+        public static Dictionary<string, TiledAnimation> TiledAnimationsClone => GetTileAnimationsClone();
 
         //=====Textures=====
         //Entity Textures
@@ -129,6 +134,7 @@ namespace SkeletonsAdventure.GameWorld
             LoadTextures();
 
             LoadAttacks();
+            LoadTiledAnimations();
 
             CreateItems();
             CreateDropTables();
@@ -275,6 +281,16 @@ namespace SkeletonsAdventure.GameWorld
             return NPC;
         }
 
+        private static Dictionary<string, TiledAnimation> GetTileAnimationsClone()
+        {
+            Dictionary<string, TiledAnimation> animations = [];
+
+            foreach (var animation in TiledAnimations)
+                animations.Add(animation.Key, animation.Value.Clone());
+
+            return animations;
+        }
+
         //Create the player levels and their XP values
         public static void CreatePlayerLevelXPs() //TODO adjust the xp as needed
         {
@@ -413,6 +429,28 @@ namespace SkeletonsAdventure.GameWorld
             FireBallData = Content.Load<AttackData>(@"AttackData/FireBall");
             IcePillarData = Content.Load<AttackData>(@"AttackData/IcePillar");
             IceBulletData = Content.Load<AttackData>(@"AttackData/IceBullet");
+        }
+
+        private static void LoadTiledAnimations()
+        {
+            TiledMapTileset tiledMapTileset = Content.Load<TiledMapTileset>(@"TiledFiles/doors_lever_chest_animation");
+            string tileName = tiledMapTileset.Name;
+
+            foreach (var tile in tiledMapTileset.Tiles)
+            {
+                //Debug.WriteLine($"Tile ID: {tile.LocalTileIdentifier}");
+
+                if(tile is TiledMapTilesetAnimatedTile animatedTile)
+                {
+                    //to have a unique key for each animated tile the name will be the texture name + "_" + the tile id
+                    TiledAnimations.Add(tileName + "_" + tile.LocalTileIdentifier, new(tiledMapTileset, animatedTile));
+
+                    /*foreach (TiledMapTilesetTileAnimationFrame frame in animatedTile.AnimationFrames)
+                    {
+                        Debug.WriteLine("ID: " + frame.LocalTileIdentifier + ", Duration: " + frame.Duration.Milliseconds);
+                    }*/
+                }
+            }
         }
 
         //Create the items from the content folder

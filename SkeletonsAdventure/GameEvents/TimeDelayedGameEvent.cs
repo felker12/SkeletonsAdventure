@@ -1,7 +1,4 @@
 ﻿
-
-using SkeletonsAdventure.GameWorld;
-
 namespace SkeletonsAdventure.GameEvents
 {
     internal class TimeDelayedGameEvent : GameEvent

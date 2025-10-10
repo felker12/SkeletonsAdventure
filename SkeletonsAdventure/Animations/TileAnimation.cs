@@ -1,4 +1,5 @@
 ﻿
+using MonoGame.Extended.Tiled;
 using System.Linq;
 
 namespace SkeletonsAdventure.Animations
@@ -14,6 +15,14 @@ namespace SkeletonsAdventure.Animations
         public TileAnimation(List<TileAnimationFrame> frames)
         {
             Frames = frames;
+        }
+
+        public TileAnimation(TiledMapTilesetAnimatedTile tiledMapTilesetAnimatedTile)
+        {
+            foreach(var frame in tiledMapTilesetAnimatedTile.AnimationFrames)
+            {
+                Frames.Add(new(frame));
+            }
         }
 
         public override string ToString()

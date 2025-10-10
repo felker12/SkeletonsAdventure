@@ -13,50 +13,30 @@ namespace SkeletonsAdventure.GameObjects
         public string GameEventName { get; set; } = string.Empty;
         public float CooldownTime { get; set; } = 1000; //Time in milliseconds
         public TimeSpan LastInteractedTime { get; set; } = new();
+        public Vector2 LeverPosition { get; set; } = new(); //in the event the lever event needs to be drawn at a different location than the interactable objects position
 
-        public Lever(TiledMapObject obj) : base(obj) { }
+        public Lever(TiledMapObject obj) : base(obj) { LeverPosition = obj.Position; }
 
-        public Lever(InteractableObject obj) : base(obj) { }
+        public Lever(InteractableObject obj) : base(obj) { LeverPosition = obj.Position; }
 
-        public Lever(InteractableObjectData obj) : base(obj) { }
+        public Lever(InteractableObjectData obj) : base(obj) { LeverPosition = obj.Position; }
 
         public override void Interact(GameTime gameTime, Player player)
         {
-            //base.Interact(player);
-
-            //Info.Visible = false;
-            //Active = !Active;
-            //Visible = !Visible;
-
+            // Check for cooldown
             if (LastInteractedTime + TimeSpan.FromMilliseconds(CooldownTime) < gameTime.TotalGameTime is false)
-            {
                 return;
-            }
-
-            TileAnimationFrame frame1 = new() { TileId = 0, Duration = 200f };
-            TileAnimationFrame frame2 = new() { TileId = 30, Duration = 200f };
-            TileAnimationFrame frame3 = new() { TileId = 60, Duration = 200f };
-            TileAnimationFrame frame4 = new() { TileId = 90, Duration = 200f };
-            TileAnimationFrame frame5 = new() { TileId = 120, Duration = 200f };
-
-            TileAnimation animation = new()
-            {
-                Frames = [frame1, frame2, frame3, frame4, frame5],
-            };
-
-            TiledAnimation tiledAnimation = new("LeverPull", GameManager.DoorLeverAndChestAnimationTexture, animation, 16, 16);
-
-
-            AnimatedTileEvent animatedTileEvent = new()
-            {
-                TiledAnimation = tiledAnimation,
-                Position = Position,
-                Duration = tiledAnimation.Animation.TotalDuration
-            };
-
 
             if (GameEventName == "PlayLeverAnimation")
             {
+                TiledAnimation tiledAnimation = GameManager.TiledAnimationsClone["TiledFiles/doors_lever_chest_animation_0_30"];
+                AnimatedTileEvent animatedTileEvent = new()
+                {
+                    TiledAnimation = tiledAnimation,
+                    Position = LeverPosition,
+                    Duration = tiledAnimation.Animation.TotalDuration
+                };
+
                 World.CurrentLevel.AddGameEvent(animatedTileEvent);
 
                 if (LeverPurpose == "ConditionalLayerToggle")
@@ -64,18 +44,15 @@ namespace SkeletonsAdventure.GameObjects
                     ToggleLayerVisibility toggle = new(World.CurrentLevel.ConditionalLayer);
                     TimeDelayedGameEvent delayedGameEvent = new(toggle, animatedTileEvent.Duration * .75f);
 
-                    World.CurrentLevel.AddGameEvent(delayedGameEvent);
+                    //delay hiding the static lever until the animated lever is mostly done
+                    World.AddGameEventToCurrentLevel(delayedGameEvent);
+
+                    //hide the static lever, draw the animated 1, then show the static lever again
+                    ToggleLayerVisibility toggle2 = new(World.CurrentLevel.InteractableObjectLayerTiles);
+                    World.AddGameEventToCurrentLevel(toggle2);
+                    TimeDelayedGameEvent delayedGameEvent2 = new(new ToggleLayerVisibility(World.CurrentLevel.InteractableObjectLayerTiles), animatedTileEvent.Duration);
+                    World.AddGameEventToCurrentLevel(delayedGameEvent2);
                 }
-            }
-
-            if (string.IsNullOrEmpty(GameEventName))
-            {
-                GameEvent gameEvent = new()
-                {
-                    Duration = 600, //600 milliseconds = 0.6 seconds
-                };
-
-                World.CurrentLevel.AddGameEvent(gameEvent);
             }
 
             LastInteractedTime = gameTime.TotalGameTime;

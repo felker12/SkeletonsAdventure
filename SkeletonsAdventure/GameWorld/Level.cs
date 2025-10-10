@@ -261,20 +261,30 @@ namespace SkeletonsAdventure.GameWorld
                             if (obj.Properties.TryGetValue("GameEventName", out TiledMapPropertyValue eventName))
                                 lever.GameEventName = eventName;
 
-                            InteractableObjectManager.Add(lever); //TODO resource logic still needs added
+                            InteractableObjectManager.Add(lever);
 
 
                             List<TiledMapTile> tiledMapTiles = GetTiledMapTiles(InteractableObjectLayerTiles, lever.Rectangle);
 
-                            Debug.WriteLine(lever.Rectangle);
-                            Debug.WriteLine(tiledMapTiles.Count);
+                            Debug.WriteLine("Rectangle: " + lever.Rectangle+ ", Tile count: " + tiledMapTiles.Count, "obj position: " + obj.Position);
 
-                            foreach(var tile in tiledMapTiles)
+                            if(tiledMapTiles.Count == 1)
+                            {
+                                Debug.WriteLine("lever position: " + lever.Position);
+                                lever.LeverPosition = new(tiledMapTiles[0].X * 16, tiledMapTiles[0].Y * 16);
+                                Debug.WriteLine("lever position2: " + lever.Position);
+                            }
+                            else
+                            {
+                                //TODO some logic to pick which tile to map to if there is more than 1 tile in the area
+                                //(like for if something needs more than 1 tile to be drawn like the fire animation)
+                            }
+
+                            foreach (var tile in tiledMapTiles)
                             {
                                 Debug.WriteLine($"Tile GID: {tile.GlobalIdentifier} at position {tile.X},{tile.Y}, coordinates {tile.X * 16},{tile.Y * 16}");
                             }
-
-                        }
+                        } 
                         else
                         {
                             InteractableObjectManager.Add(new InteractableObject(obj));

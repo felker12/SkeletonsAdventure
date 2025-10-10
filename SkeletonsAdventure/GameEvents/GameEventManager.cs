@@ -21,7 +21,6 @@ namespace SkeletonsAdventure.GameEvents
                 {
                     ActiveEvents.Add(delayedEvent.StoredEvent);
                     DelayedEvents.RemoveAt(i);
-                    Debug.WriteLine("delayed event completed");
                 }
             }
 
@@ -48,10 +47,7 @@ namespace SkeletonsAdventure.GameEvents
                 return;
 
             if (gameEvent is TimeDelayedGameEvent delayedEvent)
-            {
                 DelayedEvents.Add(delayedEvent);
-                Debug.WriteLine("Delayed event added");
-            }
             else
                 ActiveEvents.Add(gameEvent);
         }

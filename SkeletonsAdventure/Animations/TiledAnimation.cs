@@ -1,5 +1,7 @@
 ﻿
 
+using MonoGame.Extended.Tiled;
+
 namespace SkeletonsAdventure.Animations
 {
     internal class TiledAnimation
@@ -16,7 +18,7 @@ namespace SkeletonsAdventure.Animations
         {
             get
             {
-                if (Animation is null || Texture is null)
+                if (Animation is null || Texture is null || animate is false)
                     return Rectangle.Empty;
 
                 TileAnimationFrame currentFrame = Animation.GetCurrentFrame();
@@ -25,8 +27,8 @@ namespace SkeletonsAdventure.Animations
                     return Rectangle.Empty;
 
                 int columns = Texture.Width / TileWidth;
-                int x = (currentFrame.TileId % columns) * TileWidth;
-                int y = (currentFrame.TileId / columns) * TileHeight;
+                int x = (currentFrame.LocalTileId % columns) * TileWidth;
+                int y = (currentFrame.LocalTileId / columns) * TileHeight;
 
                 return new Rectangle(x, y, TileWidth, TileHeight);
             }
@@ -41,6 +43,15 @@ namespace SkeletonsAdventure.Animations
             Animation = animation;
             TileWidth = tileWidth;
             TileHeight = tileHeight;
+        }
+
+        public TiledAnimation(TiledMapTileset tiledMapTileset, TiledMapTilesetAnimatedTile animatedTile)
+        {
+            Name = tiledMapTileset.Name;
+            Texture = tiledMapTileset.Texture;
+            TileWidth = tiledMapTileset.TileWidth;
+            TileHeight = tiledMapTileset.TileHeight;
+            Animation = new TileAnimation(animatedTile);
         }
 
         public void Update(GameTime gameTime)
@@ -82,6 +93,11 @@ namespace SkeletonsAdventure.Animations
         public override string ToString()
         {
             return $"Name: {Name}, Texture: {Texture}, Animation: {Animation}";
+        }
+
+        public TiledAnimation Clone()
+        {
+            return new TiledAnimation(Name, Texture, Animation, TileWidth, TileHeight);
         }
     }
 }
