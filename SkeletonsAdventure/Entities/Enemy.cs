@@ -201,6 +201,7 @@ namespace SkeletonsAdventure.Entities
             if (Health < 1 && attack.Source is Player player) //If the entity dies give xp to the player that killed it
             {
                 player.GainXp(XP);
+                player.KillCounter.RecordKill(this.GetType().Name);
             }
         }
 

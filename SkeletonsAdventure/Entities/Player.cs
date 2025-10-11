@@ -34,6 +34,7 @@ namespace SkeletonsAdventure.Entities
         public List<Quest> CompletedQuests { get; set; } = [];
         public string DisplayQuestName { get; private set; } = string.Empty;
         private BasicAttack AttackToAim { get; set; } = null;
+        public KillCounter KillCounter { get; private set; } = new(); //TODO add save data for this
 
         public Player() : base()
         {

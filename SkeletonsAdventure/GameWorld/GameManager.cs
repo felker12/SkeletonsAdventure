@@ -683,7 +683,7 @@ namespace SkeletonsAdventure.GameWorld
 
             List <BaseTask> Tasks = [task.Clone(), task2.Clone(), task3.Clone(), slayTask.Clone()];
 
-            Requirements requirements = new()
+            LevelRequirements requirements = new()
             {
                 Attack = 0,
                 Defence = 0,

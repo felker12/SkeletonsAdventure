@@ -11,7 +11,7 @@ namespace SkeletonsAdventure.Quests
         public string Description { get; set; } = string.Empty;
         public bool IsCompleted { get; set; } = false;
         public bool Active { get; set; } = false;
-        public Requirements Requirements { get; set; } = new();
+        public LevelRequirements Requirements { get; set; } = new();
         public QuestReward Reward { get; set; } = new();
         public List<string> RequiredQuestNames { get; set; } = [];
         public List<BaseTask> Tasks { get; set; } = [];
@@ -39,7 +39,7 @@ namespace SkeletonsAdventure.Quests
             Description = data.Description;
             IsCompleted = data.IsCompleted;
             Active = data.Active;
-            Requirements = new Requirements(data.RequirementData);
+            Requirements = new LevelRequirements(data.RequirementData);
             Reward = new QuestReward(data.RewardData);
 
             RequiredQuestNames = [.. data.RequiredQuestNameData.Select(q => q)];

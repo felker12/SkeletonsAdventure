@@ -16,7 +16,6 @@ namespace SkeletonsAdventure.TileEngine
 
         public override void Update(GameTime gameTime)
         {
-
         }
 
         public override void Draw(SpriteBatch spriteBatch)

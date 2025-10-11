@@ -19,7 +19,7 @@ namespace SkeletonsAdventure.GameObjects
         internal int Height { get; set; } = 32;
         internal Rectangle Rectangle => new((int)Position.X, (int)Position.Y, Width, Height);
         internal List<string> RequiredQuestNames { get; set; } = [];
-        internal Requirements Requirements { get; set; } = new();
+        internal LevelRequirements Requirements { get; set; } = new();
         internal bool Teleported { get; set; } = false;
         internal Label Info { get; set; } = new(string.Empty)
         {

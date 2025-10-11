@@ -27,6 +27,13 @@ namespace SkeletonsAdventure.GameObjects
             if (LastInteractedTime + TimeSpan.FromMilliseconds(CooldownTime) < gameTime.TotalGameTime is false)
                 return;
 
+            HandleLeverActivation();
+
+            LastInteractedTime = gameTime.TotalGameTime;
+        }
+
+        private void HandleLeverActivation()
+        {
             if (GameEventName == "PlayLeverAnimation")
             {
                 TiledAnimation tiledAnimation = GameManager.TiledAnimationsClone["TiledFiles/doors_lever_chest_animation_0_30"];
@@ -40,22 +47,23 @@ namespace SkeletonsAdventure.GameObjects
                 World.CurrentLevel.AddGameEvent(animatedTileEvent);
 
                 if (LeverPurpose == "ConditionalLayerToggle")
-                {
-                    ToggleLayerVisibility toggle = new(World.CurrentLevel.ConditionalLayer);
-                    TimeDelayedGameEvent delayedGameEvent = new(toggle, animatedTileEvent.Duration * .75f);
-
-                    //delay hiding the static lever until the animated lever is mostly done
-                    World.AddGameEventToCurrentLevel(delayedGameEvent);
-
-                    //hide the static lever, draw the animated 1, then show the static lever again
-                    ToggleLayerVisibility toggle2 = new(World.CurrentLevel.InteractableObjectLayerTiles);
-                    World.AddGameEventToCurrentLevel(toggle2);
-                    TimeDelayedGameEvent delayedGameEvent2 = new(new ToggleLayerVisibility(World.CurrentLevel.InteractableObjectLayerTiles), animatedTileEvent.Duration);
-                    World.AddGameEventToCurrentLevel(delayedGameEvent2);
-                }
+                    ToggleConditionalLayer(animatedTileEvent);
             }
+        }
 
-            LastInteractedTime = gameTime.TotalGameTime;
+        private static void ToggleConditionalLayer(AnimatedTileEvent animatedTileEvent)
+        {
+            ToggleLayerVisibility toggle = new(World.CurrentLevel.ConditionalLayer);
+            TimeDelayedGameEvent delayedGameEvent = new(toggle, animatedTileEvent.Duration * .75f);
+
+            //delay hiding the static lever until the animated lever is mostly done
+            World.AddGameEventToCurrentLevel(delayedGameEvent);
+
+            //hide the static lever, draw the animated 1, then show the static lever again
+            ToggleLayerVisibility toggle2 = new(World.CurrentLevel.InteractableObjectLayerTiles);
+            World.AddGameEventToCurrentLevel(toggle2);
+            TimeDelayedGameEvent delayedGameEvent2 = new(new ToggleLayerVisibility(World.CurrentLevel.InteractableObjectLayerTiles), animatedTileEvent.Duration);
+            World.AddGameEventToCurrentLevel(delayedGameEvent2);
         }
     }
 }

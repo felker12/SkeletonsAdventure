@@ -3,33 +3,33 @@ using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Quests
 {
-    public class Requirements
+    public class LevelRequirements
     {
         public int Level { get; set; } = 0;
         public int Defence { get; set; } = 0;
         public int Attack { get; set; } = 0;
 
-        public Requirements()
+        public LevelRequirements()
         {
         }
 
-        public Requirements(Requirements requirements)
+        public LevelRequirements(LevelRequirements requirements)
         {
             Level = requirements.Level;
             Defence = requirements.Defence;
             Attack = requirements.Attack;
         }
 
-        public Requirements(RequirementData data)
+        public LevelRequirements(RequirementData data)
         {
             Level = data.Level;
             Defence = data.Defence;
             Attack = data.Attack;
         }
 
-        public Requirements Clone()
+        public LevelRequirements Clone()
         {
-            return new Requirements(this);
+            return new LevelRequirements(this);
         }
 
         internal bool CheckRequirements(Player player)

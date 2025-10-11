@@ -263,26 +263,19 @@ namespace SkeletonsAdventure.GameWorld
 
                             InteractableObjectManager.Add(lever);
 
-
+                            //get all of the tiles from the layer that the interactable objects area contains
                             List<TiledMapTile> tiledMapTiles = GetTiledMapTiles(InteractableObjectLayerTiles, lever.Rectangle);
-
-                            Debug.WriteLine("Rectangle: " + lever.Rectangle+ ", Tile count: " + tiledMapTiles.Count, "obj position: " + obj.Position);
 
                             if(tiledMapTiles.Count == 1)
                             {
-                                Debug.WriteLine("lever position: " + lever.Position);
+                                //position where the lever should be displayed.
+                                //(not the location of the interactable object which could be offset from the actual lever)
                                 lever.LeverPosition = new(tiledMapTiles[0].X * 16, tiledMapTiles[0].Y * 16);
-                                Debug.WriteLine("lever position2: " + lever.Position);
                             }
                             else
                             {
                                 //TODO some logic to pick which tile to map to if there is more than 1 tile in the area
                                 //(like for if something needs more than 1 tile to be drawn like the fire animation)
-                            }
-
-                            foreach (var tile in tiledMapTiles)
-                            {
-                                Debug.WriteLine($"Tile GID: {tile.GlobalIdentifier} at position {tile.X},{tile.Y}, coordinates {tile.X * 16},{tile.Y * 16}");
                             }
                         } 
                         else
