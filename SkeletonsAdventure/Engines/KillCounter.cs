@@ -1,4 +1,6 @@
 ﻿
+using RpgLibrary.DataClasses;
+
 namespace SkeletonsAdventure.Engines
 {
     internal class KillCounter
@@ -6,6 +8,11 @@ namespace SkeletonsAdventure.Engines
         public Dictionary<string, int> EnemyKills { get; private set; } = [];
 
         public KillCounter() { }
+
+        public KillCounter(KillCounterData killCounterData)
+        {
+            EnemyKills = new(killCounterData.EnemyKills);
+        }
 
         public void RecordKill(string enemyName)
         {
@@ -38,6 +45,11 @@ namespace SkeletonsAdventure.Engines
             }
 
             return result;
+        }
+
+        public KillCounterData ToData()
+        {
+            return new KillCounterData(new Dictionary<string, int>(EnemyKills));
         }
     }
 }

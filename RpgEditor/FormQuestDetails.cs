@@ -38,7 +38,7 @@ namespace RpgEditor
                 Description = tbDescription.Text,
                 IsCompleted = cbIsCompleted.Checked,
                 Active = cbActive.Checked,
-                RequirementData = new RequirementData
+                RequirementData = new LevelRequirementData
                 {
                     Level = (int)nudLevel.Value,
                     Defence = (int)nudDefence.Value,

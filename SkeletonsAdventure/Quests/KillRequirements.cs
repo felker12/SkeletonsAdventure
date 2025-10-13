@@ -1,5 +1,6 @@
 ﻿using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
+using RpgLibrary.QuestClasses;
 
 namespace SkeletonsAdventure.Quests
 {
@@ -42,6 +43,18 @@ namespace SkeletonsAdventure.Quests
                 result += $"{enemy.Name}: {count}\n";
             }
             return result;
+        }
+
+        public KillRequirementData ToData()
+        {
+            Dictionary<string, int> data = [];
+
+            foreach (var (enemy, count) in RequiredEnemyKills)
+            {
+                data.Add(enemy.Name, count);
+            }
+
+            return new KillRequirementData(data);
         }
     }
 }

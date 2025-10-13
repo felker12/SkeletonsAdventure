@@ -145,7 +145,7 @@ namespace SkeletonsAdventure.Quests
                 Description = Description,
                 IsCompleted = IsCompleted,
                 Active = Active,
-                RequirementData = Requirements.GetRequirementData(),
+                RequirementData = Requirements.ToData(),
                 RewardData = Reward.GetQuestRewardData(),
                 RequiredQuestNameData = RequiredQuestNames,
                 BaseTasksData = GetBaseTaskDatas(),

@@ -1,4 +1,4 @@
-﻿using RpgLibrary.WorldClasses;
+﻿using RpgLibrary.QuestClasses;
 using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Quests
@@ -20,7 +20,7 @@ namespace SkeletonsAdventure.Quests
             Attack = requirements.Attack;
         }
 
-        public LevelRequirements(RequirementData data)
+        public LevelRequirements(LevelRequirementData data)
         {
             Level = data.Level;
             Defence = data.Defence;
@@ -47,9 +47,9 @@ namespace SkeletonsAdventure.Quests
             return Level + Defence + Attack;
         }
 
-        public RequirementData GetRequirementData()
+        public LevelRequirementData ToData()
         {
-            return new RequirementData
+            return new LevelRequirementData
             {
                 Level = Level,
                 Defence = Defence,

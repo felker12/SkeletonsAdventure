@@ -103,12 +103,16 @@ namespace SkeletonsAdventure.Entities
             CompletedQuests = playerData.completedQuests.ConvertAll(q => new Quest(q));
             DisplayQuestName = playerData.displayQuestName;
 
+            KillCounter = new KillCounter(playerData.killCounter);
+
             PlayerStatAdjustmentForLevel();
         }
 
         public PlayerData GetPlayerData()
         {
-            return new(GetEntityData())
+            Debug.WriteLine("kill counter data: \n" + KillCounter.ToData()); //TODO
+
+            return new PlayerData(GetEntityData())
             {
                 totalXP = TotalXP,
                 baseMana = BaseMana,
@@ -122,7 +126,8 @@ namespace SkeletonsAdventure.Entities
                 backpack = Backpack.GetItemListItemData(),
                 activeQuests = ActiveQuests.ConvertAll(q => q.GetQuestData()),
                 completedQuests = CompletedQuests.ConvertAll(q => q.GetQuestData()),
-                displayQuestName = DisplayQuestName
+                displayQuestName = DisplayQuestName,
+                killCounter = KillCounter.ToData(),
             };
         }
 

@@ -1,24 +1,23 @@
-﻿
-namespace RpgLibrary.WorldClasses
+﻿namespace RpgLibrary.QuestClasses
 {
-    public class RequirementData
+    public class LevelRequirementData
     {
         public int Level { get; set; } = 0;
         public int Defence { get; set; } = 0;
         public int Attack { get; set; } = 0;
 
-        public RequirementData() { }
+        public LevelRequirementData() { }
 
-        public RequirementData(RequirementData data)
+        public LevelRequirementData(LevelRequirementData data)
         {
             Level = data.Level;
             Defence = data.Defence;
             Attack = data.Attack;
         }
 
-        public RequirementData clone()
+        public LevelRequirementData Clone()
         {
-            return new RequirementData(this);
+            return new LevelRequirementData(this);
         }
 
         public override string ToString()

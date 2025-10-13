@@ -1,4 +1,5 @@
-﻿using RpgLibrary.ItemClasses;
+﻿using RpgLibrary.DataClasses;
+using RpgLibrary.ItemClasses;
 using RpgLibrary.QuestClasses;
 
 namespace RpgLibrary.EntityClasses
@@ -18,6 +19,7 @@ namespace RpgLibrary.EntityClasses
         public List<QuestData> activeQuests = new();
         public List<QuestData> completedQuests = new();
         public string displayQuestName = string.Empty;
+        public KillCounterData killCounter = new();
 
         public PlayerData() { }
 
@@ -36,6 +38,7 @@ namespace RpgLibrary.EntityClasses
             activeQuests = entityData.activeQuests;
             completedQuests = entityData.completedQuests;
             displayQuestName = entityData.displayQuestName;
+            killCounter = entityData.killCounter;
         }
 
         public PlayerData(EntityData entityData) : base(entityData)

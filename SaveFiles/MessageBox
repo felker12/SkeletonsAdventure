@@ -2,5 +2,261 @@
 <XnaContent xmlns:Generic="System.Collections.Generic">
   <Asset Type="Generic:List[string]">
     <Item>Welcome!</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 5</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 10</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 15</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 20</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 25</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 30</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 35</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 40</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 45</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 50</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 55</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 60</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 65</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 70</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 75</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 80</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 85</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 90</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 95</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 100</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 105</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 5</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 10</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 15</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 20</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 25</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 30</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 35</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 40</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 45</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 50</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 55</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 60</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 65</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 70</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 75</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 80</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 85</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 90</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 95</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 100</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 105</Item>
+    <Item>Skeleton level 1 was killed by Player with BasicAttack. 7 XP was gained.</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 5</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 10</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 15</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 20</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 25</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 30</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 35</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 40</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 45</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 50</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 55</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 60</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 65</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 70</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 75</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 80</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 85</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 90</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 95</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 100</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 105</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 5</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 10</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 15</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 20</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 25</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 30</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 35</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 40</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 45</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 50</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 55</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 60</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 65</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 70</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 75</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 80</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 85</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 90</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 95</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 100</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 105</Item>
+    <Item>EliteSkeleton level 5 was killed by Player with BasicAttack. 30 XP was</Item>
+    <Item>gained.</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 5</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 10</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 15</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 20</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 25</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 30</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 35</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 40</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 45</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 50</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 55</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 60</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 65</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 70</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 75</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 80</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 85</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 90</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 95</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 100</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 105</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 5</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 10</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 15</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 20</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 25</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 30</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 35</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 40</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 45</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 50</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 55</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 60</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 65</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 70</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 75</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 80</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 85</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 90</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 95</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 100</Item>
+    <Item>You leveled up! You are now level 21!</Item>
+    <Item>Tottal Attribute Points: 105</Item>
+    <Item>Skeleton level 4 was killed by Player with BasicAttack. 13 XP was gained.</Item>
   </Asset>
 </XnaContent>

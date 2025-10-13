@@ -1,6 +1,4 @@
-﻿using RpgLibrary.WorldClasses;
-
-namespace RpgLibrary.QuestClasses
+﻿namespace RpgLibrary.QuestClasses
 {
     public class QuestData
     {
@@ -8,7 +6,7 @@ namespace RpgLibrary.QuestClasses
         public string Description { get; set; } = string.Empty;
         public bool IsCompleted { get; set; } = false;
         public bool Active { get; set; } = false;
-        public RequirementData RequirementData { get; set; } = new();
+        public LevelRequirementData RequirementData { get; set; } = new();
         public QuestRewardData RewardData { get; set; } = new();
         public List<string> RequiredQuestNameData { get; set; } = new();
         public List<BaseTaskData> BaseTasksData { get; set; } = new();
