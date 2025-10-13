@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="400" height="400" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="98">
  <properties>
-  <property name="MaxLevel" type="int" value="5"/>
+  <property name="MaxLevel" type="int" value="2"/>
   <property name="MinLevel" type="int" value="1"/>
  </properties>
  <tileset firstgid="1" source="walls_floor.tsx"/>
@@ -1220,106 +1220,6 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="5" name="SpawnerLayer">
-  <object id="78" name="Skeleton" x="736" y="320" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="79" name="Skeleton" x="1648" y="304" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="81" name="Skeleton" x="640" y="1712" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="82" name="Skeleton" x="2128" y="1696" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="83" name="Skeleton" x="608" y="2848" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="84" name="Skeleton" x="560" y="3952" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="2"/>
-   </properties>
-  </object>
-  <object id="85" name="Skeleton" x="2688" y="2864" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="2"/>
-   </properties>
-  </object>
-  <object id="86" name="Skeleton" x="3520" y="2864" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="2"/>
-   </properties>
-  </object>
-  <object id="87" name="Skeleton" x="2640" y="384" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="88" name="Skeleton" x="3568" y="800" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="89" name="Skeleton" x="4064" y="816" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="90" name="Skeleton" x="4528" y="816" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="2"/>
-   </properties>
-  </object>
-  <object id="91" name="Skeleton" x="4896" y="1728" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="92" name="Skeleton" x="5104" y="1792" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="2"/>
-   </properties>
-  </object>
-  <object id="93" name="Skeleton" x="4976" y="1920" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="94" name="Skeleton" x="3632" y="1808" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="95" name="Skeleton" x="1872" y="2784" width="16" height="16">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="96" name="Skeleton" x="3456" y="2992" width="16" height="32">
-   <properties>
-    <property name="level" type="int" value="1"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup id="6" name="EnterExitLayer">
-  <object id="77" name="Entrance" x="336" y="320" width="16" height="16"/>
-  <object id="97" name="Exit" x="3568" y="3936" width="144" height="64">
-   <properties>
-    <property name="ToLocation" value="Level1"/>
-   </properties>
-  </object>
- </objectgroup>
  <layer id="8" name="CollisionLayer" width="400" height="400" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -2532,4 +2432,104 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="6" name="EnterExitLayer">
+  <object id="77" name="Entrance" x="336" y="320" width="16" height="16"/>
+  <object id="97" name="Exit" x="3568" y="3936" width="144" height="64">
+   <properties>
+    <property name="ToLocation" value="Level1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="SpawnerLayer">
+  <object id="78" name="Skeleton" x="736" y="320" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="79" name="Skeleton" x="1648" y="304" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="81" name="Skeleton" x="640" y="1712" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="82" name="Skeleton" x="2128" y="1696" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="83" name="Skeleton" x="608" y="2848" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="84" name="Skeleton" x="560" y="3952" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="85" name="Skeleton" x="2688" y="2864" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="86" name="Skeleton" x="3536" y="2864" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="87" name="Skeleton" x="2640" y="384" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="88" name="Skeleton" x="3568" y="800" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="89" name="Skeleton" x="4064" y="816" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="90" name="Skeleton" x="4528" y="816" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="91" name="Skeleton" x="4896" y="1728" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="92" name="Skeleton" x="5104" y="1792" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="93" name="Skeleton" x="4976" y="1920" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="94" name="Skeleton" x="3632" y="1808" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="95" name="Skeleton" x="1872" y="2784" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="96" name="Skeleton" x="3392" y="2976" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

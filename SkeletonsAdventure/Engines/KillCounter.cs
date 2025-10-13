@@ -1,5 +1,4 @@
-﻿using SkeletonsAdventure.Entities;
-
+﻿
 namespace SkeletonsAdventure.Engines
 {
     internal class KillCounter

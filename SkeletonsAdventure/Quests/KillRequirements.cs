@@ -5,38 +5,43 @@ namespace SkeletonsAdventure.Quests
 {
     internal class KillRequirements
     {
-        public Dictionary<Enemy, int> RequiredEnemyKills { get; set; } = [];
+        public Dictionary<Enemy, int> RequiredEnemyKills { get; private set; } = [];
 
         public KillRequirements() { }
 
 
-        public bool CheckRequirements(Player player)
+        internal bool CheckRequirements(Player player)
         {
             return CheckRequirements(player.KillCounter);
         }
 
-        public bool CheckRequirements(KillCounter killCounter)
+        internal bool CheckRequirements(KillCounter killCounter)
         {
-            foreach (var (enemy, requiredKills) in RequiredEnemyKills)
+            foreach (var (enemy, requiredAmount) in RequiredEnemyKills)
             {
-                //TODO test this
-                if (killCounter.GetKillCount(enemy.GetType().Name) >= requiredKills)
-                {
-                    return true;
-                }
+                int playerKills = killCounter.GetKillCount(enemy.Name);
+
+                if (playerKills < requiredAmount)
+                    return false;
             }
 
-            return false;
+            //if all requirements are met return true
+            return true;
         }
 
-        //dont think this will work as intended
-        public bool CheckRequirements(Enemy enemy, int kills)
+        internal void AddKillRequirement(Enemy enemy, int requiredAmount = 1)
         {
-            if (RequiredEnemyKills.TryGetValue(enemy, out int requiredKills))
+            RequiredEnemyKills.Add(enemy, requiredAmount);
+        }
+
+        public override string ToString()
+        {
+            string result = "Kill Requirements:\n";
+            foreach (var (enemy, count) in RequiredEnemyKills)
             {
-                return kills >= requiredKills;
+                result += $"{enemy.Name}: {count}\n";
             }
-            return false;
+            return result;
         }
     }
 }

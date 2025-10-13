@@ -1,5 +1,4 @@
 ﻿using MonoGame.Extended.Tiled;
-using RpgLibrary.GameObjectClasses;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.GameEvents;
@@ -15,11 +14,12 @@ namespace SkeletonsAdventure.GameObjects
         public TimeSpan LastInteractedTime { get; set; } = new();
         public Vector2 LeverPosition { get; set; } = new(); //in the event the lever event needs to be drawn at a different location than the interactable objects position
 
-        public Lever(TiledMapObject obj) : base(obj) { LeverPosition = obj.Position; }
+        public Lever(TiledMapObject obj) : base(obj) { Initialize(obj); }
 
-        public Lever(InteractableObject obj) : base(obj) { LeverPosition = obj.Position; }
-
-        public Lever(InteractableObjectData obj) : base(obj) { LeverPosition = obj.Position; }
+        private void Initialize(TiledMapObject obj)
+        {
+            LeverPosition = obj.Position;
+        }
 
         public override void Interact(GameTime gameTime, Player player)
         {

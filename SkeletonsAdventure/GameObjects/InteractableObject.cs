@@ -4,6 +4,7 @@ using MonoGame.Extended.Tiled;
 using RpgLibrary.GameObjectClasses;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.GameObjects
 {
@@ -12,6 +13,9 @@ namespace SkeletonsAdventure.GameObjects
         public string TypeOfObject { get; set; } = string.Empty;
         public bool Active { get; set; } = true;
         public bool Visible { get; set; } = true;
+        public LevelRequirements LevelRequirements { get; set; } = null;
+        public KillRequirements KillRequirements { get; set; } = null;
+        public string InfoText { get; set; } = "Press R to Interact";
 
         public InteractableObject(TiledMapObject obj) : base()
         {
@@ -51,7 +55,7 @@ namespace SkeletonsAdventure.GameObjects
         private void Initialize()
         {
             Info.Position = Position;
-            Info.Text = "Press R to Interact";
+            Info.Text = InfoText;
             Info.Visible = false;
             Info.TextColor = Color.GhostWhite;
         }
@@ -62,7 +66,29 @@ namespace SkeletonsAdventure.GameObjects
                 return;
 
             if (CheckPlayerNear(player))
+            {
+                if (LevelRequirements is not null)
+                {
+                    if (LevelRequirements.CheckRequirements(player) is false)
+                    {
+                        Info.Text = "Level Requirements not met";
+                        return;
+                    }
+                }
+                
+                if (KillRequirements is not null)
+                {
+                    if (KillRequirements.CheckRequirements(player) is false)
+                    {
+                        Info.Text = "Kill Requirements not met";
+                        return;
+                    }
+                }
+
+
+                Info.Text = InfoText;
                 HandleInput(gameTime, player);
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)

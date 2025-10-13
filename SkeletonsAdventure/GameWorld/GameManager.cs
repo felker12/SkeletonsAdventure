@@ -363,6 +363,14 @@ namespace SkeletonsAdventure.GameWorld
                 return null;
         }
 
+        public static Enemy GetEnemyByName(string name)
+        {
+            if (EnemiesClone.TryGetValue("SkeletonsAdventure.Entities." + name, out Enemy enemy))
+                return enemy.Clone();
+
+            return null;
+        }
+
         //Set the Colors
         private static void SetColors()
         {

@@ -254,36 +254,63 @@ namespace SkeletonsAdventure.GameWorld
                         else if (value == "Lever")
                         {
                             Lever lever = new(obj);
-
-                            if (obj.Properties.TryGetValue("LeverPurpose", out TiledMapPropertyValue purpose))
-                                lever.LeverPurpose = purpose;
-
-                            if (obj.Properties.TryGetValue("GameEventName", out TiledMapPropertyValue eventName))
-                                lever.GameEventName = eventName;
+                            SetLeverProperties(obj, lever);
 
                             InteractableObjectManager.Add(lever);
-
-                            //get all of the tiles from the layer that the interactable objects area contains
-                            List<TiledMapTile> tiledMapTiles = GetTiledMapTiles(InteractableObjectLayerTiles, lever.Rectangle);
-
-                            if(tiledMapTiles.Count == 1)
-                            {
-                                //position where the lever should be displayed.
-                                //(not the location of the interactable object which could be offset from the actual lever)
-                                lever.LeverPosition = new(tiledMapTiles[0].X * 16, tiledMapTiles[0].Y * 16);
-                            }
-                            else
-                            {
-                                //TODO some logic to pick which tile to map to if there is more than 1 tile in the area
-                                //(like for if something needs more than 1 tile to be drawn like the fire animation)
-                            }
-                        } 
+                        }
                         else
                         {
                             InteractableObjectManager.Add(new InteractableObject(obj));
                         }
                     }
 
+                }
+            }
+        }
+
+        private void SetLeverProperties(TiledMapObject obj, Lever lever)
+        {
+            if (obj.Properties.TryGetValue("LeverPurpose", out TiledMapPropertyValue purpose))
+                lever.LeverPurpose = purpose;
+
+            if (obj.Properties.TryGetValue("GameEventName", out TiledMapPropertyValue eventName))
+                lever.GameEventName = eventName;
+
+            if (obj.Properties.TryGetValue("LevelRequired", out TiledMapPropertyValue levelRequired))
+            {
+                if (int.TryParse(levelRequired, out int lvl))
+                {
+                    lever.LevelRequirements = new()
+                    {
+                        Level = lvl
+                    };
+                }
+            }
+
+            //get all of the tiles from the layer that the interactable objects area contains
+            List<TiledMapTile> tiledMapTiles = GetTiledMapTiles(InteractableObjectLayerTiles, lever.Rectangle);
+
+            if (tiledMapTiles.Count == 1)
+            {
+                //position where the lever should be displayed.
+                //(not the location of the interactable object which could be offset from the actual lever)
+                lever.LeverPosition = new(tiledMapTiles[0].X * 16, tiledMapTiles[0].Y * 16);
+            }
+            else
+            {
+                //TODO some logic to pick which tile to map to if there is more than 1 tile in the area
+                //(like for if something needs more than 1 tile to be drawn like the fire animation)
+            }
+
+
+            if(Name == "Level1")
+            {
+                if(lever.Position == new Vector2(7152,4608))
+                {
+                    var enemy = GameManager.GetEnemyByName("EliteSkeleton");
+
+                    lever.KillRequirements = new();
+                    lever.KillRequirements.AddKillRequirement(enemy);
                 }
             }
         }
