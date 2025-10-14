@@ -11,6 +11,8 @@ namespace RpgLibrary.WorldClasses
         public EntityManagerData EntityManagerData { get; set; } = new();
         public List<ItemData> DroppedItemDatas { get; set; } = new();
         public List<ChestData> Chests { get; set; } = new();
+        public List<(string, bool)> LayerVisibility { get; set; } = new(); //bool is visibility, string is layer name
+        public InteractableObjectManagerData InteractableObjectManagerData { get; set; } = new();
 
         public LevelData() { }
 

@@ -1,6 +1,4 @@
-﻿
-using MonoGame.Extended.Collisions.Layers;
-using MonoGame.Extended.Tiled;
+﻿using MonoGame.Extended.Tiled;
 
 namespace SkeletonsAdventure.GameEvents
 {

@@ -69,7 +69,7 @@ namespace SkeletonsAdventure.Entities
 
             HealthBarVisible = false;
 
-            GainXp(10000);
+            //GainXp(10000);
         }
 
         private void InitializeAttacks()

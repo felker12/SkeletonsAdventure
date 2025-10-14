@@ -3,7 +3,6 @@ namespace RpgLibrary.GameObjectClasses
 {
     public class QuestNodeData : InteractableObjectData
     {
-
         public QuestNodeData() : base() { }
 
         public QuestNodeData(QuestNodeData data) : base(data)

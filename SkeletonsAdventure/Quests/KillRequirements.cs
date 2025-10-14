@@ -56,5 +56,27 @@ namespace SkeletonsAdventure.Quests
 
             return new KillRequirementData(data);
         }
+
+        public string MissingRequirementsText(Player player)
+        {
+            return MissingRequirementsText(player.KillCounter);
+        }
+
+        public string MissingRequirementsText(KillCounter killCounter)
+        {
+            string missingRequirements = string.Empty;
+
+            foreach (var (enemy, requiredAmount) in RequiredEnemyKills)
+            {
+                int playerKills = killCounter.GetKillCount(enemy.Name);
+                if (playerKills < requiredAmount)
+                {
+                    int missingAmount = requiredAmount - playerKills;
+                    missingRequirements += $"{missingAmount} more {enemy.Name}(s) to kill\n";
+                }
+            }
+
+            return missingRequirements;
+        }
     }
 }

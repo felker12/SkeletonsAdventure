@@ -63,5 +63,19 @@ namespace SkeletonsAdventure.Quests
                    $"Defence: {Defence}, " +
                    $"Attack: {Attack}";
         }
+
+        public string MissingRequirementsText(Player player)
+        {
+            string result = "Level Requirements not met:\n";
+
+            if (player.Level < Level)
+                result += $"Level: {player.Level}/{Level}\n";
+            if (player.Defence < Defence)
+                result += $"Defence: {player.Defence}/{Defence}\n";
+            if (player.Attack < Attack)
+                result += $"Attack: {player.Attack}/{Attack}\n";
+
+            return result;
+        }
     }
 }

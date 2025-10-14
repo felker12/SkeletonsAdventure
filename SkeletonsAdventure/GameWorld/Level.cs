@@ -182,23 +182,54 @@ namespace SkeletonsAdventure.GameWorld
 
         public void LoadLevelDataFromLevelData(LevelData levelData)
         {
-            EntityManager.Clear();
+            //Set the visibility of the layers based on the saved data
+            List<(string, bool)> layerVisibility = levelData.LayerVisibility;
 
+            foreach(var layer in TiledMap.TileLayers)
+            {
+                foreach(var (name, visible) in layerVisibility)
+                {
+                    Debug.WriteLine($"Layer Name: {layer.Name}, Visible: {layer.IsVisible}");
+                    Debug.WriteLine($"Name: {name}, Visible: {layerVisibility}");
+
+                    if (layer.Name == name)
+                    {
+                        layer.IsVisible = visible;
+                        break;
+                    }
+                }
+            }
+
+            //Clear out the current entities and load in the saved ones
+            EntityManager.Clear();
             EntityManager.Add(Player);
             EntityManager.DroppedLootManager.Items = GameManager.LoadGameItemsFromItemData(levelData.DroppedItemDatas);
             LoadEnemies(levelData.EntityManagerData);
 
+            //Load the chests and their contents
             ChestManager.UpdateFromSave(levelData.Chests);
+
+            //Load the interactable objects and their data
+            InteractableObjectManager.LoadFromData(levelData.InteractableObjectManagerData);
         }
 
         public LevelData GetLevelData()
         {
+            //Get the visibility of all of the layers in the tiled map
+            List<(string, bool)> layerVisibility = [];
+
+            foreach (TiledMapLayer layer in TiledMap.Layers)
+                layerVisibility.Add((layer.Name, layer.IsVisible));
+
+            //Create and return the level data
             return new()
             {
                 MinMaxPair = EnemyLevels,
                 EntityManagerData = EntityManager.GetEnemyData(),
                 DroppedItemDatas = EntityManager.DroppedLootManager.GetDroppedItemData(),
-                Chests = ChestManager.GetChestDatas()
+                Chests = ChestManager.GetChestDatas(),
+                LayerVisibility = layerVisibility,
+                InteractableObjectManagerData = InteractableObjectManager.ToData(),
             };
         }
 
@@ -391,6 +422,7 @@ namespace SkeletonsAdventure.GameWorld
         private static int GetLevelFromTiledMap(TiledMapObject obj)
         {
             obj.Properties.TryGetValue("level", out string level);
+
             if (level is null)
                 obj.Properties.TryGetValue("lvl", out level);
 

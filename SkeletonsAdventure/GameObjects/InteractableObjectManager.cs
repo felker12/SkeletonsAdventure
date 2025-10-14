@@ -1,4 +1,5 @@
 ﻿using SkeletonsAdventure.Entities;
+using RpgLibrary.GameObjectClasses;
 
 namespace SkeletonsAdventure.GameObjects
 {
@@ -32,6 +33,24 @@ namespace SkeletonsAdventure.GameObjects
         public void Remove(InteractableObject obj)
         {
             InteractableObjects.Remove(obj);
+        }
+
+        public InteractableObjectManagerData ToData()
+        {
+            List<InteractableObjectData> data = [];
+
+            foreach (var obj in InteractableObjects)
+                data.Add(obj.ToData());
+
+            return new InteractableObjectManagerData { InteractableObjectsData = data };
+        }
+
+        public void LoadFromData(InteractableObjectManagerData data)
+        {
+            InteractableObjects.Clear();
+
+            foreach (var objData in data.InteractableObjectsData)
+                InteractableObjects.Add(new(objData));
         }
     }
 }

@@ -13,6 +13,8 @@ namespace SkeletonsAdventure.GameObjects
         public string TypeOfObject { get; set; } = string.Empty;
         public bool Active { get; set; } = true;
         public bool Visible { get; set; } = true;
+        public float CooldownTime { get; set; } = 1000; //Time in milliseconds
+        public TimeSpan LastInteractedTime { get; set; } = new();
         public LevelRequirements LevelRequirements { get; set; } = null;
         public KillRequirements KillRequirements { get; set; } = null;
         public string InfoText { get; set; } = "Press R to Interact";
@@ -38,6 +40,10 @@ namespace SkeletonsAdventure.GameObjects
             Height = obj.Height;
             Position = obj.Position;
             Visible = obj.Visible;
+            CooldownTime = obj.CooldownTime;
+            LastInteractedTime = obj.LastInteractedTime;
+            LevelRequirements = obj.LevelRequirements;
+            KillRequirements = obj.KillRequirements;
         }
 
         public InteractableObject(InteractableObjectData obj)
@@ -48,6 +54,8 @@ namespace SkeletonsAdventure.GameObjects
             Height = obj.Height;
             Position = obj.Position;
             Visible = obj.Visible;
+            CooldownTime = obj.CooldownTime;
+            LastInteractedTime = obj.LastInteractedTime;
 
             Initialize();
         }
@@ -71,7 +79,7 @@ namespace SkeletonsAdventure.GameObjects
                 {
                     if (LevelRequirements.CheckRequirements(player) is false)
                     {
-                        Info.Text = "Level Requirements not met";
+                        Info.Text = LevelRequirements.MissingRequirementsText(player);
                         return;
                     }
                 }
@@ -80,7 +88,7 @@ namespace SkeletonsAdventure.GameObjects
                 {
                     if (KillRequirements.CheckRequirements(player) is false)
                     {
-                        Info.Text = "Kill Requirements not met";
+                        Info.Text = KillRequirements.MissingRequirementsText(player);
                         return;
                     }
                 }
@@ -107,7 +115,7 @@ namespace SkeletonsAdventure.GameObjects
             return new InteractableObject(this);
         }
 
-        public InteractableObjectData GetInteractableObjectData()
+        public InteractableObjectData ToData()
         {
             return new InteractableObjectData()
             {
@@ -117,6 +125,8 @@ namespace SkeletonsAdventure.GameObjects
                 Height = Height,
                 Active = Active,
                 Visible = Visible,
+                CooldownTime = CooldownTime,
+                LastInteractedTime = LastInteractedTime
             };
         }
 
@@ -141,6 +151,12 @@ namespace SkeletonsAdventure.GameObjects
 
         public virtual void Interact(GameTime gameTime, Player player)
         {
+            // Check for cooldown
+            if (LastInteractedTime + TimeSpan.FromMilliseconds(CooldownTime) < gameTime.TotalGameTime is false)
+                return;
+
+            LastInteractedTime = gameTime.TotalGameTime;
+
             // This method can be overridden in derived classes to provide specific interaction logic
             Debug.WriteLine($"Interacting with {TypeOfObject} at {Position}" +
                 $", of type {this.GetType().Name}, at GameTime: {gameTime.TotalGameTime}");

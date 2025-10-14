@@ -10,8 +10,6 @@ namespace SkeletonsAdventure.GameObjects
     {
         public string LeverPurpose { get; set; } = string.Empty;
         public string GameEventName { get; set; } = string.Empty;
-        public float CooldownTime { get; set; } = 1000; //Time in milliseconds
-        public TimeSpan LastInteractedTime { get; set; } = new();
         public Vector2 LeverPosition { get; set; } = new(); //in the event the lever event needs to be drawn at a different location than the interactable objects position
 
         public Lever(TiledMapObject obj) : base(obj) { Initialize(obj); }
@@ -24,7 +22,8 @@ namespace SkeletonsAdventure.GameObjects
         public override void Interact(GameTime gameTime, Player player)
         {
             // Check for cooldown
-            if (LastInteractedTime + TimeSpan.FromMilliseconds(CooldownTime) < gameTime.TotalGameTime is false)
+            if(CooldownTime > 0 && 
+                LastInteractedTime + TimeSpan.FromMilliseconds(CooldownTime) < gameTime.TotalGameTime is false)
                 return;
 
             HandleLeverActivation();

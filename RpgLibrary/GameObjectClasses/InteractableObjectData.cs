@@ -10,6 +10,8 @@ namespace RpgLibrary.GameObjectClasses
         public int Height { get; set; } = 32;
         public bool Active { get; set; } = true;
         public bool Visible { get; set; } = true;
+        public float CooldownTime { get; set; } = 1000; //Time in milliseconds
+        public TimeSpan LastInteractedTime { get; set; } = new();
 
         public InteractableObjectData() { }
 
@@ -21,6 +23,8 @@ namespace RpgLibrary.GameObjectClasses
             Height = interactableObjectData.Height;
             Active = interactableObjectData.Active;
             Visible = interactableObjectData.Visible;
+            CooldownTime = interactableObjectData.CooldownTime;
+            LastInteractedTime = interactableObjectData.LastInteractedTime;
         }
 
         public virtual InteractableObjectData Clone()
