@@ -92,6 +92,8 @@ namespace SkeletonsAdventure.GameObjects
 
         public override void Interact(GameTime gameTime, Player player)
         {
+            base.Interact(gameTime, player);
+
             foreach (var quest in Quests)
             {
                 if (quest.PlayerRequirementsMet(player) is false)

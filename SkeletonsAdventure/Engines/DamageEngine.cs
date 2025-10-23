@@ -7,20 +7,22 @@ namespace SkeletonsAdventure.Engines
         private readonly static Random rnd = new();
         public static int CalculateDamage(Entity attacker, Entity target)
         {
-            int dmg, num = 0;
+            int dif, dmg = 0;
             //add the 1 because the random.Next() will only provide a number less than damage
-            dmg = (attacker.Attack + attacker.weaponAttack) - (target.Defence + target.armourDefence) + 1; 
+            dif = (attacker.Attack + attacker.WeaponAttack) - (target.Defence + target.ArmourDefence) + 1; 
 
-            if (dmg > 0)
+            if (dif > 0)
             {
-                num = rnd.Next(dmg);
-                if (num == 0)
-                {
-                    num = rnd.Next(dmg);
-                }
+                dmg = rnd.Next(dif);
+
+                if (dmg == 0)
+                    dmg = rnd.Next(dif); //reroll once if damage is 0
+
+                if (dmg == 0)
+                    dmg = 1; //minimum damage is 1
             }
 
-            return num;
+            return dmg;
         }
     }
 }

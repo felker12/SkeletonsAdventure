@@ -10,16 +10,20 @@ namespace SkeletonsAdventure.Entities
 {
     internal class Entity : AnimatedSprite
     {
-        public int baseDefence = 1, baseAttack = 1, baseHealth = 1, baseXP = 1, weaponAttack = 0, armourDefence = 0;
-        public Texture2D basicAttackTexture = GameManager.SkeletonAttackTexture;
-        public TimeSpan lastDeathTime = new();
+        public TimeSpan LastDeathTime { get; set; } = new();
         public Vector2 RespawnPosition { get; set; } = Vector2.Zero;
         public string Type { get; set; } = string.Empty;
         public StatusBar HealthBar { get; set; } = new();
-        public int AttackCoolDownLength { get; protected set; } = 600; //length of the delay between attacks in milliseconds
+        public int AttackCoolDownLength { get; protected set; } = 600; //minimum length of the delay between attacks in milliseconds
         public AttackManager AttackManager { get; set; } 
         public BasicAttack BasicAttack { get; set; }
         public List<BasicAttack> AttacksHitBy { get; set; } = [];
+        public int BaseDefence { get; set; } = 1; 
+        public int BaseAttack { get; set; } = 1;
+        public int BaseHealth { get; set; } = 1; 
+        public int BaseXP { get; set; } = 1; 
+        public int WeaponAttack { get; set; } = 0; 
+        public int ArmourDefence { get; set; } = 0;
         public int XP { get; set; } //Xp gained for killing the entity
         public int MaxHealth { get; set; }
         public int Health { get; set; } 
@@ -37,7 +41,7 @@ namespace SkeletonsAdventure.Entities
 
         public Entity() : base()
         {
-            Health = baseHealth;
+            Health = BaseHealth;
             Position = new();
             Type = GetType().FullName;
 
@@ -54,13 +58,13 @@ namespace SkeletonsAdventure.Entities
         private void Initialize()
         {
             AttackManager = new(this);
-            Health = baseHealth;
-            MaxHealth = baseHealth;
-            Defence = baseDefence;
-            Attack = baseAttack;
+            Health = BaseHealth;
+            MaxHealth = BaseHealth;
+            Defence = BaseDefence;
+            Attack = BaseAttack;
 
-            XP = baseXP;
-            BasicAttack = new(GameManager.BasicAttackData, basicAttackTexture, this);
+            XP = BaseXP;
+            BasicAttack = new(GameManager.BasicAttackData, GameManager.SkeletonAttackTexture, this);
         }
 
         public override void Update(GameTime gameTime)
@@ -99,26 +103,26 @@ namespace SkeletonsAdventure.Entities
             return new()
             {
                 Type = Type,
-                BaseHealth = baseHealth,
-                BaseDefence = baseDefence,
-                BaseAttack = baseAttack,
+                BaseHealth = BaseHealth,
+                BaseDefence = BaseDefence,
+                BaseAttack = BaseAttack,
                 CurrentHealth = Health,
                 Position = Position,
                 RespawnPosition = RespawnPosition,
-                BaseXP = baseXP,
+                BaseXP = BaseXP,
                 EntityLevel = Level,
                 IsDead = IsDead,
-                LastDeathTime = lastDeathTime,
+                LastDeathTime = LastDeathTime,
             };
         }
 
         public virtual void UpdateEntityWithData(EntityData entityData)
         {
             Type = entityData.Type;
-            baseHealth = entityData.BaseHealth;
-            baseAttack = entityData.BaseAttack;
-            baseDefence = entityData.BaseDefence;
-            baseXP = entityData.BaseXP;
+            BaseHealth = entityData.BaseHealth;
+            BaseAttack = entityData.BaseAttack;
+            BaseDefence = entityData.BaseDefence;
+            BaseXP = entityData.BaseXP;
             Level = entityData.EntityLevel;
             Health = entityData.CurrentHealth;
             IsDead = entityData.IsDead;
@@ -128,7 +132,7 @@ namespace SkeletonsAdventure.Entities
             if (entityData.RespawnPosition != null)
                 RespawnPosition = (Vector2)entityData.RespawnPosition;
             if (entityData.LastDeathTime != null)
-                lastDeathTime = (TimeSpan)entityData.LastDeathTime;
+                LastDeathTime = (TimeSpan)entityData.LastDeathTime;
         }
 
         public virtual Entity Clone()
@@ -196,7 +200,7 @@ namespace SkeletonsAdventure.Entities
         public virtual void EntityDied(GameTime gameTime) //TODO change how the timer for dead entities works
         {
             IsDead = true;
-            lastDeathTime = gameTime.TotalGameTime;
+            LastDeathTime = gameTime.TotalGameTime;
             Motion = Vector2.Zero;
             AttackManager.ClearAttacks();
         }

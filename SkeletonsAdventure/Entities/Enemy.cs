@@ -77,11 +77,11 @@ namespace SkeletonsAdventure.Entities
 
         private void EnemyStatAdjustmentForLevel()
         {
-            MaxHealth = baseHealth + Level * 2;
+            MaxHealth = BaseHealth + Level * 2;
             Health = MaxHealth;
-            Defence = (int)(baseDefence + Level * 1.5);
-            Attack = (int)(baseAttack + Level * 1.5);
-            XP = baseXP + Level * 2;
+            Defence = (int)(BaseDefence + Level * 1.5);
+            Attack = (int)(BaseAttack + Level * 1.5);
+            XP = BaseXP + Level * 2;
 
             if(EnemyClass is EnemyClass.Elite)
             {

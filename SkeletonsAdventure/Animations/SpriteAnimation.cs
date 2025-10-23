@@ -34,6 +34,11 @@ namespace SkeletonsAdventure.Animations
             get { return frames[currentFrame]; }
         }
 
+        public Rectangle[] Frames
+        {
+            get { return frames; }
+        }
+
         //Constructors
         public SpriteAnimation(int frameCount, int frameWidth, int frameHeight, int xOffset, int yOffset)
         {

@@ -1,4 +1,5 @@
 ﻿using RpgLibrary.AttackData;
+using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
@@ -20,6 +21,8 @@ namespace SkeletonsAdventure.Attacks
             Width = 32;
             Height = 32;
             Frame = new(0, 0, Width, Height);
+
+            SetFrames(1, 32, 32, order: [AnimationKey.Right]);
         }
 
         public override IceBullet Clone()

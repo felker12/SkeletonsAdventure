@@ -23,6 +23,16 @@ namespace SkeletonsAdventure.Attacks
         public Vector2 StartPosition { get; set; } = new();
         public Vector2 InitialMotion { get; set; }
 
+        public virtual Rectangle IconRectangle { 
+            get 
+            {
+                if (this.GetType().Name == "BasicAttack")
+                    return new(20, 80, 32, 60);
+                else
+                    return _animations[AnimationKey.Right].Frames[0];
+            }  
+        }
+
         public BasicAttack(BasicAttack attack) : base()
         {
             Width = attack.Width;
@@ -75,6 +85,18 @@ namespace SkeletonsAdventure.Attacks
 
             if (AttackDelay > 0)
                 AttackVisible = false;
+
+
+
+            string animationInfo = string.Empty;
+
+            foreach (var animation in _animations)
+            {
+                animationInfo += $"Animation Key: {animation.Key}, " +
+                    $"Frame Count: {animation.Value.Frames.Length}. ";
+            }
+
+            Debug.WriteLine($"Animation Info for {this.GetType().Name}: {animationInfo}");
         }
 
         public virtual BasicAttack Clone()
@@ -114,7 +136,9 @@ namespace SkeletonsAdventure.Attacks
             }
 
             if(AttackVisible is false)
+            {
                 Motion = Vector2.Zero;
+            }
             else if (AttackVisible)
             {
                 if (AnimatedAttack)
@@ -226,6 +250,38 @@ namespace SkeletonsAdventure.Attacks
                 $"Rectangle: {Rectangle}, ";
 
             return ToString;
+        }
+
+        // Helper methods to compute scale from a source frame to a desired target size.
+        public static float GetUniformScaleForTarget(Rectangle frame, int targetSize = 32)
+        {
+            if (frame.Width <= 0 || frame.Height <= 0)
+                return 1f;
+
+            float scaleX = (float)targetSize / frame.Width;
+            float scaleY = (float)targetSize / frame.Height;
+
+            // Preserve aspect ratio and fit the frame inside target square.
+            return Math.Min(scaleX, scaleY);
+        }
+
+        public void DrawIcon(SpriteBatch spriteBatch, Vector2 position, int size = 32, Color tint = default)
+        {
+            if (tint == default)   
+                tint = Color.White;
+
+            Rectangle src = IconRectangle;
+            float scale = GetUniformScaleForTarget(src, size);
+
+            // Draw at `position` as a `size x size` box. We use a centered origin so the icon is centered in that box.
+            Vector2 origin = new(src.Width / 2f, src.Height / 2f);
+            Vector2 drawPos = position + new Vector2(size / 2f, size / 2f);
+
+            spriteBatch.Draw(Texture, drawPos, src, tint, 0f, origin, scale, SpriteEffects.None, 0f);
+
+            //TODO
+            Debug.WriteLine($"Attack: {this.GetType().Name} has a scale of: {scale} for the icon," +
+                $"original rectangle: {IconRectangle}");
         }
     }
 }

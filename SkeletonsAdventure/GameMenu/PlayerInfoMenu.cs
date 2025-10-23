@@ -76,20 +76,20 @@ namespace SkeletonsAdventure.GameMenu
             //Update the labels with the player's information
             LevelLbl.Text = $"Level: {player.Level}";
             AttributePointsLbl.Text = $"Total Attribute Points: {player.AttributePoints}";
-            BaseAttackLbl.Text = $"Base Attack: {player.baseAttack}";
-            BaseDefenceLbl.Text = $"Base Defence: {player.baseDefence}";
-            BaseHealthLbl.Text = $"Base Health: {player.baseHealth}";
+            BaseAttackLbl.Text = $"Base Attack: {player.BaseAttack}";
+            BaseDefenceLbl.Text = $"Base Defence: {player.BaseDefence}";
+            BaseHealthLbl.Text = $"Base Health: {player.BaseHealth}";
             BaseManaLbl.Text = $"Base Mana: {player.BaseMana}";
 
-            AttackLbl.Text = $"Total Attack: {player.Attack}, Base Attack: {player.baseAttack}, " +
+            AttackLbl.Text = $"Total Attack: {player.Attack}, Base Attack: {player.BaseAttack}, " +
                 $"Attack From Level: {player.bonusAttackFromLevel}, " +
                 $"Attack From Attributes: {player.bonusAttackFromAttributePoints}, " +
                 $"Attack From Equipment: {player.EquippedItems.EquippedItemsAttackBonus()}";
-            DefenceLbl.Text = $"Total Defence: {player.Defence}, Base Defence: {player.baseDefence}, " +
+            DefenceLbl.Text = $"Total Defence: {player.Defence}, Base Defence: {player.BaseDefence}, " +
                 $"Defence From Level: {player.bonusDefenceFromLevel}, " +
                 $"Defence From Attributes: {player.bonusDefenceFromAttributePoints}, " +
                 $"Defence From Equipment: {player.EquippedItems.EquippedItemsDefenceBonus()}";
-            HealthLbl.Text = $"Total Health: {player.Health}, Base Health: {player.baseHealth}, " +
+            HealthLbl.Text = $"Total Health: {player.Health}, Base Health: {player.BaseHealth}, " +
                 $"Health From Level: {player.bonusHealthFromLevel}, " +
                 $"Health From Attributes: {player.bonusHealthFromAttributePoints}, " +
                 $"Health From Equipment: {player.EquippedItems.EquippedItemsHealthBonus()}";

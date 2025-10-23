@@ -1,4 +1,6 @@
-﻿using SkeletonsAdventure.Animations;
+﻿using Assimp;
+using SkeletonsAdventure.Animations;
+using System.Linq;
 
 namespace SkeletonsAdventure.Entities
 {
@@ -91,6 +93,9 @@ namespace SkeletonsAdventure.Entities
             order ??= [AnimationKey.Down, AnimationKey.Left, AnimationKey.Right, AnimationKey.Up];
 
             CloneAnimations(CreateAnimations(order, frameCount, frameWidth, frameHeight, xOffset, yOffset, paddingX, paddingY));
+
+            CurrentAnimation = _animations.Keys.First();
+
             UpdateFrame();
         }
 

@@ -94,7 +94,7 @@ namespace SkeletonsAdventure.GameObjects
                 }
 
 
-                Info.Text = InfoText;
+                Info.Text = InfoText; //reset in case it was changed by requirements
                 HandleInput(gameTime, player);
             }
         }
@@ -157,9 +157,11 @@ namespace SkeletonsAdventure.GameObjects
 
             LastInteractedTime = gameTime.TotalGameTime;
 
-            // This method can be overridden in derived classes to provide specific interaction logic
+            //TODO
+            /*
             Debug.WriteLine($"Interacting with {TypeOfObject} at {Position}" +
                 $", of type {this.GetType().Name}, at GameTime: {gameTime.TotalGameTime}");
+            */
         }
     }
 }

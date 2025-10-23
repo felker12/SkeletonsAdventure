@@ -70,7 +70,7 @@ namespace SkeletonsAdventure.Entities
                     if (entity == Player)
                         PickUpLoot(); //If the player walks over loot pick it up
                 }
-                else if (entity.IsDead && totalTimeInWorld.TotalGameTime - entity.lastDeathTime > new TimeSpan(0, 0, entity.RespawnTime))
+                else if (entity.IsDead && totalTimeInWorld.TotalGameTime - entity.LastDeathTime > new TimeSpan(0, 0, entity.RespawnTime))
                 {
                     entity.Respawn();
                 }

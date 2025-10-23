@@ -26,21 +26,20 @@ namespace SkeletonsAdventure.Entities
         public int MaxMana { get; set; } = 0;
         public int AttributePoints { get; set; } = 0;
         public float XPModifier { get; set; } = 1.0f; //TODO
-        public FireBall FireBall { get; set; }
-        public IcePillar IcePillar { get; set; }
-        public IceBullet IceBullet { get; set; } 
-        public bool AimVisible { get; set; } = false;
+        private bool AimVisible { get; set; } = false;
         public List<Quest> ActiveQuests { get; set; } = [];
         public List<Quest> CompletedQuests { get; set; } = [];
         public string DisplayQuestName { get; private set; } = string.Empty;
         private BasicAttack AttackToAim { get; set; } = null;
-        public KillCounter KillCounter { get; private set; } = new(); //TODO add save data for this
+        public KillCounter KillCounter { get; private set; } = new(); 
+        public PlayerIndex PlayerIndex { get; set; } = PlayerIndex.One;
+        public static Dictionary<Keys, BasicAttack> KeyBindings { get; private set; } = [];
 
         public Player() : base()
         {
-            baseAttack = 400; //TODO correct the values
-            baseDefence = 6;
-            baseHealth = 3000;
+            BaseAttack = 400; //TODO correct the values
+            BaseDefence = 6;
+            BaseHealth = 3000;
             TotalXP = 0;
 
             Initialize(); 
@@ -49,10 +48,10 @@ namespace SkeletonsAdventure.Entities
         private void Initialize()
         {
             RespawnTime = 0;
-            Health = baseHealth;
-            MaxHealth = baseHealth;
-            Defence = baseDefence;
-            Attack = baseAttack;
+            Health = BaseHealth;
+            MaxHealth = BaseHealth;
+            Defence = BaseDefence;
+            Attack = BaseAttack;
             Speed = 6; //TODO
 
             BaseMana = 1000; //TODO
@@ -74,14 +73,15 @@ namespace SkeletonsAdventure.Entities
 
         private void InitializeAttacks()
         {
-            FireBall = (FireBall)GameManager.EntityAttackClone["FireBall"];
-            IcePillar = (IcePillar)GameManager.EntityAttackClone["IcePillar"];
-            IceBullet = (IceBullet)GameManager.EntityAttackClone["IceBullet"];
+            KeyBindings = new Dictionary<Keys, BasicAttack>
+            {
+                { Keys.D1, (FireBall)GameManager.EntityAttackClone["FireBall"]},
+                { Keys.D2, (IcePillar)GameManager.EntityAttackClone["IcePillar"] },
+                { Keys.D3, (IceBullet)GameManager.EntityAttackClone["IceBullet"] },
+            };
 
-            FireBall.AnimatedAttack = true;
-            FireBall.Source = this;
-            IceBullet.Source = this;
-            IcePillar.Source = this;
+            foreach (var attack in KeyBindings.Values)
+                attack.Source = this;
         }
 
         public void UpdatePlayerWithData(PlayerData playerData)
@@ -110,8 +110,6 @@ namespace SkeletonsAdventure.Entities
 
         public PlayerData GetPlayerData()
         {
-            Debug.WriteLine("kill counter data: \n" + KillCounter.ToData()); //TODO
-
             return new PlayerData(GetEntityData())
             {
                 totalXP = TotalXP,
@@ -155,7 +153,6 @@ namespace SkeletonsAdventure.Entities
                         spriteBatch.DrawRectangle(rect, Color.GhostWhite);
                         break;
                 }
-
             }
         }
 
@@ -194,10 +191,17 @@ namespace SkeletonsAdventure.Entities
 
         private protected void UpdateStatsWithBonusses()
         {
-            Attack = baseAttack + EquippedItems.EquippedItemsAttackBonus() + bonusAttackFromLevel + bonusAttackFromAttributePoints;
-            Defence = baseDefence + EquippedItems.EquippedItemsDefenceBonus() + bonusDefenceFromLevel + bonusDefenceFromAttributePoints;
-            MaxHealth = baseHealth + bonusHealthFromLevel + bonusHealthFromAttributePoints; //TODO maybe allow gear to provide a health bonus
-            MaxMana = BaseMana + bonusManaFromLevel + bonusManaFromAttributePoints; //TODO maybe allow gear to provide a mana bonus
+            Attack = BaseAttack + EquippedItems.EquippedItemsAttackBonus() + 
+                bonusAttackFromLevel + bonusAttackFromAttributePoints;
+
+            Defence = BaseDefence + EquippedItems.EquippedItemsDefenceBonus() + 
+                bonusDefenceFromLevel + bonusDefenceFromAttributePoints;
+
+            MaxHealth = BaseHealth + bonusHealthFromLevel + 
+                bonusHealthFromAttributePoints; //TODO maybe allow gear to provide a health bonus
+
+            MaxMana = BaseMana + bonusManaFromLevel + 
+                bonusManaFromAttributePoints; //TODO maybe allow gear to provide a mana bonus
         }
 
         private void IfLeveledRefillStats()
@@ -213,6 +217,7 @@ namespace SkeletonsAdventure.Entities
         public void CheckQuestCompleted()
         {
             List<Quest> completed = [];
+
             if (ActiveQuests != null && ActiveQuests.Count > 0)
             {
                 foreach (Quest quest in ActiveQuests)
@@ -392,65 +397,29 @@ namespace SkeletonsAdventure.Entities
 
         public void CheckInput(GameTime gameTime)
         {
+            //if the player is aiming an attack, check for mouse input
+            if (AimVisible)
+            {
+                if(InputHandler.CheckMouseReleased(MouseButton.Left))
+                {
+                    PerformAttack(gameTime, AttackToAim);
+                }
+            }
+
             //TODO properly handle controller input
+            //Keys 1 through 0 
+            foreach (var keyBinding in KeyBindings)
+            {
+                if (InputHandler.KeyReleased(keyBinding.Key))
+                {
+                    PerformAttack(gameTime, keyBinding.Value);
+                }
+            }
+
             if (InputHandler.KeyReleased(Keys.E) ||
-            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex.One))
+            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex))
             {
                 PerformAttack(gameTime, BasicAttack);
-            }
-
-            //Keys 1 through 0 
-            //TODO change the Buttons to correct buttons to be used on a controller
-            if (InputHandler.KeyReleased(Keys.D1) ||
-            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex.One))
-            {
-                PerformAimedAttack(gameTime, FireBall, GetMousePosition());
-            }
-            if (InputHandler.KeyReleased(Keys.D2) ||
-            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex.One))
-            {
-
-                PerformPopUpAttack(gameTime, IcePillar, GetMousePosition());
-            }
-            if (InputHandler.KeyReleased(Keys.D3) ||
-            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex.One))
-            {
-                PerformAimedAttack(gameTime, IceBullet, GetMousePosition());
-            }
-            if (InputHandler.KeyReleased(Keys.D4) ||
-            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex.One))
-            {
-
-            }
-            if (InputHandler.KeyReleased(Keys.D5) ||
-            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex.One))
-            {
-
-            }
-            if (InputHandler.KeyReleased(Keys.D6) ||
-            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex.One))
-            {
-
-            }
-            if (InputHandler.KeyReleased(Keys.D7) ||
-            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex.One))
-            {
-
-            }
-            if (InputHandler.KeyReleased(Keys.D8) ||
-            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex.One))
-            {
-
-            }
-            if (InputHandler.KeyReleased(Keys.D9) ||
-            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex.One))
-            {
-
-            }
-            if (InputHandler.KeyReleased(Keys.D0) ||
-            InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex.One))
-            {
-
             }
         }
 
@@ -459,22 +428,22 @@ namespace SkeletonsAdventure.Entities
             Vector2 motion = new();
 
             if (InputHandler.KeyDown(Keys.W) ||
-            InputHandler.ButtonDown(Buttons.LeftThumbstickUp, PlayerIndex.One))
+            InputHandler.ButtonDown(Buttons.LeftThumbstickUp, PlayerIndex))
             {
                 motion.Y = -1;
             }
             else if (InputHandler.KeyDown(Keys.S) ||
-            InputHandler.ButtonDown(Buttons.LeftThumbstickDown, PlayerIndex.One))
+            InputHandler.ButtonDown(Buttons.LeftThumbstickDown, PlayerIndex))
             {
                 motion.Y = 1;
             }
             if (InputHandler.KeyDown(Keys.A) ||
-            InputHandler.ButtonDown(Buttons.LeftThumbstickLeft, PlayerIndex.One))
+            InputHandler.ButtonDown(Buttons.LeftThumbstickLeft, PlayerIndex))
             {
                 motion.X = -1;
             }
             else if (InputHandler.KeyDown(Keys.D) ||
-            InputHandler.ButtonDown(Buttons.LeftThumbstickRight, PlayerIndex.One))
+            InputHandler.ButtonDown(Buttons.LeftThumbstickRight, PlayerIndex))
             {
                 motion.X = 1;
             }
@@ -491,6 +460,24 @@ namespace SkeletonsAdventure.Entities
         }
 
         public override void PerformAttack(GameTime gameTime, BasicAttack entityAttack)
+        {
+            switch(entityAttack)
+            {
+                case null:
+                    break;
+                case ShootingAttack attack:
+                    PerformAimedAttack(gameTime, attack, GetMousePosition());
+                    break;
+                case PopUpAttack attack:
+                    PerformPopUpAttack(gameTime, attack, GetMousePosition());
+                    break;
+                default:
+                    PerformBasicAttack(gameTime, entityAttack);
+                    break;
+            }
+        }
+
+        public virtual void PerformBasicAttack(GameTime gameTime, BasicAttack entityAttack)
         {
             base.PerformAttack(gameTime, entityAttack.Clone());
         }

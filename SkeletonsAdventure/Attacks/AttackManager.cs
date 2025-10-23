@@ -1,4 +1,5 @@
-﻿using SkeletonsAdventure.Entities;
+﻿using CppNet;
+using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
@@ -17,7 +18,14 @@ namespace SkeletonsAdventure.Attacks
                 return;
 
             foreach (var attack in Attacks)
+            {
                 attack.Draw(spriteBatch);
+
+                /*spriteBatch.Draw(attack.Texture, attack.Source.Position, attack.IconRectangle, attack.SpriteColor,
+                    0, attack.Source.Position, attack.Scale, SpriteEffects.None, 1);*/
+
+                attack.DrawIcon(spriteBatch, attack.Source.Position);
+            }
         }
 
         public void Update(GameTime gameTime)

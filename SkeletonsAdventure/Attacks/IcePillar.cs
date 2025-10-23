@@ -1,13 +1,12 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using RpgLibrary.AttackData;
+﻿using RpgLibrary.AttackData;
 using SkeletonsAdventure.Entities;
+using System.Linq;
 
 namespace SkeletonsAdventure.Attacks
 {
     internal class IcePillar : PopUpAttack
     {
-        private int AnimationFrames => _animations.Count;
+        public override Rectangle IconRectangle => _animations.First().Value.Frames[0];
 
         public IcePillar(AttackData attackData, Texture2D texture, Entity source) : base(attackData, texture, source)
         {
@@ -25,8 +24,10 @@ namespace SkeletonsAdventure.Attacks
 
         private void Initalize()
         {
-            if (AnimatedAttack)
+            if (AnimatedAttack) {
+                //SetFrames(4, 62, 62, order: [AnimationKey.Right]); //only one animation needed
                 SetFrames(4, 62, 62);
+            }
 
             ResetDamageHitBox();
         }
@@ -58,9 +59,9 @@ namespace SkeletonsAdventure.Attacks
 
         private void AnimatePillar()
         {
-            int timePerFrame = (AttackLength - AttackDelay) / AnimationFrames;
+            int timePerFrame = (AttackLength - AttackDelay) / _animations.Count;
             int currentFrame = (int)(Duration.TotalMilliseconds - AttackDelay) / timePerFrame;
-            double progressPercent = (currentFrame * (100 / (AnimationFrames + 2))) / 100.0; //the +2 is to make it shrink less per tick
+            double progressPercent = (currentFrame * (100 / (_animations.Count + 2))) / 100.0; //the +2 is to make it shrink less per tick
 
             Frame = new Rectangle(0 + (currentFrame * Width), 0, Width, Height);
             DamageHitBox = new((int)Position.X + Width / 4, (int)(Position.Y + Height * progressPercent), Width / 2, (int)(Height * (1.0 - progressPercent)));

@@ -93,8 +93,6 @@ namespace SkeletonsAdventure.GameWorld
 
             CurrentLevel.Draw(spriteBatch);
 
-
-
             sw.Stop();
             updateTimeMs = sw.Elapsed.TotalMilliseconds;
         }
