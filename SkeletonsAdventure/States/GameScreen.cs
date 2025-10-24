@@ -37,6 +37,7 @@ namespace SkeletonsAdventure.States
             Text = "No Quest",
         };
         public MessageBox MessageBox { get; private set; } = new();
+        private ActionBar ActionBar { get; set; }
 
         //private FPSCounter FPS { get; set; } = new();
 
@@ -66,11 +67,28 @@ namespace SkeletonsAdventure.States
             };
 
             Menus = [BackpackMenu];//TODO add more menus here when made
+
             CreateStatusBars();
+            CreateActionBar();
 
             QuestToDisplay.Position = new(10, XPProgress.Position.Y + XPProgress.Height + 10);
             ControlManager.Add(QuestToDisplay);
-            MessageBox.Position = new(4, Game1.ScreenHeight - MessageBox.Height - 4);
+            MessageBox.Position = new(4, Game1.ScreenHeight - MessageBox.Height - 4 - (Game1.ScreenHeight - ActionBar.Position.Y));
+            MessageBox.Visible = false;
+        }
+
+        private void CreateActionBar()
+        {
+            ActionBar = new(
+                Player.KeyBindings,
+                GameManager.Arial10,
+                GameManager.CreateTextureFromColor(Color.White), 
+                slotSize: 40
+            );
+
+            float x = (Game1.ScreenWidth - ActionBar.TotalWidth) / 2f;
+            float y = Game1.ScreenHeight - ActionBar.SlotSize - 10;
+            ActionBar.Position = new(x, y);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -110,7 +128,9 @@ namespace SkeletonsAdventure.States
             XPProgress.Draw(spriteBatch);
 
             ControlManager.Draw(spriteBatch);
-            MessageBox.Draw(spriteBatch);
+            MessageBox.Draw(spriteBatch); //TODO
+
+            ActionBar.Draw(spriteBatch);
 
             //FPS.Draw(spriteBatch, GameManager.InfoFont, new(10,10), Color.MonoGameOrange);
 

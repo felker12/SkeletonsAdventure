@@ -4,6 +4,7 @@ global using Microsoft.Xna.Framework.Graphics;
 global using System;
 global using System.Collections.Generic;
 global using System.Diagnostics; //this is just for debugging purposes
+
 using MonoGame.Extended.Tiled;
 using RpgLibrary.AttackData;
 using RpgLibrary.DataClasses;
@@ -18,7 +19,6 @@ using SkeletonsAdventure.Entities.NPCs;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.Quests;
-using SkeletonsAdventure.TileEngine;
 using System.IO;
 using System.Linq;
 
@@ -446,17 +446,10 @@ namespace SkeletonsAdventure.GameWorld
 
             foreach (var tile in tiledMapTileset.Tiles)
             {
-                //Debug.WriteLine($"Tile ID: {tile.LocalTileIdentifier}");
-
                 if(tile is TiledMapTilesetAnimatedTile animatedTile)
                 {
                     //to have a unique key for each animated tile the name will be the texture name + "_" + the tile id
                     TiledAnimations.Add(tileName + "_" + tile.LocalTileIdentifier, new(tiledMapTileset, animatedTile));
-
-                    /*foreach (TiledMapTilesetTileAnimationFrame frame in animatedTile.AnimationFrames)
-                    {
-                        Debug.WriteLine("ID: " + frame.LocalTileIdentifier + ", Duration: " + frame.Duration.Milliseconds);
-                    }*/
                 }
             }
         }

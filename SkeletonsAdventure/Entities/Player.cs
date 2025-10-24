@@ -169,6 +169,11 @@ namespace SkeletonsAdventure.Entities
             IfLeveledRefillStats();
             CheckQuestCompleted();
 
+            foreach(var attack in KeyBindings.Values)
+            {
+                attack.UpdateCooldown(gameTime);
+            }
+
             //TODO delete this
             //Info.Text += $"\nXP = {TotalXP}";
             //Info.Text += $"\nAttack = {Attack}\nDefence = {Defence}";
@@ -461,7 +466,7 @@ namespace SkeletonsAdventure.Entities
 
         public override void PerformAttack(GameTime gameTime, BasicAttack entityAttack)
         {
-            switch(entityAttack)
+            switch (entityAttack)
             {
                 case null:
                     break;
@@ -479,6 +484,12 @@ namespace SkeletonsAdventure.Entities
 
         public virtual void PerformBasicAttack(GameTime gameTime, BasicAttack entityAttack)
         {
+            if (entityAttack is null) return;
+
+            // Mark the binding as used so UI (and any checks on the binding instance) see the cooldown.
+            entityAttack.LastAttackTime = gameTime.TotalGameTime;
+
+            //perform the attack
             base.PerformAttack(gameTime, entityAttack.Clone());
         }
 

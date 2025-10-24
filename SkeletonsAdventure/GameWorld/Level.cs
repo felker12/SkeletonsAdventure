@@ -189,9 +189,6 @@ namespace SkeletonsAdventure.GameWorld
             {
                 foreach(var (name, visible) in layerVisibility)
                 {
-                    Debug.WriteLine($"Layer Name: {layer.Name}, Visible: {layer.IsVisible}");
-                    Debug.WriteLine($"Name: {name}, Visible: {layerVisibility}");
-
                     if (layer.Name == name)
                     {
                         layer.IsVisible = visible;

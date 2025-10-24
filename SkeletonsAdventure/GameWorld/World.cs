@@ -19,7 +19,8 @@ namespace SkeletonsAdventure.GameWorld
         public static Camera Camera { get; set; } = new(Game1.ScreenWidth, Game1.ScreenHeight);
         public static GameTime TotalTimeInWorld { get; set; } = new();
         public static List<string> MessagesToAdd { get; private set; } = [];
-        private static double updateTimeMs = 0;// TODO remove this after testing
+        private static double largestDrawTimeMs = 0;// TODO remove this after testing
+        private static double drawTimeMs = 0;// TODO remove this after testing
 
         public World(ContentManager content, GraphicsDevice graphics)
         {
@@ -42,7 +43,8 @@ namespace SkeletonsAdventure.GameWorld
             TotalTimeInWorld.TotalGameTime += gameTime.ElapsedGameTime;
             CurrentLevel.Update(gameTime, TotalTimeInWorld);
 
-            Player.Info.Text += $"\nDraw Time: {updateTimeMs:N2} ms"; //TODO remove this after testing
+            Player.Info.Text += $"\nDraw Time: {drawTimeMs:N2} ms"; //TODO remove this after testing
+            Player.Info.Text += $"\nLargest Draw Time: {largestDrawTimeMs:N2} ms"; //TODO remove this after testing
 
             //TODO delete this after adding a way to move from level to level to the game
             if (InputHandler.KeyReleased(Keys.NumPad0))
@@ -61,6 +63,7 @@ namespace SkeletonsAdventure.GameWorld
             }
             if (InputHandler.KeyReleased(Keys.NumPad4))
             {
+                largestDrawTimeMs = 0f;
             }
             if (InputHandler.KeyReleased(Keys.NumPad5))
             {
@@ -94,7 +97,10 @@ namespace SkeletonsAdventure.GameWorld
             CurrentLevel.Draw(spriteBatch);
 
             sw.Stop();
-            updateTimeMs = sw.Elapsed.TotalMilliseconds;
+            drawTimeMs = sw.Elapsed.TotalMilliseconds;
+
+            if (drawTimeMs > largestDrawTimeMs)//TODO remove this after testing
+                largestDrawTimeMs = drawTimeMs;
         }
 
         public static void AddGameEventToCurrentLevel(GameEvent gameEvent)

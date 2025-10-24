@@ -11,13 +11,13 @@ namespace SkeletonsAdventure.GameUI
         private readonly int MessageBoxPadding = 8;
 
         public List<string> Messages { get; private set; } = [];
-        public bool IsVisible { get; set; } = true;
+        public bool Visible { get; set; } = true;
         public int MaxLines { get; set; } = 10;
         public Color BackgroundColor { get; set; } = Color.LightGray * 0.4f;
         public Color TextColor { get; set; } = Color.White;
         public SpriteFont Font { get; set; } = GameManager.Arial12;
         public Vector2 Position { get; set; } = new Vector2(0, 0);
-        public int Width { get; set; } = 550;
+        public int Width { get; set; } = 480;
         public int Height => (int)Font.MeasureString($"1").Y * MaxLines + BorderWidth * 2 + MessageBoxPadding;
         public Rectangle Rectangle => new((int)Position.X, (int)Position.Y, Width, Height);
 
@@ -59,7 +59,7 @@ namespace SkeletonsAdventure.GameUI
 
         public void Update()
         {
-            if (!IsVisible) return;
+            if (!Visible) return;
 
             _previousMouseState = _currentMouseState;
             _currentMouseState = Mouse.GetState();
@@ -101,7 +101,7 @@ namespace SkeletonsAdventure.GameUI
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!IsVisible)
+            if (!Visible)
                 return;
 
             // Draw background
@@ -174,7 +174,7 @@ namespace SkeletonsAdventure.GameUI
 
         public void ToggleVisibility()
         {
-            IsVisible = !IsVisible;
+            Visible = !Visible;
         }
 
         public void AddMessage(string message)

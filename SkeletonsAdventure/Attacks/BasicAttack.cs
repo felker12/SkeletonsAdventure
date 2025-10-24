@@ -13,7 +13,7 @@ namespace SkeletonsAdventure.Attacks
         public TimeSpan LastAttackTime { get; set; }
         public Vector2 AttackOffset { get; set; }
         public Entity Source { get; set; }
-        public int AttackCoolDownLength { get; protected set; } //length of the delay between attacks in milliseconds
+        public int CoolDownLength { get; protected set; } //length of the delay between attacks in milliseconds
         public float DamageModifier { get; set; }
         public int ManaCost { get; set; }
         public bool AnimatedAttack { get; set; } = false; //TODO
@@ -22,6 +22,10 @@ namespace SkeletonsAdventure.Attacks
         public bool AttackVisible { get; set; } = true;
         public Vector2 StartPosition { get; set; } = new();
         public Vector2 InitialMotion { get; set; }
+
+        public bool OnCooldown { get; private set; } = false;
+        public double CooldownRemaining { get; private set; }
+        public float CooldownRemainingRatio { get; private set; }
 
         public virtual Rectangle IconRectangle { 
             get 
@@ -47,7 +51,7 @@ namespace SkeletonsAdventure.Attacks
             SpriteColor = attack.SpriteColor;
             Info.TextColor = attack.Info.TextColor;
             LastAttackTime = attack.LastAttackTime;
-            AttackCoolDownLength = attack.AttackCoolDownLength;
+            CoolDownLength = attack.CoolDownLength;
             Motion = attack.Motion;
             Speed = attack.Speed;
             DamageModifier = attack.DamageModifier;
@@ -67,7 +71,7 @@ namespace SkeletonsAdventure.Attacks
             Duration = attackData.Duration;
             AttackOffset = attackData.AttackOffset;
             LastAttackTime = attackData.LastAttackTime;
-            AttackCoolDownLength = attackData.AttackCoolDownLength;
+            CoolDownLength = attackData.AttackCoolDownLength;
             Speed = attackData.Speed;
             DamageModifier = attackData.DamageModifier;
             ManaCost = attackData.ManaCost;
@@ -86,17 +90,7 @@ namespace SkeletonsAdventure.Attacks
             if (AttackDelay > 0)
                 AttackVisible = false;
 
-
-
-            string animationInfo = string.Empty;
-
-            foreach (var animation in _animations)
-            {
-                animationInfo += $"Animation Key: {animation.Key}, " +
-                    $"Frame Count: {animation.Value.Frames.Length}. ";
-            }
-
-            Debug.WriteLine($"Animation Info for {this.GetType().Name}: {animationInfo}");
+            LastAttackTime = TimeSpan.FromMilliseconds(-CoolDownLength);
         }
 
         public virtual BasicAttack Clone()
@@ -106,11 +100,6 @@ namespace SkeletonsAdventure.Attacks
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (AttackVisible is false)
-            {
-                //spriteBatch.Draw(GameManager.AttackAreaTexture, new Vector2(DamageHitBox.X, DamageHitBox.Y), DamageHitBox, Color.White * 0.5f); //TODO
-            }
-
             if (AttackVisible)
             {
                 spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
@@ -150,6 +139,15 @@ namespace SkeletonsAdventure.Attacks
                 Source.CanMove = true;
             else
                 Source.CanMove = false;
+
+            UpdateCooldown(gameTime);
+        }
+
+        public void UpdateCooldown(GameTime gameTime)
+        {
+            OnCooldown = IsOnCooldown(gameTime);
+            CooldownRemaining = GetRemainingCooldown(gameTime);
+            CooldownRemainingRatio = (float)Math.Clamp(CooldownRemaining / CoolDownLength, 0f, 1f);
         }
 
         public virtual void SetUpAttack(GameTime gameTime, Color attackColor, Vector2 originPosition)
@@ -159,7 +157,7 @@ namespace SkeletonsAdventure.Attacks
             Position = originPosition + AttackOffset;
             DefaultColor = attackColor;
             SpriteColor = DefaultColor;
-            LastAttackTime = gameTime.TotalGameTime;
+            LastAttackTime = gameTime.TotalGameTime; 
             Info.Text = string.Empty;
             StartPosition = Position;
 
@@ -168,7 +166,13 @@ namespace SkeletonsAdventure.Attacks
 
         public bool IsOnCooldown(GameTime gameTime)
         {
-            return ((gameTime.TotalGameTime - LastAttackTime).TotalMilliseconds < AttackCoolDownLength);
+            return ((gameTime.TotalGameTime - LastAttackTime).TotalMilliseconds < CoolDownLength);
+        }
+
+        public double GetRemainingCooldown(GameTime gameTime)
+        {
+            double remainingCooldown = CoolDownLength - (gameTime.TotalGameTime - LastAttackTime).TotalMilliseconds;
+            return Math.Max(0, remainingCooldown);
         }
 
         public virtual AttackData GetAttackData()
@@ -180,7 +184,7 @@ namespace SkeletonsAdventure.Attacks
                 Duration = Duration,
                 AttackOffset = AttackOffset,
                 LastAttackTime = LastAttackTime,
-                AttackCoolDownLength = AttackCoolDownLength,
+                AttackCoolDownLength = CoolDownLength,
                 Speed = Speed,
                 DamageModifier = DamageModifier,
                 ManaCost = ManaCost,
@@ -238,7 +242,7 @@ namespace SkeletonsAdventure.Attacks
                 $"Duration: {Duration}, " +
                 $"Attack Offset: {AttackOffset}, " +
                 $"Last Attack Time: {LastAttackTime}, " +
-                $"Attack Cool Down Length: {AttackCoolDownLength}, " +
+                $"Attack Cool Down Length: {CoolDownLength}, " +
                 $"Speed: {Speed}, " +
                 $"Damage Modifier: {DamageModifier}, " +
                 $"Mana Cost: {ManaCost}, " +
@@ -278,10 +282,6 @@ namespace SkeletonsAdventure.Attacks
             Vector2 drawPos = position + new Vector2(size / 2f, size / 2f);
 
             spriteBatch.Draw(Texture, drawPos, src, tint, 0f, origin, scale, SpriteEffects.None, 0f);
-
-            //TODO
-            Debug.WriteLine($"Attack: {this.GetType().Name} has a scale of: {scale} for the icon," +
-                $"original rectangle: {IconRectangle}");
         }
     }
 }

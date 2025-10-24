@@ -20,11 +20,6 @@ namespace SkeletonsAdventure.Attacks
             foreach (var attack in Attacks)
             {
                 attack.Draw(spriteBatch);
-
-                /*spriteBatch.Draw(attack.Texture, attack.Source.Position, attack.IconRectangle, attack.SpriteColor,
-                    0, attack.Source.Position, attack.Scale, SpriteEffects.None, 1);*/
-
-                attack.DrawIcon(spriteBatch, attack.Source.Position);
             }
         }
 
@@ -34,6 +29,11 @@ namespace SkeletonsAdventure.Attacks
             {
                 LastAttackTime = gameTime.TotalGameTime;
                 _attacked = false;
+            }
+
+            foreach (var attack in Attacks)
+            {
+                attack.Update(gameTime);
             }
         }
 
@@ -69,7 +69,6 @@ namespace SkeletonsAdventure.Attacks
 
             foreach (var attack in Attacks)
             {
-                attack.Update(gameTime);
                 if (attack.AttackTimedOut() || attack.Source.IsDead)
                 {
                     attack.AttackVisible = false;

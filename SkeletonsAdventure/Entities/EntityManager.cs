@@ -57,8 +57,6 @@ namespace SkeletonsAdventure.Entities
         {
             foreach (var entity in Entities)
             {
-                entity.AttackManager.ClearExpiredAttacks(gameTime);
-
                 if (entity.IsDead == false) //Ensure dead enemies cannot be hit
                 {
                     entity.AttackManager.CheckAttackHit(Entities, gameTime); //TODO: this might have to be changed to totalTimeInWorld instead later
@@ -74,6 +72,8 @@ namespace SkeletonsAdventure.Entities
                 {
                     entity.Respawn();
                 }
+
+                entity.AttackManager.ClearExpiredAttacks(gameTime);
             }
         }
 
