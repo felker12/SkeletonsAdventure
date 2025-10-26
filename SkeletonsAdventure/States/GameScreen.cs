@@ -83,7 +83,7 @@ namespace SkeletonsAdventure.States
                 Player.KeyBindings,
                 GameManager.Arial10,
                 GameManager.CreateTextureFromColor(Color.White), 
-                slotSize: 40
+                slotSize: 36
             );
 
             float x = (Game1.ScreenWidth - ActionBar.TotalWidth) / 2f;

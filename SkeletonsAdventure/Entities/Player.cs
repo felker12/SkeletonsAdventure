@@ -165,14 +165,14 @@ namespace SkeletonsAdventure.Entities
             base.Update(gameTime); //keep the update call after updating motion
             
             Backpack.Update();
-            UpdateStatsWithBonusses();
-            IfLeveledRefillStats();
-            CheckQuestCompleted();
 
-            foreach(var attack in KeyBindings.Values)
-            {
+            CheckQuestCompleted();
+            UpdateStatsWithBonusses();
+            RefillStatsOnLevelUp();
+
+            //update cooldowns of all attacks
+            foreach (var attack in KeyBindings.Values)
                 attack.UpdateCooldown(gameTime);
-            }
 
             //TODO delete this
             //Info.Text += $"\nXP = {TotalXP}";
@@ -209,7 +209,7 @@ namespace SkeletonsAdventure.Entities
                 bonusManaFromAttributePoints; //TODO maybe allow gear to provide a mana bonus
         }
 
-        private void IfLeveledRefillStats()
+        private void RefillStatsOnLevelUp()
         {
             if (justLeveled)
             {
@@ -255,11 +255,6 @@ namespace SkeletonsAdventure.Entities
                 DisplayQuestName = string.Empty;
         }
 
-        public void SetDisplayQuestName(Quest quest)
-        {
-            DisplayQuestName = quest.Name;
-        }
-
         public void GiveQuestReward(QuestReward reward)
         {
             GainXp(reward.XP);
@@ -284,7 +279,6 @@ namespace SkeletonsAdventure.Entities
             if (quest != null && ActiveQuests.Contains(quest) is false)
             {
                 ActiveQuests.Add(quest);
-                SetDisplayQuestName(quest); //Make this the current quest to display
                 World.AddMessage($"Quest {quest.Name} started: {quest.Description}");
             }
         }
@@ -486,11 +480,8 @@ namespace SkeletonsAdventure.Entities
         {
             if (entityAttack is null) return;
 
-            // Mark the binding as used so UI (and any checks on the binding instance) see the cooldown.
-            entityAttack.LastAttackTime = gameTime.TotalGameTime;
-
             //perform the attack
-            base.PerformAttack(gameTime, entityAttack.Clone());
+            base.PerformAttack(gameTime, entityAttack);
         }
 
         public virtual void PerformAimedAttack(GameTime gameTime, ShootingAttack entityAttack, Vector2 targetPosition)

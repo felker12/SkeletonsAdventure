@@ -246,7 +246,7 @@ namespace SkeletonsAdventure.Entities
                 if (entityAttack.Speed > 0)
                     SetEntityAttackMotion(entityAttack);
 
-                entityAttack.SetUpAttack(gameTime, BasicAttackColor, Position);
+                entityAttack.SetUpAttack(gameTime, BasicAttackColor, Position); 
                 AttackManager.AddAttack(entityAttack.Clone(), gameTime);
             }
         }

@@ -79,6 +79,7 @@ namespace SkeletonsAdventure.Quests
                 if (!task.IsCompleted)
                     return; // If any task is not completed, the quest is not completed
             }
+
             CompleteQuest();
         }
 
@@ -90,9 +91,10 @@ namespace SkeletonsAdventure.Quests
 
             if (task.IsCompleted)
             {
+                World.AddMessage($"Task: '{task.TaskToComplete}' completed for quest '{Name}'.");
+
                 // If the task is completed, check if all tasks are completed
                 CheckTasksCompleted();
-                World.AddMessage($"Task: '{task.TaskToComplete}' completed for quest '{Name}'.");
             }
         }
 
@@ -113,6 +115,7 @@ namespace SkeletonsAdventure.Quests
         {
             IsCompleted = true;
             Active = false;
+
             World.AddMessage($"Quest {Name} Completed!");
             World.AddMessage($"Rewards gained: {Reward}");
         }

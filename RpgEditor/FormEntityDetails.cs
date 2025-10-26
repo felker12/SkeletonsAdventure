@@ -98,7 +98,7 @@ namespace RpgEditor
 
             Entity = new EntityData
             {
-                ID = id,
+                //ID = id,
                 Type = tbType.Text,
                 BaseHealth = baseHealth,
                 BaseDefence = baseDefence,
@@ -110,7 +110,7 @@ namespace RpgEditor
                 CurrentHealth = currentHealth,
                 IsDead = cbIsDead.Checked,
                 LastDeathTime = TimeSpan.Zero, // You can add a field for this if needed
-                GuaranteedItems = [] //TODO implement this
+                //GuaranteedItems = [] //TODO implement this
             };
 
             this.DialogResult = DialogResult.OK;
@@ -127,7 +127,7 @@ namespace RpgEditor
         public void LoadEntity(EntityData entity)
         {
             tbType.Text = entity.Type;
-            tbId.Text = entity.ID.ToString();
+            //tbId.Text = entity.ID.ToString();
             tbBaseHealth.Text = entity.BaseHealth.ToString();
             tbBaseDefence.Text = entity.BaseDefence.ToString();
             tbBaseAttack.Text = entity.BaseAttack.ToString();

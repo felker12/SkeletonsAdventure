@@ -146,6 +146,12 @@ namespace SkeletonsAdventure.GameWorld
             CreateAttacks();
             CreateQuests();
             CreateNPCs();
+
+
+            foreach (var item in Items)
+            {
+                Debug.WriteLine(item.ToString()); //TODO
+            }
         }
 
         public static Texture2D CreateTextureFromColor(Color color)
@@ -466,6 +472,7 @@ namespace SkeletonsAdventure.GameWorld
             GameItem gameItem;
             Weapon weapon;
             Armor armor;
+            Shield shield;
             Consumable consumable;
 
             foreach (string folder in folders)
@@ -490,6 +497,11 @@ namespace SkeletonsAdventure.GameWorld
                     {
                         armor = new(armorData.Clone());
                         gameItem = armor;
+                    }
+                    else if(itemData is ShieldData shieldData)
+                    {
+                        shield = new(shieldData.Clone());
+                        gameItem = shield;
                     }
                     else if (itemData is ConsumableData consumableData)
                     {

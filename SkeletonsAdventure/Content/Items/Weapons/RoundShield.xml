@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:ItemClasses="RpgLibrary.ItemClasses">
-  <Asset Type="ItemClasses:WeaponData">
-    <Name>Sword</Name>
-    <Type>Slashing</Type>
-    <Description>A Sword</Description>
+  <Asset Type="ItemClasses:ShieldData">
+    <Name>Round Shield</Name>
+    <Type>Shield</Type>
+    <Description>A basic round shield</Description>
     <Price>40</Price>
     <Weight>10</Weight>
     <Equipped>false</Equipped>
@@ -11,9 +11,9 @@
     <Consumable>false</Consumable>
     <Position>0 0</Position>
     <Quantity>1</Quantity>
-    <SourceRectangle>1952 1472 32 32</SourceRectangle>
+    <SourceRectangle>160 1184 32 32</SourceRectangle>
     <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-    <NumberHands>Main</NumberHands>
-    <AttackValue>10</AttackValue>
+    <NumberHands>Off</NumberHands>
+    <DefenceValue>2</DefenceValue>
   </Asset>
 </XnaContent>

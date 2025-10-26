@@ -6,13 +6,11 @@ using SkeletonsAdventure.ItemClasses;
 
 namespace SkeletonsAdventure.Entities
 {
-    internal class EntityManager
+    internal class EntityManager()
     {
         private List<Entity> Entities { get; } = []; //list of all entities in the level, including the player
         public DroppedLootManager DroppedLootManager { get; } = new(); //used to manage the loot dropped by dead entities
         public Player Player { get; set; } = World.Player;
-
-        public EntityManager(){}
 
         public void Add(Entity entity)
         {
@@ -25,9 +23,6 @@ namespace SkeletonsAdventure.Entities
         public void Remove(Entity entity)
         {
             Entities.Remove(entity);
-
-            /*if (entity is Player)
-                Player = World.Player;*/
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -190,63 +185,6 @@ namespace SkeletonsAdventure.Entities
             return playerInRange;
         }
 
-       
-
-        public void CheckEntityBoundaryCollisions(TiledMapTileLayer mapCollisionLayer, int tileWidth, int tileHeight)
-        {
-            foreach (Entity entity in Entities)
-            {
-                //Check entity collision with the map boundaries
-                if (entity.CanMove)
-                    CheckCollision(entity, mapCollisionLayer, tileWidth, tileHeight);
-
-                //Check entity attacks collision with the map boundaries
-                foreach (BasicAttack entityAttack in entity.AttackManager.Attacks)
-                {
-                    if (entityAttack.CanMove)
-                        CheckCollision(entityAttack, mapCollisionLayer, tileWidth, tileHeight);
-                }
-            }
-        }
-
-        private static void CheckCollision(AnimatedSprite entity,TiledMapTileLayer mapCollisionLayer, int tileWidth, int tileHeight)
-        {
-            if (entity.Motion == Vector2.Zero)
-                return;
-
-            if (mapCollisionLayer == null)
-            {
-                entity.Position += entity.Motion * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier;
-                return;
-            }
-
-            Vector2 pos = entity.Position,
-                motion = entity.Motion;
-            Rectangle rec = entity.Rectangle;
-            bool xBlocked, yBlocked;
-
-            // --- Y axis ---
-            if(motion.Y != 0)
-            {
-                yBlocked = CheckYAxis(entity, mapCollisionLayer, pos, motion, rec, tileWidth, tileHeight);
-
-                if (yBlocked)
-                    motion.Y = 0;
-            }
-
-            // --- X axis ---
-            if(motion.X != 0)
-            {
-                xBlocked = CheckXAxis(entity, mapCollisionLayer, pos, motion, rec, tileWidth, tileHeight);
-
-                if (xBlocked)
-                    motion.X = 0;
-            }
-
-            entity.Motion = motion;
-            entity.Position += entity.Motion * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier;
-        }
-
         public void CheckEntityBoundaryCollisions(TiledMapTileLayer[] mapCollisionLayers, int tileWidth, int tileHeight)
         {
             foreach (Entity entity in Entities)
@@ -302,14 +240,13 @@ namespace SkeletonsAdventure.Entities
                 if (motion.X != 0)
                 {
                     if (xBlocked is false)
-                    {
                         xBlocked = CheckXAxis(entity, layer, pos, motion, rec, tileWidth, tileHeight);
 
-                        if (xBlocked)
-                            motion.X = 0;
-                    }
+                    if (xBlocked)
+                        motion.X = 0;
                 }
 
+                // Break out of loop early if both axes are blocked or no motion left
                 if (motion == Vector2.Zero
                     || (xBlocked && yBlocked))
                     break;
@@ -319,11 +256,13 @@ namespace SkeletonsAdventure.Entities
             entity.Position += entity.Motion * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier;
         }
 
+        //--- Axis Collision Checks ---
         private static bool CheckXAxis(AnimatedSprite entity, TiledMapTileLayer mapCollisionLayer, Vector2 pos, Vector2 motion, Rectangle rec, int width, int height)
         {
             Vector2 newPosX = new(pos.X + motion.X * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier, pos.Y + motion.Y * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier);
             Rectangle newRectX = new((int)newPosX.X, (int)newPosX.Y, rec.Width, rec.Height);
             int checkX = motion.X > 0 ? (newRectX.Right - 1) / width : newRectX.Left / width;
+
             for (int y = newRectX.Top / height; y <= (newRectX.Bottom - 1) / height; y++)
             {
                 if (IsTileBlocked(checkX, y, mapCollisionLayer))
@@ -340,6 +279,7 @@ namespace SkeletonsAdventure.Entities
             Vector2 newPosY = new(pos.X, pos.Y + motion.Y * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier);
             Rectangle newRectY = new((int)newPosY.X, (int)newPosY.Y, rec.Width, rec.Height);
             int checkY = motion.Y > 0 ? (newRectY.Bottom - 1) / height : newRectY.Top / height;
+
             for (int x = newRectY.Left / width; x <= (newRectY.Right - 1) / width; x++)
             {
                 if (IsTileBlocked(x, checkY, mapCollisionLayer))
@@ -351,6 +291,7 @@ namespace SkeletonsAdventure.Entities
             return false;
         }
 
+        //--- Tile Check ---
         private static bool IsTileBlocked(int x, int y, TiledMapTileLayer mapCollisionLayer)
         {
             return mapCollisionLayer.TryGetTile((ushort)x, (ushort)y, out TiledMapTile? tile) && tile.Value.IsBlank is false;

@@ -1,10 +1,11 @@
-﻿using RpgLibrary.ItemClasses;
+﻿using Microsoft.Xna.Framework;
+using RpgLibrary.ItemClasses;
 
 namespace SkeletonsAdventure.ItemClasses
 {
     internal class EquippedItems()
     {
-        public GameItem Mainhand, Offhand, BodySlot, HeadSlot, HandsSlot, FeetSlot;
+        private GameItem Mainhand, Offhand, BodySlot, HeadSlot, HandsSlot, FeetSlot;
 
         public int EquippedItemsAttackBonus()
         {
@@ -28,6 +29,8 @@ namespace SkeletonsAdventure.ItemClasses
                 def += hands.DefenseValue;
             if (FeetSlot != null && FeetSlot is Armor feet)
                 def += feet.DefenseValue;
+            if (Offhand != null && Offhand is Shield shield)
+                def += shield.DefenceValue;
 
             return def;
         }
@@ -69,63 +72,91 @@ namespace SkeletonsAdventure.ItemClasses
         {
             if(gameItem is Weapon weapon)
             {
-                if (weapon.NumberHands == Hands.Both)
-                {
-                    if (Mainhand != null)
-                        TryUnequipItem(Mainhand);
-                    if (Offhand != null)
-                        TryUnequipItem(Offhand);
-
-                    Mainhand = gameItem;
-                }
-                else if (weapon.NumberHands == Hands.Main)
-                {
-                    if (Mainhand != null)
-                        TryUnequipItem(Mainhand);
-
-                    Mainhand = gameItem;
-                }
-                else if (weapon.NumberHands == Hands.Off)
-                {
-                    if (Offhand != null)
-                        TryUnequipItem(Offhand);
-                    //If a mainhand weapon is equipped and it is a 2 handed weapon unequip it
-                    if (Mainhand != null && Mainhand is Weapon weap && weap.NumberHands == Hands.Both) 
-                        TryUnequipItem(Mainhand);
-
-                    Offhand = gameItem;
-                }
-
-                weapon.SetEquipped(true);
+                TryEquipWeapon(weapon);
             }
             else if (gameItem is Armor armor)
             {
-                switch (armor.ArmorLocation)
-                {
-                    case ArmorLocation.Head:
-                        if (HeadSlot != null)
-                            TryUnequipItem(HeadSlot);
-                        HeadSlot = gameItem;
-                        break;
-                    case ArmorLocation.Body:
-                        if (BodySlot != null)
-                            TryUnequipItem(BodySlot);
-                        BodySlot = gameItem;
-                        break;
-                    case ArmorLocation.Hands:
-                        if (HandsSlot != null)
-                            TryUnequipItem(HandsSlot);
-                        HandsSlot = gameItem;
-                        break;
-                    case ArmorLocation.Feet:
-                        if (FeetSlot != null)
-                            TryUnequipItem(FeetSlot);
-                        FeetSlot = gameItem;
-                        break;
-                }
-
-                armor.SetEquipped(true);
+                TryEquipArmor(armor);
             }
+            else if(gameItem is Shield shield)
+            {
+                TryEquipShield(shield);
+            }
+        }
+
+        private void TryEquipWeapon(Weapon weapon)
+        {
+            if (weapon.NumberHands == Hands.Both)
+            {
+                if (Mainhand != null)
+                    TryUnequipItem(Mainhand);
+                if (Offhand != null)
+                    TryUnequipItem(Offhand);
+
+                Mainhand = weapon;
+            }
+            else if (weapon.NumberHands == Hands.Main)
+            {
+                if (Mainhand != null)
+                    TryUnequipItem(Mainhand);
+
+                Mainhand = weapon;
+            }
+            else if (weapon.NumberHands == Hands.Off)
+            {
+                if (Offhand != null)
+                    TryUnequipItem(Offhand);
+
+                //If a mainhand weapon is equipped and it is a 2 handed weapon unequip it
+                if (Mainhand != null && Mainhand is Weapon weap && weap.NumberHands == Hands.Both)
+                    TryUnequipItem(Mainhand);
+
+                Offhand = weapon;
+            }
+
+            weapon.SetEquipped(true);
+        }
+
+        private void TryEquipArmor(Armor armor)
+        {
+            switch (armor.ArmorLocation)
+            {
+                case ArmorLocation.Head:
+                    if (HeadSlot != null)
+                        TryUnequipItem(HeadSlot);
+                    HeadSlot = armor;
+                    break;
+                case ArmorLocation.Body:
+                    if (BodySlot != null)
+                        TryUnequipItem(BodySlot);
+                    BodySlot = armor;
+                    break;
+                case ArmorLocation.Hands:
+                    if (HandsSlot != null)
+                        TryUnequipItem(HandsSlot);
+                    HandsSlot = armor;
+                    break;
+                case ArmorLocation.Feet:
+                    if (FeetSlot != null)
+                        TryUnequipItem(FeetSlot);
+                    FeetSlot = armor;
+                    break;
+            }
+
+            armor.SetEquipped(true);
+        }
+
+        private void TryEquipShield(Shield shield)
+        {
+            if (Offhand != null)
+                TryUnequipItem(Offhand);
+
+            //If a mainhand weapon is equipped and it is a 2 handed weapon unequip it
+            if (Mainhand != null && Mainhand is Weapon weap && weap.NumberHands == Hands.Both)
+                TryUnequipItem(Mainhand);
+
+            Offhand = shield;
+            shield.SetEquipped(true);
         }
 
         public void TryUnequipItem(GameItem gameItem)
@@ -160,6 +191,8 @@ namespace SkeletonsAdventure.ItemClasses
                 armor.SetEquipped(false);
             if(gameItem is Weapon weapon)
                 weapon.SetEquipped(false);
+            if(gameItem is Shield shield)
+                shield.SetEquipped(false);
         }
     }
 }

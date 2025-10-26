@@ -2,7 +2,5 @@
 <XnaContent xmlns:Generic="System.Collections.Generic">
   <Asset Type="Generic:List[string]">
     <Item>Welcome!</Item>
-    <Item>Player killed Skeleton level 1 with IceBullet. 7 XP was gained.</Item>
-    <Item>Player killed Skeleton level 1 with BasicAttack. 7 XP was gained.</Item>
   </Asset>
 </XnaContent>

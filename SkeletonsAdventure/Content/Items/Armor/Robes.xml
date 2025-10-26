@@ -3,7 +3,7 @@
   <Asset Type="ItemClasses:ArmorData">
     <Name>Robes</Name>
     <Type>Robes</Type>
-	  <Description>A Robe</Description>
+	<Description>A Robe</Description>
     <Price>10</Price>
     <Weight>5</Weight>
     <Equipped>false</Equipped>

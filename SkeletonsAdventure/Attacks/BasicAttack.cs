@@ -22,7 +22,6 @@ namespace SkeletonsAdventure.Attacks
         public bool AttackVisible { get; set; } = true;
         public Vector2 StartPosition { get; set; } = new();
         public Vector2 InitialMotion { get; set; }
-
         public bool OnCooldown { get; private set; } = false;
         public double CooldownRemaining { get; private set; }
         public float CooldownRemainingRatio { get; private set; }

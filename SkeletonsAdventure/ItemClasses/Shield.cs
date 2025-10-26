@@ -2,31 +2,31 @@
 
 namespace SkeletonsAdventure.ItemClasses
 {
-    internal class Weapon : EquipableItem
+    internal class Shield : EquipableItem
     {
         public Hands NumberHands { get; set; }
-        public int AttackValue { get; set; }
+        public int DefenceValue { get; set; }
 
-        public Weapon(Weapon item) : base(item)
-        {
-            NumberHands = item.NumberHands;
-            AttackValue = item.AttackValue;
-        }
 
-        public Weapon(WeaponData data) : base(data)
+        public Shield(ShieldData data) : base(data)
         {
             NumberHands = data.NumberHands;
-            AttackValue = data.AttackValue;
+            DefenceValue = data.DefenceValue;
+        }
+        public Shield(Shield item) : base(item)
+        {
+            NumberHands = item.NumberHands;
+            DefenceValue = item.DefenceValue;
         }
 
-        public override Weapon Clone()
+        public override Shield Clone()
         {
-            return new Weapon(this);
+            return new Shield(this);
         }
 
-        public override WeaponData GetData()
+        public override ShieldData GetData()
         {
-            return new WeaponData
+            return new ShieldData
             {
                 Name = Name,
                 Type = Type,
@@ -40,7 +40,7 @@ namespace SkeletonsAdventure.ItemClasses
                 SourceRectangle = SourceRectangle,
                 TexturePath = TexturePath,
                 NumberHands = NumberHands,
-                AttackValue = AttackValue
+                DefenceValue = DefenceValue
             };
 
         }

@@ -245,10 +245,25 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Arial20.spritefont
 
+#begin Items/Armor/Gloves.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Items/Armor/Gloves.xml
+
+#begin Items/Armor/Hood.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Items/Armor/Hood.xml
+
 #begin Items/Armor/Robes.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:Items/Armor/Robes.xml
+
+#begin Items/Armor/Shoes.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Items/Armor/Shoes.xml
 
 #begin Items/Bones.png
 /importer:TextureImporter
@@ -283,6 +298,11 @@
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:Items/Currency/Coins.xml
+
+#begin Items/Weapons/RoundShield.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Items/Weapons/RoundShield.xml
 
 #begin Items/Weapons/Sword.xml
 /importer:XmlImporter

@@ -291,7 +291,6 @@ namespace SkeletonsAdventure.GameWorld
                             InteractableObjectManager.Add(new InteractableObject(obj));
                         }
                     }
-
                 }
             }
         }
