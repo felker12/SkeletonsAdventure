@@ -24,7 +24,7 @@ namespace SkeletonsAdventure.ItemClasses
             return new Shield(this);
         }
 
-        public override ShieldData GetData()
+        public override ShieldData ToData()
         {
             return new ShieldData
             {

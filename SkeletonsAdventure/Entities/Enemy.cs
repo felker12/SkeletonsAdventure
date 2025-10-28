@@ -1,9 +1,9 @@
 ﻿using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
 using SkeletonsAdventure.Attacks;
-using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.ItemClasses;
+using SkeletonsAdventure.ItemClasses.ItemManagement;
 
 namespace SkeletonsAdventure.Entities
 {
@@ -141,7 +141,7 @@ namespace SkeletonsAdventure.Entities
         {
             return new(base.GetEntityData())
             {
-                GuaranteedItems = GuaranteedDrops.GetItemListItemData(),
+                GuaranteedItems = GuaranteedDrops.ToData(),
                 DropTableName = DropTableName,
             };
         }

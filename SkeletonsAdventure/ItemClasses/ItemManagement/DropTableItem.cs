@@ -1,7 +1,7 @@
 ﻿
 using RpgLibrary.ItemClasses;
 
-namespace SkeletonsAdventure.Engines
+namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
     internal class DropTableItem
     {
@@ -12,7 +12,7 @@ namespace SkeletonsAdventure.Engines
 
         public DropTableItem() { }
 
-        public DropTableItem(string itemName, int dropChance, int minQuantity, int maxQuantity)
+        public DropTableItem(string itemName, int dropChance, int minQuantity = 1, int maxQuantity = 1)
         {
             ItemName = itemName;
             DropChance = dropChance;
@@ -24,6 +24,14 @@ namespace SkeletonsAdventure.Engines
         {
             ItemName = itemName;
             DropChance = dropChance;
+        }
+
+        public DropTableItem(DropTableItemData data)
+        {
+            ItemName = data.ItemName;
+            DropChance = data.DropChance;
+            MinQuantity = data.MinQuantity;
+            MaxQuantity = data.MaxQuantity;
         }
 
         public DropTableItem Clone()

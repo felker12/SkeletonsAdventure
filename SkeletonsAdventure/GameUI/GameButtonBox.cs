@@ -1,4 +1,5 @@
-﻿using SkeletonsAdventure.Controls;
+﻿using Microsoft.Xna.Framework;
+using SkeletonsAdventure.Controls;
 
 namespace SkeletonsAdventure.GameUI
 {
@@ -67,13 +68,10 @@ namespace SkeletonsAdventure.GameUI
             }
         }
 
-
         public void AddButton(GameButton button, string buttonText)
         {
-            button.Text = buttonText;
+            button.SetText(buttonText);
             button.Visible = false;
-            button.Width = (int)button.SpriteFont.MeasureString(buttonText).X;
-            button.Height = (int)button.SpriteFont.MeasureString(buttonText).Y;
 
             Buttons.Add(button);
         }
@@ -84,6 +82,11 @@ namespace SkeletonsAdventure.GameUI
             {
                 AddButton(button.Value, button.Key);
             }
+        }
+
+        public void ClearButtons()
+        {
+            Buttons.Clear();
         }
 
         public override int VisibleButtonsCount()
@@ -126,6 +129,30 @@ namespace SkeletonsAdventure.GameUI
             }
 
             return length;
+        }
+
+        public void RecalculateSize()
+        {
+            if (VisibleButtonsCount() > 0)
+            {
+                Height = VisibleButtonsHeight() + (int)ControlOffset.Y * 2;
+                Width = LongestButtonTextLength() + (int)ControlOffset.X * 2;
+                Vector2 offset = ControlOffset;
+
+                foreach (GameButton button in Buttons)
+                {
+                    if (button.Visible)
+                    {
+                        button.Position = Position + offset;
+                        offset += new Vector2(0, button.Height);
+                    }
+                }
+            }
+            else
+            {
+                Height = 0;
+                Width = 0;
+            }
         }
     }
 }

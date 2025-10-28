@@ -35,7 +35,7 @@ namespace SkeletonsAdventure.ItemClasses
             return new(this);
         }
 
-        public override ConsumableData GetData()
+        public override ConsumableData ToData()
         {
             return new ConsumableData
             {

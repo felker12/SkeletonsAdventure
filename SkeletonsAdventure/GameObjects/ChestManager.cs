@@ -72,7 +72,7 @@ namespace SkeletonsAdventure.GameObjects
             List<ChestData> chestDatas = [];
 
             foreach (Chest chest in Chests)
-                chestDatas.Add(chest.GetChestData());
+                chestDatas.Add(chest.ToData());
 
             return chestDatas;
         }
@@ -85,7 +85,9 @@ namespace SkeletonsAdventure.GameObjects
                 {
                     if(chest.Position == data.Position)
                     {
-                        chest.Loot.Items = GameManager.LoadGameItemsFromItemData(data.ItemDatas);
+                        chest.DropTable = GameManager.GetDropTableByName(chest.DropTableName);
+                        chest.ChestEmptied = data.ChestEmptied;
+                        chest.Items = GameManager.LoadGameItemsFromItemData(data.ItemDatas);
                     }
                 }
             }

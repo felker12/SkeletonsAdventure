@@ -9,15 +9,14 @@ using MonoGame.Extended.Tiled;
 using RpgLibrary.AttackData;
 using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
-using RpgLibrary.GameObjectClasses;
 using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
-using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.Entities.NPCs;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.ItemClasses;
+using SkeletonsAdventure.ItemClasses.ItemManagement;
 using SkeletonsAdventure.Quests;
 using System.IO;
 using System.Linq;
@@ -98,14 +97,11 @@ namespace SkeletonsAdventure.GameWorld
 
         //Miscellaneous Textures
         public static Texture2D DoorLeverAndChestAnimationTexture { get; private set; }
-
-
         //==========
 
         //Colors
         public static Color TextBoxColor { get; set; }
         //=========
-
 
         //Attacks
         public static AttackData BasicAttackData { get; set; }
@@ -136,21 +132,21 @@ namespace SkeletonsAdventure.GameWorld
             LoadAttacks();
             LoadTiledAnimations();
 
-            CreateItems();
-            CreateDropTables();
+            CreateItems(); 
+            DropTables = GameCreationManager.CreateDropTables();
 
             CreateEnemies();
             //CreateEnemiesManually();
 
-            CreateChests();
+            Chests = GameCreationManager.CreateChests(DropTablesClone);
             CreateAttacks();
             CreateQuests();
             CreateNPCs();
 
 
-            foreach (var item in Items)
+            foreach (var item in ItemsClone)
             {
-                Debug.WriteLine(item.ToString()); //TODO
+                Debug.WriteLine("key: " + item.Key + ", name: " + item.Value.Name); //TODO
             }
         }
 
@@ -521,20 +517,6 @@ namespace SkeletonsAdventure.GameWorld
             }
         }
 
-        private static void CreateDropTables() //TODO: Drop tables should be created from the content folder
-        {
-            DropTable BasicDropTable = new(); //Create a basic drop table
-            BasicDropTable.AddItem(new DropTableItem(ItemsClone["Coins"].Name, 10, 1, 12));
-            BasicDropTable.AddItem(new DropTableItem(ItemsClone["Robes"].Name, 10, 1, 1)); 
-            BasicDropTable.AddItem(new DropTableItem(ItemsClone["Bones"].Name, 10, 1, 2)); 
-            BasicDropTable.AddItem(new DropTableItem(ItemsClone["Sword"].Name, 10, 1, 1)); 
-            BasicDropTable.PopulateItemNames(); //Populate the item names in the drop table
-
-            DropTables.Add("BasicDropTable", BasicDropTable); //Add the basic drop table to the dictionary
-
-            //TODO : Create more drop tables as needed
-        }
-
         private static bool CreateDropTableItemFromGameItem(GameItem item)
         {
             if (item is not null && item.Name is not null)
@@ -617,41 +599,6 @@ namespace SkeletonsAdventure.GameWorld
             {
                 XnaSerializer.Serialize($@"{EnemyPath}\{enemy.Value.GetType().Name}Data.xml", enemy.Value.GetEntityData());
             }
-        }
-
-        //Create the chests from the content folder
-        private static void CreateChests() //TODO
-        {
-            ItemsClone.TryGetValue("Coins", out GameItem Coins);
-            Coins.SetQuantity(10);
-
-            ItemList loots = new();
-            loots.Add(ItemsClone["Robes"]);
-            loots.Add(ItemsClone["Bones"]);
-            loots.Add(Coins.Clone());
-            loots.Add(ItemsClone["Sword"]);
-
-            Chest BasicChest = new()
-            {
-                ID = 8,
-                ChestType = ChestType.Basic,
-                Loot = loots.Clone()
-            };
-
-            string name = nameof(BasicChest);
-            if (Chests.ContainsKey(name) == false)
-                Chests.Add(name, BasicChest);
-
-            Chest BasicChest2 = new()
-            {
-                ID = 784,
-                ChestType = ChestType.Basic,
-                Loot = loots.Clone()
-            };
-
-            name = nameof(BasicChest2);
-            if (Chests.ContainsKey(name) == false)
-                Chests.Add(name, BasicChest2);
         }
 
         private static void CreateAttacks()

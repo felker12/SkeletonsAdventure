@@ -6,6 +6,7 @@ using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.ItemClasses;
+using SkeletonsAdventure.ItemClasses.ItemManagement;
 using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.Entities
@@ -121,7 +122,7 @@ namespace SkeletonsAdventure.Entities
                 bonusDefenceFromAttributePoints = bonusDefenceFromAttributePoints,
                 bonusHealthFromAttributePoints = bonusHealthFromAttributePoints,
                 bonusManaFromAttributePoints = bonusManaFromAttributePoints,
-                backpack = Backpack.GetItemListItemData(),
+                backpack = Backpack.ToData(),
                 activeQuests = ActiveQuests.ConvertAll(q => q.GetQuestData()),
                 completedQuests = CompletedQuests.ConvertAll(q => q.GetQuestData()),
                 displayQuestName = DisplayQuestName,

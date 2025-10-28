@@ -3,6 +3,7 @@ using RpgLibrary.EntityClasses;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.ItemClasses;
+using SkeletonsAdventure.ItemClasses.ItemManagement;
 
 namespace SkeletonsAdventure.Entities
 {

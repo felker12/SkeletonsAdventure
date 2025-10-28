@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace RpgLibrary.ItemClasses
 {
     public class DropTableData
@@ -11,6 +6,11 @@ namespace RpgLibrary.ItemClasses
         public List<DropTableItemData> DropTableList { get; set; } = new List<DropTableItemData>();
 
         public DropTableData() { }
+
+        public DropTableData(List<DropTableItemData> data)
+        {
+            DropTableList = data;
+        }
 
         public override string ToString()
         {

@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 
 namespace SkeletonsAdventure.Controls
 {
@@ -11,10 +9,12 @@ namespace SkeletonsAdventure.Controls
 
         public GameButton(Texture2D texture) : base(texture)
         {
+            Position = new(-1000, -1000); // Start off-screen
         }
 
         public GameButton(Texture2D texture, SpriteFont font) : base(texture, font)
         {
+            Position = new(-1000, -1000); // Start off-screen
         }
 
         public override void Update(GameTime gameTime)
@@ -44,6 +44,13 @@ namespace SkeletonsAdventure.Controls
             }
 
             _isHovering = mouseRectangle.Intersects(Rectangle);
+        }
+
+        public void SetText(string text)
+        {
+            Text = text;
+            Width = (int)SpriteFont.MeasureString(text).X;
+            Height = (int)SpriteFont.MeasureString(text).Y;
         }
     }
 }

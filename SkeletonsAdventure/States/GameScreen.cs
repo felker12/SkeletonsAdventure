@@ -14,7 +14,7 @@ namespace SkeletonsAdventure.States
     enum BoxSource { Game, Panel }
     internal class GameScreen : State
     {
-        private MouseState _mouseState = Mouse.GetState();
+        private MouseState _mouseState, _lastMouseState;
         private GameButton equip, unequip, pickUp, drop, consume;
         private GameItem itemUnderMouse = null;
 
@@ -191,7 +191,7 @@ namespace SkeletonsAdventure.States
                 MessageBox.ToggleVisibility();
             }
 
-            if (_mouseState.LeftButton == ButtonState.Pressed)
+            if (_mouseState.LeftButton == ButtonState.Released && _lastMouseState.LeftButton == ButtonState.Pressed)
             {
                 // Only try to pick up items if they're in the game world (not in backpack)
                 if (itemUnderMouse != null &&
@@ -234,6 +234,7 @@ namespace SkeletonsAdventure.States
 
         private void CheckUnderMouse(GameTime gameTime)
         {
+            _lastMouseState = _mouseState;
             _mouseState = Mouse.GetState();
 
             itemUnderMouse = null;
@@ -267,11 +268,11 @@ namespace SkeletonsAdventure.States
                 else if (CurrentSource == BoxSource.Panel)
                     CheckMouseIntersectsInPanel(gameTime, MouseRec);
 
-                consume.Text = $"Consume {itemUnderMouse.Name}";
-                drop.Text = $"Drop {itemUnderMouse.Name}";
-                equip.Text = $"Equip {itemUnderMouse.Name}";
-                unequip.Text = $"Unequip {itemUnderMouse.Name}";
-                pickUp.Text = $"Pick Up {itemUnderMouse.Name}";
+                consume.SetText($"Consume {itemUnderMouse.Name}");
+                drop.SetText($"Drop {itemUnderMouse.Name}");
+                equip.SetText($"Equip {itemUnderMouse.Name}");
+                unequip.SetText($"Unequip {itemUnderMouse.Name}");
+                pickUp.SetText($"Pick Up {itemUnderMouse.Name}");
             }
         }
 
@@ -330,7 +331,7 @@ namespace SkeletonsAdventure.States
             if (mouseRec.Intersects(itemRec))
             {
                 item.ToolTip.Visible = true;
-                if (_mouseState.RightButton ==  ButtonState.Pressed)
+                if (_mouseState.RightButton == ButtonState.Released && _lastMouseState.RightButton == ButtonState.Pressed)
                 {
                     CurrentSource = source;
                     Vector2 mousePos = new(mouseRec.X, mouseRec.Y);

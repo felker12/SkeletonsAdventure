@@ -40,9 +40,9 @@ namespace SkeletonsAdventure.ItemClasses
             return new(this);
         }
 
-        public override ItemData GetData()
+        public override ItemData ToData()
         {
-            return base.GetData();
+            return base.ToData();
         }
 
     }

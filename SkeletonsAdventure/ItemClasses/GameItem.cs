@@ -105,7 +105,7 @@ namespace SkeletonsAdventure.ItemClasses
 
         public override string ToString()
         {
-            return GetData().ToString();
+            return ToData().ToString();
         }
 
         public void SetQuantity(int quantity)
@@ -129,7 +129,7 @@ namespace SkeletonsAdventure.ItemClasses
             SetQuantity(Quantity - quantity);
         }
 
-        public virtual ItemData GetData()
+        public virtual ItemData ToData()
         {
             return new()
             {

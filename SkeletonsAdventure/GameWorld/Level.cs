@@ -438,7 +438,7 @@ namespace SkeletonsAdventure.GameWorld
             {
                 if (chest.PlayerIntersects(Player.Rectangle))
                 {
-                    if(chest.Loot.Count > 0) //Cannot open empty chests
+                    if(chest.LootCount > 0) //Cannot open empty chests
                     {
                         //input handler is here instead of in the chest class so that multipe chests can be opened at once
                         if (InputHandler.KeyReleased(Keys.R) ||

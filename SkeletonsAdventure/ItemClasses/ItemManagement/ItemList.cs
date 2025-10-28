@@ -1,6 +1,6 @@
 ﻿using RpgLibrary.ItemClasses;
 
-namespace SkeletonsAdventure.ItemClasses
+namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
     internal class ItemList()
     {
@@ -79,17 +79,17 @@ namespace SkeletonsAdventure.ItemClasses
             return items;
         }
 
-        public List<ItemData> GetItemListItemData()
+        public List<ItemData> ToData()
         {
-            return GetItemListItemData(Items);
+            return ToData(Items);
         }
 
-        public static List<ItemData> GetItemListItemData(List<GameItem> items)
+        public static List<ItemData> ToData(List<GameItem> items)
         {
             List<ItemData> data = [];
 
             foreach (GameItem item in items)
-                data.Add(item.GetData());
+                data.Add(item.ToData());
 
             return data;
         }

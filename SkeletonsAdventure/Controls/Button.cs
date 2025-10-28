@@ -85,10 +85,11 @@ namespace SkeletonsAdventure.Controls
         //This method wont work with the button being used in the ControlManager
         protected void Update()
         {
-            if (_isHovering)
-                if (_currentMouse.LeftButton == ButtonState.Released 
-                    && _previousMouse.LeftButton == ButtonState.Pressed)
-                    Clicked = true;
+            if (_isHovering && _currentMouse.LeftButton == ButtonState.Released 
+                && _previousMouse.LeftButton == ButtonState.Pressed)
+            {
+                Clicked = true;
+            }
         }
 
         public override void HandleInput(PlayerIndex playerIndex)

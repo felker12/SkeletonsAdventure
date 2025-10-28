@@ -1,30 +1,65 @@
-﻿
+﻿using RpgLibrary.DataClasses;
 using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.GameWorld;
-using SkeletonsAdventure.ItemClasses;
 using System.Linq;
 
-namespace SkeletonsAdventure.Engines
+namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
     internal class DropTable
     {
-        //private List<DropTableItem> DropTableList { get; set; } = [];
-
-        private Dictionary<string, DropTableItem> DropTableDictionary { get; set; } = [];
+        public Dictionary<string, DropTableItem> DropTableDictionary { get; private set; } = [];
         private static Random Random { get; set; } = new Random(); // Random number generator
         private int RandomIndex { get; set; } // Index for random item selection
 
         private readonly int _maxDropChance = 100; // Represents the total drop chance, default is 100%
         public string[] ItemNames; // Array to hold item names based on drop chance
+        public int Count => DropTableDictionary.Count; // Number of items in the drop table
 
         public DropTable()
         {
             ItemNames = new string[_maxDropChance]; // Initialize the ItemNames array with the size of max drop chance
         }
 
-        private DropTable(Dictionary<string, DropTableItem> dictionary)
+        public DropTable(DropTable dropTable)
         {
-            DropTableDictionary = dictionary;
+            DropTableDictionary = [];
+
+            foreach (var item in dropTable.DropTableDictionary.Values)
+                AddItem(item);
+
+            ItemNames = new string[_maxDropChance]; // Initialize the ItemNames array with the size of max drop chance
+            PopulateItemNames();
+
+        }
+
+        public DropTable(List<DropTableItem> items)
+        {
+            DropTableDictionary = [];
+
+            foreach (var item in items)
+                AddItem(item);
+
+            ItemNames = new string[_maxDropChance]; // Initialize the ItemNames array with the size of max drop chance
+            PopulateItemNames();
+        }
+
+        public DropTable(Dictionary<string, DropTableItem> dictionary)
+        {
+            foreach (var item in dictionary.Values)
+                AddItem(item);
+
+            ItemNames = new string[_maxDropChance]; // Initialize the ItemNames array with the size of max drop chance
+            PopulateItemNames();
+        }
+
+        public DropTable(DropTableData dropTableData)
+        {
+            DropTableDictionary = [];
+            foreach (var itemData in dropTableData.DropTableList)
+            {
+                AddItem(new(itemData));
+            }
+
             ItemNames = new string[_maxDropChance]; // Initialize the ItemNames array with the size of max drop chance
             PopulateItemNames();
         }
@@ -39,7 +74,7 @@ namespace SkeletonsAdventure.Engines
 
         public DropTable Clone()
         {
-            return new(DropTableDictionary);
+            return new(this);
         }
 
         public GameItem[] GetDrops(int amount)
@@ -57,10 +92,50 @@ namespace SkeletonsAdventure.Engines
             List<GameItem> items = [];
 
             for (int i = 0; i < amount; i++)
-            {
                 items.Add(GetDrop()); // Add each drop to the list
-            }
+
             return items;
+        }
+
+        public List<GameItem> GetUniqueDropsList(int amount)
+        {
+            List<GameItem> items = [];
+            HashSet<string> selectedItemNames = [];
+            int attempts = 0; // To prevent infinite loops
+            int maxAttempts = amount * 10; // Arbitrary limit to attempts
+
+            while (items.Count < amount && attempts < maxAttempts)
+            {
+                GameItem drop = GetDrop();
+                if (drop is not null && !selectedItemNames.Contains(drop.Name))
+                {
+                    items.Add(drop);
+                    selectedItemNames.Add(drop.Name);
+                }
+                attempts++;
+            }
+
+            return items;
+        }
+
+        public List<GameItem> GetRandomAmountOfDrops(int min, int max)
+        {
+            return GetDropsList(Random.Next(min, max + 1)); // Get a random number of drops between min and max (inclusive)
+        }
+
+        public List<GameItem> GetRandomAmountOfUniqueDrops(int min, int max)
+        {
+            return GetUniqueDropsList(Random.Next(min, max + 1)); // Get a random number of unique drops between min and max (inclusive)
+        }
+
+        public List<GameItem> GetRandomAmountOfDrops(MinMaxPair minMaxPair)
+        {
+            return GetDropsList(Random.Next(minMaxPair.Min, minMaxPair.Max + 1)); // Get a random number of drops between min and max (inclusive)
+        }
+
+        public List<GameItem> GetRandomAmountOfUniqueDrops(MinMaxPair minMaxPair)
+        {
+            return GetUniqueDropsList(Random.Next(minMaxPair.Min, minMaxPair.Max + 1)); // Get a random number of unique drops between min and max (inclusive)
         }
 
         public GameItem GetDrop()

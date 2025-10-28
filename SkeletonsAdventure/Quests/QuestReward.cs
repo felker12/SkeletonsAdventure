@@ -46,7 +46,7 @@ namespace SkeletonsAdventure.Quests
             {
                 XP = XP,
                 Coins = Coins,
-                Items = [.. Items.Select(i => i.GetData())]
+                Items = [.. Items.Select(i => i.ToData())]
             };
         }
 

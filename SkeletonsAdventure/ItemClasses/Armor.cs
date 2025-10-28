@@ -24,7 +24,7 @@ namespace SkeletonsAdventure.ItemClasses
             return new Armor(this);
         }
 
-        public override ArmorData GetData()
+        public override ArmorData ToData()
         {
             return new ArmorData
             {

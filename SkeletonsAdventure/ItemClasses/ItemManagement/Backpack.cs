@@ -1,5 +1,4 @@
-﻿
-namespace SkeletonsAdventure.ItemClasses
+﻿namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
     internal class Backpack() : ItemList
     {

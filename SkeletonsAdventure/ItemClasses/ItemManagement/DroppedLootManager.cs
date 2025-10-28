@@ -1,7 +1,7 @@
 ﻿using RpgLibrary.ItemClasses;
 using System.Linq;
 
-namespace SkeletonsAdventure.ItemClasses
+namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
     internal class DroppedLootManager
     {
@@ -60,7 +60,7 @@ namespace SkeletonsAdventure.ItemClasses
             List<ItemData> droppedItemData = [];
 
             foreach (var gameItem in Items)
-                droppedItemData.Add(gameItem.GetData());
+                droppedItemData.Add(gameItem.ToData());
 
             return droppedItemData;
         }

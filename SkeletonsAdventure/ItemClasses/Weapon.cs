@@ -24,7 +24,7 @@ namespace SkeletonsAdventure.ItemClasses
             return new Weapon(this);
         }
 
-        public override WeaponData GetData()
+        public override WeaponData ToData()
         {
             return new WeaponData
             {
