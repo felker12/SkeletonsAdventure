@@ -44,6 +44,5 @@ namespace SkeletonsAdventure.ItemClasses
         {
             return base.ToData();
         }
-
     }
 }

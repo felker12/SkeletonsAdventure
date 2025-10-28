@@ -1,16 +1,12 @@
 ﻿
 namespace RpgLibrary.ItemClasses
 {
-    public class ArmorData : ItemData
+    public class ArmorData : EquipableItemData
     {
         public ArmorLocation ArmorLocation {  get; set; }
         public int DefenseValue {  get; set; }
 
         public ArmorData() : base()
-        {
-        }
-
-        public ArmorData(ItemData itemData) : base(itemData)
         {
         }
 

@@ -1,16 +1,12 @@
 ﻿
 namespace RpgLibrary.ItemClasses
 {
-    public class ShieldData : ItemData
+    public class ShieldData : EquipableItemData
     {
         public Hands NumberHands { get; set; }
         public int DefenceValue { get; set; }
 
         public ShieldData() : base()
-        {
-        }
-
-        public ShieldData(ItemData itemData) : base(itemData)
         {
         }
 

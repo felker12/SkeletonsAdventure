@@ -1,16 +1,12 @@
 ﻿
 namespace RpgLibrary.ItemClasses
 {
-    public class WeaponData : ItemData
+    public class WeaponData : EquipableItemData
     {
         public Hands NumberHands {  get; set; }
         public int AttackValue {  get; set; }
 
         public WeaponData() : base()
-        {
-        }
-
-        public WeaponData(ItemData itemData) : base(itemData)
         {
         }
 

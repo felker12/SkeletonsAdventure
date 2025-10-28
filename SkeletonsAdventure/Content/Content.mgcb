@@ -12,7 +12,7 @@
 
 /reference:..\pipeline-references\MonoGame.Extended.Content.Pipeline.dll
 /reference:..\pipeline-references\MonoGame.Extended.dll
-/reference:..\..\RpgLibrary\obj\Debug\net6.0\RpgLibrary.dll
+/reference:..\bin\Debug\net8.0\RpgLibrary.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -299,10 +299,10 @@
 /processor:PassThroughProcessor
 /build:Items/Currency/Coins.xml
 
-#begin Items/Weapons/RoundShield.xml
+#begin Items/Shields/RoundShield.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
-/build:Items/Weapons/RoundShield.xml
+/build:Items/Shields/RoundShield.xml
 
 #begin Items/Weapons/Sword.xml
 /importer:XmlImporter
