@@ -270,7 +270,12 @@ namespace SkeletonsAdventure.States
 
                 consume.SetText($"Consume {itemUnderMouse.Name}");
                 drop.SetText($"Drop {itemUnderMouse.Name}");
-                equip.SetText($"Equip {itemUnderMouse.Name}");
+
+                if (Player.EquippedItems.CheckRequirements(itemUnderMouse) is false)
+                    equip.SetText("Requirements not met");
+                else
+                    equip.SetText($"Equip {itemUnderMouse.Name}");
+
                 unequip.SetText($"Unequip {itemUnderMouse.Name}");
                 pickUp.SetText($"Pick Up {itemUnderMouse.Name}");
             }
@@ -447,6 +452,16 @@ namespace SkeletonsAdventure.States
 
         private void Equip_Click(object sender, EventArgs e)
         {
+            if (itemUnderMouse is not EquipableItem equipableItem)
+                return;
+
+            if(Player.EquippedItems.CheckRequirements(itemUnderMouse) is false)
+            {
+                World.MessagesToAdd.Add(equipableItem.LevelRequirements.MissingRequirementsText(Player));
+
+                return;
+            }
+
             Player.EquippedItems.TryEquipItem(itemUnderMouse);
         }
 

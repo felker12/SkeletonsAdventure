@@ -16,6 +16,10 @@ namespace RpgLibrary.ItemClasses
             DefenseValue = armorData.DefenseValue;
         }
 
+        public ArmorData(EquipableItemData data) : base(data)
+        {
+        }
+
         public override ArmorData Clone()
         {
             return new(this);

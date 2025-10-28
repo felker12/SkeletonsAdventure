@@ -1,10 +1,13 @@
 ﻿using RpgLibrary.ItemClasses;
+using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.ItemClasses
 {
-    internal class EquippedItems()
+    internal class EquippedItems(Player player)
     {
         private GameItem Mainhand, Offhand, BodySlot, HeadSlot, HandsSlot, FeetSlot;
+        private readonly Player _player = player;
 
         public int EquippedItemsAttackBonus()
         {
@@ -68,9 +71,23 @@ namespace SkeletonsAdventure.ItemClasses
             return 0; // Placeholder for future health bonus implementation
         }
 
+        public bool CheckRequirements(GameItem gameItem)
+        {
+            if (gameItem is not EquipableItem equipableItem)
+                return false;
+
+            if (equipableItem.LevelRequirements.CheckRequirements(_player) is false)
+                return false;
+
+            return true;
+        }
+
         public void TryEquipItem(GameItem gameItem)
         {
-            if(gameItem is Weapon weapon)
+           if (CheckRequirements(gameItem) is false)
+               return;
+
+            if (gameItem is Weapon weapon)
             {
                 TryEquipWeapon(weapon);
             }

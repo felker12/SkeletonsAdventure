@@ -10,6 +10,7 @@ using RpgLibrary.AttackData;
 using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
 using RpgLibrary.ItemClasses;
+using RpgLibrary.QuestClasses;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities;
@@ -143,11 +144,24 @@ namespace SkeletonsAdventure.GameWorld
             CreateQuests();
             CreateNPCs();
 
-
+            //TODO
             foreach (var item in ItemsClone)
             {
                 Debug.WriteLine("key: " + item.Key + ", name: " + item.Value.Name); //TODO
+                Debug.WriteLine($"data: {item.Value.ToData()}");
             }
+
+            //WeaponData weaponData = new();
+            //XnaSerializer.Serialize(Path.Combine(SavePath, "sword.xml"), weaponData);
+            //LevelRequirementData requirementData = new()
+            //{
+
+            //};
+            //weaponData.LevelRequirementData = requirementData;
+            //XnaSerializer.Serialize(Path.Combine(SavePath, "sword2.xml"), weaponData);
+
+
+            Debug.WriteLine("test");
         }
 
         public static Texture2D CreateTextureFromColor(Color color)

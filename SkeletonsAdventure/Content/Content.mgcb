@@ -12,7 +12,7 @@
 
 /reference:..\pipeline-references\MonoGame.Extended.Content.Pipeline.dll
 /reference:..\pipeline-references\MonoGame.Extended.dll
-/reference:..\bin\Debug\net8.0\RpgLibrary.dll
+/reference:..\..\RpgLibrary\bin\Debug\net6.0\RpgLibrary.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -303,6 +303,11 @@
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:Items/Shields/RoundShield.xml
+
+#begin Items/Weapons/Iron Sword.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:Items/Weapons/Iron Sword.xml
 
 #begin Items/Weapons/Sword.xml
 /importer:XmlImporter

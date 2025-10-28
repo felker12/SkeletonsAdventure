@@ -1,20 +1,24 @@
 ﻿using MonoGame.Extended;
 using RpgLibrary.ItemClasses;
+using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.ItemClasses
 {
     internal class EquipableItem : GameItem
     {
         public bool Equipped { get; set; } = false;
+        public LevelRequirements LevelRequirements { get; set; } = null;
 
         public EquipableItem(EquipableItem item) : base(item)
         {
             Equipped = item.Equipped;
+            LevelRequirements = item.LevelRequirements;
         }
 
-        public EquipableItem(ItemData data) : base(data)//TODO use equipable item data
+        public EquipableItem(EquipableItemData data) : base(data)
         {
             Equipped = data.Equipped;
+            LevelRequirements = new(data.LevelRequirementData);
         }
         public void SetEquipped(bool equipped)
         {
@@ -40,9 +44,12 @@ namespace SkeletonsAdventure.ItemClasses
             return new(this);
         }
 
-        public override ItemData ToData()
+        public override EquipableItemData ToData()
         {
-            return base.ToData();
+            return new(base.ToData())
+            {
+                LevelRequirementData = LevelRequirements.ToData(),
+            };
         }
     }
 }

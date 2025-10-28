@@ -16,6 +16,10 @@ namespace RpgLibrary.ItemClasses
             AttackValue = weaponData.AttackValue;
         }
 
+        public WeaponData(EquipableItemData equipableItemData) : base(equipableItemData)
+        {
+        }
+
         public override WeaponData Clone()
         {
             return new(this);

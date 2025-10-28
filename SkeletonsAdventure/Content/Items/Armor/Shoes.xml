@@ -3,7 +3,7 @@
   <Asset Type="ItemClasses:ArmorData">
     <Name>Shoes</Name>
     <Type>Shoe</Type>
-	<Description>A Simple Shoe</Description>
+	  <Description>A Simple Shoe</Description>
     <Price>4</Price>
     <Weight>1</Weight>
     <Equipped>false</Equipped>
@@ -13,6 +13,7 @@
     <Quantity>1</Quantity>
     <SourceRectangle>672 1152 32 32</SourceRectangle>
     <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+    <LevelRequirementData Null="true"/>
     <ArmorLocation>Feet</ArmorLocation>
     <DefenseValue>1</DefenseValue>
   </Asset>

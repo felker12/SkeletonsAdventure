@@ -26,23 +26,11 @@ namespace SkeletonsAdventure.ItemClasses
 
         public override WeaponData ToData()
         {
-            return new WeaponData
+            return new(base.ToData())
             {
-                Name = Name,
-                Type = Type,
-                Description = Description,
-                Price = Price,
-                Weight = Weight,
-                Equipped = Equipped,
-                Stackable = Stackable,
-                Position = Position,
-                Quantity = Quantity,
-                SourceRectangle = SourceRectangle,
-                TexturePath = TexturePath,
                 NumberHands = NumberHands,
                 AttackValue = AttackValue
             };
-
         }
     }
 }

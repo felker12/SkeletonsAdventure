@@ -16,6 +16,10 @@ namespace RpgLibrary.ItemClasses
             DefenceValue = shieldData.DefenceValue;
         }
 
+        public ShieldData(EquipableItemData data) : base(data)
+        {
+        }
+
         public override ShieldData Clone()
         {
             return new(this);

@@ -3,7 +3,7 @@
   <Asset Type="ItemClasses:ArmorData">
     <Name>Hood</Name>
     <Type>Hood</Type>
-	<Description>A Simple Hood</Description>
+	  <Description>A Simple Hood</Description>
     <Price>8</Price>
     <Weight>2</Weight>
     <Equipped>false</Equipped>
@@ -13,6 +13,7 @@
     <Quantity>1</Quantity>
     <SourceRectangle>1504 1152 32 32</SourceRectangle>
     <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+    <LevelRequirementData Null="true"/>
     <ArmorLocation>Head</ArmorLocation>
     <DefenseValue>1</DefenseValue>
   </Asset>

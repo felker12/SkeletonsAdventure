@@ -35,10 +35,12 @@ namespace SkeletonsAdventure.Entities
         public KillCounter KillCounter { get; private set; } = new(); 
         public PlayerIndex PlayerIndex { get; set; } = PlayerIndex.One;
         public static Dictionary<Keys, BasicAttack> KeyBindings { get; private set; } = [];
+        public int AttackExcludingEquipment { get; private set; } = 0;
+        public int DefenceExcludingEquipment { get; private set; } = 0;
 
         public Player() : base()
         {
-            BaseAttack = 400; //TODO correct the values
+            BaseAttack = 30; //TODO correct the values
             BaseDefence = 6;
             BaseHealth = 3000;
             TotalXP = 0;
@@ -60,7 +62,7 @@ namespace SkeletonsAdventure.Entities
             Mana = BaseMana;
 
             Backpack = new();
-            EquippedItems = new();
+            EquippedItems = new(this);
 
             //TODO delete this line
             Info.TextColor = Color.Aqua;
@@ -197,11 +199,12 @@ namespace SkeletonsAdventure.Entities
 
         private protected void UpdateStatsWithBonusses()
         {
-            Attack = BaseAttack + EquippedItems.EquippedItemsAttackBonus() + 
-                bonusAttackFromLevel + bonusAttackFromAttributePoints;
+            AttackExcludingEquipment = BaseAttack + bonusAttackFromLevel + bonusAttackFromAttributePoints;
+            DefenceExcludingEquipment = BaseDefence + bonusDefenceFromLevel + bonusDefenceFromAttributePoints;
 
-            Defence = BaseDefence + EquippedItems.EquippedItemsDefenceBonus() + 
-                bonusDefenceFromLevel + bonusDefenceFromAttributePoints;
+            Attack = AttackExcludingEquipment + EquippedItems.EquippedItemsAttackBonus();
+
+            Defence = DefenceExcludingEquipment + EquippedItems.EquippedItemsDefenceBonus();
 
             MaxHealth = BaseHealth + bonusHealthFromLevel + 
                 bonusHealthFromAttributePoints; //TODO maybe allow gear to provide a health bonus

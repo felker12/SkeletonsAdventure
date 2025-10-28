@@ -22,6 +22,8 @@ namespace SkeletonsAdventure.Quests
 
         public LevelRequirements(LevelRequirementData data)
         {
+            if (data is null) return;
+
             Level = data.Level;
             Defence = data.Defence;
             Attack = data.Attack;
@@ -34,7 +36,7 @@ namespace SkeletonsAdventure.Quests
 
         internal bool CheckRequirements(Player player)
         {
-            return CheckRequirements(player.Level, player.Defence, player.Attack);
+            return CheckRequirements(player.Level, player.DefenceExcludingEquipment, player.AttackExcludingEquipment);
         }
 
         public bool CheckRequirements(int level, int defence, int attack)
@@ -49,7 +51,7 @@ namespace SkeletonsAdventure.Quests
 
         public LevelRequirementData ToData()
         {
-            return new LevelRequirementData
+            return new()
             {
                 Level = Level,
                 Defence = Defence,
@@ -66,14 +68,36 @@ namespace SkeletonsAdventure.Quests
 
         public string MissingRequirementsText(Player player)
         {
-            string result = "Level Requirements not met:\n";
+            string result = "Requirements not met: ";
+            bool previousRequirementMet;
 
             if (player.Level < Level)
-                result += $"Level: {player.Level}/{Level}\n";
+            {
+                result += $"Level: {player.Level}/{Level}";
+                previousRequirementMet = false;
+
+            }
+            else
+                previousRequirementMet = true;
+
             if (player.Defence < Defence)
-                result += $"Defence: {player.Defence}/{Defence}\n";
+            {
+                if (previousRequirementMet is false)
+                    result += ", ";
+
+                result += $"Defence: {player.DefenceExcludingEquipment}/{Defence}";
+                previousRequirementMet = false;
+            }
+            else
+                previousRequirementMet = true;
+
             if (player.Attack < Attack)
-                result += $"Attack: {player.Attack}/{Attack}\n";
+            {
+                if (previousRequirementMet is false)
+                    result += ", ";
+
+                result += $"Attack: {player.AttackExcludingEquipment}/{Attack}";
+            }
 
             return result;
         }

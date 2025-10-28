@@ -13,6 +13,7 @@
     <Quantity>1</Quantity>
     <SourceRectangle>160 1184 32 32</SourceRectangle>
     <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+    <LevelRequirementData Null="true"/>
     <NumberHands>Off</NumberHands>
     <DefenceValue>2</DefenceValue>
   </Asset>
