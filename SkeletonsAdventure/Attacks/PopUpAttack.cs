@@ -15,7 +15,7 @@ namespace SkeletonsAdventure.Attacks
 
         public virtual void ResetAttack()
         {
-            //is handled in classed that inherit from this
+            //is handled in classes that inherit from this
         }
     }
 }

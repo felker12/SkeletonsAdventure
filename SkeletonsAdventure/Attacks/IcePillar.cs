@@ -80,7 +80,6 @@ namespace SkeletonsAdventure.Attacks
         public override void SetUpAttack(GameTime gameTime, Color attackColor, Vector2 originPosition)
         {
             base.SetUpAttack(gameTime, attackColor, originPosition);
-            //ResetDamageHitBox();
         }
     }
 }

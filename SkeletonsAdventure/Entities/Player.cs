@@ -40,7 +40,7 @@ namespace SkeletonsAdventure.Entities
 
         public Player() : base()
         {
-            BaseAttack = 30; //TODO correct the values
+            BaseAttack = 300; //TODO correct the values
             BaseDefence = 6;
             BaseHealth = 3000;
             TotalXP = 0;

@@ -101,12 +101,10 @@ namespace SkeletonsAdventure.Attacks
         {
             if (AttackVisible)
             {
-                spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
-                spriteBatch.DrawRectangle(DamageHitBox, Color.OrangeRed, 1, 0); //TODO
+                //spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
+                //spriteBatch.DrawRectangle(DamageHitBox, Color.OrangeRed, 1, 0); //TODO
 
-                Vector2 FrameCenter = new(Frame.Width / 2, Frame.Height / 2);
-
-                spriteBatch.Draw(Texture, Position + FrameCenter, Frame, SpriteColor, RotationAngle, FrameCenter, Scale, SpriteEffects.None, 1);
+                spriteBatch.Draw(Texture, Center, Frame, SpriteColor, RotationAngle, SpriteCenter, Scale, SpriteEffects.None, 1);
             }
         }
 
@@ -190,7 +188,7 @@ namespace SkeletonsAdventure.Attacks
             };
         }
 
-        //TODO Overide this with the corret offset parameters based on the type of the entity calling the method 
+        //Overide this with the corret offset parameters based on the type of the entity calling the method 
         public virtual void Offset()
         {
             if (Source.CurrentAnimation == AnimationKey.Up)

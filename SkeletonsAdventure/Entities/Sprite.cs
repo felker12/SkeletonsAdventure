@@ -23,8 +23,8 @@ namespace SkeletonsAdventure.Entities
             Visible = true,
         };
         public Rectangle Rectangle => new((int)Position.X, (int)Position.Y, Width, Height);
-        public Vector2 FrameCenter => new(Width / 2, Height / 2);
-        public Vector2 Center => Position + FrameCenter;
+        public Vector2 SpriteCenter => new(Width / 2, Height / 2);
+        public Vector2 Center => Position + SpriteCenter;
 
         public Sprite() { }
 
@@ -38,11 +38,9 @@ namespace SkeletonsAdventure.Entities
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, Center, Frame, SpriteColor, 
-                RotationAngle, FrameCenter, Scale, SpriteEffects.None, 1);
+                RotationAngle, SpriteCenter, Scale, SpriteEffects.None, 1);
 
-            //spriteBatch.Draw(Texture, Position, Frame, SpriteColor);
-
-            spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
+            //spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
 
             Info.Draw(spriteBatch);
         }

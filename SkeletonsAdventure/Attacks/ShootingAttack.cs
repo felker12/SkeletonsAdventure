@@ -42,7 +42,6 @@ namespace SkeletonsAdventure.Attacks
                 spriteBatch.DrawLine(PathPoints[i], PathPoints[i + 1], Color.Aquamarine, 1);
         }
 
-        //TODO Overide this with the corret offset parameters based on the type of the entity calling the method 
         public override void Offset()
         {
             Width = 32;

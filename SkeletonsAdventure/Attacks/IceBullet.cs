@@ -42,7 +42,6 @@ namespace SkeletonsAdventure.Attacks
             SetRotationBasedOffMotion();
         }
 
-        //TODO Overide this with the corret offset parameters based on the type of the entity calling the method 
         public override void Offset()
         {
             //start the attack at the center of the entity

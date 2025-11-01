@@ -1,11 +1,10 @@
 ﻿using RpgLibrary.GameObjectClasses;
 using SkeletonsAdventure.GameObjects;
-using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
 
 namespace SkeletonsAdventure.GameWorld
 {
-    internal class GameCreationManager
+    internal static class GameCreationManager
     {
         internal static Dictionary<string, DropTable> CreateDropTables()
         {

@@ -4,7 +4,7 @@ namespace RpgLibrary.ItemClasses
 {
     public class EquipableItemData : ItemData
     {
-        public LevelRequirementData? LevelRequirementData { get; set; } = null;
+        public LevelRequirementData LevelRequirementData { get; set; } = new();
 
         public EquipableItemData() : base() { }
 
