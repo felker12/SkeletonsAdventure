@@ -224,7 +224,12 @@ namespace SkeletonsAdventure.Entities
             }
         }
 
-        public void WalkInSquare()
+        public virtual void IdleBehavior(GameTime gameTime)
+        {
+            WalkInSquare();
+        }
+
+        protected void WalkInSquare()
         {
             Vector2 movement = Vector2.Zero;
 

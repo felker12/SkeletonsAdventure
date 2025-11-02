@@ -9,7 +9,7 @@ namespace SkeletonsAdventure.Entities
 {
     internal class EntityManager()
     {
-        private List<Entity> Entities { get; } = []; //list of all entities in the level, including the player
+        public List<Entity> Entities { get; } = []; //list of all entities in the level, including the player
         public DroppedLootManager DroppedLootManager { get; } = new(); //used to manage the loot dropped by dead entities
         public Player Player { get; set; } = World.Player;
 
@@ -44,7 +44,7 @@ namespace SkeletonsAdventure.Entities
         public void Update(GameTime gameTime, GameTime totalTimeInWorld)
         {
             UpdateEntities(gameTime, totalTimeInWorld);
-            CheckIfEnemyDetectPlayer(gameTime);
+            EnemyAI.CheckIfEnemyDetectPlayer(gameTime, Entities ,Player);
 
             DroppedLootManager.Update();
         }
@@ -112,190 +112,6 @@ namespace SkeletonsAdventure.Entities
             }
 
             return entityManagerData;
-        }
-
-        private void CheckIfEnemyDetectPlayer(GameTime gameTime)
-        {
-            foreach (Entity entity in Entities)
-            {
-                if (entity is not Enemy enemy || enemy.IsDead)
-                    continue;
-
-                HandleEnemyDetection(gameTime, enemy);
-            }
-        }
-
-        private void HandleEnemyDetection(GameTime gameTime, Enemy enemy)
-        {
-            //if the player is close then go to the player
-            if (CheckForPlayer(enemy))
-                enemy.AutoAttack(Player, gameTime);
-
-            //if the enemy has attacked by an out of sight enemy then move to the point the enemy was at when  
-            else if (enemy.LastTimeAttacked.TotalMilliseconds != 0
-                && gameTime.TotalGameTime.TotalMilliseconds - enemy.LastTimeAttacked.TotalMilliseconds < 6000
-                && enemy.CheckedLastAtackArea == false)
-            {
-                InvestigateLastAttackLocation(gameTime, enemy);
-            }
-            else //if no player in sight do something
-                EnemyIdle(enemy);
-        }
-
-        private void InvestigateLastAttackLocation(GameTime gameTime, Enemy enemy)
-        {
-            //if the enemy detects player on way then mark area checked so the enemy doesn't keep moving towards that point
-            if (CheckForPlayer(enemy))
-                enemy.CheckedLastAtackArea = true;
-
-            //move to the point the enemy was attacked from
-            if (enemy.Rectangle.Intersects(new((int)enemy.PositionLastAttackedFrom.X, (int)enemy.PositionLastAttackedFrom.Y, 1, 1)))
-            {
-                enemy.CheckedLastAtackArea = true;
-                if (CheckForPlayer(enemy))
-                    enemy.AutoAttack(Player, gameTime);
-                else
-                    EnemyIdle(enemy);
-            }
-            else
-                enemy.PathToPoint(enemy.PositionLastAttackedFrom);
-        }
-
-
-        //Do something when the enemy is idle
-        private static void EnemyIdle(Enemy enemy)
-        {
-            enemy.WalkInSquare();
-        }
-
-        public bool CheckForPlayer(Enemy enemy)
-        {
-            bool playerInRange = false;
-
-            if (enemy.DetectionArea.Intersects(Player.Rectangle))
-                playerInRange = true;
-
-            enemy.Motion = Vector2.Zero; //Stops any motion caused by another method
-
-            //if the enemy detects the player then move towerds the player
-            if (!enemy.Rectangle.Intersects(Player.Rectangle))
-                enemy.PathToPoint(Player.Position);
-            else
-                enemy.FaceTarget(Player);
-
-            return playerInRange;
-        }
-
-        public void CheckEntityBoundaryCollisions(TiledMapTileLayer[] mapCollisionLayers, int tileWidth, int tileHeight)
-        {
-            foreach (Entity entity in Entities)
-            {
-                //Check entity collision with the map boundaries
-                if (entity.CanMove)
-                    CheckCollision(entity, mapCollisionLayers, tileWidth, tileHeight);
-
-                //Check entity attacks collision with the map boundaries
-                foreach (BasicAttack entityAttack in entity.AttackManager.Attacks)
-                {
-                    if (entityAttack.CanMove)
-                        CheckCollision(entityAttack, mapCollisionLayers, tileWidth, tileHeight);
-                }
-            }
-        }
-
-        private static void CheckCollision(AnimatedSprite entity, TiledMapTileLayer[] mapCollisionLayers, int tileWidth, int tileHeight)
-        {
-            if (entity.Motion == Vector2.Zero)
-                return;
-
-            if (mapCollisionLayers == null)
-            {
-                entity.Position += entity.Motion * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier;
-                return;
-            }
-
-            Vector2 pos = entity.Position,
-                motion = entity.Motion;
-            Rectangle rec = entity.Rectangle;
-            bool xBlocked = false, yBlocked = false;
-
-            foreach(var layer in mapCollisionLayers)
-            {
-                if (layer is null)
-                    continue;
-
-                if(layer.Name == "ConditionalLayer" && layer.IsVisible is false)
-                    continue;
-
-                // --- Y axis ---
-                if (motion.Y != 0)
-                {
-                    if (yBlocked is false)
-                        yBlocked = CheckYAxis(entity, layer, pos, motion, rec, tileWidth, tileHeight);
-
-                    if (yBlocked)
-                        motion.Y = 0;
-                }
-
-                // --- X axis ---
-                if (motion.X != 0)
-                {
-                    if (xBlocked is false)
-                        xBlocked = CheckXAxis(entity, layer, pos, motion, rec, tileWidth, tileHeight);
-
-                    if (xBlocked)
-                        motion.X = 0;
-                }
-
-                // Break out of loop early if both axes are blocked or no motion left
-                if (motion == Vector2.Zero
-                    || (xBlocked && yBlocked))
-                    break;
-            }
-           
-            entity.Motion = motion;
-            entity.Position += entity.Motion * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier;
-        }
-
-        //--- Axis Collision Checks ---
-        private static bool CheckXAxis(AnimatedSprite entity, TiledMapTileLayer mapCollisionLayer, Vector2 pos, Vector2 motion, Rectangle rec, int width, int height)
-        {
-            Vector2 newPosX = new(pos.X + motion.X * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier, pos.Y + motion.Y * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier);
-            Rectangle newRectX = new((int)newPosX.X, (int)newPosX.Y, rec.Width, rec.Height);
-            int checkX = motion.X > 0 ? (newRectX.Right - 1) / width : newRectX.Left / width;
-
-            for (int y = newRectX.Top / height; y <= (newRectX.Bottom - 1) / height; y++)
-            {
-                if (IsTileBlocked(checkX, y, mapCollisionLayer))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static bool CheckYAxis(AnimatedSprite entity, TiledMapTileLayer mapCollisionLayer, Vector2 pos, Vector2 motion, Rectangle rec, int width, int height)
-        {
-            Vector2 newPosY = new(pos.X, pos.Y + motion.Y * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier);
-            Rectangle newRectY = new((int)newPosY.X, (int)newPosY.Y, rec.Width, rec.Height);
-            int checkY = motion.Y > 0 ? (newRectY.Bottom - 1) / height : newRectY.Top / height;
-
-            for (int x = newRectY.Left / width; x <= (newRectY.Right - 1) / width; x++)
-            {
-                if (IsTileBlocked(x, checkY, mapCollisionLayer))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        //--- Tile Check ---
-        private static bool IsTileBlocked(int x, int y, TiledMapTileLayer mapCollisionLayer)
-        {
-            return mapCollisionLayer.TryGetTile((ushort)x, (ushort)y, out TiledMapTile? tile) && tile.Value.IsBlank is false;
         }
     }
 }
