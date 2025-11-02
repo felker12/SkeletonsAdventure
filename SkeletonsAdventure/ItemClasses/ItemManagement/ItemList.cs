@@ -1,4 +1,5 @@
 ﻿using RpgLibrary.ItemClasses;
+using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
@@ -82,6 +83,16 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
         public List<ItemData> ToData()
         {
             return ToData(Items);
+        }
+
+        public List<ItemBaseData> ToBaseData()
+        {
+            List<ItemBaseData> data = [];
+
+            foreach (GameItem item in Items)
+                data.Add(item.ToBaseData());
+
+            return data;
         }
 
         public static List<ItemData> ToData(List<GameItem> items)

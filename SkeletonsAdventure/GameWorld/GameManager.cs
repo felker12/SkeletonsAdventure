@@ -136,6 +136,21 @@ namespace SkeletonsAdventure.GameWorld
             CreateItems(); 
             DropTables = GameCreationManager.CreateDropTables();
 
+
+            EnemyData entityData = new(Content.Load<EnemyData>(@"EntityData/SkeletonData"));
+            Skeleton skeleton = new(entityData);
+            EnemyData skeletonData = skeleton.ToData();
+            XnaSerializer.Serialize(Path.Combine(SavePath, "SkeletonData2.xml"), skeletonData);
+
+            Debug.WriteLine(skeletonData.GuaranteedItems);
+
+            var item = GetItemByName("Bones");
+            ItemBaseData baseData = item.ToBaseData();
+            skeletonData.GuaranteedItems.Add(baseData);
+            Debug.WriteLine(skeletonData.ToString());
+            XnaSerializer.Serialize(Path.Combine(SavePath, "SkeletonData3.xml"), skeletonData);
+
+
             CreateEnemies();
             //CreateEnemiesManually();
 
@@ -197,15 +212,6 @@ namespace SkeletonsAdventure.GameWorld
         }
 
         //Load data from saved files
-        public static List<GameItem> LoadGameItemsFromItemData(List<ItemData> itemDatas)
-        {
-            List<GameItem> items = [];
-
-            foreach (ItemData item in itemDatas)
-                items.Add(LoadGameItemFromItemData(item));
-
-            return items;
-        }
 
         public static GameItem LoadGameItemFromItemData(ItemData itemData)
         {
@@ -223,7 +229,41 @@ namespace SkeletonsAdventure.GameWorld
 
             return item;
         }
+        public static List<GameItem> LoadGameItemsFromItemData(List<ItemData> itemDatas)
+        {
+            List<GameItem> items = [];
 
+            foreach (ItemData item in itemDatas)
+                items.Add(LoadGameItemFromItemData(item));
+
+            return items;
+        }
+
+        public static GameItem LoadGameItemFromItemBaseData(ItemBaseData itemBaseData)
+        {
+            GameItem item = null;
+
+            foreach (GameItem gameItem in Items.Values)
+            {
+                if (itemBaseData.Name == gameItem.Name)
+                {
+                    item = gameItem.Clone();
+                    item.SetQuantity(itemBaseData.Quantity);
+                }
+            }
+
+            return item;
+        }
+
+        public static List<GameItem> LoadGameItemsFromItemBaseData(List<ItemBaseData> itemDatas)
+        {
+            List<GameItem> items = [];
+
+            foreach (ItemBaseData item in itemDatas)
+                items.Add(LoadGameItemFromItemBaseData(item));
+
+            return items;
+        }
         //Get a clone of the dictionaries
         private static Dictionary<string, GameItem> GetItemsClone()
         {

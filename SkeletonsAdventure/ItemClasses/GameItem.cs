@@ -144,5 +144,10 @@ namespace SkeletonsAdventure.ItemClasses
                 TexturePath = TexturePath,
             };
         }
+
+        public ItemBaseData ToBaseData()
+        {
+            return new(ToData());
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<XnaContent xmlns:EntityClasses="RpgLibrary.EntityClasses" xmlns:ItemClasses="RpgLibrary.ItemClasses">
+<XnaContent xmlns:EntityClasses="RpgLibrary.EntityClasses">
   <Asset Type="EntityClasses:EnemyData">
     <Type>SkeletonsAdventure.Entities.Skeleton</Type>
     <BaseHealth>20</BaseHealth>
@@ -13,6 +13,15 @@
     <IsDead>false</IsDead>
     <LastDeathTime>PT0S</LastDeathTime>
     <DropTableName>BasicDropTable</DropTableName>
-    <GuaranteedItems />
+    <GuaranteedItems>
+      <Item>
+        <Name>Bones</Name>
+        <Quantity>1</Quantity>
+      </Item>
+      <Item>
+        <Name>Bones</Name>
+        <Quantity>1</Quantity>
+      </Item>
+    </GuaranteedItems>
   </Asset>
 </XnaContent>

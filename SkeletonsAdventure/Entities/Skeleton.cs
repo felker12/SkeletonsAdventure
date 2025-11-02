@@ -1,4 +1,5 @@
 ﻿using RpgLibrary.EntityClasses;
+using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities
 {
@@ -7,18 +8,18 @@ namespace SkeletonsAdventure.Entities
         public Skeleton(EnemyData data) : base(data)
         {
             EnemyType = EnemyType.Skeleton;
+            GuaranteedDrops.Add(GameManager.GetItemByName("Bones"));
         }
 
         public override Skeleton Clone()
         {
-            Skeleton skeleton = new(ToData())
+            return new(ToData())
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,
                 SpriteColor = SpriteColor,
                 DefaultColor = DefaultColor,
            };
-            return skeleton;
         }
     }
 }

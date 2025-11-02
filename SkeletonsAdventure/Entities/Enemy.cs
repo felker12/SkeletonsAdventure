@@ -45,7 +45,10 @@ namespace SkeletonsAdventure.Entities
             UpdateEntityWithData(data);
 
             foreach(var itemData in data.GuaranteedItems)
-                 GuaranteedDrops.Add(GameManager.CreateGameItemFromData(itemData)); 
+            {
+                var item = GameManager.GetItemByName(itemData.Name);
+                item.SetQuantity(itemData.Quantity);
+            }
         }
 
         public Enemy() : base()
@@ -104,8 +107,6 @@ namespace SkeletonsAdventure.Entities
             {
                 //TODO
             }
-
-            UpdateEntityWithData(ToData()); //TODO: check if this is needed
         }
         public override void Update(GameTime gameTime)
         {
@@ -145,7 +146,7 @@ namespace SkeletonsAdventure.Entities
         {
             return new(base.ToData())
             {
-                GuaranteedItems = GuaranteedDrops.ToData(),
+                GuaranteedItems = GuaranteedDrops.ToBaseData(),
                 DropTableName = DropTableName,
             };
         }

@@ -4,14 +4,9 @@ using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities
 {
-    internal class SkeletalBruiser : Enemy
+    internal class SkeletalBruiser : Skeleton
     {
         public SkeletalBruiser(EnemyData data) : base(data)
-        {
-            Initialize();
-        }
-
-        public SkeletalBruiser() : base()
         {
             Initialize();
         }

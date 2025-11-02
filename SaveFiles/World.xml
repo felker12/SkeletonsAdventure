@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:WorldClasses="RpgLibrary.WorldClasses" xmlns:ItemClasses="RpgLibrary.ItemClasses">
   <Asset Type="WorldClasses:WorldData">
-    <TotalTimeInWorld>PT31.2667292S</TotalTimeInWorld>
+    <TotalTimeInWorld>PT10.9166885S</TotalTimeInWorld>
     <CurrentLevel>Level0</CurrentLevel>
     <PlayerData>
       <Type>SkeletonsAdventure.Entities.Player</Type>
@@ -10,14 +10,14 @@
       <BaseAttack>300</BaseAttack>
       <EntityLevel>0</EntityLevel>
       <BaseXP>1</BaseXP>
-      <CurrentHealth>3000</CurrentHealth>
-      <Position>360 359</Position>
+      <CurrentHealth>2996</CurrentHealth>
+      <Position>1521.9237 306.9289</Position>
       <RespawnPosition>320 304</RespawnPosition>
       <IsDead>false</IsDead>
       <LastDeathTime>PT0S</LastDeathTime>
       <totalXP>21</totalXP>
       <baseMana>1000</baseMana>
-      <mana>986</mana>
+      <mana>998</mana>
       <maxMana>1000</maxMana>
       <attributePoints>0</attributePoints>
       <bonusAttackFromAttributePoints>0</bonusAttackFromAttributePoints>
@@ -119,7 +119,7 @@
           <Stackable>true</Stackable>
           <Consumable>true</Consumable>
           <Position>1120 64</Position>
-          <Quantity>3</Quantity>
+          <Quantity>8</Quantity>
           <SourceRectangle>0 0 32 32</SourceRectangle>
           <TexturePath>Items/Bones</TexturePath>
           <Effect>Heal</Effect>
@@ -497,6 +497,48 @@
           <NumberHands>Main</NumberHands>
           <AttackValue>5</AttackValue>
         </Item>
+        <Item Type="ItemClasses:ArmorData">
+          <Name>Robes</Name>
+          <Type>Robes</Type>
+          <Description>A Robe</Description>
+          <Price>10</Price>
+          <Weight>5</Weight>
+          <Equipped>false</Equipped>
+          <Stackable>false</Stackable>
+          <Consumable>false</Consumable>
+          <Position>1216 192</Position>
+          <Quantity>1</Quantity>
+          <SourceRectangle>0 0 0 0</SourceRectangle>
+          <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+          <LevelRequirementData>
+            <Level>0</Level>
+            <Defence>0</Defence>
+            <Attack>0</Attack>
+          </LevelRequirementData>
+          <ArmorLocation>Body</ArmorLocation>
+          <DefenseValue>2</DefenseValue>
+        </Item>
+        <Item Type="ItemClasses:WeaponData">
+          <Name>Sword</Name>
+          <Type>Slashing</Type>
+          <Description>A Sword</Description>
+          <Price>10</Price>
+          <Weight>3</Weight>
+          <Equipped>false</Equipped>
+          <Stackable>false</Stackable>
+          <Consumable>false</Consumable>
+          <Position>1120 224</Position>
+          <Quantity>1</Quantity>
+          <SourceRectangle>0 0 0 0</SourceRectangle>
+          <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+          <LevelRequirementData>
+            <Level>0</Level>
+            <Defence>0</Defence>
+            <Attack>0</Attack>
+          </LevelRequirementData>
+          <NumberHands>Main</NumberHands>
+          <AttackValue>5</AttackValue>
+        </Item>
       </backpack>
       <activeQuests />
       <completedQuests />
@@ -528,12 +570,17 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>748.5 410</Position>
+                <Position>821 360</Position>
                 <RespawnPosition>736 320</RespawnPosition>
                 <IsDead>false</IsDead>
-                <LastDeathTime>PT20.2500405S</LastDeathTime>
+                <LastDeathTime>PT6.2666792S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -542,13 +589,18 @@
                 <BaseAttack>9</BaseAttack>
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
-                <CurrentHealth>22</CurrentHealth>
-                <Position>1898 302.75</Position>
+                <CurrentHealth>-156</CurrentHealth>
+                <Position>1648 450.25</Position>
                 <RespawnPosition>1648 304</RespawnPosition>
-                <IsDead>false</IsDead>
-                <LastDeathTime>PT0S</LastDeathTime>
+                <IsDead>true</IsDead>
+                <LastDeathTime>PT10.1166869S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -558,12 +610,17 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>890 1727</Position>
+                <Position>640 1813.25</Position>
                 <RespawnPosition>640 1712</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -573,12 +630,17 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>2378 1727.25</Position>
+                <Position>2128 1813.5</Position>
                 <RespawnPosition>2128 1696</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -588,12 +650,17 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>858 2911.75</Position>
+                <Position>608 2998</Position>
                 <RespawnPosition>608 2848</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -603,12 +670,17 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>810 4047</Position>
+                <Position>560 4133.25</Position>
                 <RespawnPosition>560 3952</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -618,12 +690,17 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>2938 2911.5</Position>
+                <Position>2688 2997.75</Position>
                 <RespawnPosition>2688 2864</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -633,12 +710,17 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>3776 2959</Position>
+                <Position>3526 3045.25</Position>
                 <RespawnPosition>3536 2864</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -648,12 +730,17 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>2890 384</Position>
+                <Position>2640 421.5</Position>
                 <RespawnPosition>2640 384</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -663,12 +750,17 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>3776.75 798.75</Position>
+                <Position>3568 885</Position>
                 <RespawnPosition>3568 800</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -678,12 +770,17 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>4314 847.25</Position>
+                <Position>4064 886</Position>
                 <RespawnPosition>4064 816</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -693,12 +790,17 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>4736.75 799.75</Position>
+                <Position>4486.75 886</Position>
                 <RespawnPosition>4528 816</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -708,12 +810,17 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>5146 1823</Position>
+                <Position>4896 1909.25</Position>
                 <RespawnPosition>4896 1728</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -723,12 +830,17 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>5354 1887</Position>
+                <Position>5104 1973.25</Position>
                 <RespawnPosition>5104 1792</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -738,12 +850,17 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>5226 2015</Position>
+                <Position>4976 2101.25</Position>
                 <RespawnPosition>4976 1920</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -753,12 +870,17 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>3775.75 1791.75</Position>
+                <Position>3632 1878</Position>
                 <RespawnPosition>3632 1808</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -768,12 +890,17 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>2122 2879</Position>
+                <Position>1872 2965.25</Position>
                 <RespawnPosition>1872 2784</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -783,16 +910,42 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>3770.75 3054.75</Position>
+                <Position>3520.75 3157.25</Position>
                 <RespawnPosition>3392 2976</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
             </EntityData>
           </EntityManagerData>
           <DroppedItemDatas>
+            <Item Type="ItemClasses:ArmorData">
+              <Name>Robes</Name>
+              <Type>Robes</Type>
+              <Description>A Robe</Description>
+              <Price>10</Price>
+              <Weight>5</Weight>
+              <Equipped>false</Equipped>
+              <Stackable>false</Stackable>
+              <Consumable>false</Consumable>
+              <Position>1668 470.25</Position>
+              <Quantity>1</Quantity>
+              <SourceRectangle>0 0 0 0</SourceRectangle>
+              <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+              <LevelRequirementData>
+                <Level>0</Level>
+                <Defence>0</Defence>
+                <Attack>0</Attack>
+              </LevelRequirementData>
+              <ArmorLocation>Body</ArmorLocation>
+              <DefenseValue>2</DefenseValue>
+            </Item>
             <Item Type="ItemClasses:ConsumableData">
               <Name>Bones</Name>
               <Type>Consumable</Type>
@@ -802,7 +955,7 @@
               <Equipped>false</Equipped>
               <Stackable>true</Stackable>
               <Consumable>true</Consumable>
-              <Position>756 412.5</Position>
+              <Position>1683 485.25</Position>
               <Quantity>1</Quantity>
               <SourceRectangle>0 0 32 32</SourceRectangle>
               <TexturePath>Items/Bones</TexturePath>
@@ -810,89 +963,22 @@
               <EffectDuration>0</EffectDuration>
               <EffectBonus>5</EffectBonus>
             </Item>
-            <Item>
-              <Name>Coins</Name>
-              <Type>Currency</Type>
-              <Description>Money</Description>
+            <Item Type="ItemClasses:ConsumableData">
+              <Name>Bones</Name>
+              <Type>Consumable</Type>
+              <Description>Bones of a creature</Description>
               <Price>1</Price>
-              <Weight>0</Weight>
-              <Equipped>false</Equipped>
-              <Stackable>true</Stackable>
-              <Consumable>false</Consumable>
-              <Position>771 427.5</Position>
-              <Quantity>6</Quantity>
-              <SourceRectangle>0 0 0 0</SourceRectangle>
-              <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-            </Item>
-            <Item Type="ItemClasses:ArmorData">
-              <Name>Shoes</Name>
-              <Type>Shoe</Type>
-              <Description>A Simple Shoe</Description>
-              <Price>4</Price>
               <Weight>1</Weight>
               <Equipped>false</Equipped>
-              <Stackable>false</Stackable>
-              <Consumable>false</Consumable>
-              <Position>756 245</Position>
-              <Quantity>1</Quantity>
-              <SourceRectangle>0 0 0 0</SourceRectangle>
-              <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-              <LevelRequirementData>
-                <Level>0</Level>
-                <Defence>0</Defence>
-                <Attack>0</Attack>
-              </LevelRequirementData>
-              <ArmorLocation>Feet</ArmorLocation>
-              <DefenseValue>1</DefenseValue>
-            </Item>
-            <Item>
-              <Name>Coins</Name>
-              <Type>Currency</Type>
-              <Description>Money</Description>
-              <Price>1</Price>
-              <Weight>0</Weight>
-              <Equipped>false</Equipped>
               <Stackable>true</Stackable>
-              <Consumable>false</Consumable>
-              <Position>771 260</Position>
-              <Quantity>11</Quantity>
-              <SourceRectangle>0 0 0 0</SourceRectangle>
-              <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-            </Item>
-            <Item Type="ItemClasses:ArmorData">
-              <Name>Shoes</Name>
-              <Type>Shoe</Type>
-              <Description>A Simple Shoe</Description>
-              <Price>4</Price>
-              <Weight>1</Weight>
-              <Equipped>false</Equipped>
-              <Stackable>false</Stackable>
-              <Consumable>false</Consumable>
-              <Position>823.5 245</Position>
+              <Consumable>true</Consumable>
+              <Position>1698 500.25</Position>
               <Quantity>1</Quantity>
-              <SourceRectangle>0 0 0 0</SourceRectangle>
-              <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-              <LevelRequirementData>
-                <Level>0</Level>
-                <Defence>0</Defence>
-                <Attack>0</Attack>
-              </LevelRequirementData>
-              <ArmorLocation>Feet</ArmorLocation>
-              <DefenseValue>1</DefenseValue>
-            </Item>
-            <Item>
-              <Name>Coins</Name>
-              <Type>Currency</Type>
-              <Description>Money</Description>
-              <Price>1</Price>
-              <Weight>0</Weight>
-              <Equipped>false</Equipped>
-              <Stackable>true</Stackable>
-              <Consumable>false</Consumable>
-              <Position>838.5 260</Position>
-              <Quantity>4</Quantity>
-              <SourceRectangle>0 0 0 0</SourceRectangle>
-              <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+              <SourceRectangle>0 0 32 32</SourceRectangle>
+              <TexturePath>Items/Bones</TexturePath>
+              <Effect>Heal</Effect>
+              <EffectDuration>0</EffectDuration>
+              <EffectBonus>5</EffectBonus>
             </Item>
           </DroppedItemDatas>
           <Chests>
@@ -921,22 +1007,47 @@
                   <SourceRectangle>0 0 0 0</SourceRectangle>
                   <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
                 </Item>
-                <Item Type="ItemClasses:ConsumableData">
-                  <Name>Bones</Name>
-                  <Type>Consumable</Type>
-                  <Description>Bones of a creature</Description>
-                  <Price>1</Price>
-                  <Weight>1</Weight>
+                <Item Type="ItemClasses:ArmorData">
+                  <Name>Robes</Name>
+                  <Type>Robes</Type>
+                  <Description>A Robe</Description>
+                  <Price>10</Price>
+                  <Weight>5</Weight>
                   <Equipped>false</Equipped>
-                  <Stackable>true</Stackable>
-                  <Consumable>true</Consumable>
+                  <Stackable>false</Stackable>
+                  <Consumable>false</Consumable>
                   <Position>0 0</Position>
                   <Quantity>1</Quantity>
-                  <SourceRectangle>0 0 32 32</SourceRectangle>
-                  <TexturePath>Items/Bones</TexturePath>
-                  <Effect>Heal</Effect>
-                  <EffectDuration>0</EffectDuration>
-                  <EffectBonus>5</EffectBonus>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                  <LevelRequirementData>
+                    <Level>0</Level>
+                    <Defence>0</Defence>
+                    <Attack>0</Attack>
+                  </LevelRequirementData>
+                  <ArmorLocation>Body</ArmorLocation>
+                  <DefenseValue>2</DefenseValue>
+                </Item>
+                <Item Type="ItemClasses:ArmorData">
+                  <Name>Hood</Name>
+                  <Type>Hood</Type>
+                  <Description>A Simple Hood</Description>
+                  <Price>8</Price>
+                  <Weight>2</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>false</Stackable>
+                  <Consumable>false</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>1</Quantity>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                  <LevelRequirementData>
+                    <Level>0</Level>
+                    <Defence>0</Defence>
+                    <Attack>0</Attack>
+                  </LevelRequirementData>
+                  <ArmorLocation>Head</ArmorLocation>
+                  <DefenseValue>1</DefenseValue>
                 </Item>
               </ItemDatas>
             </Item>
@@ -951,6 +1062,88 @@
                 <Max>4</Max>
               </LootAmountRange>
               <ItemDatas>
+                <Item Type="ItemClasses:ArmorData">
+                  <Name>Hood</Name>
+                  <Type>Hood</Type>
+                  <Description>A Simple Hood</Description>
+                  <Price>8</Price>
+                  <Weight>2</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>false</Stackable>
+                  <Consumable>false</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>1</Quantity>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                  <LevelRequirementData>
+                    <Level>0</Level>
+                    <Defence>0</Defence>
+                    <Attack>0</Attack>
+                  </LevelRequirementData>
+                  <ArmorLocation>Head</ArmorLocation>
+                  <DefenseValue>1</DefenseValue>
+                </Item>
+                <Item Type="ItemClasses:ConsumableData">
+                  <Name>Bones</Name>
+                  <Type>Consumable</Type>
+                  <Description>Bones of a creature</Description>
+                  <Price>1</Price>
+                  <Weight>1</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>true</Stackable>
+                  <Consumable>true</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>2</Quantity>
+                  <SourceRectangle>0 0 32 32</SourceRectangle>
+                  <TexturePath>Items/Bones</TexturePath>
+                  <Effect>Heal</Effect>
+                  <EffectDuration>0</EffectDuration>
+                  <EffectBonus>5</EffectBonus>
+                </Item>
+                <Item>
+                  <Name>Coins</Name>
+                  <Type>Currency</Type>
+                  <Description>Money</Description>
+                  <Price>1</Price>
+                  <Weight>0</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>true</Stackable>
+                  <Consumable>false</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>2</Quantity>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                </Item>
+              </ItemDatas>
+            </Item>
+            <Item>
+              <ID>784</ID>
+              <ChestType>Basic</ChestType>
+              <Position>5584 1520</Position>
+              <DropTableName>BasicDropTable</DropTableName>
+              <ChestEmptied>false</ChestEmptied>
+              <LootAmountRange>
+                <Min>2</Min>
+                <Max>4</Max>
+              </LootAmountRange>
+              <ItemDatas>
+                <Item Type="ItemClasses:ConsumableData">
+                  <Name>Bones</Name>
+                  <Type>Consumable</Type>
+                  <Description>Bones of a creature</Description>
+                  <Price>1</Price>
+                  <Weight>1</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>true</Stackable>
+                  <Consumable>true</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>2</Quantity>
+                  <SourceRectangle>0 0 32 32</SourceRectangle>
+                  <TexturePath>Items/Bones</TexturePath>
+                  <Effect>Heal</Effect>
+                  <EffectDuration>0</EffectDuration>
+                  <EffectBonus>5</EffectBonus>
+                </Item>
                 <Item Type="ItemClasses:ArmorData">
                   <Name>Shoes</Name>
                   <Type>Shoe</Type>
@@ -972,64 +1165,6 @@
                   <ArmorLocation>Feet</ArmorLocation>
                   <DefenseValue>1</DefenseValue>
                 </Item>
-                <Item>
-                  <Name>Coins</Name>
-                  <Type>Currency</Type>
-                  <Description>Money</Description>
-                  <Price>1</Price>
-                  <Weight>0</Weight>
-                  <Equipped>false</Equipped>
-                  <Stackable>true</Stackable>
-                  <Consumable>false</Consumable>
-                  <Position>0 0</Position>
-                  <Quantity>6</Quantity>
-                  <SourceRectangle>0 0 0 0</SourceRectangle>
-                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-                </Item>
-              </ItemDatas>
-            </Item>
-            <Item>
-              <ID>784</ID>
-              <ChestType>Basic</ChestType>
-              <Position>5584 1520</Position>
-              <DropTableName>BasicDropTable</DropTableName>
-              <ChestEmptied>false</ChestEmptied>
-              <LootAmountRange>
-                <Min>2</Min>
-                <Max>4</Max>
-              </LootAmountRange>
-              <ItemDatas>
-                <Item>
-                  <Name>Coins</Name>
-                  <Type>Currency</Type>
-                  <Description>Money</Description>
-                  <Price>1</Price>
-                  <Weight>0</Weight>
-                  <Equipped>false</Equipped>
-                  <Stackable>true</Stackable>
-                  <Consumable>false</Consumable>
-                  <Position>0 0</Position>
-                  <Quantity>1</Quantity>
-                  <SourceRectangle>0 0 0 0</SourceRectangle>
-                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-                </Item>
-                <Item Type="ItemClasses:ConsumableData">
-                  <Name>Bones</Name>
-                  <Type>Consumable</Type>
-                  <Description>Bones of a creature</Description>
-                  <Price>1</Price>
-                  <Weight>1</Weight>
-                  <Equipped>false</Equipped>
-                  <Stackable>true</Stackable>
-                  <Consumable>true</Consumable>
-                  <Position>0 0</Position>
-                  <Quantity>2</Quantity>
-                  <SourceRectangle>0 0 32 32</SourceRectangle>
-                  <TexturePath>Items/Bones</TexturePath>
-                  <Effect>Heal</Effect>
-                  <EffectDuration>0</EffectDuration>
-                  <EffectBonus>5</EffectBonus>
-                </Item>
               </ItemDatas>
             </Item>
             <Item>
@@ -1043,23 +1178,6 @@
                 <Max>4</Max>
               </LootAmountRange>
               <ItemDatas>
-                <Item Type="ItemClasses:ConsumableData">
-                  <Name>Bones</Name>
-                  <Type>Consumable</Type>
-                  <Description>Bones of a creature</Description>
-                  <Price>1</Price>
-                  <Weight>1</Weight>
-                  <Equipped>false</Equipped>
-                  <Stackable>true</Stackable>
-                  <Consumable>true</Consumable>
-                  <Position>0 0</Position>
-                  <Quantity>2</Quantity>
-                  <SourceRectangle>0 0 32 32</SourceRectangle>
-                  <TexturePath>Items/Bones</TexturePath>
-                  <Effect>Heal</Effect>
-                  <EffectDuration>0</EffectDuration>
-                  <EffectBonus>5</EffectBonus>
-                </Item>
                 <Item>
                   <Name>Coins</Name>
                   <Type>Currency</Type>
@@ -1070,39 +1188,9 @@
                   <Stackable>true</Stackable>
                   <Consumable>false</Consumable>
                   <Position>0 0</Position>
-                  <Quantity>2</Quantity>
+                  <Quantity>11</Quantity>
                   <SourceRectangle>0 0 0 0</SourceRectangle>
                   <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-                </Item>
-              </ItemDatas>
-            </Item>
-            <Item>
-              <ID>784</ID>
-              <ChestType>Basic</ChestType>
-              <Position>912 3824</Position>
-              <DropTableName>BasicDropTable</DropTableName>
-              <ChestEmptied>false</ChestEmptied>
-              <LootAmountRange>
-                <Min>2</Min>
-                <Max>4</Max>
-              </LootAmountRange>
-              <ItemDatas>
-                <Item Type="ItemClasses:ConsumableData">
-                  <Name>Bones</Name>
-                  <Type>Consumable</Type>
-                  <Description>Bones of a creature</Description>
-                  <Price>1</Price>
-                  <Weight>1</Weight>
-                  <Equipped>false</Equipped>
-                  <Stackable>true</Stackable>
-                  <Consumable>true</Consumable>
-                  <Position>0 0</Position>
-                  <Quantity>1</Quantity>
-                  <SourceRectangle>0 0 32 32</SourceRectangle>
-                  <TexturePath>Items/Bones</TexturePath>
-                  <Effect>Heal</Effect>
-                  <EffectDuration>0</EffectDuration>
-                  <EffectBonus>5</EffectBonus>
                 </Item>
                 <Item Type="ItemClasses:ArmorData">
                   <Name>Robes</Name>
@@ -1124,6 +1212,96 @@
                   </LevelRequirementData>
                   <ArmorLocation>Body</ArmorLocation>
                   <DefenseValue>2</DefenseValue>
+                </Item>
+              </ItemDatas>
+            </Item>
+            <Item>
+              <ID>784</ID>
+              <ChestType>Basic</ChestType>
+              <Position>912 3824</Position>
+              <DropTableName>BasicDropTable</DropTableName>
+              <ChestEmptied>false</ChestEmptied>
+              <LootAmountRange>
+                <Min>2</Min>
+                <Max>4</Max>
+              </LootAmountRange>
+              <ItemDatas>
+                <Item>
+                  <Name>Coins</Name>
+                  <Type>Currency</Type>
+                  <Description>Money</Description>
+                  <Price>1</Price>
+                  <Weight>0</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>true</Stackable>
+                  <Consumable>false</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>5</Quantity>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                </Item>
+                <Item Type="ItemClasses:ArmorData">
+                  <Name>Shoes</Name>
+                  <Type>Shoe</Type>
+                  <Description>A Simple Shoe</Description>
+                  <Price>4</Price>
+                  <Weight>1</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>false</Stackable>
+                  <Consumable>false</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>1</Quantity>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                  <LevelRequirementData>
+                    <Level>0</Level>
+                    <Defence>0</Defence>
+                    <Attack>0</Attack>
+                  </LevelRequirementData>
+                  <ArmorLocation>Feet</ArmorLocation>
+                  <DefenseValue>1</DefenseValue>
+                </Item>
+                <Item Type="ItemClasses:ArmorData">
+                  <Name>Hood</Name>
+                  <Type>Hood</Type>
+                  <Description>A Simple Hood</Description>
+                  <Price>8</Price>
+                  <Weight>2</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>false</Stackable>
+                  <Consumable>false</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>1</Quantity>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                  <LevelRequirementData>
+                    <Level>0</Level>
+                    <Defence>0</Defence>
+                    <Attack>0</Attack>
+                  </LevelRequirementData>
+                  <ArmorLocation>Head</ArmorLocation>
+                  <DefenseValue>1</DefenseValue>
+                </Item>
+                <Item Type="ItemClasses:ShieldData">
+                  <Name>Round Shield</Name>
+                  <Type>Shield</Type>
+                  <Description>A basic round shield</Description>
+                  <Price>40</Price>
+                  <Weight>10</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>false</Stackable>
+                  <Consumable>false</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>1</Quantity>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                  <LevelRequirementData>
+                    <Level>0</Level>
+                    <Defence>0</Defence>
+                    <Attack>0</Attack>
+                  </LevelRequirementData>
+                  <NumberHands>Off</NumberHands>
+                  <DefenceValue>2</DefenceValue>
                 </Item>
               </ItemDatas>
             </Item>
@@ -1373,7 +1551,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1388,7 +1571,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1403,7 +1591,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1418,7 +1611,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1433,7 +1631,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1448,7 +1651,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1463,7 +1671,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1478,7 +1691,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1493,7 +1711,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1508,7 +1731,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1523,7 +1751,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1538,7 +1771,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1553,7 +1791,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1568,7 +1811,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1583,7 +1831,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1598,7 +1851,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1613,7 +1871,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1628,7 +1891,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1643,7 +1911,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1658,7 +1931,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1673,7 +1951,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1688,7 +1971,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1703,7 +1991,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1718,7 +2011,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1733,7 +2031,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1748,7 +2051,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1763,7 +2071,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1778,7 +2091,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1793,7 +2111,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1808,7 +2131,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1823,7 +2151,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1838,7 +2171,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1853,7 +2191,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1868,7 +2211,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1883,7 +2231,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1898,7 +2251,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -1913,7 +2271,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Spider</Type>
@@ -2291,7 +2654,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2306,7 +2674,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2321,7 +2694,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2336,7 +2714,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2351,7 +2734,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2366,7 +2754,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2381,7 +2774,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2396,7 +2794,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2411,7 +2814,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2426,7 +2834,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2441,7 +2854,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2456,7 +2874,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2471,7 +2894,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2486,7 +2914,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2501,7 +2934,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2516,7 +2954,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2531,7 +2974,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2546,7 +2994,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2561,7 +3014,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2576,7 +3034,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2591,7 +3054,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Skeleton</Type>
@@ -2606,7 +3074,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Spider</Type>
@@ -2628,9 +3101,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>5648 3632</Position>
                 <RespawnPosition>5648 3632</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2688,9 +3161,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>1552 2736</Position>
                 <RespawnPosition>1552 2736</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2703,9 +3176,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>1536 3280</Position>
                 <RespawnPosition>1536 3280</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2718,9 +3191,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>1536 3616</Position>
                 <RespawnPosition>1536 3616</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2748,9 +3221,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>2656 3632</Position>
                 <RespawnPosition>2656 3632</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2763,9 +3236,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>1504 3984</Position>
                 <RespawnPosition>1504 3984</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2778,9 +3251,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>1648 4304</Position>
                 <RespawnPosition>1648 4304</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2793,9 +3266,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>1568 4912</Position>
                 <RespawnPosition>1568 4912</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2808,9 +3281,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>2080 4912</Position>
                 <RespawnPosition>2080 4912</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2838,9 +3311,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>2752 4304</Position>
                 <RespawnPosition>2752 4304</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2853,9 +3326,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>3280 4192</Position>
                 <RespawnPosition>3280 4192</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2868,9 +3341,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>3424 4320</Position>
                 <RespawnPosition>3424 4320</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2883,9 +3356,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>4416 4896</Position>
                 <RespawnPosition>4416 4896</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2913,26 +3386,11 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>3856 4976</Position>
                 <RespawnPosition>3856 4976</RespawnPosition>
-                <IsDead>false</IsDead>
-                <LastDeathTime>PT0S</LastDeathTime>
-                <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
-              </Item>
-              <Item Type="RpgLibrary.EntityClasses.EnemyData">
-                <Type>SkeletonsAdventure.Entities.Spider</Type>
-                <BaseHealth>15</BaseHealth>
-                <BaseDefence>2</BaseDefence>
-                <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
-                <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
-                <Position>4400 3616</Position>
-                <RespawnPosition>4400 3616</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
@@ -2946,6 +3404,21 @@
                 <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
                 <CurrentHealth>21</CurrentHealth>
+                <Position>4400 3616</Position>
+                <RespawnPosition>4400 3616</RespawnPosition>
+                <IsDead>false</IsDead>
+                <LastDeathTime>PT0S</LastDeathTime>
+                <DropTableName>BasicDropTable</DropTableName>
+                <GuaranteedItems />
+              </Item>
+              <Item Type="RpgLibrary.EntityClasses.EnemyData">
+                <Type>SkeletonsAdventure.Entities.Spider</Type>
+                <BaseHealth>15</BaseHealth>
+                <BaseDefence>2</BaseDefence>
+                <BaseAttack>7</BaseAttack>
+                <EntityLevel>5</EntityLevel>
+                <BaseXP>4</BaseXP>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>4560 1952</Position>
                 <RespawnPosition>4560 1952</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -2973,9 +3446,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>3776 3072</Position>
                 <RespawnPosition>3776 3072</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3018,26 +3491,11 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
-                <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
-                <Position>3984 1200</Position>
-                <RespawnPosition>3984 1200</RespawnPosition>
-                <IsDead>false</IsDead>
-                <LastDeathTime>PT0S</LastDeathTime>
-                <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
-              </Item>
-              <Item Type="RpgLibrary.EntityClasses.EnemyData">
-                <Type>SkeletonsAdventure.Entities.Spider</Type>
-                <BaseHealth>15</BaseHealth>
-                <BaseDefence>2</BaseDefence>
-                <BaseAttack>7</BaseAttack>
                 <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
                 <CurrentHealth>21</CurrentHealth>
-                <Position>4512 1200</Position>
-                <RespawnPosition>4512 1200</RespawnPosition>
+                <Position>3984 1200</Position>
+                <RespawnPosition>3984 1200</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
@@ -3051,6 +3509,21 @@
                 <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
                 <CurrentHealth>23</CurrentHealth>
+                <Position>4512 1200</Position>
+                <RespawnPosition>4512 1200</RespawnPosition>
+                <IsDead>false</IsDead>
+                <LastDeathTime>PT0S</LastDeathTime>
+                <DropTableName>BasicDropTable</DropTableName>
+                <GuaranteedItems />
+              </Item>
+              <Item Type="RpgLibrary.EntityClasses.EnemyData">
+                <Type>SkeletonsAdventure.Entities.Spider</Type>
+                <BaseHealth>15</BaseHealth>
+                <BaseDefence>2</BaseDefence>
+                <BaseAttack>7</BaseAttack>
+                <EntityLevel>3</EntityLevel>
+                <BaseXP>4</BaseXP>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>4592 2352</Position>
                 <RespawnPosition>4592 2352</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3078,9 +3551,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>5280 1664</Position>
                 <RespawnPosition>5280 1664</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3123,9 +3596,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>5696 2928</Position>
                 <RespawnPosition>5696 2928</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3138,9 +3611,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>6064 2976</Position>
                 <RespawnPosition>6064 2976</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3153,9 +3626,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>6272 4368</Position>
                 <RespawnPosition>6272 4368</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3168,9 +3641,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>6032 4624</Position>
                 <RespawnPosition>6032 4624</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3183,9 +3656,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>5504 4928</Position>
                 <RespawnPosition>5504 4928</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3198,9 +3671,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>6016 4912</Position>
                 <RespawnPosition>6016 4912</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3228,9 +3701,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>4480 4240</Position>
                 <RespawnPosition>4480 4240</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3243,9 +3716,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>2672 5344</Position>
                 <RespawnPosition>2672 5344</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3421,7 +3894,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Goblin</Type>
@@ -3466,7 +3944,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.SkeletonMage</Type>
@@ -3481,7 +3964,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.SkeletonWarrior</Type>
@@ -3496,7 +3984,12 @@
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
+                <GuaranteedItems>
+                  <Item>
+                    <Name>Bones</Name>
+                    <Quantity>1</Quantity>
+                  </Item>
+                </GuaranteedItems>
               </Item>
               <Item Type="RpgLibrary.EntityClasses.EnemyData">
                 <Type>SkeletonsAdventure.Entities.Spider</Type>

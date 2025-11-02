@@ -239,7 +239,7 @@ namespace SkeletonsAdventure.GameWorld
                         {
                             Enemy en = (Enemy)Activator.CreateInstance(enemy.GetType(), data);
                             en.SetEnemyLevel(data.EntityLevel);
-                            en.GuaranteedDrops.Add(GameManager.LoadGameItemsFromItemData(data.GuaranteedItems));
+                            en.GuaranteedDrops.Add(GameManager.LoadGameItemsFromItemBaseData(data.GuaranteedItems));
 
                             EntityManager.Add(en);
                         }
