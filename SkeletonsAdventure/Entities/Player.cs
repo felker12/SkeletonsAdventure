@@ -113,7 +113,7 @@ namespace SkeletonsAdventure.Entities
 
         public PlayerData GetPlayerData()
         {
-            return new PlayerData(GetEntityData())
+            return new PlayerData(ToData())
             {
                 totalXP = TotalXP,
                 baseMana = BaseMana,

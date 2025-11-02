@@ -25,7 +25,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Goblin Clone()
         {
-            Goblin goblin = new(GetEntityData())
+            Goblin goblin = new(ToData())
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

@@ -25,7 +25,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Spider Clone()
         {
-            Spider spider = new(GetEntityData())
+            Spider spider = new(ToData())
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

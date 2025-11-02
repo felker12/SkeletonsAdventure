@@ -11,7 +11,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Skeleton Clone()
         {
-            Skeleton skeleton = new(GetEntityData())
+            Skeleton skeleton = new(ToData())
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

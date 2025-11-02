@@ -37,11 +37,15 @@ namespace SkeletonsAdventure.Entities
         public int NumberOfItemsToDrop { get; set; } = 2; //Number of items to drop from the drop table
         public ItemList GuaranteedDrops { get; set; } = new();
         public string Name { get; set; }
+        public List<BasicAttack> SpecialAttacks { get; set; } = [];
 
         public Enemy(EnemyData data) : base(data)
         {
             Initialize();
             UpdateEntityWithData(data);
+
+            foreach(var itemData in data.GuaranteedItems)
+                 GuaranteedDrops.Add(GameManager.CreateGameItemFromData(itemData)); 
         }
 
         public Enemy() : base()
@@ -101,7 +105,7 @@ namespace SkeletonsAdventure.Entities
                 //TODO
             }
 
-            UpdateEntityWithData(GetEntityData()); //TODO: check if this is needed
+            UpdateEntityWithData(ToData()); //TODO: check if this is needed
         }
         public override void Update(GameTime gameTime)
         {
@@ -126,7 +130,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Enemy Clone()
         {
-            return new(GetEntityData())
+            return new(ToData())
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,
@@ -137,9 +141,9 @@ namespace SkeletonsAdventure.Entities
             };
         }
 
-        public override EnemyData GetEntityData()
+        public override EnemyData ToData()
         {
-            return new(base.GetEntityData())
+            return new(base.ToData())
             {
                 GuaranteedItems = GuaranteedDrops.ToData(),
                 DropTableName = DropTableName,

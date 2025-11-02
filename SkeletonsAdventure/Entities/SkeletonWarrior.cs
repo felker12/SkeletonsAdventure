@@ -22,7 +22,7 @@ namespace SkeletonsAdventure.Entities
 
         public override SkeletonWarrior Clone()
         {
-            return new(GetEntityData())
+            return new(ToData())
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

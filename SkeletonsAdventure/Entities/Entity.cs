@@ -98,7 +98,7 @@ namespace SkeletonsAdventure.Entities
             base.Draw(spriteBatch);
         }
 
-        public virtual EntityData GetEntityData()
+        public virtual EntityData ToData()
         {
             return new()
             {
@@ -137,7 +137,7 @@ namespace SkeletonsAdventure.Entities
 
         public virtual Entity Clone()
         {
-            return new(GetEntityData())
+            return new(ToData())
             {
                 Position = Position,
                 Level = Level,

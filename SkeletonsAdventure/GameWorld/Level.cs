@@ -219,7 +219,7 @@ namespace SkeletonsAdventure.GameWorld
             return new()
             {
                 MinMaxPair = EnemyLevels,
-                EntityManagerData = EntityManager.GetEnemyData(),
+                EntityManagerData = EntityManager.ToData(),
                 DroppedItemDatas = EntityManager.DroppedLootManager.GetDroppedItemData(),
                 Chests = ChestManager.GetChestDatas(),
                 LayerVisibility = layerVisibility,

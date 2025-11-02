@@ -101,14 +101,14 @@ namespace SkeletonsAdventure.Entities
             }
         }
 
-        public EntityManagerData GetEnemyData()
+        public EntityManagerData ToData()
         {
             EntityManagerData entityManagerData = new();
 
             foreach (Entity entity in Entities)
             {
                 if (entity is Enemy enemy)
-                    entityManagerData.EntityData.Add(enemy.GetEntityData());
+                    entityManagerData.EntityData.Add(enemy.ToData());
             }
 
             return entityManagerData;

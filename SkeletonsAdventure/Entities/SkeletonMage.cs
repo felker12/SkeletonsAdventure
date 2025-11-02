@@ -20,7 +20,7 @@ namespace SkeletonsAdventure.Entities
 
         public override SkeletonMage Clone()
         {
-            return new(GetEntityData())
+            return new(ToData())
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

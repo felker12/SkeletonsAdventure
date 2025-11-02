@@ -26,7 +26,7 @@ namespace SkeletonsAdventure.Entities
 
         public override SkeletalBruiser Clone()
         {
-            SkeletalBruiser skeletalBruiser = new(GetEntityData())
+            SkeletalBruiser skeletalBruiser = new(ToData())
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

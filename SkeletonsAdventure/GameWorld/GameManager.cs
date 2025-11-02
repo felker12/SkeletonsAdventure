@@ -145,11 +145,11 @@ namespace SkeletonsAdventure.GameWorld
             CreateNPCs();
 
             //TODO
-            foreach (var item in ItemsClone)
+            /*foreach (var item in itemsclone)
             {
-                Debug.WriteLine("key: " + item.Key + ", name: " + item.Value.Name); //TODO
-                Debug.WriteLine($"data: {item.Value.ToData()}");
-            }
+                //debug.writeline("key: " + item.key + ", name: " + item.value.name); //todo
+                //debug.writeline($"data: {item.value.todata()}");
+            }*/
 
             //WeaponData weaponData = new();
             //XnaSerializer.Serialize(Path.Combine(SavePath, "sword.xml"), weaponData);
@@ -160,8 +160,17 @@ namespace SkeletonsAdventure.GameWorld
             //weaponData.LevelRequirementData = requirementData;
             //XnaSerializer.Serialize(Path.Combine(SavePath, "sword2.xml"), weaponData);
 
+            Enemy enemy = GetEnemyByName("Skeleton");
+            Debug.WriteLine($"Enemy Loaded: {enemy.Name}, Health: {enemy.Health}, Attack: {enemy.Attack}, Defence: {enemy.Defence}");
+            //enemy.GuaranteedDrops.Add((GetItemByName("Bones")));
 
-            Debug.WriteLine("test");
+            EnemyData enemyData = enemy.ToData();
+
+
+
+            Debug.WriteLine($"Enemy Data: Name: {enemyData.Type}, Guaranteed Drops: {string.Join("; ", enemyData.GuaranteedItems.Select(item => item.ToString()))}");
+            XnaSerializer.Serialize(Path.Combine(SavePath, "SkeletonData.xml"), enemyData);
+
         }
 
         public static Texture2D CreateTextureFromColor(Color color)
@@ -480,10 +489,6 @@ namespace SkeletonsAdventure.GameWorld
             ItemData itemData;
             Texture2D itemTexure;
             GameItem gameItem;
-            Weapon weapon;
-            Armor armor;
-            Shield shield;
-            Consumable consumable;
 
             foreach (string folder in folders)
             {
@@ -497,31 +502,7 @@ namespace SkeletonsAdventure.GameWorld
                     itemData = Content.Load<ItemData>(filePath);
                     itemTexure = Content.Load<Texture2D>(@$"{itemData.TexturePath}");
 
-                    //cast the itemData to the correct type
-                    if (itemData is WeaponData weaponData)
-                    {
-                        weapon = new(weaponData.Clone());
-                        gameItem = weapon;
-                    }
-                    else if (itemData is ArmorData armorData)
-                    {
-                        armor = new(armorData.Clone());
-                        gameItem = armor;
-                    }
-                    else if(itemData is ShieldData shieldData)
-                    {
-                        shield = new(shieldData.Clone());
-                        gameItem = shield;
-                    }
-                    else if (itemData is ConsumableData consumableData)
-                    {
-                        consumable = new(consumableData.Clone());
-                        gameItem = consumable;
-                    }
-                    else
-                    {
-                        gameItem = new(itemData.Clone());
-                    }
+                    gameItem = CreateGameItemFromData(itemData);
 
                     if (Items.ContainsKey(gameItem.Name) == false)
                         Items.Add(gameItem.Name, gameItem);
@@ -529,6 +510,43 @@ namespace SkeletonsAdventure.GameWorld
                     CreateDropTableItemFromGameItem(gameItem); //Create a drop table item from the game item
                 }
             }
+        }
+
+        public static GameItem CreateGameItemFromData(ItemData itemData)
+        {
+            GameItem gameItem;
+            Weapon weapon;
+            Armor armor;
+            Shield shield;
+            Consumable consumable;
+
+            //cast the itemData to the correct type
+            if (itemData is WeaponData weaponData)
+            {
+                weapon = new(weaponData.Clone());
+                gameItem = weapon;
+            }
+            else if (itemData is ArmorData armorData)
+            {
+                armor = new(armorData.Clone());
+                gameItem = armor;
+            }
+            else if (itemData is ShieldData shieldData)
+            {
+                shield = new(shieldData.Clone());
+                gameItem = shield;
+            }
+            else if (itemData is ConsumableData consumableData)
+            {
+                consumable = new(consumableData.Clone());
+                gameItem = consumable;
+            }
+            else
+            {
+                gameItem = new(itemData.Clone());
+            }
+
+            return gameItem;
         }
 
         private static bool CreateDropTableItemFromGameItem(GameItem item)
@@ -611,7 +629,7 @@ namespace SkeletonsAdventure.GameWorld
             //TODO test this
             foreach (var enemy in Enemies)//shouldn't be needed now
             {
-                XnaSerializer.Serialize($@"{EnemyPath}\{enemy.Value.GetType().Name}Data.xml", enemy.Value.GetEntityData());
+                XnaSerializer.Serialize($@"{EnemyPath}\{enemy.Value.GetType().Name}Data.xml", enemy.Value.ToData());
             }
         }
 
