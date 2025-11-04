@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
+﻿using Microsoft.Xna.Framework.Input;
 using SkeletonsAdventure.GameMenu;
 using SkeletonsAdventure.GameWorld;
-using System;
-using System.Collections.Generic;
 
 namespace SkeletonsAdventure.Controls
 {
@@ -143,6 +138,19 @@ namespace SkeletonsAdventure.Controls
             {
                 tab.Texture = background;
             }
+        }
+
+        public BaseMenu GetFirstVisibleMenu()
+        {
+            foreach (Tab tab in TabMenus.Keys)
+            {
+                if (tab.Visible)
+                {
+                    return TabMenus[tab];
+                }
+            }
+
+            return null;
         }
     }
 }

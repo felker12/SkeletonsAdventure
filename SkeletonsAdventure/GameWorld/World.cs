@@ -279,5 +279,14 @@ namespace SkeletonsAdventure.GameWorld
             Player.EquippedItems.TryEquipItem(Player.Backpack.Items[0]);
             Player.EquippedItems.TryEquipItem(Player.Backpack.Items[3]);
         }
+
+        public static void UpdatePlayerInAllLevels()
+        {
+            foreach (var level in Levels.Values)
+            {
+                level.Player = Player;
+                level.EntityManager.Player = Player;
+            }
+        }
     }
 }

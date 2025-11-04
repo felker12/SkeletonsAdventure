@@ -11,13 +11,18 @@ using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.Entities
 {
+
+
     internal class Player : Entity
     {
         public int bonusAttackFromLevel = 0, bonusDefenceFromLevel = 0,
             bonusHealthFromLevel = 0, bonusManaFromLevel = 0,
-            bonusAttackFromAttributePoints = 0, bonusDefenceFromAttributePoints = 0, 
+            bonusAttackFromAttributePoints = 0, bonusDefenceFromAttributePoints = 0,
             bonusHealthFromAttributePoints = 0, bonusManaFromAttributePoints = 0;
         private bool justLeveled = false;
+
+        public PlayerEvolutionType EvolutionType { get; private set; } = PlayerEvolutionType.Skeleton;
+        private readonly int _levelsPerEvolution = 25;
 
         public Backpack Backpack { get; set; }
         public EquippedItems EquippedItems { get; set; }
@@ -32,20 +37,28 @@ namespace SkeletonsAdventure.Entities
         public List<Quest> CompletedQuests { get; set; } = [];
         public string DisplayQuestName { get; private set; } = string.Empty;
         private BasicAttack AttackToAim { get; set; } = null;
-        public KillCounter KillCounter { get; private set; } = new(); 
+        public KillCounter KillCounter { get; private set; } = new();
         public PlayerIndex PlayerIndex { get; set; } = PlayerIndex.One;
         public static Dictionary<Keys, BasicAttack> KeyBindings { get; private set; } = [];
         public int AttackExcludingEquipment { get; private set; } = 0;
         public int DefenceExcludingEquipment { get; private set; } = 0;
+        public bool CanEvolve { get; private set; } = false;
+
+        private int MaxLevelForEvolutionType => _levelsPerEvolution * ((int)EvolutionType + 1);
 
         public Player() : base()
+        {
+            TotalXP = 0;
+            InitializeBaseStats();
+            Initialize();
+        }
+
+        private void InitializeBaseStats()
         {
             BaseAttack = 300; //TODO correct the values
             BaseDefence = 6;
             BaseHealth = 3000;
-            TotalXP = 0;
-
-            Initialize(); 
+            BaseMana = 1000; //TODO
         }
 
         private void Initialize()
@@ -57,7 +70,6 @@ namespace SkeletonsAdventure.Entities
             Attack = BaseAttack;
             Speed = 6; //TODO
 
-            BaseMana = 1000; //TODO
             MaxMana = BaseMana;
             Mana = BaseMana;
 
@@ -71,7 +83,7 @@ namespace SkeletonsAdventure.Entities
 
             HealthBarVisible = false;
 
-            //GainXp(10000);
+            GainXp(33400);
         }
 
         private void InitializeAttacks()
@@ -140,7 +152,7 @@ namespace SkeletonsAdventure.Entities
 
             if (AimVisible)
             {
-                switch(AttackToAim)
+                switch (AttackToAim)
                 {
                     case null:
                         break;
@@ -149,8 +161,8 @@ namespace SkeletonsAdventure.Entities
                         break;
                     case PopUpAttack attack:
                         Rectangle rect = new((int)(GetMousePosition().X - attack.DamageHitBox.Width / 2),
-                            (int)(GetMousePosition().Y - attack.DamageHitBox.Height / 2), 
-                            attack.DamageHitBox.Width, 
+                            (int)(GetMousePosition().Y - attack.DamageHitBox.Height / 2),
+                            attack.DamageHitBox.Width,
                             attack.DamageHitBox.Height);
 
                         spriteBatch.DrawRectangle(rect, Color.GhostWhite);
@@ -161,12 +173,12 @@ namespace SkeletonsAdventure.Entities
 
         public override void Update(GameTime gameTime)
         {
-            if(CanMove)
+            if (CanMove)
                 UpdatePlayerMotion();
 
             CheckInput(gameTime);
             base.Update(gameTime); //keep the update call after updating motion
-            
+
             Backpack.Update();
 
             CheckQuestCompleted();
@@ -195,6 +207,8 @@ namespace SkeletonsAdventure.Entities
             //Info.Text += $"\nbonusAttackFromLevel = {bonusAttackFromLevel}";
 
             //Info.Text += $"\nAttacks Hit by: {AttacksHitBy.Count}";
+
+            Info.Text += $"\nCan Evolve: {CanEvolve}";
         }
 
         private protected void UpdateStatsWithBonusses()
@@ -206,10 +220,10 @@ namespace SkeletonsAdventure.Entities
 
             Defence = DefenceExcludingEquipment + EquippedItems.EquippedItemsDefenceBonus();
 
-            MaxHealth = BaseHealth + bonusHealthFromLevel + 
+            MaxHealth = BaseHealth + bonusHealthFromLevel +
                 bonusHealthFromAttributePoints; //TODO maybe allow gear to provide a health bonus
 
-            MaxMana = BaseMana + bonusManaFromLevel + 
+            MaxMana = BaseMana + bonusManaFromLevel +
                 bonusManaFromAttributePoints; //TODO maybe allow gear to provide a mana bonus
         }
 
@@ -270,7 +284,7 @@ namespace SkeletonsAdventure.Entities
             //if the items wont fit in the backpack, drop them on the ground
             if (Backpack.Add(coins) is false)
                 World.CurrentLevel.EntityManager.DroppedLootManager.Add(coins, Position);
-            
+
             foreach (GameItem item in reward.Items)
             {
                 if (Backpack.Add(item.Clone()) is false)
@@ -319,7 +333,6 @@ namespace SkeletonsAdventure.Entities
             int currentLevel = GameManager.GetPlayerLevelAtXP(TotalXP);
 
             TotalXP += (int)(XpGained * XPModifier);
-
             Level = GameManager.GetPlayerLevelAtXP(TotalXP);
 
             if (Level > currentLevel)
@@ -340,6 +353,30 @@ namespace SkeletonsAdventure.Entities
 
             World.AddMessage($"You leveled up! You are now level {Level}!");
             World.AddMessage($"Tottal Attribute Points: {AttributePoints}");
+
+            //check if the player can evolve
+            CanEvolve = CheckCanEvolve();
+        }
+
+        protected virtual bool CheckCanEvolve()
+        {
+            int levelToEvolve = _levelsPerEvolution * ((int)EvolutionType + 1);
+            Debug.WriteLine($"level to evolve: {levelToEvolve}");
+
+            //make sure the player is high enough level
+            if (Level < _levelsPerEvolution)
+                return false;
+
+            //make sure the player is not already evolved
+            //TODO
+            if (EvolutionType == PlayerEvolutionType.ArmoredSkeleton)
+            {
+                if (Level < _levelsPerEvolution * 2)
+                    return false;
+            }
+
+
+            return true;
         }
 
         private void PlayerStatAdjustmentForLevel()
@@ -369,13 +406,13 @@ namespace SkeletonsAdventure.Entities
             if (Backpack.ContainsItem(item))
             {
                 //TODO
-                if(item is Consumable consumable)
+                if (item is Consumable consumable)
                 {
-                    switch(consumable.Effect)
+                    switch (consumable.Effect)
                     {
                         case ConsumableEffect.Heal:
 
-                            if(Health != MaxHealth)
+                            if (Health != MaxHealth)
                             {
                                 if (Health + consumable.EffectBonus < MaxHealth)
                                     Health += consumable.EffectBonus;
@@ -403,7 +440,7 @@ namespace SkeletonsAdventure.Entities
             //if the player is aiming an attack, check for mouse input
             if (AimVisible)
             {
-                if(InputHandler.CheckMouseReleased(MouseButton.Left))
+                if (InputHandler.CheckMouseReleased(MouseButton.Left))
                 {
                     PerformAttack(gameTime, AttackToAim);
                 }
@@ -493,7 +530,7 @@ namespace SkeletonsAdventure.Entities
             if (AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
             {
                 if (AimVisible == true)
-                { 
+                {
                     AimVisible = false;
                     AttackToAim = null;
 
@@ -546,6 +583,22 @@ namespace SkeletonsAdventure.Entities
         {
             MouseState _mouseState = Mouse.GetState();
             return Vector2.Transform(new(_mouseState.X, _mouseState.Y), Matrix.Invert(World.Camera.Transformation));
+        }
+
+        public void Evolve()
+        {
+            if (CanEvolve is false)
+                return;
+
+            EvolveTo(EvolutionType + 1); //advance to next evolution type
+        }
+
+        private void EvolveTo(PlayerEvolutionType evolutionType)
+        {
+            EvolutionType = evolutionType;
+            Debug.WriteLine($"Evolution type: {EvolutionType}");
+
+            CanEvolve = CheckCanEvolve();
         }
     }
 }

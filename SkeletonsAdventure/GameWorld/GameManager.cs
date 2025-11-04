@@ -10,7 +10,6 @@ using RpgLibrary.AttackData;
 using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
 using RpgLibrary.ItemClasses;
-using RpgLibrary.QuestClasses;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities;
@@ -136,21 +135,6 @@ namespace SkeletonsAdventure.GameWorld
             CreateItems(); 
             DropTables = GameCreationManager.CreateDropTables();
 
-
-            EnemyData entityData = new(Content.Load<EnemyData>(@"EntityData/SkeletonData"));
-            Skeleton skeleton = new(entityData);
-            EnemyData skeletonData = skeleton.ToData();
-            XnaSerializer.Serialize(Path.Combine(SavePath, "SkeletonData2.xml"), skeletonData);
-
-            Debug.WriteLine(skeletonData.GuaranteedItems);
-
-            var item = GetItemByName("Bones");
-            ItemBaseData baseData = item.ToBaseData();
-            skeletonData.GuaranteedItems.Add(baseData);
-            Debug.WriteLine(skeletonData.ToString());
-            XnaSerializer.Serialize(Path.Combine(SavePath, "SkeletonData3.xml"), skeletonData);
-
-
             CreateEnemies();
             //CreateEnemiesManually();
 
@@ -158,34 +142,6 @@ namespace SkeletonsAdventure.GameWorld
             CreateAttacks();
             CreateQuests();
             CreateNPCs();
-
-            //TODO
-            /*foreach (var item in itemsclone)
-            {
-                //debug.writeline("key: " + item.key + ", name: " + item.value.name); //todo
-                //debug.writeline($"data: {item.value.todata()}");
-            }*/
-
-            //WeaponData weaponData = new();
-            //XnaSerializer.Serialize(Path.Combine(SavePath, "sword.xml"), weaponData);
-            //LevelRequirementData requirementData = new()
-            //{
-
-            //};
-            //weaponData.LevelRequirementData = requirementData;
-            //XnaSerializer.Serialize(Path.Combine(SavePath, "sword2.xml"), weaponData);
-
-            Enemy enemy = GetEnemyByName("Skeleton");
-            Debug.WriteLine($"Enemy Loaded: {enemy.Name}, Health: {enemy.Health}, Attack: {enemy.Attack}, Defence: {enemy.Defence}");
-            //enemy.GuaranteedDrops.Add((GetItemByName("Bones")));
-
-            EnemyData enemyData = enemy.ToData();
-
-
-
-            Debug.WriteLine($"Enemy Data: Name: {enemyData.Type}, Guaranteed Drops: {string.Join("; ", enemyData.GuaranteedItems.Select(item => item.ToString()))}");
-            XnaSerializer.Serialize(Path.Combine(SavePath, "SkeletonData.xml"), enemyData);
-
         }
 
         public static Texture2D CreateTextureFromColor(Color color)

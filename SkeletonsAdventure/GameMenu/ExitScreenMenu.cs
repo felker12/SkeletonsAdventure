@@ -8,6 +8,7 @@ namespace SkeletonsAdventure.GameMenu
         public BaseMenu SaveMenu { get; set; }
         public BaseMenu Settings { get; private set; }
         public PlayerInfoMenu PlayerMenu { get; set; }
+        public EvolutionMenu EvolutionMenu { get; set; }
         public QuestMenu QuestMenu { get; set; }
         public LinkLabel SaveGameLabel { get; set; }
         public LinkLabel ReturnToGameLabel { get; set; }
@@ -48,12 +49,14 @@ namespace SkeletonsAdventure.GameMenu
             CreateSettingsMenu();
             CreatePlayerMenu();
             CreateQuestsMenu();
+            CreateEvolutionMenu();
 
             //Add the menus to the tab bar
             AddMenu(SaveMenu);
             AddMenu(Settings);
             AddMenu(PlayerMenu);
             AddMenu(QuestMenu);
+            AddMenu(EvolutionMenu);
 
             TabBar.SetActiveTab(SaveMenu); //Set the active tab
         }
@@ -62,6 +65,25 @@ namespace SkeletonsAdventure.GameMenu
         {
             TabBar.ActiveMenu?.MenuOpened(); //Call MenuOpened on the active menu to update it
             base.MenuOpened(); //Call the base MenuOpened method to handle any additional logic
+
+            //Update the Evolution menu visibility based on whether the player can evolve
+            EvolutionMenu.Player = World.Player;
+            EvolutionMenu.Visible = World.Player.CanEvolve;
+
+            //Find the Evolution tab and update its visibility
+            foreach (var tabMenu in TabBar.TabMenus)
+            {
+                if (tabMenu.Value == EvolutionMenu)
+                {
+                    tabMenu.Key.Visible = World.Player.CanEvolve;
+
+                    //If the Evolution tab is not visible and is currently active, switch to the first visible tab
+                    if (TabBar.ActiveMenu == EvolutionMenu)
+                        TabBar.SetActiveTab(TabBar.GetFirstVisibleMenu());
+
+                    break;
+                }
+            }
         }
 
         private void CreateSaveMenu()
@@ -132,6 +154,16 @@ namespace SkeletonsAdventure.GameMenu
                 Title = "Quests",
             };
             QuestMenu.SetBackgroundColor(Color.MidnightBlue);
+        }
+
+        private void CreateEvolutionMenu()
+        {
+            EvolutionMenu = new()
+            {
+                Visible = true,
+                Title = "Evolution",
+            };
+            EvolutionMenu.SetBackgroundColor(Color.BurlyWood);
         }
     }
 }

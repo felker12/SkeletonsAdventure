@@ -1,6 +1,4 @@
-﻿using MonoGame.Extended.Tiled;
-using RpgLibrary.EntityClasses;
-using SkeletonsAdventure.Attacks;
+﻿using RpgLibrary.EntityClasses;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
@@ -44,7 +42,7 @@ namespace SkeletonsAdventure.Entities
         public void Update(GameTime gameTime, GameTime totalTimeInWorld)
         {
             UpdateEntities(gameTime, totalTimeInWorld);
-            EnemyAI.CheckIfEnemyDetectPlayer(gameTime, Entities ,Player);
+            EnemyAI.CheckIfEnemyDetectPlayer(gameTime, Entities, Player);
 
             DroppedLootManager.Update();
         }

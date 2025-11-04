@@ -4,6 +4,13 @@ using RpgLibrary.QuestClasses;
 
 namespace RpgLibrary.EntityClasses
 {
+    // Defines the different evolution stages a player can have
+    public enum PlayerEvolutionType
+    {
+        Skeleton, //Base form
+        ArmoredSkeleton, //2nd evolution
+    }
+
     public class PlayerData : EntityData
     {
         public int totalXP = 0, 
