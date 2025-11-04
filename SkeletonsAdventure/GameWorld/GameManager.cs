@@ -419,6 +419,7 @@ namespace SkeletonsAdventure.GameWorld
             SkeletalBruiserTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletalBruiser");
             SkeletonWarriorTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletonWarrior");
             SkeletonMageTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletonMage");
+            ArmoredSkeletonTexture = Content.Load<Texture2D>(@"Player/ArmoredSkeletonSpriteSheet");
 
             //Attack Textures
             FireBallTexture = Content.Load<Texture2D>(@"AttackSprites/FireBall_01");

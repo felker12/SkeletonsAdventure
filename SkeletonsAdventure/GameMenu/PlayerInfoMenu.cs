@@ -84,19 +84,23 @@ namespace SkeletonsAdventure.GameMenu
             AttackLbl.Text = $"Total Attack: {player.Attack}, Base Attack: {player.BaseAttack}, " +
                 $"Attack From Level: {player.bonusAttackFromLevel}, " +
                 $"Attack From Attributes: {player.bonusAttackFromAttributePoints}, " +
-                $"Attack From Equipment: {player.EquippedItems.EquippedItemsAttackBonus()}";
+                $"Attack From Equipment: {player.EquippedItems.EquippedItemsAttackBonus()}," +
+                $"Attack From Evolution: {player.bonusAttackFromEvolution}";
             DefenceLbl.Text = $"Total Defence: {player.Defence}, Base Defence: {player.BaseDefence}, " +
                 $"Defence From Level: {player.bonusDefenceFromLevel}, " +
                 $"Defence From Attributes: {player.bonusDefenceFromAttributePoints}, " +
-                $"Defence From Equipment: {player.EquippedItems.EquippedItemsDefenceBonus()}";
-            HealthLbl.Text = $"Total Health: {player.Health}, Base Health: {player.BaseHealth}, " +
+                $"Defence From Equipment: {player.EquippedItems.EquippedItemsDefenceBonus()}, " +
+                $"Defence From Evolution: {player.bonusDefenceFromEvolution}";
+            HealthLbl.Text = $"Total Health: {player.MaxHealth}, Base Health: {player.BaseHealth}, " +
                 $"Health From Level: {player.bonusHealthFromLevel}, " +
                 $"Health From Attributes: {player.bonusHealthFromAttributePoints}, " +
-                $"Health From Equipment: {player.EquippedItems.EquippedItemsHealthBonus()}";
-            ManaLbl.Text = $"Mana: {player.Mana}, Base Mana: {player.BaseMana}, " +
+                $"Health From Equipment: {player.EquippedItems.EquippedItemsHealthBonus()}, " +
+                $"Health From Evolution: {player.bonusHealthFromEvolution}";
+            ManaLbl.Text = $"Mana: {player.MaxMana}, Base Mana: {player.BaseMana}, " +
                 $"Mana From Level: {player.bonusManaFromLevel}, " +
                 $"Mana From Attributes: {player.bonusManaFromAttributePoints}, " +
-                $"Mana From Equipment: {player.EquippedItems.EquippedItemsManaBonus()}";
+                $"Mana From Equipment: {player.EquippedItems.EquippedItemsManaBonus()}, " +
+                $"Mana From Evolution: {player.bonusManaFromEvolution}";
 
             SetToAddLabelsText();
         }

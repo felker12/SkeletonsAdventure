@@ -2,6 +2,7 @@
 using MonoGame.Extended;
 using RpgLibrary.EntityClasses;
 using RpgLibrary.ItemClasses;
+using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.GameWorld;
@@ -18,7 +19,9 @@ namespace SkeletonsAdventure.Entities
         public int bonusAttackFromLevel = 0, bonusDefenceFromLevel = 0,
             bonusHealthFromLevel = 0, bonusManaFromLevel = 0,
             bonusAttackFromAttributePoints = 0, bonusDefenceFromAttributePoints = 0,
-            bonusHealthFromAttributePoints = 0, bonusManaFromAttributePoints = 0;
+            bonusHealthFromAttributePoints = 0, bonusManaFromAttributePoints = 0,
+            bonusHealthFromEvolution = 0, bonusAttackFromEvolution = 0, 
+            bonusDefenceFromEvolution = 0, bonusManaFromEvolution = 0;
         private bool justLeveled = false;
 
         public PlayerEvolutionType EvolutionType { get; private set; } = PlayerEvolutionType.Skeleton;
@@ -44,13 +47,15 @@ namespace SkeletonsAdventure.Entities
         public int DefenceExcludingEquipment { get; private set; } = 0;
         public bool CanEvolve { get; private set; } = false;
 
-        private int MaxLevelForEvolutionType => _levelsPerEvolution * ((int)EvolutionType + 1);
-
         public Player() : base()
         {
             TotalXP = 0;
             InitializeBaseStats();
             Initialize();
+            SetBonussesFromEvolution();
+            UpdateStatsWithBonusses();
+
+            GainXp(53400); //TODO delete this
         }
 
         private void InitializeBaseStats()
@@ -58,7 +63,7 @@ namespace SkeletonsAdventure.Entities
             BaseAttack = 300; //TODO correct the values
             BaseDefence = 6;
             BaseHealth = 3000;
-            BaseMana = 1000; //TODO
+            BaseMana = 1000; 
         }
 
         private void Initialize()
@@ -82,8 +87,6 @@ namespace SkeletonsAdventure.Entities
             InitializeAttacks();
 
             HealthBarVisible = false;
-
-            GainXp(33400);
         }
 
         private void InitializeAttacks()
@@ -101,9 +104,11 @@ namespace SkeletonsAdventure.Entities
 
         public void UpdatePlayerWithData(PlayerData playerData)
         {
+            EvolutionType = playerData.EvolutionType;
+            TotalXP = playerData.totalXP;
+
             UpdateEntityWithData(playerData);
 
-            TotalXP = playerData.totalXP;
             BaseMana = playerData.baseMana;
             Mana = playerData.mana;
             MaxMana = playerData.maxMana;
@@ -120,7 +125,11 @@ namespace SkeletonsAdventure.Entities
 
             KillCounter = new KillCounter(playerData.killCounter);
 
+            SetBonussesFromEvolution();
             PlayerStatAdjustmentForLevel();
+
+            Texture = GameManager.Content.Load<Texture2D>(playerData.TextureName); //TODO
+            UpdateEvolutionTexture();
         }
 
         public PlayerData GetPlayerData()
@@ -141,6 +150,8 @@ namespace SkeletonsAdventure.Entities
                 completedQuests = CompletedQuests.ConvertAll(q => q.GetQuestData()),
                 displayQuestName = DisplayQuestName,
                 killCounter = KillCounter.ToData(),
+                EvolutionType = EvolutionType,
+                TextureName = Texture.Name,
             };
         }
 
@@ -148,7 +159,7 @@ namespace SkeletonsAdventure.Entities
         {
             base.Draw(spriteBatch);
 
-            //spriteBatch.DrawRectangle(GetRectangle, SpriteColor, 1, 0); //TODO
+            spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
 
             if (AimVisible)
             {
@@ -183,7 +194,6 @@ namespace SkeletonsAdventure.Entities
 
             CheckQuestCompleted();
             UpdateStatsWithBonusses();
-            RefillStatsOnLevelUp();
 
             //update cooldowns of all attacks
             foreach (var attack in KeyBindings.Values)
@@ -225,6 +235,12 @@ namespace SkeletonsAdventure.Entities
 
             MaxMana = BaseMana + bonusManaFromLevel +
                 bonusManaFromAttributePoints; //TODO maybe allow gear to provide a mana bonus
+
+            //add bonusses from evolution
+            Attack += bonusAttackFromEvolution;
+            Defence += bonusDefenceFromEvolution;
+            MaxHealth += bonusHealthFromEvolution;
+            MaxMana += bonusManaFromEvolution;
         }
 
         private void RefillStatsOnLevelUp()
@@ -356,27 +372,18 @@ namespace SkeletonsAdventure.Entities
 
             //check if the player can evolve
             CanEvolve = CheckCanEvolve();
+            RefillStatsOnLevelUp();
         }
 
-        protected virtual bool CheckCanEvolve()
+        protected virtual bool CheckCanEvolve() //TODO add more evolution types
         {
-            int levelToEvolve = _levelsPerEvolution * ((int)EvolutionType + 1);
-            Debug.WriteLine($"level to evolve: {levelToEvolve}");
-
-            //make sure the player is high enough level
-            if (Level < _levelsPerEvolution)
-                return false;
-
-            //make sure the player is not already evolved
-            //TODO
-            if (EvolutionType == PlayerEvolutionType.ArmoredSkeleton)
+            //check if the player has reached the required level for evolution
+            return EvolutionType switch
             {
-                if (Level < _levelsPerEvolution * 2)
-                    return false;
-            }
-
-
-            return true;
+                PlayerEvolutionType.Skeleton => Level >= _levelsPerEvolution,
+                //PlayerEvolutionType.ArmoredSkeleton => Level >= _levelsPerEvolution * 2, //currently only 1 evolution type
+                _ => false,
+            };
         }
 
         private void PlayerStatAdjustmentForLevel()
@@ -388,6 +395,8 @@ namespace SkeletonsAdventure.Entities
             bonusDefenceFromLevel = levelModifier;
             bonusHealthFromLevel = levelModifier * 10;
             bonusManaFromLevel = levelModifier * 10;
+
+            UpdateStatsWithBonusses();
         }
 
         public void ApplyAttributePoints(int attackPoints, int defencePoints, int healthPoints, int manaPoints)
@@ -591,6 +600,7 @@ namespace SkeletonsAdventure.Entities
                 return;
 
             EvolveTo(EvolutionType + 1); //advance to next evolution type
+            UpdateEvolutionTexture();
         }
 
         private void EvolveTo(PlayerEvolutionType evolutionType)
@@ -598,7 +608,54 @@ namespace SkeletonsAdventure.Entities
             EvolutionType = evolutionType;
             Debug.WriteLine($"Evolution type: {EvolutionType}");
 
+            SetBonussesFromEvolution();
+            UpdateStatsWithBonusses();
+
             CanEvolve = CheckCanEvolve();
+        }
+
+        private void UpdateEvolutionTexture()
+        {
+            //TODO set the player texture based on evolution type
+            switch (EvolutionType)
+            {
+                case PlayerEvolutionType.Skeleton:
+                    //dont do anything, already set to skeleton
+                    break;
+                case PlayerEvolutionType.ArmoredSkeleton:
+                    Texture = GameManager.ArmoredSkeletonTexture;
+                    SetFrames(4, 64, 64, xOffset: 14, yOffset: 2, paddingX: 26, paddingY: 4,
+                        order: [AnimationKey.Down, AnimationKey.Right, AnimationKey.Up, AnimationKey.Left]);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SetBonussesFromEvolution()
+        {
+            //TODO set bonusses based on evolution type
+            switch (EvolutionType)
+            {
+                case PlayerEvolutionType.Skeleton:
+                    bonusAttackFromEvolution = 0;
+                    bonusDefenceFromEvolution = 0;
+                    bonusHealthFromEvolution = 0;
+                    bonusManaFromEvolution = 0;
+                    break;
+                case PlayerEvolutionType.ArmoredSkeleton:
+                    bonusAttackFromEvolution = 50;
+                    bonusDefenceFromEvolution = 50;
+                    bonusHealthFromEvolution = 500;
+                    bonusManaFromEvolution = 200;
+                    break;
+                default:
+                    bonusAttackFromEvolution = 0;
+                    bonusDefenceFromEvolution = 0;
+                    bonusHealthFromEvolution = 0;
+                    bonusManaFromEvolution = 0;
+                    break;
+            }
         }
     }
 }

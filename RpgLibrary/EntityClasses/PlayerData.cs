@@ -1,4 +1,5 @@
-﻿using RpgLibrary.DataClasses;
+﻿using Microsoft.Xna.Framework.Graphics;
+using RpgLibrary.DataClasses;
 using RpgLibrary.ItemClasses;
 using RpgLibrary.QuestClasses;
 
@@ -22,6 +23,8 @@ namespace RpgLibrary.EntityClasses
             bonusDefenceFromAttributePoints = 0, 
             bonusHealthFromAttributePoints = 0,
             bonusManaFromAttributePoints;
+        public PlayerEvolutionType EvolutionType = PlayerEvolutionType.Skeleton;
+        public string TextureName = string.Empty;
         public List<ItemData> backpack = new();
         public List<QuestData> activeQuests = new();
         public List<QuestData> completedQuests = new();
@@ -30,22 +33,24 @@ namespace RpgLibrary.EntityClasses
 
         public PlayerData() { }
 
-        public PlayerData(PlayerData entityData) : base(entityData)
+        public PlayerData(PlayerData playerData) : base(playerData)
         {
-            totalXP = entityData.totalXP;
-            baseMana = entityData.baseMana;
-            mana = entityData.mana;
-            maxMana = entityData.maxMana;
-            attributePoints = entityData.attributePoints;
-            bonusAttackFromAttributePoints = entityData.bonusAttackFromAttributePoints;
-            bonusDefenceFromAttributePoints = entityData.bonusDefenceFromAttributePoints;
-            bonusHealthFromAttributePoints = entityData.bonusHealthFromAttributePoints;
-            bonusManaFromAttributePoints = entityData.bonusManaFromAttributePoints;
-            backpack = entityData.backpack;
-            activeQuests = entityData.activeQuests;
-            completedQuests = entityData.completedQuests;
-            displayQuestName = entityData.displayQuestName;
-            killCounter = entityData.killCounter;
+            totalXP = playerData.totalXP;
+            baseMana = playerData.baseMana;
+            mana = playerData.mana;
+            maxMana = playerData.maxMana;
+            attributePoints = playerData.attributePoints;
+            bonusAttackFromAttributePoints = playerData.bonusAttackFromAttributePoints;
+            bonusDefenceFromAttributePoints = playerData.bonusDefenceFromAttributePoints;
+            bonusHealthFromAttributePoints = playerData.bonusHealthFromAttributePoints;
+            bonusManaFromAttributePoints = playerData.bonusManaFromAttributePoints;
+            backpack = playerData.backpack;
+            activeQuests = playerData.activeQuests;
+            completedQuests = playerData.completedQuests;
+            displayQuestName = playerData.displayQuestName;
+            killCounter = playerData.killCounter;
+            EvolutionType = playerData.EvolutionType;
+            TextureName = playerData.TextureName;
         }
 
         public PlayerData(EntityData entityData) : base(entityData)
@@ -64,6 +69,7 @@ namespace RpgLibrary.EntityClasses
             toString += bonusDefenceFromAttributePoints + ", ";
             toString += bonusHealthFromAttributePoints + ", ";
             toString += bonusManaFromAttributePoints + ", ";
+            toString += EvolutionType.ToString() + ", ";
             //toString += string.Join(";", backpack.Select(item => item.ToString())) + ", ";
             //toString += string.Join(";", activeQuests.Select(quest => quest.ToString())) + ", ";
             //toString += string.Join(";", completedQuests.Select(quest => quest.ToString())) + ", ";

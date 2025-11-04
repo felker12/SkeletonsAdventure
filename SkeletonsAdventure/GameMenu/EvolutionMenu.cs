@@ -63,17 +63,8 @@ namespace SkeletonsAdventure.GameMenu
 
         private void EvolveBtn_Click(object sender, EventArgs e)
         {
-            // Evolve the player and update the world player reference
-
-            Debug.WriteLine("Evolve button clicked.");
-            Debug.WriteLine($"Current Player Level: {Player.Level}");
-            Debug.WriteLine($"Player base stats before evolution: Health={Player.BaseHealth}, Attack={Player.BaseAttack}, Defense={Player.BaseDefence}");
-            Debug.WriteLine($"Evolution type: {Player.EvolutionType}");
-
             World.Player.Evolve();
             Player = World.Player;
-
-            Debug.WriteLine($"Player base stats after evolution: Health={Player.BaseHealth}, Attack={Player.BaseAttack}, Defense={Player.BaseDefence}");
         }
     }
 }

@@ -142,6 +142,7 @@ namespace SkeletonsAdventure.States
         public override void Update(GameTime gameTime)
         {
             CheckUnderMouse(gameTime);
+
             World.Update(gameTime);
 
             int lvlXP = GameManager.GetLevelXPAtLevel(Player.Level);

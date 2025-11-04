@@ -41,7 +41,8 @@ namespace SkeletonsAdventure.GameWorld
         public static void Update(GameTime gameTime)
         {
             TotalTimeInWorld.TotalGameTime += gameTime.ElapsedGameTime;
-            CurrentLevel.Update(gameTime, TotalTimeInWorld);
+
+            CurrentLevel.Update(gameTime, TotalTimeInWorld); 
 
             Player.Info.Text += $"\nDraw Time: {drawTimeMs:N2} ms"; //TODO remove this after testing
             Player.Info.Text += $"\nLargest Draw Time: {largestDrawTimeMs:N2} ms"; //TODO remove this after testing
@@ -278,15 +279,6 @@ namespace SkeletonsAdventure.GameWorld
 
             Player.EquippedItems.TryEquipItem(Player.Backpack.Items[0]);
             Player.EquippedItems.TryEquipItem(Player.Backpack.Items[3]);
-        }
-
-        public static void UpdatePlayerInAllLevels()
-        {
-            foreach (var level in Levels.Values)
-            {
-                level.Player = Player;
-                level.EntityManager.Player = Player;
-            }
         }
     }
 }
