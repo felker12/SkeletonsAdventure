@@ -63,7 +63,7 @@ namespace SkeletonsAdventure.Attacks
             Initialize();
         }
 
-        public BasicAttack(AttackData attackData, Texture2D texture, Entity source) : base()
+        public BasicAttack(AttackData attackData, Texture2D texture, Entity source = null) : base()
         {
             AttackLength = attackData.AttackLength;
             StartTime = attackData.StartTime;

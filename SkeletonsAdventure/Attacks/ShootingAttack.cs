@@ -8,7 +8,7 @@ namespace SkeletonsAdventure.Attacks
     {
         public List<Vector2> PathPoints { get; set; } = [];
 
-        public ShootingAttack(AttackData attackData, Texture2D texture, Entity source) : base(attackData, texture, source)
+        public ShootingAttack(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {
         }
 
@@ -44,9 +44,9 @@ namespace SkeletonsAdventure.Attacks
 
         public override void Offset()
         {
-            Width = 32;
+            /*Width = 32;
             Height = 28;
-            Frame = new(0, 0, Width, Height);
+            Frame= new(0, 0, Width, Height);*/
 
             //start the attack at the center of the entity
             AttackOffset = new(Source.Width / 2 - Width / 2, Source.Height / 2 - Height / 2);

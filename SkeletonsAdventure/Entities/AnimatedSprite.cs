@@ -226,6 +226,11 @@ namespace SkeletonsAdventure.Entities
             //Bottom right
             else if (motion.X > .5 && motion.Y > .5)
                 CurrentAnimation = AnimationKey.Right;
+
+            //Fallback in case the current animation key is invalid
+            //(like in the event the all animation keys aren't inluded in order for SetFrames)
+            if (_animations.ContainsKey(CurrentAnimation) is false)
+                CurrentAnimation = _animations.Keys.First();
         }
 
         /// <summary>

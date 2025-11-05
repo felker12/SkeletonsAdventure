@@ -12,8 +12,6 @@ using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.Entities
 {
-
-
     internal class Player : Entity
     {
         public int bonusAttackFromLevel = 0, bonusDefenceFromLevel = 0,
@@ -96,10 +94,22 @@ namespace SkeletonsAdventure.Entities
                 { Keys.D1, (FireBall)GameManager.EntityAttackClone["FireBall"]},
                 { Keys.D2, (IcePillar)GameManager.EntityAttackClone["IcePillar"] },
                 { Keys.D3, (IceBullet)GameManager.EntityAttackClone["IceBullet"] },
+                { Keys.D4, (WaterBall)GameManager.EntityAttackClone["WaterBall"]  },
+                { Keys.D5, (FireWave)GameManager.EntityAttackClone["FireWave"] },
+                { Keys.D6, (BlueFireWave)GameManager.EntityAttackClone["BlueFireWave"] },
+                { Keys.D7, null },
+                { Keys.D8, null },
+                { Keys.D9, null },
+                { Keys.D0, null },
             };
 
             foreach (var attack in KeyBindings.Values)
+            {
+                if (attack is null) 
+                    continue;
+
                 attack.Source = this;
+            }
         }
 
         public void UpdatePlayerWithData(PlayerData playerData)
@@ -159,7 +169,7 @@ namespace SkeletonsAdventure.Entities
         {
             base.Draw(spriteBatch);
 
-            spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
+            //spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
 
             if (AimVisible)
             {
@@ -197,7 +207,12 @@ namespace SkeletonsAdventure.Entities
 
             //update cooldowns of all attacks
             foreach (var attack in KeyBindings.Values)
+            {
+                if (attack is null)
+                    continue;
+
                 attack.UpdateCooldown(gameTime);
+            }
 
             //TODO delete this
             //Info.Text += $"\nXP = {TotalXP}";

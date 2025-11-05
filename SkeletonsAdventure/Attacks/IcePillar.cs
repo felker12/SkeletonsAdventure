@@ -8,7 +8,7 @@ namespace SkeletonsAdventure.Attacks
     {
         public override Rectangle IconRectangle => _animations.First().Value.Frames[0];
 
-        public IcePillar(AttackData attackData, Texture2D texture, Entity source) : base(attackData, texture, source)
+        public IcePillar(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {
             Width = Texture.Width;
             Height = Texture.Height;

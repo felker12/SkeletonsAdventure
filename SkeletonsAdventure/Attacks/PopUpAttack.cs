@@ -9,7 +9,7 @@ namespace SkeletonsAdventure.Attacks
         {
         }
 
-        public PopUpAttack(AttackData attackData, Texture2D texture, Entity source) : base(attackData, texture, source)
+        public PopUpAttack(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {
         }
 

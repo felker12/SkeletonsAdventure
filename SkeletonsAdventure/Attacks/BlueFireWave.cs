@@ -4,26 +4,21 @@ using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class IceBullet : ShootingAttack
+    internal class BlueFireWave : ShootingAttack
     {
-        public IceBullet(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
+        public BlueFireWave(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {
             Initialize();
         }
 
-        public IceBullet(IceBullet attack) : base(attack)
+        public BlueFireWave(ShootingAttack attack) : base(attack)
         {
             Initialize();
         }
 
         private void Initialize()
         {
-            SetFrames(1, 32, 32, order: [AnimationKey.Right]);
-        }
-
-        public override IceBullet Clone()
-        {
-            return new IceBullet(this);
+            SetFrames(1, 64, 64, order: [AnimationKey.Right]);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -34,14 +29,19 @@ namespace SkeletonsAdventure.Attacks
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+        }
 
-            SetRotationBasedOffMotion();
+        public override BlueFireWave Clone()
+        {
+            return new BlueFireWave(this);
         }
 
         public override void Offset()
         {
             //start the attack at the center of the entity
-            AttackOffset = new(Source.Width / 2 - Width / 2, Source.Height / 2 - Height / 2);
+            //AttackOffset = new(Source.Width / 2 - Width / 2, Source.Height / 2 - Height / 2);
+
+            AttackOffset = new(-Source.Width / 2, 0);
         }
     }
 }

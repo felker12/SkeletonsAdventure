@@ -4,26 +4,28 @@ using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class IceBullet : ShootingAttack
+    internal class WaterBall : ShootingAttack
     {
-        public IceBullet(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
+        public WaterBall(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {
             Initialize();
+            AnimatedAttack = true;
         }
 
-        public IceBullet(IceBullet attack) : base(attack)
+        public WaterBall(ShootingAttack attack) : base(attack)
         {
             Initialize();
         }
 
         private void Initialize()
         {
-            SetFrames(1, 32, 32, order: [AnimationKey.Right]);
+            if (AnimatedAttack)
+                SetFrames(4, 32, 32, order: [AnimationKey.Right]);
         }
 
-        public override IceBullet Clone()
+        public override WaterBall Clone()
         {
-            return new IceBullet(this);
+            return new WaterBall(this);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -35,7 +37,7 @@ namespace SkeletonsAdventure.Attacks
         {
             base.Update(gameTime);
 
-            SetRotationBasedOffMotion();
+            //SetRotationBasedOffMotion();
         }
 
         public override void Offset()

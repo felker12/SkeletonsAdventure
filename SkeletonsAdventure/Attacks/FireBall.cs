@@ -1,12 +1,11 @@
 ﻿using RpgLibrary.AttackData;
 using SkeletonsAdventure.Entities;
-using System.Linq;
 
 namespace SkeletonsAdventure.Attacks
 {
     internal class FireBall : ShootingAttack
     {
-        public FireBall(AttackData attackData, Texture2D texture, Entity source) : base(attackData, texture, source)
+        public FireBall(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {
             Initialize();
             AnimatedAttack = true;

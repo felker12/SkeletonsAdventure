@@ -85,6 +85,9 @@ namespace SkeletonsAdventure.GameWorld
         public static Texture2D IcePillarTexture { get; private set; }
         public static Texture2D IcePillarSpriteSheetTexture { get; private set; }
         public static Texture2D IceBulletTexture { get; private set; }
+        public static Texture2D WaterBallSpriteSheetTexture { get; private set; }
+        public static Texture2D FireWallTexture { get; private set; }
+        public static Texture2D BlueFireWallTexture { get; private set; }
 
         //UI Textures
         public static Texture2D ButtonBoxTexture { get; private set; }
@@ -108,6 +111,9 @@ namespace SkeletonsAdventure.GameWorld
         public static AttackData FireBallData { get; set; }
         public static AttackData IcePillarData { get; set; }
         public static AttackData IceBulletData { get; set; }
+        public static AttackData WaterBallData { get; set; }
+        public static AttackData FireWallData { get; set; }
+        public static AttackData BlueFireWallData { get; set; }
 
         //Miscellaneous Variables
         public static Game1 Game { get; private set; }
@@ -427,6 +433,9 @@ namespace SkeletonsAdventure.GameWorld
             IcePillarTexture = Content.Load<Texture2D>(@"AttackSprites/IcePillar");
             IcePillarSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/IcePillarSpriteSheet");
             IceBulletTexture = Content.Load<Texture2D>(@"AttackSprites/IceBullet");
+            WaterBallSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/WaterBallSpriteSheet");
+            FireWallTexture = Content.Load<Texture2D>(@"AttackSprites/FireWall_Red");
+            BlueFireWallTexture = Content.Load<Texture2D>(@"AttackSprites/FireWall_Blue");
 
             AttackAreaTexture = new(GraphicsDevice, 1, 1);
             AttackAreaTexture.SetData([new Color(153, 29, 20, 250)]);
@@ -459,6 +468,9 @@ namespace SkeletonsAdventure.GameWorld
             FireBallData = Content.Load<AttackData>(@"AttackData/FireBall");
             IcePillarData = Content.Load<AttackData>(@"AttackData/IcePillar");
             IceBulletData = Content.Load<AttackData>(@"AttackData/IceBullet");
+            WaterBallData = Content.Load<AttackData>(@"AttackData/WaterBall");
+            FireWallData = Content.Load<AttackData>(@"AttackData/FireWall");
+            BlueFireWallData = Content.Load<AttackData>(@"AttackData/BlueFireWall");
         }
 
         private static void LoadTiledAnimations()
@@ -633,17 +645,29 @@ namespace SkeletonsAdventure.GameWorld
         private static void CreateAttacks()
         {
             //Create the attacks from the content folder
-            BasicAttack attack = new(BasicAttackData, SkeletonAttackTexture, null);
+            BasicAttack attack = new(BasicAttackData, SkeletonAttackTexture);
             EntityAttacks.Add(attack.GetType().Name, attack);
 
-            FireBall fireball = new(FireBallData, FireBallTexture2, null);
+            //Fire attacks
+            FireBall fireball = new(FireBallData, FireBallTexture2);
             EntityAttacks.Add(fireball.GetType().Name, fireball);
 
-            IcePillar icePillar = new(IcePillarData, IcePillarSpriteSheetTexture, null);
+            FireWave fireWave = new(FireWallData, FireWallTexture);
+            EntityAttacks.Add(fireWave.GetType().Name, fireWave);
+
+            BlueFireWave blueFireWave = new(BlueFireWallData, BlueFireWallTexture);
+            EntityAttacks.Add(blueFireWave.GetType().Name, blueFireWave);
+
+            //Ice attacks
+            IcePillar icePillar = new(IcePillarData, IcePillarSpriteSheetTexture);
             EntityAttacks.Add(icePillar.GetType().Name, icePillar);
 
-            IceBullet iceBullet = new(IceBulletData, IceBulletTexture, null);
+            IceBullet iceBullet = new(IceBulletData, IceBulletTexture);
             EntityAttacks.Add(iceBullet.GetType().Name, iceBullet);
+
+            //Water attacks
+            WaterBall waterBall = new(WaterBallData, WaterBallSpriteSheetTexture);
+            EntityAttacks.Add(waterBall.GetType().Name, waterBall);
         }
 
         private static void CreateQuests() //TODO

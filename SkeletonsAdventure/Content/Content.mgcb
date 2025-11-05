@@ -21,10 +21,35 @@
 /processor:PassThroughProcessor
 /build:AttackData/BasicAttack.xml
 
+#begin AttackData/BasicAttack.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/BasicAttack.xml
+
+#begin AttackData/BlueFireWall.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/BlueFireWall.xml
+
 #begin AttackData/FireBall.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:AttackData/FireBall.xml
+
+#begin AttackData/FireBall.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/FireBall.xml
+
+#begin AttackData/FireWall.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/FireWall.xml
+
+#begin AttackData/IceBullet.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/IceBullet.xml
 
 #begin AttackData/IceBullet.xml
 /importer:XmlImporter
@@ -35,6 +60,21 @@
 /importer:XmlImporter
 /processor:PassThroughProcessor
 /build:AttackData/IcePillar.xml
+
+#begin AttackData/IcePillar.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/IcePillar.xml
+
+#begin AttackData/WaterBall.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/WaterBall.xml
+
+#begin AttackData/WaterBall.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/WaterBall.xml
 
 #begin AttackSprites/FireBall_01.png
 /importer:TextureImporter
@@ -59,6 +99,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:AttackSprites/FireBallSpriteSheet.png
+
+#begin AttackSprites/FireWall_Blue.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AttackSprites/FireWall_Blue.png
+
+#begin AttackSprites/FireWall_Red.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AttackSprites/FireWall_Red.png
 
 #begin AttackSprites/IceBullet.png
 /importer:TextureImporter
@@ -95,6 +159,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:AttackSprites/IcePillarSpriteSheet.PNG
+
+#begin AttackSprites/WaterBallSpriteSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AttackSprites/WaterBallSpriteSheet.png
 
 #begin Controls/Button.png
 /importer:TextureImporter
