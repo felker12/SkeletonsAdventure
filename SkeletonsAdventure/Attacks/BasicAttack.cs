@@ -2,6 +2,7 @@
 using RpgLibrary.AttackData;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.Attacks
 {
@@ -25,6 +26,8 @@ namespace SkeletonsAdventure.Attacks
         public bool OnCooldown { get; private set; } = false;
         public double CooldownRemaining { get; private set; }
         public float CooldownRemainingRatio { get; private set; }
+        public LevelRequirements LevelRequirements { get; private set; } = new();
+        public List<string> SkillRequirementsNames { get; private set; } = [];
 
         public virtual Rectangle IconRectangle { 
             get 

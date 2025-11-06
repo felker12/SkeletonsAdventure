@@ -1,4 +1,4 @@
-﻿namespace RpgLibrary.QuestClasses
+﻿namespace RpgLibrary.DataClasses
 {
     public class LevelRequirementData
     {

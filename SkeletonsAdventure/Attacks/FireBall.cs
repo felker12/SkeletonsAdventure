@@ -7,8 +7,8 @@ namespace SkeletonsAdventure.Attacks
     {
         public FireBall(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {
-            Initialize();
             AnimatedAttack = true;
+            Initialize();
         }
 
         public FireBall(FireBall attack) : base(attack)

@@ -8,6 +8,7 @@ namespace SkeletonsAdventure.Attacks
     {
         public FireWave(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {
+            AnimatedAttack = true;
             Initialize();
         }
 
@@ -18,7 +19,8 @@ namespace SkeletonsAdventure.Attacks
 
         private void Initialize()
         {
-            SetFrames(1, 64, 64, order: [AnimationKey.Right]);
+            //SetFrames(1, 64, 64, order: [AnimationKey.Right]);
+            SetFrames(6, 64, 64, order: [AnimationKey.Right, AnimationKey.Up, AnimationKey.Left, AnimationKey.Down]);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

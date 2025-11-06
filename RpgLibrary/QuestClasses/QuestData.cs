@@ -1,4 +1,6 @@
-﻿namespace RpgLibrary.QuestClasses
+﻿using RpgLibrary.DataClasses;
+
+namespace RpgLibrary.QuestClasses
 {
     public class QuestData
     {

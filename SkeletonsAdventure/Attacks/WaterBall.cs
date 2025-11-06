@@ -8,8 +8,8 @@ namespace SkeletonsAdventure.Attacks
     {
         public WaterBall(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {
-            Initialize();
             AnimatedAttack = true;
+            Initialize();
         }
 
         public WaterBall(ShootingAttack attack) : base(attack)

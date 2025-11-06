@@ -20,6 +20,7 @@ using SkeletonsAdventure.ItemClasses.ItemManagement;
 using SkeletonsAdventure.Quests;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SkeletonsAdventure.GameWorld
 {
@@ -88,6 +89,8 @@ namespace SkeletonsAdventure.GameWorld
         public static Texture2D WaterBallSpriteSheetTexture { get; private set; }
         public static Texture2D FireWallTexture { get; private set; }
         public static Texture2D BlueFireWallTexture { get; private set; }
+        public static Texture2D FireWallSpriteSheetTexture { get; private set; }
+        public static Texture2D BlueFireWallSpriteSheetTexture { get; private set; }
 
         //UI Textures
         public static Texture2D ButtonBoxTexture { get; private set; }
@@ -148,6 +151,17 @@ namespace SkeletonsAdventure.GameWorld
             CreateAttacks();
             CreateQuests();
             CreateNPCs();
+
+            AttackData attackData = GetEntityAttacksClone()["FireBall"].GetAttackData();
+            AttackData2 data = new(attackData);
+
+            XnaSerializer.Serialize<AttackData2>(Path.Combine(SavePath, "fireball.xml"), data);
+
+            data.SkillRequirementsNames.Add("FireMagicLevel1");
+            data.SkillRequirementsNames.Add("ManaControlLevel1");
+
+            XnaSerializer.Serialize<AttackData2>(Path.Combine(SavePath, "fireball2.xml"), data);
+
         }
 
         public static Texture2D CreateTextureFromColor(Color color)
@@ -436,6 +450,8 @@ namespace SkeletonsAdventure.GameWorld
             WaterBallSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/WaterBallSpriteSheet");
             FireWallTexture = Content.Load<Texture2D>(@"AttackSprites/FireWall_Red");
             BlueFireWallTexture = Content.Load<Texture2D>(@"AttackSprites/FireWall_Blue");
+            FireWallSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/FireWaveSpriteSheet");
+            BlueFireWallSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/FireWaveSpriteSheetBlue");
 
             AttackAreaTexture = new(GraphicsDevice, 1, 1);
             AttackAreaTexture.SetData([new Color(153, 29, 20, 250)]);
@@ -652,10 +668,12 @@ namespace SkeletonsAdventure.GameWorld
             FireBall fireball = new(FireBallData, FireBallTexture2);
             EntityAttacks.Add(fireball.GetType().Name, fireball);
 
-            FireWave fireWave = new(FireWallData, FireWallTexture);
+            //FireWave fireWave = new(FireWallData, FireWallTexture);
+            FireWave fireWave = new(FireWallData, FireWallSpriteSheetTexture);
             EntityAttacks.Add(fireWave.GetType().Name, fireWave);
 
-            BlueFireWave blueFireWave = new(BlueFireWallData, BlueFireWallTexture);
+            //BlueFireWave blueFireWave = new(BlueFireWallData, BlueFireWallTexture);
+            BlueFireWave blueFireWave = new(BlueFireWallData, BlueFireWallSpriteSheetTexture);
             EntityAttacks.Add(blueFireWave.GetType().Name, blueFireWave);
 
             //Ice attacks

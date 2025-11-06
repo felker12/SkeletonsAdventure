@@ -1,4 +1,4 @@
-﻿using RpgLibrary.QuestClasses;
+﻿using RpgLibrary.DataClasses;
 
 namespace RpgLibrary.ItemClasses
 {
