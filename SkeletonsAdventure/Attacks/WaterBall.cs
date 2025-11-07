@@ -12,7 +12,7 @@ namespace SkeletonsAdventure.Attacks
             Initialize();
         }
 
-        public WaterBall(ShootingAttack attack) : base(attack)
+        protected WaterBall(ShootingAttack attack) : base(attack)
         {
             Initialize();
         }

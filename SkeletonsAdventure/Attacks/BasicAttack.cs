@@ -3,6 +3,7 @@ using RpgLibrary.AttackData;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.Quests;
+using System.Linq;
 
 namespace SkeletonsAdventure.Attacks
 {
@@ -28,18 +29,21 @@ namespace SkeletonsAdventure.Attacks
         public float CooldownRemainingRatio { get; private set; }
         public LevelRequirements LevelRequirements { get; private set; } = new();
         public List<string> SkillRequirementsNames { get; private set; } = [];
+        public string Name => GetType().Name;
 
-        public virtual Rectangle IconRectangle { 
-            get 
+        public virtual Rectangle IconRectangle {
+            get
             {
                 if (this.GetType().Name == "BasicAttack")
                     return new(20, 80, 32, 60);
+                if (_animations.TryGetValue(AnimationKey.Right, out SpriteAnimation value))
+                    return value.Frames[0];
                 else
-                    return _animations[AnimationKey.Right].Frames[0];
-            }  
+                    return _animations[_animations.Keys.First()].Frames[0]; //Return the first available animation frame
+            }
         }
 
-        public BasicAttack(BasicAttack attack) : base()
+        protected BasicAttack(BasicAttack attack) : base()
         {
             Width = attack.Width;
             Height = attack.Height;
@@ -84,7 +88,23 @@ namespace SkeletonsAdventure.Attacks
 
             Initialize();
         }
-        
+
+        protected BasicAttack(AttackData attackData) : base()
+        {
+            AttackLength = attackData.AttackLength;
+            StartTime = attackData.StartTime;
+            Duration = attackData.Duration;
+            AttackOffset = attackData.AttackOffset;
+            LastAttackTime = attackData.LastAttackTime;
+            CoolDownLength = attackData.AttackCoolDownLength;
+            Speed = attackData.Speed;
+            DamageModifier = attackData.DamageModifier;
+            ManaCost = attackData.ManaCost;
+            AttackDelay = attackData.AttackDelay;
+
+            Initialize();
+        }
+
         private void Initialize()
         {
             DamageHitBox = new((int)Position.X, (int)Position.Y, Width, Height);
@@ -105,7 +125,7 @@ namespace SkeletonsAdventure.Attacks
             if (AttackVisible)
             {
                 //spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
-                //spriteBatch.DrawRectangle(DamageHitBox, Color.OrangeRed, 1, 0); //TODO
+                spriteBatch.DrawRectangle(DamageHitBox, Color.OrangeRed, 1, 0); //TODO
 
                 spriteBatch.Draw(Texture, Center, Frame, SpriteColor, RotationAngle, SpriteCenter, Scale, SpriteEffects.None, 1);
             }
@@ -175,7 +195,7 @@ namespace SkeletonsAdventure.Attacks
             return Math.Max(0, remainingCooldown);
         }
 
-        public virtual AttackData GetAttackData()
+        public virtual AttackData ToData()
         {
             return new()
             {
@@ -188,6 +208,9 @@ namespace SkeletonsAdventure.Attacks
                 Speed = Speed,
                 DamageModifier = DamageModifier,
                 ManaCost = ManaCost,
+                AttackDelay = AttackDelay,
+                LevelRequirement = LevelRequirements.ToData(),
+                SkillRequirementsNames = [.. SkillRequirementsNames],
             };
         }
 
@@ -269,7 +292,7 @@ namespace SkeletonsAdventure.Attacks
             return Math.Min(scaleX, scaleY);
         }
 
-        public void DrawIcon(SpriteBatch spriteBatch, Vector2 position, int size = 32, Color tint = default)
+        public virtual void DrawIcon(SpriteBatch spriteBatch, Vector2 position, int size = 32, Color tint = default)
         {
             if (tint == default)   
                 tint = Color.White;

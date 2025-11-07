@@ -67,7 +67,7 @@ namespace SkeletonsAdventure.Entities
                     entity.Respawn();
                 }
 
-                entity.AttackManager.ClearExpiredAttacks(gameTime);
+                entity.AttackManager.ClearExpiredAttacks();
             }
         }
 

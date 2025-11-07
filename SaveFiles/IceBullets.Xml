@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:AttackData="RpgLibrary.AttackData">
-  <Asset Type="AttackData:AttackData2">
-    <AttackLength>1800</AttackLength>
+  <Asset Type="AttackData:MultiShotAttackData">
+    <AttackLength>1000</AttackLength>
     <StartTime>PT0S</StartTime>
     <Duration>PT0S</Duration>
     <AttackOffset>0 0</AttackOffset>
-    <LastAttackTime>-PT2.4S</LastAttackTime>
-    <AttackCoolDownLength>2400</AttackCoolDownLength>
-    <Speed>3.5</Speed>
-    <DamageModifier>1.5</DamageModifier>
+    <LastAttackTime>-PT1.8S</LastAttackTime>
+    <AttackCoolDownLength>1800</AttackCoolDownLength>
+    <Speed>3.75</Speed>
+    <DamageModifier>1.2</DamageModifier>
     <ManaCost>1</ManaCost>
     <AttackDelay>0</AttackDelay>
     <LevelRequirement>
@@ -17,5 +17,9 @@
       <Attack>0</Attack>
     </LevelRequirement>
     <SkillRequirementsNames />
+    <ShotName>IceBullet</ShotName>
+    <ShotCount>3</ShotCount>
+    <ShotInterval>PT0.5S</ShotInterval>
+    <ShotsFired>0</ShotsFired>
   </Asset>
 </XnaContent>

@@ -40,6 +40,8 @@ namespace SkeletonsAdventure.Entities
         private BasicAttack AttackToAim { get; set; } = null;
         public KillCounter KillCounter { get; private set; } = new();
         public PlayerIndex PlayerIndex { get; set; } = PlayerIndex.One;
+        public PlayerLearnedAttackManager LearnedAttackManager { get; private set; }
+        public PlayerKeybindingsManager KeybindingsManager { get; private set; }
         public static Dictionary<Keys, BasicAttack> KeyBindings { get; private set; } = [];
         public int AttackExcludingEquipment { get; private set; } = 0;
         public int DefenceExcludingEquipment { get; private set; } = 0;
@@ -48,12 +50,27 @@ namespace SkeletonsAdventure.Entities
         public Player() : base()
         {
             TotalXP = 0;
+            LearnedAttackManager = new(this);
+            KeybindingsManager = new(this);
             InitializeBaseStats();
             Initialize();
             SetBonussesFromEvolution();
             UpdateStatsWithBonusses();
 
             GainXp(53400); //TODO delete this
+
+
+            //TODO
+            FireBall fireBall = (FireBall)GameManager.EntityAttackClone["FireBall"];
+            LearnAttack(fireBall.Name, fireBall);
+
+            IceBullet iceBullet = (IceBullet)GameManager.EntityAttackClone["IceBullet"];
+            LearnAttack(iceBullet.Name, iceBullet);
+
+            IceBullets iceBullets = (IceBullets)GameManager.EntityAttackClone["IceBullets"];
+            LearnAttack(iceBullets.Name, iceBullets);
+
+            Debug.WriteLine(LearnedAttackManager.ToString());
         }
 
         private void InitializeBaseStats()
@@ -99,7 +116,7 @@ namespace SkeletonsAdventure.Entities
                 { Keys.D6, (BlueFireWave)GameManager.EntityAttackClone["BlueFireWave"] },
                 { Keys.D7, null },
                 { Keys.D8, null },
-                { Keys.D9, null },
+                { Keys.D9, (IceBullets)GameManager.EntityAttackClone["IceBullets"] },
                 { Keys.D0, null },
             };
 
@@ -109,6 +126,9 @@ namespace SkeletonsAdventure.Entities
                     continue;
 
                 attack.Source = this;
+
+                if (attack is MultiShotAttack multiShotAttack)
+                    multiShotAttack.Shot.Source = this;
             }
         }
 
@@ -234,6 +254,11 @@ namespace SkeletonsAdventure.Entities
             //Info.Text += $"\nAttacks Hit by: {AttacksHitBy.Count}";
 
             Info.Text += $"\nCan Evolve: {CanEvolve}";
+        }
+
+        public void LearnAttack(string attackName, BasicAttack attack)
+        {
+            LearnedAttackManager.LearnAttack(attackName, attack);
         }
 
         private protected void UpdateStatsWithBonusses()

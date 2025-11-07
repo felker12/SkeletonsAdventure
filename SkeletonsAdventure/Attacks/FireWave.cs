@@ -12,7 +12,7 @@ namespace SkeletonsAdventure.Attacks
             Initialize();
         }
 
-        public FireWave(ShootingAttack attack) : base(attack)
+        protected FireWave(ShootingAttack attack) : base(attack)
         {
             Initialize();
         }

@@ -1,0 +1,135 @@
+﻿using RpgLibrary.AttackData;
+using SkeletonsAdventure.GameWorld;
+
+namespace SkeletonsAdventure.Attacks
+{
+    internal class MultiShotAttack : ShootingAttack
+    {
+        public virtual ShootingAttack Shot { get; set; }
+        public int ShotCount { get; set; } = 3;
+        public TimeSpan ShotInterval { get; set; } = TimeSpan.FromMilliseconds(500);
+        public int ShotsFired { get; set; } = 0;
+        public int RemainingShots => ShotCount - ShotsFired;
+        public List<ShootingAttack> Shots { get; private set; } = [];
+
+        public MultiShotAttack(ShootingAttack attack) : base(attack)
+        {
+            Shot = attack;
+            Initialize();
+        }
+
+        public MultiShotAttack(ShootingAttack attack, int shotCount, TimeSpan shotInterval) : base(attack)
+        {
+            Shot = attack;
+            ShotCount = shotCount;
+            ShotInterval = shotInterval;
+            Initialize();
+        }
+
+        public MultiShotAttack(MultiShotAttackData data) : base(data)
+        {
+            Shot = (ShootingAttack)GameManager.EntityAttackClone[data.ShotName];
+            ShotCount = data.ShotCount;
+            ShotInterval = data.ShotInterval;
+            Initialize();
+        }
+
+        protected MultiShotAttack(MultiShotAttack attack) : base(attack)
+        {
+            Shot = attack.Shot;
+            ShotCount = attack.ShotCount;
+            ShotInterval = attack.ShotInterval;
+            ShotsFired = attack.ShotsFired;
+            Shots = [.. attack.Shots];
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            Shot.DamageModifier = DamageModifier;
+            Shot.ManaCost = 0; // Only the multi-shot attack consumes mana
+        }
+
+        public override MultiShotAttack Clone()
+        {
+            return new MultiShotAttack(this);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            // Check if it's time to fire the next shot
+            if (ShotsFired < ShotCount && Duration.TotalMilliseconds >= ShotsFired * ShotInterval.TotalMilliseconds)
+            {
+                Debug.WriteLine($"Time to shoot. shots fired: {ShotsFired}, " +
+                    $"duration: {Duration.TotalMilliseconds} >= {ShotsFired} * {ShotInterval.TotalMilliseconds} ({ShotsFired * ShotInterval.TotalMilliseconds})");
+
+                ShootingAttack newShot = Shot.Clone();
+                newShot.Source = Source;
+                newShot.Position = Position;
+                newShot.Motion = Motion;
+                Shots.Add(newShot);
+                ShotsFired++;
+            }
+
+            foreach (var attack in Shots)
+            {
+                attack.Update(gameTime);
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            //base.Draw(spriteBatch);
+
+            foreach (var shot in Shots)
+                shot.Draw(spriteBatch);
+        }
+
+        public void ClearExpiredAttacks()
+        {
+            List<ShootingAttack> toRemove = [];
+
+            foreach (var attack in Shots)
+            {
+                if (attack.AttackTimedOut() || attack.Source.IsDead)
+                {
+                    attack.AttackVisible = false;
+                    toRemove.Add(attack);
+                }
+            }
+
+            foreach (var atk in toRemove)
+                Shots.Remove(atk);
+        }
+
+        public override void DrawIcon(SpriteBatch spriteBatch, Vector2 position, int size = 32, Color tint = default)
+        {
+            Shot.DrawIcon(spriteBatch, position, size, tint);
+        }
+
+        public override MultiShotAttackData ToData()
+        {
+            return new()
+            {
+                AttackLength = AttackLength,
+                StartTime = StartTime,
+                Duration = Duration,
+                AttackOffset = AttackOffset,
+                LastAttackTime = LastAttackTime,
+                AttackCoolDownLength = CoolDownLength,
+                Speed = Speed,
+                DamageModifier = DamageModifier,
+                ManaCost = ManaCost,
+                AttackDelay = AttackDelay,
+                LevelRequirement = LevelRequirements.ToData(),
+                SkillRequirementsNames = [.. SkillRequirementsNames],
+                ShotName = Shot.Name,
+                ShotCount = ShotCount,
+                ShotInterval = ShotInterval,
+                ShotsFired = ShotsFired
+            };
+        }
+    }
+}

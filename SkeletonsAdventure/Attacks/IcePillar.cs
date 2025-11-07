@@ -17,7 +17,7 @@ namespace SkeletonsAdventure.Attacks
             Initalize();
         }
 
-        public IcePillar(IcePillar attack) : base(attack)
+        protected IcePillar(IcePillar attack) : base(attack)
         {
             Initalize();
         }

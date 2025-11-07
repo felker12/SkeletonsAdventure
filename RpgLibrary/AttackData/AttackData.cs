@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using RpgLibrary.DataClasses;
 
 namespace RpgLibrary.AttackData
 {
@@ -14,6 +15,8 @@ namespace RpgLibrary.AttackData
         public float DamageModifier { get; set; }
         public int ManaCost { get; set; }
         public int AttackDelay { get; set; }
+        public LevelRequirementData LevelRequirement { get; set; } = new();
+        public List<string> SkillRequirementsNames { get; set; } = new();
 
         public AttackData() { }
 
@@ -28,7 +31,9 @@ namespace RpgLibrary.AttackData
                 $"Speed: {Speed}, " +
                 $"Damage Modifier: {DamageModifier}, " +
                 $"Mana Cost: {ManaCost}, " +
-                $"AttackDelay: {AttackDelay} ";
+                $"AttackDelay: {AttackDelay}, " + 
+                $"Level Requirements: {LevelRequirement}, " +
+                $"Skill Requirements: {string.Join(";", SkillRequirementsNames.Select(item => item.ToString()))}";
         }
     }
 }

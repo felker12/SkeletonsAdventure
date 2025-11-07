@@ -41,6 +41,11 @@
 /processor:PassThroughProcessor
 /build:AttackData/IceBullet.xml
 
+#begin AttackData/IceBullets.Xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/IceBullets.Xml
+
 #begin AttackData/IcePillar.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor

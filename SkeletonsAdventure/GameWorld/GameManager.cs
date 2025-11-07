@@ -114,6 +114,7 @@ namespace SkeletonsAdventure.GameWorld
         public static AttackData FireBallData { get; set; }
         public static AttackData IcePillarData { get; set; }
         public static AttackData IceBulletData { get; set; }
+        public static MultiShotAttackData IceBulletsData { get; set; }
         public static AttackData WaterBallData { get; set; }
         public static AttackData FireWallData { get; set; }
         public static AttackData BlueFireWallData { get; set; }
@@ -151,17 +152,6 @@ namespace SkeletonsAdventure.GameWorld
             CreateAttacks();
             CreateQuests();
             CreateNPCs();
-
-            AttackData attackData = GetEntityAttacksClone()["FireBall"].GetAttackData();
-            AttackData2 data = new(attackData);
-
-            XnaSerializer.Serialize<AttackData2>(Path.Combine(SavePath, "fireball.xml"), data);
-
-            data.SkillRequirementsNames.Add("FireMagicLevel1");
-            data.SkillRequirementsNames.Add("ManaControlLevel1");
-
-            XnaSerializer.Serialize<AttackData2>(Path.Combine(SavePath, "fireball2.xml"), data);
-
         }
 
         public static Texture2D CreateTextureFromColor(Color color)
@@ -481,12 +471,17 @@ namespace SkeletonsAdventure.GameWorld
         private static void LoadAttacks()
         {
             BasicAttackData = Content.Load<AttackData>(@"AttackData/BasicAttack");
+
             FireBallData = Content.Load<AttackData>(@"AttackData/FireBall");
-            IcePillarData = Content.Load<AttackData>(@"AttackData/IcePillar");
-            IceBulletData = Content.Load<AttackData>(@"AttackData/IceBullet");
-            WaterBallData = Content.Load<AttackData>(@"AttackData/WaterBall");
             FireWallData = Content.Load<AttackData>(@"AttackData/FireWall");
             BlueFireWallData = Content.Load<AttackData>(@"AttackData/BlueFireWall");
+
+            IcePillarData = Content.Load<AttackData>(@"AttackData/IcePillar");
+            IceBulletData = Content.Load<AttackData>(@"AttackData/IceBullet");
+            IceBulletsData = Content.Load<MultiShotAttackData>(@"AttackData/IceBullets");
+
+            WaterBallData = Content.Load<AttackData>(@"AttackData/WaterBall");
+
         }
 
         private static void LoadTiledAnimations()
@@ -682,6 +677,9 @@ namespace SkeletonsAdventure.GameWorld
 
             IceBullet iceBullet = new(IceBulletData, IceBulletTexture);
             EntityAttacks.Add(iceBullet.GetType().Name, iceBullet);
+
+            IceBullets iceBullets = new(IceBulletsData);
+            EntityAttacks.Add(iceBullets.GetType().Name, iceBullets);
 
             //Water attacks
             WaterBall waterBall = new(WaterBallData, WaterBallSpriteSheetTexture);

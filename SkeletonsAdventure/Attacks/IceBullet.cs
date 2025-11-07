@@ -11,7 +11,7 @@ namespace SkeletonsAdventure.Attacks
             Initialize();
         }
 
-        public IceBullet(IceBullet attack) : base(attack)
+        protected IceBullet(IceBullet attack) : base(attack)
         {
             Initialize();
         }

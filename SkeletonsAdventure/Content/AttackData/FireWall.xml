@@ -11,5 +11,11 @@
     <DamageModifier>2.1</DamageModifier>
     <ManaCost>1</ManaCost>
     <AttackDelay>500</AttackDelay>
+    <LevelRequirement>
+      <Level>0</Level>
+      <Defence>0</Defence>
+      <Attack>0</Attack>
+    </LevelRequirement>
+    <SkillRequirementsNames />
   </Asset>
 </XnaContent>

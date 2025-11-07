@@ -1,5 +1,5 @@
-﻿using CppNet;
-using SkeletonsAdventure.Entities;
+﻿using SkeletonsAdventure.Entities;
+using System.Linq;
 
 namespace SkeletonsAdventure.Attacks
 {
@@ -35,6 +35,26 @@ namespace SkeletonsAdventure.Attacks
             {
                 attack.Update(gameTime);
             }
+
+            //
+            List<BasicAttack> list = [];
+            foreach(var attack in Attacks)
+            {
+                if(attack is MultiShotAttack multiShotAttack)
+                {
+                    foreach(var atk in multiShotAttack.Shots)
+                    {
+                        //list.Add(atk); 
+                    }
+
+                    //multiShotAttack.Shots.Clear();
+                }
+            }
+
+            foreach(var attack in list)
+            {
+                //AddAttack(attack, gameTime);
+            }
         }
 
         public void AddAttack(BasicAttack atk, GameTime gameTime)
@@ -63,7 +83,7 @@ namespace SkeletonsAdventure.Attacks
             LastAttack = null;
         }
 
-        public void ClearExpiredAttacks(GameTime gameTime)
+        public void ClearExpiredAttacks()
         {
             List<BasicAttack> toRemove = [];
 

@@ -11,7 +11,7 @@ namespace SkeletonsAdventure.Attacks
             Initialize();
         }
 
-        public FireBall(FireBall attack) : base(attack)
+        protected FireBall(FireBall attack) : base(attack)
         {
             Initialize(); 
         }
