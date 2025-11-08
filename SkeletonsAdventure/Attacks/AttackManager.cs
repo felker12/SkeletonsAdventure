@@ -1,5 +1,6 @@
 ﻿using SkeletonsAdventure.Entities;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SkeletonsAdventure.Attacks
 {
@@ -31,29 +32,43 @@ namespace SkeletonsAdventure.Attacks
                 _attacked = false;
             }
 
+            List<Entity> SourcesThatCantMove = [];
+
             foreach (var attack in Attacks)
             {
                 attack.Update(gameTime);
+
+                if(Attacks.Count > 0)
+                    Debug.WriteLine("source can move: " + attack.Source.CanMove + " of attack: " + attack.Name);
+
+                //if any attack is causing the source to not be able to move make sure a later attack isn't overriding that
+                if(SourcesThatCantMove.Contains(attack.Source) is false && 
+                    SourceEntity.CanMove is false)
+                {
+                    SourcesThatCantMove.Add(attack.Source);
+                }
             }
 
-            //
-            List<BasicAttack> list = [];
+            //make sure any source that can't move because of any attack can't move and isn't being allowed to move by another attack overriding it
+            foreach (var entity in SourcesThatCantMove)
+                entity.CanMove = false;
+
+            //Add any attacks queued by a multishot attack
+            List<BasicAttack> toRemove = [];
             foreach(var attack in Attacks)
             {
                 if(attack is MultiShotAttack multiShotAttack)
                 {
                     foreach(var atk in multiShotAttack.Shots)
-                    {
-                        //list.Add(atk); 
-                    }
+                        toRemove.Add(atk); 
 
-                    //multiShotAttack.Shots.Clear();
+                    multiShotAttack.Shots.Clear();
                 }
             }
 
-            foreach(var attack in list)
+            foreach(var attack in toRemove)
             {
-                //AddAttack(attack, gameTime);
+                AddAttack(attack, gameTime);
             }
         }
 

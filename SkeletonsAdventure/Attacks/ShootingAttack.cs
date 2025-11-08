@@ -58,9 +58,10 @@ namespace SkeletonsAdventure.Attacks
         }
 
         //TODO
-        public void MoveInDirectionOfPosition(Vector2 target)
+        public virtual void MoveInDirectionOfPosition(Vector2 target)
         {
             Motion = Vector2.Normalize(target - Center) * Speed;
+            InitialMotion = Motion;
         }
 
         public void SetRotationBasedOffMotion()

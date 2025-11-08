@@ -34,7 +34,6 @@ namespace SkeletonsAdventure.Attacks
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
             SetRotationBasedOffMotion();
         }
 

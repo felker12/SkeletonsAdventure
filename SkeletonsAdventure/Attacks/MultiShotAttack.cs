@@ -48,6 +48,9 @@ namespace SkeletonsAdventure.Attacks
         {
             Shot.DamageModifier = DamageModifier;
             Shot.ManaCost = 0; // Only the multi-shot attack consumes mana
+            Shot.Source = Source;
+            Shot.AttackLength = Shot.AttackLengthMinusDelay;
+            Shot.AttackDelay = 0;
         }
 
         public override MultiShotAttack Clone()
@@ -57,34 +60,41 @@ namespace SkeletonsAdventure.Attacks
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            if (StartTime > TimeSpan.Zero)
+                Duration = gameTime.TotalGameTime - StartTime;
+
+            //Prevent the source from moving while shooting
+            if (Duration.TotalMilliseconds > ShotCount * ShotInterval.TotalMilliseconds + AttackDelay)
+                Source.CanMove = true;
+            else
+                Source.CanMove = false;
+
+            UpdateCooldown(gameTime);
 
             // Check if it's time to fire the next shot
-            if (ShotsFired < ShotCount && Duration.TotalMilliseconds >= ShotsFired * ShotInterval.TotalMilliseconds)
+            if(Duration.TotalMilliseconds < AttackDelay)
+                return;
+
+            if (ShotsFired < ShotCount && Duration.TotalMilliseconds >= ShotsFired * ShotInterval.TotalMilliseconds + AttackDelay)
             {
                 Debug.WriteLine($"Time to shoot. shots fired: {ShotsFired}, " +
-                    $"duration: {Duration.TotalMilliseconds} >= {ShotsFired} * {ShotInterval.TotalMilliseconds} ({ShotsFired * ShotInterval.TotalMilliseconds})");
+                    $"duration: {Duration.TotalMilliseconds} >= " +
+                    $"{ShotsFired} * {ShotInterval.TotalMilliseconds} + {AttackDelay} " +
+                    $"({ShotsFired * ShotInterval.TotalMilliseconds + AttackDelay})");
 
                 ShootingAttack newShot = Shot.Clone();
-                newShot.Source = Source;
-                newShot.Position = Position;
-                newShot.Motion = Motion;
+                newShot.Position = StartPosition;
+                newShot.Motion = InitialMotion;
+                newShot.SetUpAttack(gameTime, DefaultColor, StartPosition);
+
                 Shots.Add(newShot);
                 ShotsFired++;
-            }
-
-            foreach (var attack in Shots)
-            {
-                attack.Update(gameTime);
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            //base.Draw(spriteBatch);
 
-            foreach (var shot in Shots)
-                shot.Draw(spriteBatch);
         }
 
         public void ClearExpiredAttacks()

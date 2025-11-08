@@ -9,7 +9,7 @@ namespace SkeletonsAdventure.Attacks
 {
     internal class BasicAttack : AnimatedSprite
     {
-        public int AttackLength { get; set; }
+        public int AttackLength { get; set; } //The length includes AttackDelay
         public TimeSpan StartTime { get; set; }
         public TimeSpan Duration { get; set; }
         public TimeSpan LastAttackTime { get; set; }
@@ -30,6 +30,7 @@ namespace SkeletonsAdventure.Attacks
         public LevelRequirements LevelRequirements { get; private set; } = new();
         public List<string> SkillRequirementsNames { get; private set; } = [];
         public string Name => GetType().Name;
+        public int AttackLengthMinusDelay => AttackLength - AttackDelay;
 
         public virtual Rectangle IconRectangle {
             get

@@ -253,7 +253,8 @@ namespace SkeletonsAdventure.Entities
 
             //Info.Text += $"\nAttacks Hit by: {AttacksHitBy.Count}";
 
-            Info.Text += $"\nCan Evolve: {CanEvolve}";
+            //Info.Text += $"\nCan Evolve: {CanEvolve}";
+            Info.Text += $"\nCan Move: {CanMove}";
         }
 
         public void LearnAttack(string attackName, BasicAttack attack)

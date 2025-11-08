@@ -75,7 +75,7 @@ namespace SkeletonsAdventure.Attacks
 
         public override string ToString()
         {
-            return $"Learned Attacks: {string.Join(";", LearnedAttacks.Keys)}";
+            return $"Learned Attacks: {string.Join(", ", LearnedAttacks.Keys)}";
         }
     }
 }
