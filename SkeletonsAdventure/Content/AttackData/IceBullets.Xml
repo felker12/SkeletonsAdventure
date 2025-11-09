@@ -15,11 +15,14 @@
       <Level>0</Level>
       <Defence>0</Defence>
       <Attack>0</Attack>
+      <Mana>100</Mana>
     </LevelRequirement>
-    <SkillRequirementsNames />
+    <SkillRequirementsNames>
+      <Item>IceBullet</Item>
+    </SkillRequirementsNames>
     <ShotName>IceBullet</ShotName>
     <ShotCount>5</ShotCount>
-    <ShotInterval>PT0.5S</ShotInterval>
+    <ShotInterval>PT0.25S</ShotInterval>
     <ShotsFired>0</ShotsFired>
   </Asset>
 </XnaContent>

@@ -44,6 +44,26 @@ namespace SkeletonsAdventure.Attacks
             }
         }
 
+        public BasicAttack(AttackData attackData, Texture2D texture, Entity source = null) : base()
+        {
+            AttackLength = attackData.AttackLength;
+            StartTime = attackData.StartTime;
+            Duration = attackData.Duration;
+            AttackOffset = attackData.AttackOffset;
+            LastAttackTime = attackData.LastAttackTime;
+            CoolDownLength = attackData.AttackCoolDownLength;
+            Speed = attackData.Speed;
+            DamageModifier = attackData.DamageModifier;
+            ManaCost = attackData.ManaCost;
+            AttackDelay = attackData.AttackDelay;
+            LevelRequirements = new(attackData.LevelRequirement);
+
+            Texture = texture;
+            Source = source;
+
+            Initialize();
+        }
+
         protected BasicAttack(BasicAttack attack) : base()
         {
             Width = attack.Width;
@@ -67,41 +87,7 @@ namespace SkeletonsAdventure.Attacks
             AnimatedAttack = attack.AnimatedAttack;
             StartPosition = attack.StartPosition;
             DamageHitBox = attack.DamageHitBox;
-
-            Initialize();
-        }
-
-        public BasicAttack(AttackData attackData, Texture2D texture, Entity source = null) : base()
-        {
-            AttackLength = attackData.AttackLength;
-            StartTime = attackData.StartTime;
-            Duration = attackData.Duration;
-            AttackOffset = attackData.AttackOffset;
-            LastAttackTime = attackData.LastAttackTime;
-            CoolDownLength = attackData.AttackCoolDownLength;
-            Speed = attackData.Speed;
-            DamageModifier = attackData.DamageModifier;
-            ManaCost = attackData.ManaCost;
-            AttackDelay = attackData.AttackDelay;
-
-            Texture = texture;
-            Source = source;
-
-            Initialize();
-        }
-
-        protected BasicAttack(AttackData attackData) : base()
-        {
-            AttackLength = attackData.AttackLength;
-            StartTime = attackData.StartTime;
-            Duration = attackData.Duration;
-            AttackOffset = attackData.AttackOffset;
-            LastAttackTime = attackData.LastAttackTime;
-            CoolDownLength = attackData.AttackCoolDownLength;
-            Speed = attackData.Speed;
-            DamageModifier = attackData.DamageModifier;
-            ManaCost = attackData.ManaCost;
-            AttackDelay = attackData.AttackDelay;
+            LevelRequirements = attack.LevelRequirements;
 
             Initialize();
         }
@@ -306,6 +292,22 @@ namespace SkeletonsAdventure.Attacks
             Vector2 drawPos = position + new Vector2(size / 2f, size / 2f);
 
             spriteBatch.Draw(Texture, drawPos, src, tint, 0f, origin, scale, SpriteEffects.None, 0f);
+        }
+
+        public void AddRequiredSkill(BasicAttack attack)
+        {
+            if (attack is null)
+                return;
+
+            if (SkillRequirementsNames.Contains(attack.Name))
+                return;
+
+            AddRequriedSkillName(attack.Name);
+        }
+
+        private void AddRequriedSkillName(string name)
+        {
+            SkillRequirementsNames.Add(name);
         }
     }
 }

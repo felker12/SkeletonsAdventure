@@ -42,9 +42,11 @@ namespace SkeletonsAdventure.Entities
         public PlayerIndex PlayerIndex { get; set; } = PlayerIndex.One;
         public PlayerLearnedAttackManager LearnedAttackManager { get; private set; }
         public PlayerKeybindingsManager KeybindingsManager { get; private set; }
-        public static Dictionary<Keys, BasicAttack> KeyBindings { get; private set; } = [];
+        private static Dictionary<Keys, BasicAttack> KeyBindings { get; set; } = [];
         public int AttackExcludingEquipment { get; private set; } = 0;
         public int DefenceExcludingEquipment { get; private set; } = 0;
+        public int ManaExcludingEquipment { get; private set; } = 0;
+        public int HealhExcludingEquipment { get; private set; } = 0;
         public bool CanEvolve { get; private set; } = false;
 
         public Player() : base()
@@ -57,8 +59,7 @@ namespace SkeletonsAdventure.Entities
             SetBonussesFromEvolution();
             UpdateStatsWithBonusses();
 
-            GainXp(53400); //TODO delete this
-
+            //GainXp(53400); //TODO delete this
 
             //TODO
             FireBall fireBall = (FireBall)GameManager.EntityAttackClone["FireBall"];
@@ -78,7 +79,7 @@ namespace SkeletonsAdventure.Entities
             BaseAttack = 300; //TODO correct the values
             BaseDefence = 6;
             BaseHealth = 3000;
-            BaseMana = 1000; 
+            BaseMana = 100; 
         }
 
         private void Initialize()
@@ -119,6 +120,17 @@ namespace SkeletonsAdventure.Entities
                 { Keys.D9, (IceBullets)GameManager.EntityAttackClone["IceBullets"] },
                 { Keys.D0, null },
             };
+
+            KeybindingsManager.SetKeybinding(KeyBindings);
+
+            /*KeybindingsManager.SetKeybinding(Keys.D1, GameManager.GetAttackByName("FireBall"));
+            KeybindingsManager.SetKeybinding(Keys.D2, GameManager.GetAttackByName("IcePillar"));
+            KeybindingsManager.SetKeybinding(Keys.D3, GameManager.GetAttackByName("IceBullet"));
+            KeybindingsManager.SetKeybinding(Keys.D4, GameManager.GetAttackByName("WaterBall"));
+            KeybindingsManager.SetKeybinding(Keys.D5, GameManager.GetAttackByName("FireWave"));
+            KeybindingsManager.SetKeybinding(Keys.D6, GameManager.GetAttackByName("BlueFireWave"));
+            KeybindingsManager.SetKeybinding(Keys.D9, GameManager.GetAttackByName("IceBullets"));*/
+
 
             foreach (var attack in KeyBindings.Values)
             {
@@ -262,20 +274,25 @@ namespace SkeletonsAdventure.Entities
             LearnedAttackManager.LearnAttack(attackName, attack);
         }
 
+        public void LearnAttack(BasicAttack attack)
+        {
+            LearnedAttackManager.LearnAttack(attack.Name, attack);
+        }
+
         private protected void UpdateStatsWithBonusses()
         {
             AttackExcludingEquipment = BaseAttack + bonusAttackFromLevel + bonusAttackFromAttributePoints;
             DefenceExcludingEquipment = BaseDefence + bonusDefenceFromLevel + bonusDefenceFromAttributePoints;
+            ManaExcludingEquipment = BaseMana + bonusManaFromLevel + bonusManaFromAttributePoints;
+            HealhExcludingEquipment = BaseHealth + bonusHealthFromLevel + bonusHealthFromAttributePoints;
 
             Attack = AttackExcludingEquipment + EquippedItems.EquippedItemsAttackBonus();
 
             Defence = DefenceExcludingEquipment + EquippedItems.EquippedItemsDefenceBonus();
 
-            MaxHealth = BaseHealth + bonusHealthFromLevel +
-                bonusHealthFromAttributePoints; //TODO maybe allow gear to provide a health bonus
+            MaxHealth = HealhExcludingEquipment; //TODO maybe allow gear to provide a health bonus
 
-            MaxMana = BaseMana + bonusManaFromLevel +
-                bonusManaFromAttributePoints; //TODO maybe allow gear to provide a mana bonus
+            MaxMana = ManaExcludingEquipment; //TODO maybe allow gear to provide a mana bonus
 
             //add bonusses from evolution
             Attack += bonusAttackFromEvolution;

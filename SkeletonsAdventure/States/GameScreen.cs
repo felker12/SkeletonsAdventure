@@ -80,7 +80,7 @@ namespace SkeletonsAdventure.States
         private void CreateActionBar()
         {
             ActionBar = new(
-                Player.KeyBindings,
+                Player.KeybindingsManager.Keybindings,
                 GameManager.Arial10,
                 GameManager.CreateTextureFromColor(Color.White), 
                 slotSize: 36

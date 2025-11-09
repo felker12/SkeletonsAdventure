@@ -19,9 +19,7 @@ namespace SkeletonsAdventure.Attacks
                 return;
 
             foreach (var attack in Attacks)
-            {
                 attack.Draw(spriteBatch);
-            }
         }
 
         public void Update(GameTime gameTime)
@@ -38,15 +36,9 @@ namespace SkeletonsAdventure.Attacks
             {
                 attack.Update(gameTime);
 
-                if(Attacks.Count > 0)
-                    Debug.WriteLine("source can move: " + attack.Source.CanMove + " of attack: " + attack.Name);
-
                 //if any attack is causing the source to not be able to move make sure a later attack isn't overriding that
-                if(SourcesThatCantMove.Contains(attack.Source) is false && 
-                    SourceEntity.CanMove is false)
-                {
+                if(SourcesThatCantMove.Contains(attack.Source) is false && SourceEntity.CanMove is false)
                     SourcesThatCantMove.Add(attack.Source);
-                }
             }
 
             //make sure any source that can't move because of any attack can't move and isn't being allowed to move by another attack overriding it
@@ -67,9 +59,7 @@ namespace SkeletonsAdventure.Attacks
             }
 
             foreach(var attack in toRemove)
-            {
                 AddAttack(attack, gameTime);
-            }
         }
 
         public void AddAttack(BasicAttack atk, GameTime gameTime)

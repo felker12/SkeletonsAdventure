@@ -20,7 +20,6 @@ using SkeletonsAdventure.ItemClasses.ItemManagement;
 using SkeletonsAdventure.Quests;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace SkeletonsAdventure.GameWorld
 {
@@ -86,6 +85,7 @@ namespace SkeletonsAdventure.GameWorld
         public static Texture2D IcePillarTexture { get; private set; }
         public static Texture2D IcePillarSpriteSheetTexture { get; private set; }
         public static Texture2D IceBulletTexture { get; private set; }
+        public static Texture2D IceBulletsTexture { get; private set; }
         public static Texture2D WaterBallSpriteSheetTexture { get; private set; }
         public static Texture2D FireWallTexture { get; private set; }
         public static Texture2D BlueFireWallTexture { get; private set; }
@@ -402,6 +402,14 @@ namespace SkeletonsAdventure.GameWorld
             return null;
         }
 
+        public static BasicAttack GetAttackByName(string name)
+        {
+            if(EntityAttackClone.TryGetValue(name, out BasicAttack attack))
+                return attack.Clone();
+
+            return null;
+        }
+
         //Set the Colors
         private static void SetColors()
         {
@@ -437,6 +445,7 @@ namespace SkeletonsAdventure.GameWorld
             IcePillarTexture = Content.Load<Texture2D>(@"AttackSprites/IcePillar");
             IcePillarSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/IcePillarSpriteSheet");
             IceBulletTexture = Content.Load<Texture2D>(@"AttackSprites/IceBullet");
+            IceBulletsTexture = Content.Load<Texture2D>(@"AttackSprites/IceBullets");
             WaterBallSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/WaterBallSpriteSheet");
             FireWallTexture = Content.Load<Texture2D>(@"AttackSprites/FireWall_Red");
             BlueFireWallTexture = Content.Load<Texture2D>(@"AttackSprites/FireWall_Blue");
@@ -678,7 +687,7 @@ namespace SkeletonsAdventure.GameWorld
             IceBullet iceBullet = new(IceBulletData, IceBulletTexture);
             EntityAttacks.Add(iceBullet.GetType().Name, iceBullet);
 
-            IceBullets iceBullets = new(IceBulletsData);
+            IceBullets iceBullets = new(IceBulletsData, IceBulletsTexture);
             EntityAttacks.Add(iceBullets.GetType().Name, iceBullets);
 
             //Water attacks

@@ -1,4 +1,5 @@
 ﻿using RpgLibrary.AttackData;
+using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Attacks
@@ -12,21 +13,7 @@ namespace SkeletonsAdventure.Attacks
         public int RemainingShots => ShotCount - ShotsFired;
         public List<ShootingAttack> Shots { get; private set; } = [];
 
-        public MultiShotAttack(ShootingAttack attack) : base(attack)
-        {
-            Shot = attack;
-            Initialize();
-        }
-
-        public MultiShotAttack(ShootingAttack attack, int shotCount, TimeSpan shotInterval) : base(attack)
-        {
-            Shot = attack;
-            ShotCount = shotCount;
-            ShotInterval = shotInterval;
-            Initialize();
-        }
-
-        public MultiShotAttack(MultiShotAttackData data) : base(data)
+        public MultiShotAttack(MultiShotAttackData data, Texture2D iconImage) : base(data, iconImage)
         {
             Shot = (ShootingAttack)GameManager.EntityAttackClone[data.ShotName];
             ShotCount = data.ShotCount;
@@ -51,6 +38,9 @@ namespace SkeletonsAdventure.Attacks
             Shot.Source = Source;
             Shot.AttackLength = Shot.AttackLengthMinusDelay;
             Shot.AttackDelay = 0;
+
+            //multi shot attacks will just have the 1 frame to be used as an icon for them
+            SetFrames(1, 32, 32, order: [AnimationKey.Right]);
         }
 
         public override MultiShotAttack Clone()
@@ -77,10 +67,10 @@ namespace SkeletonsAdventure.Attacks
 
             if (ShotsFired < ShotCount && Duration.TotalMilliseconds >= ShotsFired * ShotInterval.TotalMilliseconds + AttackDelay)
             {
-                Debug.WriteLine($"Time to shoot. shots fired: {ShotsFired}, " +
+               /* Debug.WriteLine($"Time to shoot. shots fired: {ShotsFired}, " +
                     $"duration: {Duration.TotalMilliseconds} >= " +
                     $"{ShotsFired} * {ShotInterval.TotalMilliseconds} + {AttackDelay} " +
-                    $"({ShotsFired * ShotInterval.TotalMilliseconds + AttackDelay})");
+                    $"({ShotsFired * ShotInterval.TotalMilliseconds + AttackDelay})");*/
 
                 ShootingAttack newShot = Shot.Clone();
                 newShot.Position = StartPosition;
@@ -94,7 +84,7 @@ namespace SkeletonsAdventure.Attacks
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-
+            //nothing is to be drawn
         }
 
         public void ClearExpiredAttacks()
@@ -112,11 +102,6 @@ namespace SkeletonsAdventure.Attacks
 
             foreach (var atk in toRemove)
                 Shots.Remove(atk);
-        }
-
-        public override void DrawIcon(SpriteBatch spriteBatch, Vector2 position, int size = 32, Color tint = default)
-        {
-            Shot.DrawIcon(spriteBatch, position, size, tint);
         }
 
         public override MultiShotAttackData ToData()

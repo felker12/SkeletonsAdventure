@@ -9,12 +9,18 @@ namespace SkeletonsAdventure.Attacks
 
         public void LearnAttack(string attackName, BasicAttack attack)
         {
+            bool requirementsMet = true;
+
             if (CheckAttackLevelRequirements(attack) is false)
-                return;
+                requirementsMet = false;
 
             if (CheckAttackSkillRequirements(attack) is false)
+                requirementsMet = false;
+
+            if (requirementsMet is false)
                 return;
 
+            //add the skill to the learned skills if the requirements are met
             if (LearnedAttacks.ContainsKey(attackName) is false)
                 LearnedAttacks[attackName] = attack;
         }
@@ -26,9 +32,7 @@ namespace SkeletonsAdventure.Attacks
 
             // Check level requirements
             if(attack.LevelRequirements.CheckRequirements(Player))
-            {
                 return true;
-            }
             else
             {
                 Debug.WriteLine(attack.LevelRequirements.MissingRequirementsText(Player));
@@ -53,9 +57,7 @@ namespace SkeletonsAdventure.Attacks
             if (missingSkills.Count > 0)
             {
                 foreach (string skill in missingSkills)
-                {
                     Debug.WriteLine($"Cannot learn attack {attack.Name}. Missing required skill: {skill}");
-                }
 
                 return false;
             }

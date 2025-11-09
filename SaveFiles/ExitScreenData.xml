@@ -48,7 +48,7 @@
       </Item>
       <Item>
         <Title>Evolution</Title>
-        <Visible>true</Visible>
+        <Visible>false</Visible>
         <Width>1280</Width>
         <Height>689</Height>
         <Position>0 31</Position>

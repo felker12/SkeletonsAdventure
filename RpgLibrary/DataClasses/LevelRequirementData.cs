@@ -5,6 +5,7 @@
         public int Level { get; set; } = 0;
         public int Defence { get; set; } = 0;
         public int Attack { get; set; } = 0;
+        public int Mana { get; set; } = 0;
 
         public LevelRequirementData() { }
 
@@ -13,6 +14,7 @@
             Level = data.Level;
             Defence = data.Defence;
             Attack = data.Attack;
+            Mana = data.Mana;
         }
 
         public LevelRequirementData Clone()
@@ -24,7 +26,8 @@
         {
             return $"Level: {Level}, " +
                 $"Defence: {Defence}, " +
-                $"Attack: {Attack}";
+                $"Attack: {Attack}, " +
+                $"Mana: {Mana}";
         }
     }
 }

@@ -16,11 +16,6 @@ namespace SkeletonsAdventure.Attacks
         {
         }
 
-        protected ShootingAttack(AttackData attackData) : base(attackData)
-        {
-
-        }
-
         public override ShootingAttack Clone()
         {
             return new ShootingAttack(this);

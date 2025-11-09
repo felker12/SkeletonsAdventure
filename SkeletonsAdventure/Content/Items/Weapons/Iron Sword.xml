@@ -17,6 +17,7 @@
       <Level>5</Level>
       <Defence>0</Defence>
       <Attack>30</Attack>
+      <Mana>0</Mana>
     </LevelRequirementData>
     <NumberHands>Main</NumberHands>
     <AttackValue>10</AttackValue>

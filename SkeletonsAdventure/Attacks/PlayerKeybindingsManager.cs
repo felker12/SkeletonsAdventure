@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
@@ -8,8 +7,7 @@ namespace SkeletonsAdventure.Attacks
     {
         public Player Player { get; init; } = player;
         public Dictionary<Keys, BasicAttack> Keybindings { get; private set; } = [];
-
-        public List<Keys> PossibleKeybindings = 
+        public List<Keys> PossibleKeybindings { get; init; } = 
             [Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, 
             Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0];
 
@@ -20,12 +18,29 @@ namespace SkeletonsAdventure.Attacks
                 throw new ArgumentException($"Key {key} is not a valid keybinding option.");
             }
 
+            attack?.Source = Player;
             Keybindings[key] = attack;
+        }
+
+        public void SetKeybinding(Dictionary<Keys, BasicAttack> keybindings)
+        {
+            foreach(var binding in keybindings)
+                SetKeybinding(binding.Key, binding.Value);
         }
 
         public void Clear() 
         { 
             Keybindings.Clear();
+        }
+
+        public override string ToString()
+        {
+            string toString = string.Empty;
+
+            foreach(var binding in Keybindings)
+                toString += binding.ToString();
+
+            return toString;
         }
     }
 }

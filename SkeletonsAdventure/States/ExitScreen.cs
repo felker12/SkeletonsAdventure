@@ -66,7 +66,7 @@ namespace SkeletonsAdventure.States
                 XnaSerializer.Serialize<WorldData>(savePath + @"\World.xml", World.GetWorldData());
                 XnaSerializer.Serialize<MenuManagerData>(savePath + @"\GameScreenMenuData.xml", GameScreenMenuData);
                 XnaSerializer.Serialize<TabbedMenuData>(savePath + @"\ExitScreenData.xml", ExitScreenMenu.GetTabbedMenuData());
-                XnaSerializer.Serialize<List<String>>(Path.Combine(savePath, "MessageBox"), Game.GameScreen.MessageBox.Messages);
+                XnaSerializer.Serialize<List<String>>(Path.Combine(savePath, "MessageBox.xml"), Game.GameScreen.MessageBox.Messages);
             }
             catch (Exception ex)
             {

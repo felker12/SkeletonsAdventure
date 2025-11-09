@@ -15,6 +15,7 @@
       <Level>0</Level>
       <Defence>0</Defence>
       <Attack>0</Attack>
+      <Mana>0</Mana>
     </LevelRequirement>
     <SkillRequirementsNames />
   </Asset>
