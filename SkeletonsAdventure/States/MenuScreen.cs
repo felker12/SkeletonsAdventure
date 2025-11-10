@@ -1,10 +1,12 @@
-﻿using SkeletonsAdventure.Controls;
-using System.IO;
-using RpgLibrary.WorldClasses;
-using RpgLibrary.DataClasses;
-using SkeletonsAdventure.GameWorld;
+﻿using RpgLibrary.DataClasses;
 using RpgLibrary.MenuClasses;
+using RpgLibrary.SettingsClasses;
+using RpgLibrary.WorldClasses;
+using SkeletonsAdventure.Controls;
+using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.GameMenu;
+using SkeletonsAdventure.GameWorld;
+using System.IO;
 
 namespace SkeletonsAdventure.States
 {
@@ -73,6 +75,7 @@ namespace SkeletonsAdventure.States
             MenuManagerData gameScreenMenuData;
             TabbedMenuData exitScreenData;
             List<string> messageBoxText;
+            KeyBindingsManagerData bindings;
 
             try
             {
@@ -85,6 +88,7 @@ namespace SkeletonsAdventure.States
                 gameScreenMenuData = XnaSerializer.Deserialize<MenuManagerData>(savePath + @"\GameScreenMenuData.xml");
                 exitScreenData = XnaSerializer.Deserialize<TabbedMenuData>(savePath + @"\ExitScreenData.xml");
                 messageBoxText = XnaSerializer.Deserialize<List<String>>(Path.Combine(savePath, "MessageBox.xml"));
+                bindings = XnaSerializer.Deserialize<KeyBindingsManagerData>(savePath + @"\Keybindings.xml");
             }
             catch (Exception ex)
             {
@@ -97,6 +101,7 @@ namespace SkeletonsAdventure.States
             Game.GameScreen.MessageBox.AddMessages(messageBoxText);
             UpdateMenusFromSave(gameScreenMenuData);
             Game.ExitScreen.SetExitScreenMenuData(exitScreenData);
+            World.Player.KeybindingsManager.SetKeybinding(bindings.Keybindings);
 
             //return to the game screen
             StateManager.ChangeState(Game.GameScreen);

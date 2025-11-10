@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:SettingsClasses="RpgLibrary.SettingsClasses">
+  <Asset Type="SettingsClasses:KeyBindingsManagerData">
+    <Keybindings>
+      <Item>
+        <Key>D1</Key>
+        <Value></Value>
+      </Item>
+      <Item>
+        <Key>D2</Key>
+        <Value></Value>
+      </Item>
+      <Item>
+        <Key>D3</Key>
+        <Value></Value>
+      </Item>
+      <Item>
+        <Key>D4</Key>
+        <Value></Value>
+      </Item>
+      <Item>
+        <Key>D5</Key>
+        <Value></Value>
+      </Item>
+      <Item>
+        <Key>D6</Key>
+        <Value></Value>
+      </Item>
+      <Item>
+        <Key>D7</Key>
+        <Value></Value>
+      </Item>
+      <Item>
+        <Key>D8</Key>
+        <Value></Value>
+      </Item>
+      <Item>
+        <Key>D9</Key>
+        <Value></Value>
+      </Item>
+      <Item>
+        <Key>D0</Key>
+        <Value></Value>
+      </Item>
+    </Keybindings>
+  </Asset>
+</XnaContent>

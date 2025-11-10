@@ -42,7 +42,6 @@ namespace SkeletonsAdventure.Entities
         public PlayerIndex PlayerIndex { get; set; } = PlayerIndex.One;
         public PlayerLearnedAttackManager LearnedAttackManager { get; private set; }
         public PlayerKeybindingsManager KeybindingsManager { get; private set; }
-        private static Dictionary<Keys, BasicAttack> KeyBindings { get; set; } = [];
         public int AttackExcludingEquipment { get; private set; } = 0;
         public int DefenceExcludingEquipment { get; private set; } = 0;
         public int ManaExcludingEquipment { get; private set; } = 0;
@@ -100,14 +99,14 @@ namespace SkeletonsAdventure.Entities
             //TODO delete this line
             Info.TextColor = Color.Aqua;
 
-            InitializeAttacks();
+            InitializeAttacks(); //this is for testing
 
             HealthBarVisible = false;
         }
 
         private void InitializeAttacks()
         {
-            KeyBindings = new Dictionary<Keys, BasicAttack>
+            Dictionary<Keys, BasicAttack> KeyBindings = new()
             {
                 { Keys.D1, (FireBall)GameManager.EntityAttackClone["FireBall"]},
                 { Keys.D2, (IcePillar)GameManager.EntityAttackClone["IcePillar"] },
@@ -115,33 +114,13 @@ namespace SkeletonsAdventure.Entities
                 { Keys.D4, (WaterBall)GameManager.EntityAttackClone["WaterBall"]  },
                 { Keys.D5, (FireWave)GameManager.EntityAttackClone["FireWave"] },
                 { Keys.D6, (BlueFireWave)GameManager.EntityAttackClone["BlueFireWave"] },
-                { Keys.D7, null },
-                { Keys.D8, null },
+                //{ Keys.D7, null },
+                //{ Keys.D8, null },
                 { Keys.D9, (IceBullets)GameManager.EntityAttackClone["IceBullets"] },
-                { Keys.D0, null },
+                //{ Keys.D0, null },
             };
 
             KeybindingsManager.SetKeybinding(KeyBindings);
-
-            /*KeybindingsManager.SetKeybinding(Keys.D1, GameManager.GetAttackByName("FireBall"));
-            KeybindingsManager.SetKeybinding(Keys.D2, GameManager.GetAttackByName("IcePillar"));
-            KeybindingsManager.SetKeybinding(Keys.D3, GameManager.GetAttackByName("IceBullet"));
-            KeybindingsManager.SetKeybinding(Keys.D4, GameManager.GetAttackByName("WaterBall"));
-            KeybindingsManager.SetKeybinding(Keys.D5, GameManager.GetAttackByName("FireWave"));
-            KeybindingsManager.SetKeybinding(Keys.D6, GameManager.GetAttackByName("BlueFireWave"));
-            KeybindingsManager.SetKeybinding(Keys.D9, GameManager.GetAttackByName("IceBullets"));*/
-
-
-            foreach (var attack in KeyBindings.Values)
-            {
-                if (attack is null) 
-                    continue;
-
-                attack.Source = this;
-
-                if (attack is MultiShotAttack multiShotAttack)
-                    multiShotAttack.Shot.Source = this;
-            }
         }
 
         public void UpdatePlayerWithData(PlayerData playerData)
@@ -237,14 +216,7 @@ namespace SkeletonsAdventure.Entities
             CheckQuestCompleted();
             UpdateStatsWithBonusses();
 
-            //update cooldowns of all attacks
-            foreach (var attack in KeyBindings.Values)
-            {
-                if (attack is null)
-                    continue;
-
-                attack.UpdateCooldown(gameTime);
-            }
+            KeybindingsManager.Update(gameTime);
 
             //TODO delete this
             //Info.Text += $"\nXP = {TotalXP}";
@@ -504,24 +476,13 @@ namespace SkeletonsAdventure.Entities
 
         public void CheckInput(GameTime gameTime)
         {
-            //if the player is aiming an attack, check for mouse input
-            if (AimVisible)
-            {
-                if (InputHandler.CheckMouseReleased(MouseButton.Left))
-                {
-                    PerformAttack(gameTime, AttackToAim);
-                }
-            }
-
             //TODO properly handle controller input
-            //Keys 1 through 0 
-            foreach (var keyBinding in KeyBindings)
-            {
-                if (InputHandler.KeyReleased(keyBinding.Key))
-                {
-                    PerformAttack(gameTime, keyBinding.Value);
-                }
-            }
+
+            //if the player is aiming an attack, check for mouse input
+            if (AimVisible && InputHandler.CheckMouseReleased(MouseButton.Left))
+                PerformAttack(gameTime, AttackToAim);
+
+            KeybindingsManager.CheckInput(gameTime);
 
             if (InputHandler.KeyReleased(Keys.E) ||
             InputHandler.ButtonDown(Buttons.RightTrigger, PlayerIndex))

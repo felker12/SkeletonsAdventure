@@ -11,9 +11,7 @@ namespace RpgLibrary.GameObjectClasses
         public InteractableObjectManagerData(InteractableObjectManagerData interactableObjectManagerData)
         {
             foreach (var obj in interactableObjectManagerData.InteractableObjectsData)
-            {
                 InteractableObjectsData.Add(obj.Clone());
-            }
         }
 
         public InteractableObjectManagerData Clone()
@@ -26,10 +24,10 @@ namespace RpgLibrary.GameObjectClasses
             StringBuilder sb = new();
 
             sb.AppendLine("InteractableObjectManagerData: ");
+
             foreach (var obj in InteractableObjectsData)
-            {
                 sb.AppendLine(obj.ToString() + ", ");
-            }
+
             return sb.ToString();
         }
     }

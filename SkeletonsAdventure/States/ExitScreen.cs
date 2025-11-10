@@ -1,7 +1,9 @@
 ﻿using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
 using RpgLibrary.MenuClasses;
+using RpgLibrary.SettingsClasses;
 using RpgLibrary.WorldClasses;
+using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.GameMenu;
 using SkeletonsAdventure.GameWorld;
 using System.IO;
@@ -47,6 +49,7 @@ namespace SkeletonsAdventure.States
         private void SaveGame()
         {
             string savePath = GameManager.SavePath;
+            Player player = World.Player;
 
             try
             {
@@ -67,6 +70,7 @@ namespace SkeletonsAdventure.States
                 XnaSerializer.Serialize<MenuManagerData>(savePath + @"\GameScreenMenuData.xml", GameScreenMenuData);
                 XnaSerializer.Serialize<TabbedMenuData>(savePath + @"\ExitScreenData.xml", ExitScreenMenu.GetTabbedMenuData());
                 XnaSerializer.Serialize<List<String>>(Path.Combine(savePath, "MessageBox.xml"), Game.GameScreen.MessageBox.Messages);
+                XnaSerializer.Serialize<KeyBindingsManagerData>(savePath + @"\Keybindings.xml", player.KeybindingsManager.ToData());
             }
             catch (Exception ex)
             {
