@@ -51,6 +51,16 @@
 /processor:PassThroughProcessor
 /build:AttackData/IcePillar.xml
 
+#begin AttackData/SpinningTriangleAttack.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/SpinningTriangleAttack.xml
+
+#begin AttackData/TriangleAttack.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:AttackData/TriangleAttack.xml
+
 #begin AttackData/WaterBall.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
@@ -175,6 +185,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:AttackSprites/IcePillarSpriteSheet.PNG
+
+#begin AttackSprites/SpinningTriangleAttack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AttackSprites/SpinningTriangleAttack.png
+
+#begin AttackSprites/TriangleAttack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AttackSprites/TriangleAttack.png
 
 #begin AttackSprites/WaterBallSpriteSheet.png
 /importer:TextureImporter

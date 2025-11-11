@@ -117,63 +117,11 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                 //{ Keys.D7, null },
                 //{ Keys.D8, null },
                 { Keys.D9, (IceBullets)GameManager.EntityAttackClone["IceBullets"] },
+                //{ Keys.D0, (TriangleAttack)GameManager.EntityAttackClone["TriangleAttack"] },
                 { Keys.D0, (SpinningTriangleAttack)GameManager.EntityAttackClone["SpinningTriangleAttack"] },
             };
 
             KeybindingsManager.SetKeybinding(KeyBindings);
-        }
-
-        public void UpdatePlayerWithData(PlayerData playerData)
-        {
-            EvolutionType = playerData.EvolutionType;
-            TotalXP = playerData.totalXP;
-
-            UpdateEntityWithData(playerData);
-
-            BaseMana = playerData.baseMana;
-            Mana = playerData.mana;
-            MaxMana = playerData.maxMana;
-            AttributePoints = playerData.attributePoints;
-            bonusAttackFromAttributePoints = playerData.bonusAttackFromAttributePoints;
-            bonusDefenceFromAttributePoints = playerData.bonusDefenceFromAttributePoints;
-            bonusHealthFromAttributePoints = playerData.bonusHealthFromAttributePoints;
-            bonusManaFromAttributePoints = playerData.bonusManaFromAttributePoints;
-
-            //TODO update active quests and completed quests
-            ActiveQuests = playerData.activeQuests.ConvertAll(q => new Quest(q));
-            CompletedQuests = playerData.completedQuests.ConvertAll(q => new Quest(q));
-            DisplayQuestName = playerData.displayQuestName;
-
-            KillCounter = new KillCounter(playerData.killCounter);
-
-            SetBonussesFromEvolution();
-            PlayerStatAdjustmentForLevel();
-
-            Texture = GameManager.Content.Load<Texture2D>(playerData.TextureName); //TODO
-            UpdateEvolutionTexture();
-        }
-
-        public PlayerData GetPlayerData()
-        {
-            return new PlayerData(ToData())
-            {
-                totalXP = TotalXP,
-                baseMana = BaseMana,
-                mana = Mana,
-                maxMana = MaxMana,
-                attributePoints = AttributePoints,
-                bonusAttackFromAttributePoints = bonusAttackFromAttributePoints,
-                bonusDefenceFromAttributePoints = bonusDefenceFromAttributePoints,
-                bonusHealthFromAttributePoints = bonusHealthFromAttributePoints,
-                bonusManaFromAttributePoints = bonusManaFromAttributePoints,
-                backpack = Backpack.ToData(),
-                activeQuests = ActiveQuests.ConvertAll(q => q.GetQuestData()),
-                completedQuests = CompletedQuests.ConvertAll(q => q.GetQuestData()),
-                displayQuestName = DisplayQuestName,
-                killCounter = KillCounter.ToData(),
-                EvolutionType = EvolutionType,
-                TextureName = Texture.Name,
-            };
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -238,9 +186,62 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             //Info.Text += $"\nAttacks Hit by: {AttacksHitBy.Count}";
 
             //Info.Text += $"\nCan Evolve: {CanEvolve}";
-            Info.Text += $"\nCan Move: {CanMove}";
+            //Info.Text += $"\nCan Move: {CanMove}";
         }
 
+        public void UpdatePlayerWithData(PlayerData playerData)
+        {
+            EvolutionType = playerData.EvolutionType;
+            TotalXP = playerData.totalXP;
+
+            UpdateEntityWithData(playerData);
+
+            BaseMana = playerData.baseMana;
+            Mana = playerData.mana;
+            MaxMana = playerData.maxMana;
+            AttributePoints = playerData.attributePoints;
+            bonusAttackFromAttributePoints = playerData.bonusAttackFromAttributePoints;
+            bonusDefenceFromAttributePoints = playerData.bonusDefenceFromAttributePoints;
+            bonusHealthFromAttributePoints = playerData.bonusHealthFromAttributePoints;
+            bonusManaFromAttributePoints = playerData.bonusManaFromAttributePoints;
+
+            //TODO update active quests and completed quests
+            ActiveQuests = playerData.activeQuests.ConvertAll(q => new Quest(q));
+            CompletedQuests = playerData.completedQuests.ConvertAll(q => new Quest(q));
+            DisplayQuestName = playerData.displayQuestName;
+
+            KillCounter = new KillCounter(playerData.killCounter);
+
+            SetBonussesFromEvolution();
+            PlayerStatAdjustmentForLevel();
+
+            Texture = GameManager.Content.Load<Texture2D>(playerData.TextureName); //TODO
+            UpdateEvolutionTexture();
+        }
+
+        public PlayerData GetPlayerData()
+        {
+            return new PlayerData(ToData())
+            {
+                totalXP = TotalXP,
+                baseMana = BaseMana,
+                mana = Mana,
+                maxMana = MaxMana,
+                attributePoints = AttributePoints,
+                bonusAttackFromAttributePoints = bonusAttackFromAttributePoints,
+                bonusDefenceFromAttributePoints = bonusDefenceFromAttributePoints,
+                bonusHealthFromAttributePoints = bonusHealthFromAttributePoints,
+                bonusManaFromAttributePoints = bonusManaFromAttributePoints,
+                backpack = Backpack.ToData(),
+                activeQuests = ActiveQuests.ConvertAll(q => q.GetQuestData()),
+                completedQuests = CompletedQuests.ConvertAll(q => q.GetQuestData()),
+                displayQuestName = DisplayQuestName,
+                killCounter = KillCounter.ToData(),
+                EvolutionType = EvolutionType,
+                TextureName = Texture.Name,
+            };
+        }
+       
         public void LearnAttack(string attackName, BasicAttack attack)
         {
             LearnedAttackManager.LearnAttack(attackName, attack);
@@ -543,6 +544,9 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
         public override void PerformAttack(GameTime gameTime, BasicAttack entityAttack)
         {
+            if (CanAttack is false)
+                return;
+
             switch (entityAttack)
             {
                 case null:

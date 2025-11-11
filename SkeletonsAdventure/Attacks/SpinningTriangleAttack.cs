@@ -22,6 +22,8 @@ namespace SkeletonsAdventure.Attacks
 
         private void Initialize()
         {
+            CanMoveDuringAttack = false;
+
             count = 5;
             distance = 180;
             maxSpread = (MathHelper.TwoPi / count) * .3f;

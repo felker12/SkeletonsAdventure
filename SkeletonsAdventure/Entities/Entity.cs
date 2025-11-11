@@ -36,7 +36,7 @@ namespace SkeletonsAdventure.Entities
         public bool IsDead { get; set; } = false;
         public bool HealthBarVisible { get; set; } = true;
         public bool IsInvincible { get; set; } = false; //TODO add invincibility frames to the entity
-        public bool CanAttack { get; set; } = true; //TODO add a check to see if the entity can attack or not because of a status effect
+        public bool CanAttack { get; set; } = true; //TODO add a check to see if the entity can attack or not because of a status effect or already attacking
         public TimeSpan LastTimeAttacked { get; set; }
         public Vector2 PositionLastAttackedFrom { get; set; } // the position of the center of the entity that last attacked this entity
 
@@ -233,7 +233,10 @@ namespace SkeletonsAdventure.Entities
 
         public virtual void PerformAttack(GameTime gameTime, BasicAttack entityAttack)
         {
-            if(AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
+            if (CanAttack is false)
+                return;
+
+            if (AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
             {
                 if(this is Player player)
                 {

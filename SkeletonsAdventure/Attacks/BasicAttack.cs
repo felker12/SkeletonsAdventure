@@ -32,6 +32,7 @@ namespace SkeletonsAdventure.Attacks
         public List<string> SkillRequirementsNames { get; private set; } = [];
         public string Name => GetType().Name;
         public int AttackLengthMinusDelay => AttackLength - AttackDelay;
+        public bool CanMoveDuringAttack { get; protected set; } = true;
 
         public virtual Rectangle IconRectangle {
             get
@@ -135,20 +136,20 @@ namespace SkeletonsAdventure.Attacks
             }
 
             if(AttackVisible is false)
-            {
                 Motion = Vector2.Zero;
-            }
-            else if (AttackVisible)
-            {
-                if (AnimatedAttack)
-                    base.Update(gameTime);
-            }
+            else if (AttackVisible && AnimatedAttack)
+                base.Update(gameTime);
 
             //Prevent the source from moving during an attack with a build up
-            if (Duration.TotalMilliseconds > AttackDelay)
+            if (CanMoveDuringAttack && Duration.TotalMilliseconds > AttackDelay)
+                Source.CanMove = true;
+            //Prevent the source from moving during an attack that locks the source in place
+            else if (AttackTimedOut())
                 Source.CanMove = true;
             else
                 Source.CanMove = false;
+
+            Source.CanAttack = Source.CanMove;
 
             UpdateCooldown(gameTime);
         }
@@ -244,10 +245,7 @@ namespace SkeletonsAdventure.Attacks
 
         public bool AttackTimedOut()
         {
-            if(Duration.TotalMilliseconds > AttackLength)
-                return true;
-
-            return false;
+            return Duration.TotalMilliseconds > AttackLength;
         }
 
         public override string ToString()

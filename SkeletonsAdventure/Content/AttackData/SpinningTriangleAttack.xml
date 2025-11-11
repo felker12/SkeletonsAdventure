@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:AttackData="RpgLibrary.AttackData">
   <Asset Type="AttackData:AttackData">
-    <AttackLength>1800</AttackLength>
+    <AttackLength>4000</AttackLength>
     <StartTime>PT0S</StartTime>
     <Duration>PT0S</Duration>
     <AttackOffset>0 0</AttackOffset>
     <LastAttackTime>PT0S</LastAttackTime>
-    <AttackCoolDownLength>3000</AttackCoolDownLength>
-    <Speed>3.5</Speed>
-    <DamageModifier>1.5</DamageModifier>
+    <AttackCoolDownLength>8000</AttackCoolDownLength>
+    <Speed>0</Speed>
+    <DamageModifier>2</DamageModifier>
     <ManaCost>1</ManaCost>
-    <AttackDelay>300</AttackDelay>
+    <AttackDelay>0</AttackDelay>
     <LevelRequirement>
       <Level>0</Level>
       <Defence>0</Defence>

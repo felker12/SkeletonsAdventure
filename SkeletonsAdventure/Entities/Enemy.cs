@@ -31,7 +31,6 @@ namespace SkeletonsAdventure.Entities
             (int)Position.Y - (detectionHeight - Height) / 2, detectionWidth, detectionHeight);
         public Rectangle AttackArea => new((int)Position.X - Width,
             (int)Position.Y - Width, Width * 3, Height + Width * 2);
-
         public EnemyType EnemyType { get; set; }
         public EnemyClass EnemyClass { get; set; } = EnemyClass.Regular;
         public string DropTableName { get; set; } = string.Empty;
@@ -224,8 +223,7 @@ namespace SkeletonsAdventure.Entities
             //attack the player if the player is close enough
             if (AttackArea.Intersects(player.Rectangle))
             {
-                //TODO: add logic for other types of attacks (probably move this logic to the enemy)
-                //so there can be attacks based on what the enemy is
+                //TODO: add logic for other types of attacks so there can be attacks based on what the enemy is
                 PerformAttack(gameTime, BasicAttack);
             }
         }

@@ -91,6 +91,8 @@ namespace SkeletonsAdventure.GameWorld
         public static Texture2D BlueFireWallTexture { get; private set; }
         public static Texture2D FireWallSpriteSheetTexture { get; private set; }
         public static Texture2D BlueFireWallSpriteSheetTexture { get; private set; }
+        public static Texture2D TriangleAttackTexture { get; private set; }
+        public static Texture2D SpinningTriangleAttackTexture { get; private set; }
 
         //UI Textures
         public static Texture2D ButtonBoxTexture { get; private set; }
@@ -118,6 +120,8 @@ namespace SkeletonsAdventure.GameWorld
         public static AttackData WaterBallData { get; set; }
         public static AttackData FireWallData { get; set; }
         public static AttackData BlueFireWallData { get; set; }
+        public static AttackData TriangleAttackData { get; set; }
+        public static AttackData SpinningTriangleAttackData { get; set; }
 
         //Miscellaneous Variables
         public static Game1 Game { get; private set; }
@@ -451,6 +455,8 @@ namespace SkeletonsAdventure.GameWorld
             BlueFireWallTexture = Content.Load<Texture2D>(@"AttackSprites/FireWall_Blue");
             FireWallSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/FireWaveSpriteSheet");
             BlueFireWallSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/FireWaveSpriteSheetBlue");
+            TriangleAttackTexture = Content.Load<Texture2D>(@"AttackSprites/TriangleAttack");
+            SpinningTriangleAttackTexture = Content.Load<Texture2D>(@"AttackSprites/SpinningTriangleAttack");
 
             AttackAreaTexture = new(GraphicsDevice, 1, 1);
             AttackAreaTexture.SetData([new Color(153, 29, 20, 250)]);
@@ -491,6 +497,8 @@ namespace SkeletonsAdventure.GameWorld
 
             WaterBallData = Content.Load<AttackData>(@"AttackData/WaterBall");
 
+            TriangleAttackData = Content.Load<AttackData>(@"AttackData/TriangleAttack");
+            SpinningTriangleAttackData = Content.Load<AttackData>(@"AttackData/SpinningTriangleAttack");
         }
 
         private static void LoadTiledAnimations()
@@ -695,21 +703,11 @@ namespace SkeletonsAdventure.GameWorld
             EntityAttacks.Add(waterBall.GetType().Name, waterBall);
 
             //Non elemental attacks
-            AttackData attackData = new()
-            {
-
-            };
-
-
-            TriangleAttack triangleAttack = new(attackData, IceBulletTexture);
+            TriangleAttack triangleAttack = new(TriangleAttackData, TriangleAttackTexture);
             EntityAttacks.Add(triangleAttack.GetType().Name, triangleAttack);
 
-            attackData.AttackLength = 4000;
-            attackData.AttackCoolDownLength = 8000;
-
-            SpinningTriangleAttack spinningTriangleAttack = new(attackData, IceBulletTexture);
+            SpinningTriangleAttack spinningTriangleAttack = new(SpinningTriangleAttackData, SpinningTriangleAttackTexture);
             EntityAttacks.Add(spinningTriangleAttack.Name, spinningTriangleAttack);
-
         }
 
         private static void CreateQuests() //TODO
