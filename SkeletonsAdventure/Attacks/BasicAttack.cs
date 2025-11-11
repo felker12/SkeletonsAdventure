@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended;
+﻿using CppNet;
+using MonoGame.Extended;
 using RpgLibrary.AttackData;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
@@ -157,6 +158,11 @@ namespace SkeletonsAdventure.Attacks
             OnCooldown = IsOnCooldown(gameTime);
             CooldownRemaining = GetRemainingCooldown(gameTime);
             CooldownRemainingRatio = (float)Math.Clamp(CooldownRemaining / CoolDownLength, 0f, 1f);
+        }
+
+        public virtual bool Hits(Entity entity)
+        {
+            return DamageHitBox.Intersects(entity.Rectangle);
         }
 
         public virtual void SetUpAttack(GameTime gameTime, Color attackColor, Vector2 originPosition)

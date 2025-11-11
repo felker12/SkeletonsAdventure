@@ -693,6 +693,16 @@ namespace SkeletonsAdventure.GameWorld
             //Water attacks
             WaterBall waterBall = new(WaterBallData, WaterBallSpriteSheetTexture);
             EntityAttacks.Add(waterBall.GetType().Name, waterBall);
+
+            //Non elemental attacks
+            AttackData attackData = new()
+            {
+
+            };
+
+
+            TriangleAttack triangleAttack = new(attackData, IceBulletTexture);
+            EntityAttacks.Add(triangleAttack.GetType().Name, triangleAttack);
         }
 
         private static void CreateQuests() //TODO

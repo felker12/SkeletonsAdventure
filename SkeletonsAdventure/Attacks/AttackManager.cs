@@ -1,6 +1,4 @@
 ﻿using SkeletonsAdventure.Entities;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace SkeletonsAdventure.Attacks
 {
@@ -122,7 +120,7 @@ namespace SkeletonsAdventure.Attacks
                             continue;
                         if (entity is Enemy && SourceEntity is Enemy) //This line prevents enemies from attacking other enemies
                             continue;
-                        if (entity.Rectangle.Intersects(attack.DamageHitBox))
+                        if(attack.Hits(entity))
                             entity.GetHitByAttack(attack, gameTime);
                     }
                 }

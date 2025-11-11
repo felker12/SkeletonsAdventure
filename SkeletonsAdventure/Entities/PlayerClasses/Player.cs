@@ -117,7 +117,7 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                 //{ Keys.D7, null },
                 //{ Keys.D8, null },
                 { Keys.D9, (IceBullets)GameManager.EntityAttackClone["IceBullets"] },
-                //{ Keys.D0, null },
+                { Keys.D0, (TriangleAttack)GameManager.EntityAttackClone["TriangleAttack"] },
             };
 
             KeybindingsManager.SetKeybinding(KeyBindings);
