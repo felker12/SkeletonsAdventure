@@ -1,5 +1,4 @@
-﻿using MonoGame.Extended;
-using SkeletonsAdventure.Controls;
+﻿using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities

@@ -7,23 +7,27 @@ namespace SkeletonsAdventure.Attacks
 {
     internal class TriangleAttack : BasicAttack
     {
-        public Triangle Triangle { get; set; } = new(Color.Red);
-        public List<Line> Lines { get; set; } = [];
-        public List<Triangle> Triangles { get; set; } = [];
+        public Triangle Triangle { get; private set; } = new(Color.Red);
+        public List<Line> Lines { get; private set; } = [];
+        public List<Triangle> Triangles { get; private set; } = [];
 
-        float spreadAngle = 0f;
-        readonly int count = 4;
-        readonly int distance = 140;
-        readonly float spreadSpeed = 1f; // radians/sec
-        readonly float maxSpread;
+        protected float spreadAngle = 0f;
+        protected int count = 4;
+        protected int distance = 140;
+        protected readonly float spreadSpeed = .8f; // radians/sec
+        protected float maxSpread;
 
         public TriangleAttack(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {
-            SetFrames(1, 32, 32, order: [AnimationKey.Right]);
-            maxSpread = (MathHelper.TwoPi / count) * .6f;
+            Initialize();
         }
 
         protected TriangleAttack(BasicAttack attack) : base(attack)
+        {
+            Initialize();
+        }
+
+        private void Initialize()
         {
             SetFrames(1, 32, 32, order: [AnimationKey.Right]);
             maxSpread = (MathHelper.TwoPi / count) * .6f;
@@ -32,9 +36,7 @@ namespace SkeletonsAdventure.Attacks
         public override void Draw(SpriteBatch spriteBatch)
         {
             foreach(var triangle in Triangles)
-            {
                 ShapeDrawer.DrawTriangle(triangle, spriteBatch);
-            }
         }
 
         public override void Update(GameTime gameTime)
@@ -48,16 +50,13 @@ namespace SkeletonsAdventure.Attacks
             foreach (var triangle in Triangles)
             {
                 if (triangle.Intersects(entity.Rectangle))
-                {
-                    Debug.WriteLine("intersects");
                     return true;
-                }
             }
 
             return false;
         }
 
-        private void UpdateTriangles(GameTime gameTime)
+        protected virtual void UpdateTriangles(GameTime gameTime)
         {
             Vector2 position = Source.Center;
             spreadAngle = MathF.Min(maxSpread, spreadAngle + (float)gameTime.ElapsedGameTime.TotalSeconds * spreadSpeed);
@@ -89,7 +88,5 @@ namespace SkeletonsAdventure.Attacks
         {
             return new(this);
         }
-
-
     }
 }

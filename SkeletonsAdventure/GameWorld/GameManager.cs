@@ -703,6 +703,13 @@ namespace SkeletonsAdventure.GameWorld
 
             TriangleAttack triangleAttack = new(attackData, IceBulletTexture);
             EntityAttacks.Add(triangleAttack.GetType().Name, triangleAttack);
+
+            attackData.AttackLength = 4000;
+            attackData.AttackCoolDownLength = 8000;
+
+            SpinningTriangleAttack spinningTriangleAttack = new(attackData, IceBulletTexture);
+            EntityAttacks.Add(spinningTriangleAttack.Name, spinningTriangleAttack);
+
         }
 
         private static void CreateQuests() //TODO

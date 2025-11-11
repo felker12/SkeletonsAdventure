@@ -115,7 +115,7 @@ namespace SkeletonsAdventure.Attacks
             if (AttackVisible)
             {
                 //spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
-                spriteBatch.DrawRectangle(DamageHitBox, Color.OrangeRed, 1, 0); //TODO
+                //spriteBatch.DrawRectangle(DamageHitBox, Color.OrangeRed, 1, 0); //TODO
 
                 spriteBatch.Draw(Texture, Center, Frame, SpriteColor, RotationAngle, SpriteCenter, Scale, SpriteEffects.None, 1);
             }
