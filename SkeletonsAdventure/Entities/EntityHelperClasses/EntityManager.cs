@@ -1,9 +1,10 @@
 ﻿using RpgLibrary.EntityClasses;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
 
-namespace SkeletonsAdventure.Entities
+namespace SkeletonsAdventure.Entities.EntityHelperClasses
 {
     internal class EntityManager()
     {

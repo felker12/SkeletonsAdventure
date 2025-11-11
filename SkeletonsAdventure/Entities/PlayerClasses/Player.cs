@@ -10,7 +10,7 @@ using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
 using SkeletonsAdventure.Quests;
 
-namespace SkeletonsAdventure.Entities
+namespace SkeletonsAdventure.Entities.PlayerClasses
 {
     internal class Player : Entity
     {
@@ -40,8 +40,8 @@ namespace SkeletonsAdventure.Entities
         private BasicAttack AttackToAim { get; set; } = null;
         public KillCounter KillCounter { get; private set; } = new();
         public PlayerIndex PlayerIndex { get; set; } = PlayerIndex.One;
-        public PlayerLearnedAttackManager LearnedAttackManager { get; private set; }
-        public PlayerKeybindingsManager KeybindingsManager { get; private set; }
+        public LearnedAttackManager LearnedAttackManager { get; private set; }
+        public KeybindingsManager KeybindingsManager { get; private set; }
         public int AttackExcludingEquipment { get; private set; } = 0;
         public int DefenceExcludingEquipment { get; private set; } = 0;
         public int ManaExcludingEquipment { get; private set; } = 0;
@@ -70,7 +70,7 @@ namespace SkeletonsAdventure.Entities
             IceBullets iceBullets = (IceBullets)GameManager.EntityAttackClone["IceBullets"];
             LearnAttack(iceBullets.Name, iceBullets);
 
-            Debug.WriteLine(LearnedAttackManager.ToString());
+            //Debug.WriteLine(LearnedAttackManager.ToString());
         }
 
         private void InitializeBaseStats()
@@ -78,7 +78,7 @@ namespace SkeletonsAdventure.Entities
             BaseAttack = 300; //TODO correct the values
             BaseDefence = 6;
             BaseHealth = 3000;
-            BaseMana = 100; 
+            BaseMana = 1000; 
         }
 
         private void Initialize()
@@ -249,6 +249,20 @@ namespace SkeletonsAdventure.Entities
         public void LearnAttack(BasicAttack attack)
         {
             LearnedAttackManager.LearnAttack(attack.Name, attack);
+        }
+
+        public void SetKeyBinding(Keys key, BasicAttack attack)
+        {
+            if (LearnedAttackManager.Contains(attack?.Name) is false)
+                return;
+
+            KeybindingsManager.SetKeybinding(key, attack);
+        }
+
+        public void SetKeybinding(Dictionary<Keys, string> keybindings)
+        {
+            foreach (var binding in keybindings)
+                SetKeyBinding(binding.Key, GameManager.GetAttackByName(binding.Value));
         }
 
         private protected void UpdateStatsWithBonusses()

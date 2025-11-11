@@ -1,5 +1,5 @@
 ﻿using RpgLibrary.DataClasses;
-using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.PlayerClasses;
 
 namespace SkeletonsAdventure.Quests
 {

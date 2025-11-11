@@ -1,5 +1,5 @@
 ﻿using SkeletonsAdventure.Controls;
-using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.GameMenu
@@ -15,14 +15,6 @@ namespace SkeletonsAdventure.GameMenu
         {
             ControlManager = new(GameManager.Arial14);
             CreateControls();
-            PositionControls();
-        }
-
-        public EvolutionMenu(Player player) : this()
-        {
-            Player = player; 
-            ControlManager = new(GameManager.Arial14);
-            CreateControls(); 
             PositionControls();
         }
 

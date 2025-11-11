@@ -1,6 +1,6 @@
 ﻿using MonoGame.Extended.Tiled;
 using SkeletonsAdventure.Animations;
-using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameEvents;
 using SkeletonsAdventure.GameWorld;
 

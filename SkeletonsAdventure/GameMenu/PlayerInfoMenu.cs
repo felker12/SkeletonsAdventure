@@ -1,5 +1,5 @@
 ﻿using SkeletonsAdventure.Controls;
-using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.GameMenu

@@ -4,6 +4,7 @@ using MonoGame.Extended.Tiled;
 using RpgLibrary.GameObjectClasses;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.GameObjects

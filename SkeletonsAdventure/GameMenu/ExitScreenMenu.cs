@@ -10,6 +10,7 @@ namespace SkeletonsAdventure.GameMenu
         public PlayerInfoMenu PlayerMenu { get; set; }
         public EvolutionMenu EvolutionMenu { get; set; }
         public QuestMenu QuestMenu { get; set; }
+        public LearnSkillsMenu SkillsMenu { get; set; }
         public LinkLabel SaveGameLabel { get; set; }
         public LinkLabel ReturnToGameLabel { get; set; }
         public LinkLabel ReturnToMenuLabel { get; set; }
@@ -50,6 +51,7 @@ namespace SkeletonsAdventure.GameMenu
             CreatePlayerMenu();
             CreateQuestsMenu();
             CreateEvolutionMenu();
+            CreateSkillsMenu();
 
             //Add the menus to the tab bar
             AddMenu(SaveMenu);
@@ -57,6 +59,7 @@ namespace SkeletonsAdventure.GameMenu
             AddMenu(PlayerMenu);
             AddMenu(QuestMenu);
             AddMenu(EvolutionMenu);
+            AddMenu(SkillsMenu);
 
             TabBar.SetActiveTab(SaveMenu); //Set the active tab
         }
@@ -68,7 +71,7 @@ namespace SkeletonsAdventure.GameMenu
 
             //Update the Evolution menu visibility based on whether the player can evolve
             EvolutionMenu.Player = World.Player;
-            EvolutionMenu.Visible = World.Player.CanEvolve;
+            EvolutionMenu.Visible = World.Player.CanEvolve; //should only be visible if the player can evolve
 
             //Find the Evolution tab and update its visibility
             foreach (var tabMenu in TabBar.TabMenus)
@@ -163,7 +166,17 @@ namespace SkeletonsAdventure.GameMenu
                 Visible = true,
                 Title = "Evolution",
             };
-            EvolutionMenu.SetBackgroundColor(Color.BurlyWood);
+            EvolutionMenu.SetBackgroundColor(Color.MidnightBlue);
+        }
+
+        private void CreateSkillsMenu()
+        {
+            SkillsMenu = new()
+            {
+                Visible = true,
+                Title = "Skills",
+            };
+            SkillsMenu.SetBackgroundColor(Color.MidnightBlue);
         }
     }
 }

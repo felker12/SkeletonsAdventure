@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:AttackData="RpgLibrary.AttackData">
+  <Asset Type="AttackData:LearnedAttackManagerData">
+    <LearnedAttackNames>
+      <Item>FireBall</Item>
+      <Item>IceBullet</Item>
+      <Item>IceBullets</Item>
+      <Item>BasicAttack</Item>
+      <Item>FireWave</Item>
+    </LearnedAttackNames>
+  </Asset>
+</XnaContent>

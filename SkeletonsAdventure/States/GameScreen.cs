@@ -2,12 +2,12 @@
 using SkeletonsAdventure.GameWorld;
 using Microsoft.Xna.Framework.Input;
 using SkeletonsAdventure.ItemClasses;
-using SkeletonsAdventure.Entities;
 using RpgLibrary.WorldClasses;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.GameMenu;
 using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.Quests;
+using SkeletonsAdventure.Entities.PlayerClasses;
 
 namespace SkeletonsAdventure.States
 {

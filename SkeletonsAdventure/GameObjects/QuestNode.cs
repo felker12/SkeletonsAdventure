@@ -1,6 +1,6 @@
 ﻿using MonoGame.Extended.Tiled;
 using RpgLibrary.GameObjectClasses;
-using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.Quests;
 using System.Linq;
 

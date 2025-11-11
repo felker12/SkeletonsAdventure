@@ -57,6 +57,7 @@ namespace SkeletonsAdventure.Attacks
             ManaCost = attackData.ManaCost;
             AttackDelay = attackData.AttackDelay;
             LevelRequirements = new(attackData.LevelRequirement);
+            SkillRequirementsNames = attackData.SkillRequirementsNames;
 
             Texture = texture;
             Source = source;
@@ -88,6 +89,7 @@ namespace SkeletonsAdventure.Attacks
             StartPosition = attack.StartPosition;
             DamageHitBox = attack.DamageHitBox;
             LevelRequirements = attack.LevelRequirements;
+            SkillRequirementsNames = attack.SkillRequirementsNames;
 
             Initialize();
         }

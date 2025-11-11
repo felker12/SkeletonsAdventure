@@ -7,6 +7,8 @@ using RpgLibrary.EntityClasses;
 using RpgLibrary.WorldClasses;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.EntityHelperClasses;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameEvents;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.GameUI;

@@ -2,6 +2,7 @@
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Engines;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.Quests;

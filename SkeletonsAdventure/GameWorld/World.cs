@@ -4,7 +4,7 @@ using RpgLibrary.DataClasses;
 using RpgLibrary.ItemClasses;
 using RpgLibrary.WorldClasses;
 using SkeletonsAdventure.Engines;
-using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameEvents;
 using SkeletonsAdventure.ItemClasses;
 using System.IO;

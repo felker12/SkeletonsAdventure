@@ -1,5 +1,6 @@
-﻿
-namespace SkeletonsAdventure.Entities
+﻿using SkeletonsAdventure.Entities.PlayerClasses;
+
+namespace SkeletonsAdventure.Entities.EntityHelperClasses
 {
     internal static class EnemyAI
     {

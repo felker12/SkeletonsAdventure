@@ -2,7 +2,7 @@
 using MonoGame.Extended;
 using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.Engines;
-using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.Quests;
 using System.Linq;
 using System.Text;

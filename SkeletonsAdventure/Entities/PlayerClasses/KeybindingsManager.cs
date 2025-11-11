@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using RpgLibrary.SettingsClasses;
+using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Engines;
-using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.GameWorld;
 
-namespace SkeletonsAdventure.Attacks
+namespace SkeletonsAdventure.Entities.PlayerClasses
 {
-    internal class PlayerKeybindingsManager
+    internal class KeybindingsManager
     {
         public Player Player { get; init; }
         public Dictionary<Keys, BasicAttack> Keybindings { get; private set; } = [];
@@ -14,7 +14,7 @@ namespace SkeletonsAdventure.Attacks
             [Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, 
             Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0];
 
-        public PlayerKeybindingsManager(Player player)
+        public KeybindingsManager(Player player)
         {
             Player = player;
 

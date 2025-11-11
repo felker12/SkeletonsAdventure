@@ -1,5 +1,5 @@
-﻿using SkeletonsAdventure.Entities;
-using RpgLibrary.GameObjectClasses;
+﻿using RpgLibrary.GameObjectClasses;
+using SkeletonsAdventure.Entities.PlayerClasses;
 
 namespace SkeletonsAdventure.GameObjects
 {

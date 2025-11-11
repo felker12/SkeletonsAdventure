@@ -1,8 +1,8 @@
-﻿using SkeletonsAdventure.Entities;
-using SkeletonsAdventure.GameWorld;
+﻿using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.Quests;
 using SkeletonsAdventure.GameUI;
+using SkeletonsAdventure.Entities.PlayerClasses;
 
 namespace SkeletonsAdventure.GameMenu
 {

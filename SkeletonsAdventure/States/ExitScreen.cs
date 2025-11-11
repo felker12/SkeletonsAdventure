@@ -1,9 +1,10 @@
-﻿using RpgLibrary.DataClasses;
+﻿using RpgLibrary.AttackData;
+using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
 using RpgLibrary.MenuClasses;
 using RpgLibrary.SettingsClasses;
 using RpgLibrary.WorldClasses;
-using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameMenu;
 using SkeletonsAdventure.GameWorld;
 using System.IO;
@@ -71,6 +72,7 @@ namespace SkeletonsAdventure.States
                 XnaSerializer.Serialize<TabbedMenuData>(savePath + @"\ExitScreenData.xml", ExitScreenMenu.GetTabbedMenuData());
                 XnaSerializer.Serialize<List<String>>(Path.Combine(savePath, "MessageBox.xml"), Game.GameScreen.MessageBox.Messages);
                 XnaSerializer.Serialize<KeyBindingsManagerData>(savePath + @"\Keybindings.xml", player.KeybindingsManager.ToData());
+                XnaSerializer.Serialize<LearnedAttackManagerData>(savePath + @"\LearnedAttackManager.Xml", player.LearnedAttackManager.ToData());
             }
             catch (Exception ex)
             {

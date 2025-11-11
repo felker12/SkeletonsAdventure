@@ -1,7 +1,7 @@
 ﻿using RpgLibrary.QuestClasses;
-using SkeletonsAdventure.Entities;
 using System.Linq;
 using SkeletonsAdventure.GameWorld;
+using SkeletonsAdventure.Entities.PlayerClasses;
 
 namespace SkeletonsAdventure.Quests
 {

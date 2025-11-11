@@ -1,28 +1,34 @@
-﻿using SkeletonsAdventure.Entities;
+﻿using SkeletonsAdventure.Attacks;
+using RpgLibrary.AttackData;
+using System.Linq;
+using SkeletonsAdventure.GameWorld;
 
-namespace SkeletonsAdventure.Attacks
+namespace SkeletonsAdventure.Entities.PlayerClasses
 {
-    internal class PlayerLearnedAttackManager(Player player)
+    internal class LearnedAttackManager(Player player)
     {
         public Player Player { get; init; } = player;
         public Dictionary<string, BasicAttack> LearnedAttacks { get; private set; } = [];
 
         public void LearnAttack(string attackName, BasicAttack attack)
         {
-            bool requirementsMet = true;
-
-            if (CheckAttackLevelRequirements(attack) is false)
-                requirementsMet = false;
-
-            if (CheckAttackSkillRequirements(attack) is false)
-                requirementsMet = false;
-
-            if (requirementsMet is false)
+            if (CheckRequirements(attack) is false)
                 return;
 
             //add the skill to the learned skills if the requirements are met
             if (LearnedAttacks.ContainsKey(attackName) is false)
                 LearnedAttacks[attackName] = attack;
+        }
+
+        public bool CheckRequirements(BasicAttack attack)
+        {
+            //currently check both instead of using the commented out line to get the debug info provided by both methods
+            bool levelsMet = CheckAttackLevelRequirements(attack);
+            bool skillsMet = CheckAttackSkillRequirements(attack);
+
+            return levelsMet && skillsMet;
+
+            //return CheckAttackLevelRequirements(attack) && CheckAttackSkillRequirements(attack);
         }
 
         private bool CheckAttackLevelRequirements(BasicAttack attack)
@@ -67,6 +73,9 @@ namespace SkeletonsAdventure.Attacks
 
         public bool Contains(string attackName)
         {
+            if(attackName is null)
+                return false;
+
             return LearnedAttacks.ContainsKey(attackName);
         }
 
@@ -78,6 +87,26 @@ namespace SkeletonsAdventure.Attacks
         public override string ToString()
         {
             return $"Learned Attacks: {string.Join(", ", LearnedAttacks.Keys)}";
+        }
+
+        public LearnedAttackManagerData ToData()
+        {
+            return new()
+            {
+                LearnedAttackNames = [.. LearnedAttacks.Keys],
+            };
+        }
+
+        public void UpdateWithData(LearnedAttackManagerData data)
+        {
+            LearnedAttacks = [];
+            BasicAttack attack;
+
+            foreach(string name in data.LearnedAttackNames)
+            {
+                attack = GameManager.GetAttackByName(name);
+                LearnedAttacks[name] = attack;
+            }
         }
     }
 }

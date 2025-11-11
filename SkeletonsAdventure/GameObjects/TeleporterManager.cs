@@ -1,4 +1,4 @@
-﻿using SkeletonsAdventure.Entities;
+﻿using SkeletonsAdventure.Entities.PlayerClasses;
 using System.Linq;
 
 namespace SkeletonsAdventure.GameObjects

@@ -1,4 +1,5 @@
 ﻿using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Entities.EntityHelperClasses;
 
 namespace SkeletonsAdventure.TileEngine
 {
