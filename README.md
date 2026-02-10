@@ -104,22 +104,15 @@ Build the solution.
 Run the main game project.
 
 🎮 **Using the Editor**
+The project includes a custom-built editor to support rapid development and data creation.
 
-The project includes a custom-built editor to support rapid development and content creation.
+Editor Capabilities:
 
-Editor Capabilities
+Create Item Data
 
-Tile map creation and editing
+Create Entity Data
 
-Asset placement
-
-Entity configuration
-
-Level testing
-
-Data validation
-
-The editor outputs structured configuration files that are loaded directly by the engine at runtime.
+Create Quest Data
 
 📊 **Performance and Optimization**
 
@@ -190,11 +183,6 @@ Automated testing framework
 📄 **License**
 
 This project is released for educational and portfolio purposes. All rights reserved unless otherwise specified.
-
-👤 **Author**
-
-Kevin A. Felker
-GitHub: https://github.com/felker12
 
 🤝 **Contributing**
 
