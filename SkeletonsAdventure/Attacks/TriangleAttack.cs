@@ -7,8 +7,6 @@ namespace SkeletonsAdventure.Attacks
 {
     internal class TriangleAttack : BasicAttack
     {
-        public Triangle Triangle { get; private set; } = new(Color.Red);
-        public List<Line> Lines { get; private set; } = [];
         public List<Triangle> Triangles { get; private set; } = [];
 
         protected float spreadAngle = 0f;

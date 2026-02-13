@@ -44,19 +44,19 @@ namespace SkeletonsAdventure.Attacks
                 entity.CanMove = false;
 
             //Add any attacks queued by a multishot attack
-            List<BasicAttack> toRemove = [];
+            List<BasicAttack> queuedAttack = [];
             foreach(var attack in Attacks)
             {
                 if(attack is MultiShotAttack multiShotAttack)
                 {
                     foreach(var atk in multiShotAttack.Shots)
-                        toRemove.Add(atk); 
+                        queuedAttack.Add(atk); 
 
                     multiShotAttack.Shots.Clear();
                 }
             }
 
-            foreach(var attack in toRemove)
+            foreach(var attack in queuedAttack)
                 AddAttack(attack, gameTime);
         }
 

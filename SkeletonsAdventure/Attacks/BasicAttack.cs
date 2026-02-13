@@ -1,6 +1,4 @@
-﻿using CppNet;
-using MonoGame.Extended;
-using RpgLibrary.AttackData;
+﻿using RpgLibrary.AttackData;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.Quests;
@@ -19,7 +17,7 @@ namespace SkeletonsAdventure.Attacks
         public int CoolDownLength { get; protected set; } //length of the delay between attacks in milliseconds
         public float DamageModifier { get; set; }
         public int ManaCost { get; set; }
-        public bool AnimatedAttack { get; set; } = false; //TODO
+        public bool AnimatedAttack { get; set; } = false;
         public Rectangle DamageHitBox { get; set; }
         public int AttackDelay { get; set; }
         public bool AttackVisible { get; set; } = true;
@@ -149,7 +147,7 @@ namespace SkeletonsAdventure.Attacks
             else
                 Source.CanMove = false;
 
-            Source.CanAttack = Source.CanMove;
+            Source.CanAttack = Source.CanMove; //prevent a source from being able to attack while already doing an attack
 
             UpdateCooldown(gameTime);
         }

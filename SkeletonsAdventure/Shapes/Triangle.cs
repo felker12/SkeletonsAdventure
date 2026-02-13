@@ -1,5 +1,4 @@
-﻿
-namespace SkeletonsAdventure.Shapes
+﻿namespace SkeletonsAdventure.Shapes
 {
     internal class Triangle : Shape
     {

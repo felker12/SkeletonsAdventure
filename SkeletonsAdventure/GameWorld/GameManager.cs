@@ -20,6 +20,7 @@ using SkeletonsAdventure.ItemClasses.ItemManagement;
 using SkeletonsAdventure.Quests;
 using System.IO;
 using System.Linq;
+using Microsoft.Xna.Framework.Input;
 
 namespace SkeletonsAdventure.GameWorld
 {
@@ -129,6 +130,10 @@ namespace SkeletonsAdventure.GameWorld
         public static QuestManager QuestManager { get; set; } = new(); //TODO this isn't used
         public static ContentManager Content { get; private set; }
         public static List<int> PlayerLevelXPs { get; private set; } = [];
+        public static List<Keys> PossibleKeybindings { get; } =
+            [Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5,
+            Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0];
+        public static Keys[] KeyOrder { get; } = [Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0];
 
         public GameManager(Game1 game)
         {

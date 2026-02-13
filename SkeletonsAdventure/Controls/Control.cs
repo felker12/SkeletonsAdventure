@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using SkeletonsAdventure.GameWorld;
+
 namespace SkeletonsAdventure.Controls
 {
     public abstract class Control
@@ -24,7 +25,6 @@ namespace SkeletonsAdventure.Controls
         public SpriteFont SpriteFont{ get; set; } = GameManager.Arial12;
         public Color TextColor { get; set; } = Color.White;
         public Color BackgroundColor { get; set; } = Color.White;
-        public string Type { get; set; }
         public Rectangle Rectangle
         {
             get

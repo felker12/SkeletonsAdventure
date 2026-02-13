@@ -5,15 +5,19 @@ namespace SkeletonsAdventure.GameMenu
 {
     internal class ExitScreenMenu : TabbedMenu
     {
+        //Create the menus
         public BaseMenu SaveMenu { get; set; }
         public BaseMenu Settings { get; private set; }
         public PlayerInfoMenu PlayerMenu { get; set; }
         public EvolutionMenu EvolutionMenu { get; set; }
         public QuestMenu QuestMenu { get; set; }
         public LearnSkillsMenu SkillsMenu { get; set; }
+        public ActionBarMenu ActionBarMenu { get; set; }
+
+        //Create labels
         public LinkLabel SaveGameLabel { get; set; }
         public LinkLabel ReturnToGameLabel { get; set; }
-        public LinkLabel ReturnToMenuLabel { get; set; }
+        public LinkLabel ReturnToMenuLabel { get; set; } 
 
         public ExitScreenMenu(int Width, int Height) : base(Width, Height)
         {
@@ -52,6 +56,7 @@ namespace SkeletonsAdventure.GameMenu
             CreateQuestsMenu();
             CreateEvolutionMenu();
             CreateSkillsMenu();
+            CreateActionBarMenu();
 
             //Add the menus to the tab bar
             AddMenu(SaveMenu);
@@ -60,6 +65,7 @@ namespace SkeletonsAdventure.GameMenu
             AddMenu(QuestMenu);
             AddMenu(EvolutionMenu);
             AddMenu(SkillsMenu);
+            AddMenu(ActionBarMenu);
 
             TabBar.SetActiveTab(SaveMenu); //Set the active tab
         }
@@ -177,6 +183,16 @@ namespace SkeletonsAdventure.GameMenu
                 Title = "Skills",
             };
             SkillsMenu.SetBackgroundColor(Color.MidnightBlue);
+        }
+
+        private void CreateActionBarMenu()
+        {
+            ActionBarMenu = new()
+            {
+                Visible = true,
+                Title = "Action Bar",
+            };
+            ActionBarMenu.SetBackgroundColor(Color.MidnightBlue);
         }
     }
 }

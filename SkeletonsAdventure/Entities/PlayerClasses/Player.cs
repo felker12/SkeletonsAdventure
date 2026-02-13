@@ -62,13 +62,13 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
             //TODO
             FireBall fireBall = (FireBall)GameManager.EntityAttackClone["FireBall"];
-            LearnAttack(fireBall.Name, fireBall);
+            LearnAttack(fireBall);
 
             IceBullet iceBullet = (IceBullet)GameManager.EntityAttackClone["IceBullet"];
-            LearnAttack(iceBullet.Name, iceBullet);
+            LearnAttack(iceBullet);
 
             IceBullets iceBullets = (IceBullets)GameManager.EntityAttackClone["IceBullets"];
-            LearnAttack(iceBullets.Name, iceBullets);
+            LearnAttack(iceBullets);
 
             //Debug.WriteLine(LearnedAttackManager.ToString());
         }
@@ -240,11 +240,6 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                 EvolutionType = EvolutionType,
                 TextureName = Texture.Name,
             };
-        }
-       
-        public void LearnAttack(string attackName, BasicAttack attack)
-        {
-            LearnedAttackManager.LearnAttack(attackName, attack);
         }
 
         public void LearnAttack(BasicAttack attack)

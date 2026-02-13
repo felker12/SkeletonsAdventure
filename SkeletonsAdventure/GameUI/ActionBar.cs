@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using SkeletonsAdventure.Attacks;
+using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.GameUI
 {
@@ -16,7 +17,7 @@ namespace SkeletonsAdventure.GameUI
         private readonly Color _frameBackground = frameBackground ?? new(15, 15, 15, 200);
 
         // Draw keys in order: 1..9 then 0
-        private readonly static Keys[] keyOrder = [Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0];
+        private readonly static Keys[] keyOrder = GameManager.KeyOrder;
 
         public static int SlotCount => keyOrder.Length;
         public Dictionary<Keys, BasicAttack> KeyBindings { get; private set; } = keyBindings ?? [];
@@ -25,7 +26,6 @@ namespace SkeletonsAdventure.GameUI
         public int SlotPadding { get; private set; } = Math.Max(0, slotPadding);
         public int TotalWidth => SlotCount * SlotSize + (SlotCount - 1) * SlotPadding;
         public int TotalHeight => SlotSize;
-
 
         // Replace or set the keybindings dictionary used for display.
         public void SetKeyBindings(Dictionary<Keys, BasicAttack> keyBindings)
@@ -76,13 +76,13 @@ namespace SkeletonsAdventure.GameUI
                 }
 
                 // Key label (small, top-left of slot)
-                string keyLabel = KeyToLabel(key);
+                string keyLabel = KeyToString(key);
                 Vector2 keyLabelPos = slotPos + new Vector2(4, 2);
                 spriteBatch.DrawString(_font, keyLabel, keyLabelPos, _textColor);
             }
         }
 
-        private static string KeyToLabel(Keys key)
+        public static string KeyToString(Keys key)
         {
             // keys D0..D9 display as 0..9; fallback to key.ToString() otherwise.
             if (key >= Keys.D0 && key <= Keys.D9)

@@ -7,21 +7,36 @@ namespace SkeletonsAdventure.GameMenu
 {
     internal class LearnSkillsMenu : BaseMenu
     {
-        public static Player Player { get; set; } = World.Player;
-        private static Dictionary<string, BasicAttack> Skills { get; set; } = GameManager.EntityAttackClone;
+        private static Player Player { get; set; } = World.Player;
+        private static Dictionary<string, BasicAttack> Skills { get; } = GameManager.EntityAttackClone;
         private Dictionary<string, Button> SkillButtons { get; set; } = [];
-        private List<Button> VisibleSkillButtons { get; set; } = [];
+        private List<string> ExcludedSkills { get; set; } = ["BasicAttack"]; //skills that should not be learnable by the player
 
         public LearnSkillsMenu() 
         {
-            Button btn;
+            Button btn = new();
 
-            foreach(var skill in Skills)
+            //remove excluded skills
+            foreach (string excludedSkill in ExcludedSkills)
+                Skills.Remove(excludedSkill);
+
+            //Get the longest length of any of the skill names to use for button sizing
+            Vector2 largestBtnTxt = new(), currentText;
+            foreach(string name in Skills.Keys)
+            {
+                currentText = btn.SpriteFont.MeasureString(name);
+                if (currentText.X > largestBtnTxt.X)
+                    largestBtnTxt = currentText;
+            }
+
+            int widthBuffer = 18; //extra width to add to button for padding
+            foreach (var skill in Skills)
             {
                 btn = new(skill.Key)
                 {
                     Visible = true,
                     Name = skill.Key,
+                    Width = (int)largestBtnTxt.X + widthBuffer,
                 };
 
                 btn.Click += LearnSkillButton_Click;
@@ -32,16 +47,14 @@ namespace SkeletonsAdventure.GameMenu
                 ControlManager.Add(btn);
             }
 
-            SetVisibleSkillButtons();
+            PositionSkillButtons();
         }
 
 
         public void UpdateButtonsEnabled()
         {
             foreach (var skill in Skills)
-            {
                 UpdateButtonEnabled(SkillButtons[skill.Key], skill);
-            }
         }
 
         private static void UpdateButtonEnabled(Button btn, KeyValuePair<string, BasicAttack> skill)
@@ -69,19 +82,6 @@ namespace SkeletonsAdventure.GameMenu
             UpdateButtonsEnabled();
         }
 
-        public void SetVisibleSkillButtons()
-        {
-            VisibleSkillButtons.Clear();
-            //todo only show skills that can be learned?
-
-            foreach (var skillButton in SkillButtons)
-            {
-                VisibleSkillButtons.Add(skillButton.Value);
-            }
-
-            PositionSkillButtons();
-        }
-
         private void PositionSkillButtons()
         {
             Vector2 originalPos = new(40, 40);
@@ -89,7 +89,7 @@ namespace SkeletonsAdventure.GameMenu
             int padding = 6;
             int count = 0;
 
-            foreach (var btn in VisibleSkillButtons)
+            foreach (var btn in SkillButtons.Values)
             {
                 int col = count % maxCols;
                 int row = count / maxCols;
@@ -108,7 +108,7 @@ namespace SkeletonsAdventure.GameMenu
             Button button = (Button)sender;
             var skillToLearn = Skills[button.Name];
 
-            Player.LearnAttack(button.Name, skillToLearn);
+            Player.LearnAttack(skillToLearn);
             UpdateButtonsEnabled();
         }
     }
