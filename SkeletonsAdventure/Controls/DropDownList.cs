@@ -340,6 +340,12 @@ namespace SkeletonsAdventure.Controls
             }
         }
 
+        public void AddItems(List<string> items)
+        {
+            foreach (string item in items)
+                AddItem(item);
+        }
+
         public void Clear()
         {
             _items.Clear();
