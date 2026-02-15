@@ -5,8 +5,6 @@
       <Item>FireBall</Item>
       <Item>IceBullet</Item>
       <Item>IceBullets</Item>
-      <Item>BasicAttack</Item>
-      <Item>FireWave</Item>
     </LearnedAttackNames>
   </Asset>
 </XnaContent>

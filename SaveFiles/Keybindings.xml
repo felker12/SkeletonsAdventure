@@ -4,27 +4,27 @@
     <Keybindings>
       <Item>
         <Key>D1</Key>
-        <Value>FireBall</Value>
+        <Value></Value>
       </Item>
       <Item>
         <Key>D2</Key>
-        <Value>IcePillar</Value>
+        <Value></Value>
       </Item>
       <Item>
         <Key>D3</Key>
-        <Value>IceBullet</Value>
+        <Value></Value>
       </Item>
       <Item>
         <Key>D4</Key>
-        <Value>WaterBall</Value>
+        <Value></Value>
       </Item>
       <Item>
         <Key>D5</Key>
-        <Value>FireWave</Value>
+        <Value></Value>
       </Item>
       <Item>
         <Key>D6</Key>
-        <Value>BlueFireWave</Value>
+        <Value>FireBall</Value>
       </Item>
       <Item>
         <Key>D7</Key>
@@ -36,7 +36,7 @@
       </Item>
       <Item>
         <Key>D9</Key>
-        <Value>IceBullets</Value>
+        <Value></Value>
       </Item>
       <Item>
         <Key>D0</Key>
