@@ -61,12 +61,6 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                 SetKeybinding(binding.Key, binding.Value);
         }
 
-        public void SetKeybinding(Dictionary<Keys, string> keybindings)
-        {
-            foreach (var binding in keybindings)
-                SetKeybinding(binding.Key, GameManager.GetAttackByName(binding.Value));
-        }
-
         public void RemoveKeybinding(Keys key)
         {
             if (Keybindings.ContainsKey(key))

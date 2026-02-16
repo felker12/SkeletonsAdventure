@@ -4,7 +4,7 @@
     <Keybindings>
       <Item>
         <Key>D1</Key>
-        <Value></Value>
+        <Value>IceBullet</Value>
       </Item>
       <Item>
         <Key>D2</Key>
@@ -20,15 +20,15 @@
       </Item>
       <Item>
         <Key>D5</Key>
-        <Value></Value>
-      </Item>
-      <Item>
-        <Key>D6</Key>
         <Value>FireBall</Value>
       </Item>
       <Item>
-        <Key>D7</Key>
+        <Key>D6</Key>
         <Value></Value>
+      </Item>
+      <Item>
+        <Key>D7</Key>
+        <Value>FireBall</Value>
       </Item>
       <Item>
         <Key>D8</Key>
@@ -40,7 +40,7 @@
       </Item>
       <Item>
         <Key>D0</Key>
-        <Value></Value>
+        <Value>FireBall</Value>
       </Item>
     </Keybindings>
   </Asset>

@@ -30,5 +30,15 @@ namespace RpgLibrary.SettingsClasses
 
             return sb.ToString();
         }
+
+        public string DebugString()
+        {
+            string output = string.Empty;
+
+            foreach(var kvp in Keybindings)
+                output += $"Key: {kvp.Key}, Attack Name: {kvp.Value}\n";
+
+            return output;
+        }
     }
 }

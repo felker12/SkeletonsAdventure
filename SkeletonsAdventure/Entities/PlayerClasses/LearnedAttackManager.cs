@@ -100,12 +100,25 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
         public void UpdateWithData(LearnedAttackManagerData data)
         {
             LearnedAttacks = [];
-            BasicAttack attack;
 
-            foreach(string name in data.LearnedAttackNames)
+            // Resolve attacks from the GameManager attack templates without
+            // using GetAttackByName to avoid creating an extra clone. Use the
+            // EntityAttackClone dictionary which provides constructed attack
+            // instances suitable for assigning to the player's learned attacks.
+            foreach (string name in data.LearnedAttackNames)
             {
-                attack = GameManager.GetAttackByName(name);
-                LearnedAttacks[name] = attack;
+                if (string.IsNullOrEmpty(name))
+                    continue;
+
+                if (GameManager.EntityAttackClone.TryGetValue(name, out BasicAttack attack))
+                {
+                    LearnedAttacks[name] = attack;
+                }
+                else
+                {
+                    // If not found, skip or optionally log for debugging
+                    Debug.WriteLine($"Learned attack not found in GameManager: {name}");
+                }
             }
         }
     }

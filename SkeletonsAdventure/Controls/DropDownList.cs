@@ -59,6 +59,12 @@ namespace SkeletonsAdventure.Controls
             set => _maxVisibleItems = Math.Max(1, value);
         }
 
+        // Add this property to DropdownList class
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+        }
+
         //public Color DropdownBackgroundColor { get; set; } = new Color(40, 40, 40);
         public Color DropdownBackgroundColor { get; set; }
         public Color HoverColor { get; set; } 

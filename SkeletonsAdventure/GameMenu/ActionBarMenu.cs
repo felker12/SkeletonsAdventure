@@ -16,7 +16,6 @@ namespace SkeletonsAdventure.GameMenu
         private List<string> ExcludedSkills { get; set; } = ["BasicAttack"]; //skills that should not be learnable by the player
         private List<string> attackNames;
         private readonly Dictionary<Keys, DropdownList> DropdownDictionary = [];
-        private Button saveBtn;
 
         public ActionBarMenu()
         {
@@ -37,7 +36,7 @@ namespace SkeletonsAdventure.GameMenu
             attackNames = [.. LearnedAttacks.Keys];
         }
 
-        private void CreateControls() //TODO add a save button and functionality to save the selected attacks to the player's keybindings, also add functionality to load the player's current keybindings into the dropdowns when the menu is opened
+        private void CreateControls() //TODO add functionality to load the player's current keybindings into the dropdowns when the menu is opened
         {
             Vector2 startLabelPos = new(60, 65);
             Vector2 startDropdownPos = new(90, 60);
@@ -75,30 +74,19 @@ namespace SkeletonsAdventure.GameMenu
 
                 dropdownList.SelectedIndex = 0; // Set the default selected index to the placeholder 
 
-                // Subscribe to selection changes
-               /* dropdownList.Selected += (sender, e) =>
+                // Subscribe to selection changes - auto-save when selection changes
+                Keys currentKey = key;
+                DropdownList currentDropdown = dropdownList;
+
+                currentDropdown.Selected += (sender, e) =>
                 {
-                    //var selected = dropdownList.SelectedItem;
-                };*/
+                    SaveKeybinding(currentKey, currentDropdown);
+                };
 
                 DropdownDictionary[key] = dropdownList; // Map the key to its corresponding dropdown for easy access later
 
                 startDropdownPos.Y += spacing; // Move the next dropdown down
             }
-
-            // Create and configure the save button
-            saveBtn = new()
-            {
-                Position = new Vector2(90, startDropdownPos.Y),
-                Width = 80,
-                Height = 30,
-                Text = "Save",
-                Visible = true,
-            };
-
-            saveBtn.Click += SaveBtn_Click; // Subscribe to the click event
-
-            ControlManager.Add(saveBtn);
 
             //Add the dropdowns to the control manager in reverse order to ensure
             //they are drawn in the correct order (dropdowns on top of labels and the save button)
@@ -164,35 +152,51 @@ namespace SkeletonsAdventure.GameMenu
         public override void MenuOpened()
         {
             UpdateLearnedAttacks();
-            CreateControls();
+
+            // Create controls only once. On subsequent opens, just refresh the
+            // dropdown items and load the player's current keybindings into them.
+            if (DropdownDictionary.Count == 0)
+                CreateControls();
+            else
+                UpdateDropdownItems();
+
             LoadedAttacksToDropdowns();
         }
 
-        private void SaveBtn_Click(object sender, EventArgs e)
+        // Refresh the items in each dropdown without recreating the controls.
+        private void UpdateDropdownItems()
         {
-            //TODO save the selected attacks in the dropdowns to the player's keybindings
-            //Debug.WriteLine("Save button clicked. Saving keybindings...");
+            // attackNames should already be updated by UpdateLearnedAttacks()
+            if (attackNames is null)
+                return;
 
-            // When the save button is clicked, iterate through the dropdowns and save the selected attacks to the player's keybindings
-            foreach (var kvp in DropdownDictionary)
+            foreach (var dropdown in DropdownDictionary.Values)
             {
-                Keys key = kvp.Key;
-                DropdownList dropdown = kvp.Value;
-                string selectedAttackName = dropdown.SelectedItem;
+                // Reset items to default + available attacks
+                dropdown.Items.Clear();
+                dropdown.AddItem(defaultText);
+                dropdown.AddItems(attackNames);
 
-                if (selectedAttackName != defaultText && LearnedAttacks.TryGetValue(selectedAttackName, out BasicAttack selectedAttack))
-                {
-                    Player.KeybindingsManager.SetKeybinding(key, selectedAttack);
-                    //Debug.WriteLine($"Bound {selectedAttack.Name} to key {key}");
-                }
-                else
-                {
-                    Player.KeybindingsManager.RemoveKeybinding(key); // Remove keybinding if "None" is selected
-                    //Debug.WriteLine($"Removed keybinding for key {key}");
-                }
+                // Ensure selected index is valid
+                if (dropdown.SelectedIndex >= dropdown.Items.Count)
+                    dropdown.SelectedIndex = 0;
             }
-            // Optionally, add feedback to the player here (e.g., a message that keybindings were saved)
-            //Debug.WriteLine("Keybindings saved.");
+        }
+
+        private void SaveKeybinding(Keys key, DropdownList dropdown)
+        {
+            string selectedAttackName = dropdown.SelectedItem;
+
+            if (selectedAttackName != defaultText && LearnedAttacks.TryGetValue(selectedAttackName, out BasicAttack selectedAttack))
+            {
+                Player.KeybindingsManager.SetKeybinding(key, selectedAttack);
+                //Debug.WriteLine($"Bound {selectedAttack.Name} to key {key}");
+            }
+            else
+            {
+                Player.KeybindingsManager.RemoveKeybinding(key); // Remove keybinding if "None" is selected
+                //Debug.WriteLine($"Removed keybinding for key {key}");
+            }
         }
     }
 }

@@ -71,6 +71,8 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             LearnAttack(iceBullets);
 
             //Debug.WriteLine(LearnedAttackManager.ToString());
+
+            //InitializeAttacks(); //this is for testing
         }
 
         private void InitializeBaseStats()
@@ -98,8 +100,6 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
             //TODO delete this line
             Info.TextColor = Color.Aqua;
-
-            InitializeAttacks(); //this is for testing
 
             HealthBarVisible = false;
         }
@@ -258,7 +258,24 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
         public void SetKeybinding(Dictionary<Keys, string> keybindings)
         {
             foreach (var binding in keybindings)
-                SetKeyBinding(binding.Key, GameManager.GetAttackByName(binding.Value));
+            {
+                var name = binding.Value;
+                BasicAttack attack;
+
+                // Prefer the player's learned attack instance so multiple bindings
+                // referencing the same attack name share cooldown/state.
+                if (LearnedAttackManager?.LearnedAttacks != null && LearnedAttackManager.LearnedAttacks.TryGetValue(name, out var learnedAttack))
+                {
+                    attack = learnedAttack;
+                }
+                else
+                {
+                    // Fall back to getting an attack from the global manager
+                    attack = GameManager.GetAttackByName(name);
+                }
+
+                SetKeyBinding(binding.Key, attack);
+            }
         }
 
         private protected void UpdateStatsWithBonusses()

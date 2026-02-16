@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 using SkeletonsAdventure.Engines;
 
 namespace SkeletonsAdventure.Controls
@@ -21,11 +17,13 @@ namespace SkeletonsAdventure.Controls
         {
             SpriteFont = spriteFont;
         }
+
         public ControlManager(SpriteFont spriteFont, int capacity)
         : base(capacity)
         {
             SpriteFont = spriteFont;
         }
+
         public ControlManager(SpriteFont spriteFont, IEnumerable<Control> collection)
         : base(collection)
         {
@@ -40,7 +38,8 @@ namespace SkeletonsAdventure.Controls
         #region Methods
         public void Update(GameTime gameTime, PlayerIndex playerIndex)
         {
-            if (Count == 0)
+            //original update method, which caused issues with dropdown lists and other controls that require exclusive input handling
+            /*if (Count == 0)
                 return;
 
             foreach (Control c in this)
@@ -62,6 +61,52 @@ namespace SkeletonsAdventure.Controls
             if (InputHandler.ButtonPressed(Buttons.LeftThumbstickDown, playerIndex) ||
             InputHandler.ButtonPressed(Buttons.DPadDown, playerIndex) ||
             InputHandler.KeyPressed(Keys.Down) || InputHandler.KeyPressed(Keys.Tab))
+                NextControl();*/
+
+            if (Count == 0)
+                return;
+
+            // First pass: Update all controls
+            foreach (Control c in this)
+            {
+                if (c.Enabled)
+                    c.Update(gameTime);
+            }
+
+            // Check if any dropdown is expanded
+            DropdownList expandedDropdown = null;
+            foreach (Control c in this)
+            {
+                if (c is DropdownList dropdown && dropdown.IsExpanded)
+                {
+                    expandedDropdown = dropdown;
+                    break;
+                }
+            }
+
+            // Second pass: Handle input (only for non-blocked controls)
+            foreach (Control c in this)
+            {
+                if (c.Enabled)
+                {
+                    // If a dropdown is expanded, only allow input for that dropdown
+                    if (expandedDropdown != null && c != expandedDropdown)
+                        continue;
+
+                    c.HandleInput(playerIndex);
+                }
+            }
+
+            if (!AcceptInput)
+                return;
+
+            if (InputHandler.ButtonPressed(Buttons.LeftThumbstickUp, playerIndex) ||
+                InputHandler.ButtonPressed(Buttons.DPadUp, playerIndex) ||
+                InputHandler.KeyPressed(Keys.Up))
+                PreviousControl();
+            if (InputHandler.ButtonPressed(Buttons.LeftThumbstickDown, playerIndex) ||
+                InputHandler.ButtonPressed(Buttons.DPadDown, playerIndex) ||
+                InputHandler.KeyPressed(Keys.Down) || InputHandler.KeyPressed(Keys.Tab))
                 NextControl();
         }
         public void Draw(SpriteBatch spriteBatch)

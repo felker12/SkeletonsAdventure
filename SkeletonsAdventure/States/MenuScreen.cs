@@ -107,8 +107,6 @@ namespace SkeletonsAdventure.States
             World.Player.SetKeybinding(bindings.Keybindings);
             World.Player.LearnedAttackManager.UpdateWithData(learnedAttacks);
 
-            Debug.WriteLine(World.Player.LearnedAttackManager.ToString());
-
             //return to the game screen
             StateManager.ChangeState(Game.GameScreen);
         }
