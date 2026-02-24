@@ -4,7 +4,7 @@ using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class ShootingAttack : BasicAttack
+    public class ShootingAttack : BasicAttack
     {
         public List<Vector2> PathPoints { get; set; } = [];
 

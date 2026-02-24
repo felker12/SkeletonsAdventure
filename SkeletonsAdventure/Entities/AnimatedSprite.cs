@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace SkeletonsAdventure.Entities
 {
-    internal class AnimatedSprite : Sprite
+    public class AnimatedSprite : Sprite
     {
-        protected Dictionary<AnimationKey, SpriteAnimation> _animations;
+        public Dictionary<AnimationKey, SpriteAnimation> _animations;
 
         protected bool IsAnimating { get; set; }
         public AnimationKey CurrentAnimation { get; set; }

@@ -3,9 +3,9 @@ using System;
 
 namespace SkeletonsAdventure.Animations
 {
-    internal enum AnimationKey { Down, Left, Right, Up }
+    public enum AnimationKey { Down, Left, Right, Up }
 
-    internal class SpriteAnimation
+    public class SpriteAnimation
     {
         private readonly Rectangle[] frames;
         private int framesPerSecond;

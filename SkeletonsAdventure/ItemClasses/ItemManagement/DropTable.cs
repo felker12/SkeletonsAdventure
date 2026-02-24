@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
-    internal class DropTable
+    public class DropTable
     {
         public Dictionary<string, DropTableItem> DropTableDictionary { get; private set; } = [];
         private static Random Random { get; set; } = new Random(); // Random number generator

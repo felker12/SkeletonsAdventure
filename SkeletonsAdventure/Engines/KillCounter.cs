@@ -3,7 +3,7 @@ using RpgLibrary.DataClasses;
 
 namespace SkeletonsAdventure.Engines
 {
-    internal class KillCounter
+    public class KillCounter
     {
         public Dictionary<string, int> EnemyKills { get; private set; } = [];
 

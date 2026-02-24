@@ -6,7 +6,7 @@ using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities.PlayerClasses
 {
-    internal class KeybindingsManager
+    public class KeybindingsManager
     {
         public Player Player { get; init; }
         public Dictionary<Keys, BasicAttack> Keybindings { get; private set; } = [];
@@ -44,15 +44,19 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             }
         }
 
-        public void SetKeybinding(Keys key, BasicAttack attack)
+        public bool SetKeybinding(Keys key, BasicAttack attack)
         {
             if (PossibleKeybindings.Contains(key) is false)
             {
-                throw new ArgumentException($"Key {key} is not a valid keybinding option.");
+                //throw new ArgumentException($"Key {key} is not a valid keybinding option.");
+                Debug.WriteLine($"Key {key} is not a valid keybinding option.");
+                return false;
             }
 
             attack?.Source = Player;
             Keybindings[key] = attack;
+
+            return true;
         }
 
         public void SetKeybinding(Dictionary<Keys, BasicAttack> keybindings)

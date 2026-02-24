@@ -244,6 +244,11 @@
 /processor:PassThroughProcessor
 /build:EntityData/GoblinData.xml
 
+#begin EntityData/MinotaurData.xml
+/importer:XmlImporter
+/processor:PassThroughProcessor
+/build:EntityData/MinotaurData.xml
+
 #begin EntityData/SkeletalBruiserData.xml
 /importer:XmlImporter
 /processor:PassThroughProcessor
@@ -280,6 +285,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:EntitySprites/goblin.png
+
+#begin EntitySprites/MinotaurSpriteSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:EntitySprites/MinotaurSpriteSheet.png
 
 #begin EntitySprites/SkeletalBruiser.png
 /importer:TextureImporter

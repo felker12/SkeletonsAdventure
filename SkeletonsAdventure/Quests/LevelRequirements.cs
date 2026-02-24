@@ -3,7 +3,7 @@ using SkeletonsAdventure.Entities.PlayerClasses;
 
 namespace SkeletonsAdventure.Quests
 {
-    internal class LevelRequirements
+    public class LevelRequirements
     {
         public int Level { get; set; } = 0;
         public int Defence { get; set; } = 0;

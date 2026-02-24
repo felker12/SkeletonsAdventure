@@ -77,6 +77,7 @@ namespace SkeletonsAdventure.GameWorld
         public static Texture2D ArmoredSkeletonTexture { get; private set; }
         public static Texture2D SkeletonWarriorTexture { get; private set; }
         public static Texture2D SkeletonMageTexture { get; private set; }
+        public static Texture2D MinotaurTexture { get; private set; }
 
         //Attack Textures
         public static Texture2D AttackAreaTexture { get; private set; }
@@ -135,6 +136,8 @@ namespace SkeletonsAdventure.GameWorld
             Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0];
         public static Keys[] KeyOrder { get; } = [Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0];
 
+        public string GameManagerString { get; private set; } = "Test string";
+
         public GameManager(Game1 game)
         {
             Game = game;
@@ -173,8 +176,29 @@ namespace SkeletonsAdventure.GameWorld
 
         private static void SetPaths()
         {
+
             GamePath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName; //Project Directory
-            SavePath = Path.GetFullPath(Path.Combine(GamePath, @"..\SaveFiles")); //Directory of the saved files
+
+            string directory = Directory.GetCurrentDirectory();
+            Debug.WriteLine($"Current Directory: {directory}");
+
+            string testLocation = Directory.GetParent(directory).Parent.Parent.Parent.FullName;
+            Debug.WriteLine($"Test Path: {testLocation}");
+
+            string saveLoc = Path.GetFullPath(Path.Combine(testLocation, "SkeletonsAdventure"));
+            Debug.WriteLine(" Test path 2: " + saveLoc);
+
+
+            Debug.WriteLine($"Game Path: {GamePath}");
+            Debug.WriteLine($"same path is {string.Equals(GamePath, saveLoc)}");
+
+
+            GamePath = saveLoc;
+
+            SavePath = Path.GetFullPath(Path.Combine(saveLoc, @"..\SaveFiles")); //Directory of the saved files
+
+
+            //SavePath = Path.GetFullPath(Path.Combine(GamePath, @"..\SaveFiles")); //Directory of the saved files
 
             /*
             //TODO
@@ -447,6 +471,7 @@ namespace SkeletonsAdventure.GameWorld
             SkeletonWarriorTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletonWarrior");
             SkeletonMageTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletonMage");
             ArmoredSkeletonTexture = Content.Load<Texture2D>(@"Player/ArmoredSkeletonSpriteSheet");
+            MinotaurTexture = Content.Load<Texture2D>(@"EntitySprites/MinotaurSpriteSheet");
 
             //Attack Textures
             FireBallTexture = Content.Load<Texture2D>(@"AttackSprites/FireBall_01");
@@ -606,38 +631,55 @@ namespace SkeletonsAdventure.GameWorld
         //Create the enemies from the content folder
         private static void CreateEnemies()
         {
+            // Use reflection to build a lookup table of all concrete Enemy subclasses in the current assembly.
+            // This maps full type names (e.g., "SkeletonsAdventure.Entities.Skeleton") to Type objects,
+            // allowing us to dynamically instantiate the correct enemy class based on the type name 
+            // stored in each EnemyData XML file. Only non-abstract Enemy subclasses are included.
+            var enemyTypes = typeof(Enemy).Assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(Enemy)) && !t.IsAbstract)
+                .ToDictionary(t => t.FullName, t => t);
+
             string EnemiesPath = Path.Combine(GamePath, "Content", "EntityData");
             string[] fileNames = Directory.GetFiles(EnemiesPath);
 
+            // Iterate through each enemy data file and create the corresponding enemy instance
             foreach (string s in fileNames)
             {
-                // Get just the filename without extension and path
                 string fileName = Path.GetFileNameWithoutExtension(s);
-                
-                // Load using Content.Load with the correct content path format
                 EnemyData data = Content.Load<EnemyData>($"EntityData/{fileName}");
-                Enemy en = (Enemy)Activator.CreateInstance(Type.GetType(data.Type), data);
 
-                Enemies.Add(en.GetType().FullName, en); //Add the entity to the dictionary of enemies
+                // Attempt to find the enemy type in our lookup table using the type name from the data file
+                if (enemyTypes.TryGetValue(data.Type, out Type enemyType))
+                {
+                    // Dynamically create the specific enemy subclass and add to dictionary
+                    Enemy en = (Enemy)Activator.CreateInstance(enemyType, data);
+                    Enemies.Add(en.GetType().FullName, en);
+
+                    //Debug.WriteLine($"Adding enemy: {en.GetType().FullName}");
+                }
+                else
+                {
+                    Debug.WriteLine($"Warning: Type '{data.Type}' not found in {fileName}");
+                }
             }
 
-            //TODO this is used for testing
-            /*
+            /* string EnemiesPath = Path.Combine(GamePath, "Content", "EntityData");
+             string[] fileNames = Directory.GetFiles(EnemiesPath);
 
-            string EnemyPath = Path.Combine(SavePath, "Enemies"); //Directory of the enemies
+             foreach (string s in fileNames)
+             {
+                 // Get just the filename without extension and path
+                 string fileName = Path.GetFileNameWithoutExtension(s);
 
-            //if (Path.Exists(ItemPath) == false)
-            //    Directory.CreateDirectory(ItemPath); //Create the directory if it doesn't exist
-            if (Path.Exists(EnemyPath) == false)
-                Directory.CreateDirectory(EnemyPath); //Create the directory if it doesn't exist
+                 // Load using Content.Load with the correct content path format
+                 EnemyData data = Content.Load<EnemyData>($"EntityData/{fileName}");
+                 Enemy en = (Enemy)Activator.CreateInstance(Type.GetType(data.Type), data);
+                 var en2 = new Enemy(data);
 
-            //TODO test this
-            foreach (var enemy in Enemies)//shouldn't be needed now
-            {
-                XnaSerializer.Serialize($@"{EnemyPath}\{enemy.Value.GetType().Name}Data.xml", enemy.Value.GetEntityData());
-            }
+                 Debug.WriteLine($"Adding enemy: {en.GetType().FullName} & the test full name is: {en2.GetType().FullName}");
 
-            */
+                 Enemies.Add(en.GetType().FullName, en); //Add the entity to the dictionary of enemies
+             }*/
         }
 
         //This is the old method for creating enemies. It is kept for reference and testing purposes

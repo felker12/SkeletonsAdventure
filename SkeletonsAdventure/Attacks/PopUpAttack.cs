@@ -3,7 +3,7 @@ using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class PopUpAttack : BasicAttack
+    public class PopUpAttack : BasicAttack
     {
         public PopUpAttack(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {

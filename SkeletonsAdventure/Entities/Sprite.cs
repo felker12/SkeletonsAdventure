@@ -3,7 +3,7 @@ using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities
 {
-    internal class Sprite
+    public class Sprite
     {
         public Texture2D Texture { get; set; } = GameManager.SkeletonTexture;
         public Color DefaultColor { get; set; } = Color.White;

@@ -1,10 +1,9 @@
 ﻿using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.Entities.PlayerClasses;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.ItemClasses
 {
-    internal class EquippedItems(Player player)
+    public class EquippedItems(Player player)
     {
         private GameItem Mainhand, Offhand, BodySlot, HeadSlot, HandsSlot, FeetSlot;
         private readonly Player _player = player;

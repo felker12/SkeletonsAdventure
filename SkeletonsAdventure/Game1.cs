@@ -14,7 +14,7 @@ namespace SkeletonsAdventure
         public StateManager StateManager { get; private set; } = new();
         public static int ScreenWidth { get; set; } = 1280;
         public static int ScreenHeight { get; set; } = 720;
-        public GameManager GameManager { get; private set; }
+        public static GameManager GameManager { get; set; }
         public static GameTime GameTime { get; private set; }
         public static float DeltaTime => (float)GameTime.ElapsedGameTime.TotalSeconds;
         public static int BaseSpeedMultiplier { get; set; } = 50;

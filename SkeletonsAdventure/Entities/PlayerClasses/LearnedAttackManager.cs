@@ -5,7 +5,7 @@ using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities.PlayerClasses
 {
-    internal class LearnedAttackManager(Player player)
+    public class LearnedAttackManager(Player player)
     {
         public Player Player { get; init; } = player;
         public Dictionary<string, BasicAttack> LearnedAttacks { get; private set; } = [];

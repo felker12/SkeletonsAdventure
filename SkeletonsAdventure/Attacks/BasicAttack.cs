@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class BasicAttack : AnimatedSprite
+    public class BasicAttack : AnimatedSprite
     {
         public int AttackLength { get; set; } //The length includes AttackDelay
         public TimeSpan StartTime { get; set; }
@@ -14,7 +14,7 @@ namespace SkeletonsAdventure.Attacks
         public TimeSpan LastAttackTime { get; set; }
         public Vector2 AttackOffset { get; set; }
         public Entity Source { get; set; }
-        public int CoolDownLength { get; protected set; } //length of the delay between attacks in milliseconds
+        public int CoolDownLength { get; set; } //length of the delay between attacks in milliseconds
         public float DamageModifier { get; set; }
         public int ManaCost { get; set; }
         public bool AnimatedAttack { get; set; } = false;
@@ -46,6 +46,8 @@ namespace SkeletonsAdventure.Attacks
 
         public BasicAttack(AttackData attackData, Texture2D texture, Entity source = null) : base()
         {
+            attackData ??= new(); // Use default values if attackData is null
+
             AttackLength = attackData.AttackLength;
             StartTime = attackData.StartTime;
             Duration = attackData.Duration;

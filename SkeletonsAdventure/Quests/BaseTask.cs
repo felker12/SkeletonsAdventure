@@ -2,7 +2,7 @@
 
 namespace SkeletonsAdventure.Quests
 {
-    internal class BaseTask
+    public class BaseTask
     {
         public int RequiredAmount { get; set; } = 1;
         public int CompletedAmount { get; set; } = 0;

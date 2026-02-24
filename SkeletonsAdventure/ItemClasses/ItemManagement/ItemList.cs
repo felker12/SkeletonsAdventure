@@ -3,7 +3,7 @@ using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
-    internal class ItemList()
+    public class ItemList()
     {
         public List<GameItem> Items { get; set; } = [];
         public int Count => Items.Count;

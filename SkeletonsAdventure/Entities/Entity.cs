@@ -9,7 +9,7 @@ using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.Entities
 {
-    internal class Entity : AnimatedSprite
+    public class Entity : AnimatedSprite
     {
         public TimeSpan LastDeathTime { get; set; } = new();
         public Vector2 RespawnPosition { get; set; } = Vector2.Zero;
@@ -65,6 +65,7 @@ namespace SkeletonsAdventure.Entities
             Attack = BaseAttack;
 
             XP = BaseXP;
+
             BasicAttack = new(GameManager.BasicAttackData, GameManager.SkeletonAttackTexture, this);
         }
 

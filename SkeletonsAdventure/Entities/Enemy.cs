@@ -15,6 +15,7 @@ namespace SkeletonsAdventure.Entities
         Slime,
         Zombie,
         Goblin,
+        Humanoid,
     }
 
     public enum EnemyClass
@@ -22,7 +23,7 @@ namespace SkeletonsAdventure.Entities
         Regular, Elite, Boss
     }
 
-    internal class Enemy : Entity
+    public class Enemy : Entity
     {
         private int x, y, x2, y2, walkDistance, detectionWidth, detectionHeight;
 

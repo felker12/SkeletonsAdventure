@@ -5,7 +5,7 @@ using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.ItemClasses
 {
-    internal class GameItem
+    public class GameItem
     {
         public Vector2 Position { get; set; } = Vector2.Zero;
         public Texture2D Image { get; }

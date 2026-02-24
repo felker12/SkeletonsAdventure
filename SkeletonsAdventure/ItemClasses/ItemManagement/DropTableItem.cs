@@ -3,7 +3,7 @@ using RpgLibrary.ItemClasses;
 
 namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
-    internal class DropTableItem
+    public class DropTableItem
     {
         public string ItemName { get; set; } = string.Empty;
         public int DropChance { get; set; } = 1; // Represents the chance of the item dropping, e.g., 10 for 10%

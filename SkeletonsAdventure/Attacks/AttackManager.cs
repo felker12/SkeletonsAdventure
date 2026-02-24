@@ -2,7 +2,7 @@
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class AttackManager(Entity entity)
+    public class AttackManager(Entity entity)
     {
         public Entity SourceEntity { get; set; } = entity;
         public List<BasicAttack> Attacks { get; private set; } = [];

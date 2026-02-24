@@ -1,6 +1,6 @@
 ﻿namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
-    internal class Backpack() : ItemList
+    public class Backpack() : ItemList
     {
         public int Capacity { get; } = 76;
 

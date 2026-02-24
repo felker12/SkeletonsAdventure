@@ -12,7 +12,7 @@ using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.Entities.PlayerClasses
 {
-    internal class Player : Entity
+    public class Player : Entity
     {
         public int bonusAttackFromLevel = 0, bonusDefenceFromLevel = 0,
             bonusHealthFromLevel = 0, bonusManaFromLevel = 0,

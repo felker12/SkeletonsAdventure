@@ -5,7 +5,7 @@ using SkeletonsAdventure.Entities.PlayerClasses;
 
 namespace SkeletonsAdventure.Quests
 {
-    internal class Quest
+    public class Quest
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
