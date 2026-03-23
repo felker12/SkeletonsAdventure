@@ -170,15 +170,9 @@ Version control workflows
 
 Advanced AI behavior trees
 
-Multithreaded simulation systems
-
 Expanded modding support
 
 Improved UI/UX
-
-Cross-platform deployment
-
-Automated testing framework
 
 📄 **License**
 
