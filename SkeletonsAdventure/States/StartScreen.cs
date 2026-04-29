@@ -7,10 +7,12 @@ namespace SkeletonsAdventure.States
     {
         readonly Label title;
         readonly LinkLabel startLabel;
+        readonly Game1 game;
 
         public StartScreen(Game1 game)
           : base(game)
         {
+            this.game = game;
             title = new()
             {
                 Text = "The Adventures of The Skeleton"
@@ -57,7 +59,7 @@ namespace SkeletonsAdventure.States
         }
         private void StartLabel_Selected(object sender, EventArgs e)
         {
-            StateManager.ChangeState(new MenuScreen(GameManager.Game));
+            StateManager.ChangeState(new MenuScreen(game));
         }
         public override void StateChangeToHandler()
         {

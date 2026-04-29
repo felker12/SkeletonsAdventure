@@ -7,14 +7,14 @@ namespace SkeletonsAdventure
 {
     internal class Game1 : Game
     {
-        public static GraphicsDeviceManager Graphics { get; set; }
+        public GraphicsDeviceManager Graphics { get; set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public GameScreen GameScreen { get; set; }
         public ExitScreen ExitScreen { get; private set; }
         public StateManager StateManager { get; private set; } = new();
         public static int ScreenWidth { get; set; } = 1280;
         public static int ScreenHeight { get; set; } = 720;
-        public static GameManager GameManager { get; set; }
+        public static GameManager GameManager { get; private set; }
         public static GameTime GameTime { get; private set; }
         public static float DeltaTime => (float)GameTime.ElapsedGameTime.TotalSeconds;
         public static int BaseSpeedMultiplier { get; set; } = 50;
@@ -41,7 +41,7 @@ namespace SkeletonsAdventure
             base.Initialize();
             IsMouseVisible = true;
 
-            GameManager = new(this);
+            GameManager = new(Content, GraphicsDevice);
             Components.Add(new InputHandler(this));
             GameScreen = new(this);
             ExitScreen = new(this);

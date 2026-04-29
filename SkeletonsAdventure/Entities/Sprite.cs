@@ -41,7 +41,7 @@ namespace SkeletonsAdventure.Entities
 
             //spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
 
-            Info.Draw(spriteBatch);
+            //Info.Draw(spriteBatch);
         }
 
         public Vector2 LockToMap(Vector2 position)

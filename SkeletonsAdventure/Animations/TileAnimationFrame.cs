@@ -21,9 +21,20 @@ namespace SkeletonsAdventure.Animations
             Duration = (float)animationFrame.Duration.TotalMilliseconds;
         }
 
+        public TileAnimationFrame(TileAnimationFrame frame)
+        {
+            LocalTileId = frame.LocalTileId;
+            Duration = frame.Duration;
+        }
+
         public override string ToString()
         {
             return $"TileId: {LocalTileId}, Duration: {Duration}";
+        }
+
+        public TileAnimationFrame Clone()
+        {
+            return new(this);
         }
     }
 }

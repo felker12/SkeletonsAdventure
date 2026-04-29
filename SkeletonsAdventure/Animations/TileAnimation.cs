@@ -37,5 +37,10 @@ namespace SkeletonsAdventure.Animations
 
             return Frames[CurrentFrameIndex];
         }
+
+        public TileAnimation Clone()
+        { 
+            return new TileAnimation(Frames); 
+        }
     }
 }

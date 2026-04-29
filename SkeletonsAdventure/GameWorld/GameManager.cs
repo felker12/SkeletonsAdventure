@@ -138,11 +138,10 @@ namespace SkeletonsAdventure.GameWorld
 
         public string GameManagerString { get; private set; } = "Test string";
 
-        public GameManager(Game1 game)
+        public GameManager(ContentManager content, GraphicsDevice graphicsDevice)
         {
-            Game = game;
-            Content = game.Content;
-            GraphicsDevice = game.GraphicsDevice;
+            Content = content;
+            GraphicsDevice = graphicsDevice;
 
             SetPaths();
             CreatePlayerLevelXPs();

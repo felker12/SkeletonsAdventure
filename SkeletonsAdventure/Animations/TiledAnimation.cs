@@ -1,12 +1,10 @@
-﻿
-
-using MonoGame.Extended.Tiled;
+﻿using MonoGame.Extended.Tiled;
 
 namespace SkeletonsAdventure.Animations
 {
     internal class TiledAnimation
     {
-        public string Name { get; set; } ="TiledAnimation";
+        public string Name { get; set; } = "TiledAnimation";
         public int TileWidth { get; set; } = 16;
         public int TileHeight { get; set; } = 16;
         public Texture2D Texture { get; set; } = null;
@@ -57,7 +55,6 @@ namespace SkeletonsAdventure.Animations
         public void Update(GameTime gameTime)
         {
             // Implementation for playing the animation
-
             if (Animation is null || Texture is null || animate is false)
                 return;
 
@@ -78,7 +75,7 @@ namespace SkeletonsAdventure.Animations
             if (elapsedTime >= Animation.TotalDuration)
             {
                 elapsedTime = 0f;
-                animate = false; // Uncomment this line to stop after one playthrough
+                animate = false;
             }
         }
 
