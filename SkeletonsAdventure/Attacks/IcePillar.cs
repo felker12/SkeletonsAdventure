@@ -6,7 +6,7 @@ namespace SkeletonsAdventure.Attacks
 {
     internal class IcePillar : PopUpAttack
     {
-        public override Rectangle IconRectangle => _animations.First().Value.Frames[0];
+        public override Rectangle GetIconRectangle => _animations.First().Value.Frames[0];
 
         public IcePillar(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {

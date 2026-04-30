@@ -36,7 +36,7 @@ namespace SkeletonsAdventure.Attacks
             Shot.DamageModifier = DamageModifier;
             Shot.ManaCost = 0; // Only the multi-shot attack consumes mana
             Shot.Source = Source;
-            Shot.AttackLength = Shot.AttackLengthMinusDelay;
+            Shot.AttackLength = Shot.AttackLengthMinusDelay; //The length of the shot attack is the time it takes for the shot to be fired and disappear, so we set the multi-shot attack length to be that plus the delay between shots
             Shot.AttackDelay = 0;
 
             //multi shot attacks will just have the 1 frame to be used as an icon for them
@@ -67,11 +67,6 @@ namespace SkeletonsAdventure.Attacks
 
             if (ShotsFired < ShotCount && Duration.TotalMilliseconds >= ShotsFired * ShotInterval.TotalMilliseconds + AttackDelay)
             {
-               /* Debug.WriteLine($"Time to shoot. shots fired: {ShotsFired}, " +
-                    $"duration: {Duration.TotalMilliseconds} >= " +
-                    $"{ShotsFired} * {ShotInterval.TotalMilliseconds} + {AttackDelay} " +
-                    $"({ShotsFired * ShotInterval.TotalMilliseconds + AttackDelay})");*/
-
                 ShootingAttack newShot = Shot.Clone();
                 newShot.Position = StartPosition;
                 newShot.Motion = InitialMotion;

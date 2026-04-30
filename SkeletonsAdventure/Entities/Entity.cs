@@ -237,7 +237,7 @@ namespace SkeletonsAdventure.Entities
             if (CanAttack is false)
                 return;
 
-            if (AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
+            if (AttackManager.AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
             {
                 if(this is Player player)
                 {
@@ -269,11 +269,6 @@ namespace SkeletonsAdventure.Entities
 
             entityAttack.Motion.Normalize();
             entityAttack.Motion *= entityAttack.Speed;
-        }
-
-        public bool AttackingIsOnCoolDown(GameTime gameTime)
-        {
-            return (gameTime.TotalGameTime - AttackManager.LastAttackTime).TotalMilliseconds < AttackCoolDownLength;
         }
 
         public virtual void PathToPoint(Vector2 target)

@@ -8,6 +8,8 @@ namespace SkeletonsAdventure.Attacks
 {
     public class BasicAttack : AnimatedSprite
     {
+        private Rectangle? _iconRectangle = null;
+
         public int AttackLength { get; set; } //The length includes AttackDelay
         public TimeSpan StartTime { get; set; }
         public TimeSpan Duration { get; set; }
@@ -23,7 +25,6 @@ namespace SkeletonsAdventure.Attacks
         public bool AttackVisible { get; set; } = true;
         public Vector2 StartPosition { get; set; } = new();
         public Vector2 InitialMotion { get; set; }
-        public bool OnCooldown { get; private set; } = false;
         public double CooldownRemaining { get; private set; }
         public float CooldownRemainingRatio { get; private set; }
         public LevelRequirements LevelRequirements { get; private set; } = new();
@@ -32,15 +33,18 @@ namespace SkeletonsAdventure.Attacks
         public int AttackLengthMinusDelay => AttackLength - AttackDelay;
         public bool CanMoveDuringAttack { get; protected set; } = true;
 
-        public virtual Rectangle IconRectangle {
+        public virtual Rectangle GetIconRectangle {
             get
             {
-                if (this.GetType().Name == "BasicAttack")
+                if (_iconRectangle.HasValue)
+                    return _iconRectangle.Value;
+                if (Name == "BasicAttack")
                     return new(20, 80, 32, 60);
                 if (_animations.TryGetValue(AnimationKey.Right, out SpriteAnimation value))
                     return value.Frames[0];
-                else
-                    return _animations[_animations.Keys.First()].Frames[0]; //Return the first available animation frame
+
+                _iconRectangle = _animations[_animations.Keys.First()].Frames[0];
+                return _iconRectangle.Value;
             }
         }
 
@@ -156,7 +160,6 @@ namespace SkeletonsAdventure.Attacks
 
         public void UpdateCooldown(GameTime gameTime)
         {
-            OnCooldown = IsOnCooldown(gameTime);
             CooldownRemaining = GetRemainingCooldown(gameTime);
             CooldownRemainingRatio = (float)Math.Clamp(CooldownRemaining / CoolDownLength, 0f, 1f);
         }
@@ -185,6 +188,7 @@ namespace SkeletonsAdventure.Attacks
             return ((gameTime.TotalGameTime - LastAttackTime).TotalMilliseconds < CoolDownLength);
         }
 
+        //Returns the remaining cooldown time in milliseconds, or 0 if the cooldown has expired.
         public double GetRemainingCooldown(GameTime gameTime)
         {
             double remainingCooldown = CoolDownLength - (gameTime.TotalGameTime - LastAttackTime).TotalMilliseconds;
@@ -272,7 +276,7 @@ namespace SkeletonsAdventure.Attacks
             return ToString;
         }
 
-        // Helper methods to compute scale from a source frame to a desired target size.
+        //helper method to compute scale from a source frame to a desired target size.
         public static float GetUniformScaleForTarget(Rectangle frame, int targetSize = 32)
         {
             if (frame.Width <= 0 || frame.Height <= 0)
@@ -290,7 +294,7 @@ namespace SkeletonsAdventure.Attacks
             if (tint == default)   
                 tint = Color.White;
 
-            Rectangle src = IconRectangle;
+            Rectangle src = GetIconRectangle;
             float scale = GetUniformScaleForTarget(src, size);
 
             // Draw at `position` as a `size x size` box. We use a centered origin so the icon is centered in that box.
@@ -305,14 +309,18 @@ namespace SkeletonsAdventure.Attacks
             if (attack is null)
                 return;
 
-            if (SkillRequirementsNames.Contains(attack.Name))
-                return;
-
             AddRequriedSkillName(attack.Name);
         }
 
         private void AddRequriedSkillName(string name)
         {
+            //Don't add the skill requirement if the name is null or empty, or if it already exists in the list
+            if (string.IsNullOrEmpty(name))
+                return;
+
+            if (SkillRequirementsNames.Contains(name))
+                return;
+
             SkillRequirementsNames.Add(name);
         }
     }

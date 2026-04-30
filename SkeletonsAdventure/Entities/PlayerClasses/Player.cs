@@ -585,7 +585,7 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
         public virtual void PerformAimedAttack(GameTime gameTime, ShootingAttack entityAttack, Vector2 targetPosition)
         {
-            if (AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
+            if (AttackManager.AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
             {
                 if (AimVisible == true)
                 {
@@ -612,7 +612,7 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
         public virtual void PerformPopUpAttack(GameTime gameTime, PopUpAttack entityAttack, Vector2 targetPosition)
         {
-            if (AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
+            if (AttackManager.AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
             {
                 if (AimVisible == true)
                 {
