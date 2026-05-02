@@ -67,8 +67,6 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
                 {
                     entity.Respawn();
                 }
-
-                entity.AttackManager.ClearExpiredAttacks();
             }
         }
 

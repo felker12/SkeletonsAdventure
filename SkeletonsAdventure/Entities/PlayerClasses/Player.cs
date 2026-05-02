@@ -72,7 +72,8 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
             //Debug.WriteLine(LearnedAttackManager.ToString());
 
-            //InitializeAttacks(); //this is for testing
+            //TODO
+            InitializeAttacks(); //this is for testing
         }
 
         private void InitializeBaseStats()

@@ -18,7 +18,7 @@ namespace SkeletonsAdventure.Entities
         public int AttackCoolDownLength { get; protected set; } = 600; //minimum length of the delay between attacks in milliseconds
         public AttackManager AttackManager { get; set; } 
         public BasicAttack BasicAttack { get; set; }
-        public List<BasicAttack> AttacksHitBy { get; set; } = [];
+        public HashSet<BasicAttack> AttacksHitBy { get; set; } = [];
         public int BaseDefence { get; set; } = 1; 
         public int BaseAttack { get; set; } = 1;
         public int BaseHealth { get; set; } = 1; 

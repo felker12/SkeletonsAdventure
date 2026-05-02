@@ -3,17 +3,16 @@ using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.Quests;
-using System.Linq;
 
 namespace SkeletonsAdventure.Attacks
 {
     public class BasicAttack : AnimatedSprite
     {
         public int AttackLength { get; set; } //The length includes AttackDelay
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan Duration { get; set; }
-        public TimeSpan LastAttackTime { get; set; }
-        public Vector2 AttackOffset { get; set; }
+        public TimeSpan StartTime { get; set; } //The time when the attack was started, and is used to determine if the attack has timed out or passed the delay
+        public TimeSpan Duration { get; set; } //The duration is the time since the attack was started, and is used to determine if the attack has timed out or passed the delay
+        public TimeSpan LastAttackTime { get; set; } //The time when the last attack was started, and is used to determine if the attack is on cooldown
+        public Vector2 AttackOffset { get; set; } //The offset of the attack from the source entity's position
         public Entity Source { get; set; }
         public int CoolDownLength { get; set; } //length of the delay between attacks in milliseconds
         public float DamageModifier { get; set; }
@@ -24,8 +23,8 @@ namespace SkeletonsAdventure.Attacks
         public bool AttackVisible { get; set; } = true;
         public Vector2 StartPosition { get; set; } = new();
         public Vector2 InitialMotion { get; set; }
-        public double CooldownRemaining { get; private set; }
-        public float CooldownRemainingRatio { get; private set; }
+        public double CooldownRemaining { get; private set; } //The remaining cooldown time in milliseconds, or 0 if the cooldown has expired
+        public float CooldownRemainingRatio { get; private set; } //The remaining cooldown time as a ratio of the total cooldown time, clamped between 0 and 1
         public LevelRequirements LevelRequirements { get; private set; } = new();
         public List<string> SkillRequirementsNames { get; private set; } = [];
         public string Name => GetType().Name;
@@ -131,17 +130,6 @@ namespace SkeletonsAdventure.Attacks
             else if (AttackVisible && AnimatedAttack)
                 base.Update(gameTime);
 
-            //Prevent the source from moving during an attack with a build up
-            if (CanMoveDuringAttack && Duration.TotalMilliseconds > AttackDelay)
-                Source.CanMove = true;
-            //Prevent the source from moving during an attack that locks the source in place
-            else if (AttackTimedOut())
-                Source.CanMove = true;
-            else
-                Source.CanMove = false;
-
-            Source.CanAttack = Source.CanMove; //prevent a source from being able to attack while already doing an attack
-
             UpdateCooldown(gameTime);
         }
 
@@ -237,6 +225,12 @@ namespace SkeletonsAdventure.Attacks
         public bool AttackTimedOut()
         {
             return Duration.TotalMilliseconds > AttackLength;
+        }
+
+        public bool AttackPassedDelay()
+        {
+            //return true if the source can move during the attack and the attack has passed the delay time, or if the attack doesn't allow movement during the attack and the attack has timed out
+            return CanMoveDuringAttack && Duration.TotalMilliseconds > AttackDelay;
         }
 
         public override string ToString()

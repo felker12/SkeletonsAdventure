@@ -111,7 +111,12 @@ namespace SkeletonsAdventure.Entities
 
         protected void UpdateCurrentAnimation()
         {
-            Vector2 motion = CalculateReducedMotion(Motion);
+            Vector2 motion;
+
+            if (CanMove)
+                motion = CalculateReducedMotion(Motion);
+            else
+                motion = Vector2.Zero;
 
             //TODO Add frames for angles
             if (motion != Vector2.Zero)

@@ -1,17 +1,15 @@
-﻿using SkeletonsAdventure.Entities;
+﻿using CppNet;
+using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
     public class AttackManager(Entity entity)
     {
-        private bool _attacked = false;
-        List<BasicAttack> _queuedAttack = []; 
-        List<Entity> _sourcesThatCantMove = [];
-
-        public Entity SourceEntity { get; set; } = entity;
+        private readonly List<BasicAttack> _queuedAttack = [];
+        public Entity SourceEntity { get; private set; } = entity;
         public List<BasicAttack> Attacks { get; private set; } = [];
-        public TimeSpan LastAttackTime { get; set; } = new(0, 0, 0, 0);
-        public BasicAttack LastAttack { get; set; } = null;
+        public TimeSpan LastAttackTime { get; private set; } = new(0, 0, 0, 0);
+        public BasicAttack LastAttack { get; private set; } = null;
 
         /// <summary>
         /// Checks if the entity is on attack cooldown.
@@ -31,41 +29,47 @@ namespace SkeletonsAdventure.Attacks
 
         public void Update(GameTime gameTime)
         {
-            if (_attacked)
-            {
-                _attacked = false;
-            }
-
-            _sourcesThatCantMove = [];
-
-            foreach (var attack in Attacks)
-            {
-                attack.Update(gameTime);
-
-                //if any attack is causing the source to not be able to move make sure a later attack isn't overriding that
-                if(_sourcesThatCantMove.Contains(attack.Source) is false && SourceEntity.CanMove is false)
-                    _sourcesThatCantMove.Add(attack.Source);
-            }
-
-            //make sure any source that can't move because of any attack can't move and isn't being allowed to move by another attack overriding it
-            foreach (var entity in _sourcesThatCantMove)
-                entity.CanMove = false;
+            //remove any attacks that have expired
+            ClearExpiredAttacks();
 
             //add any attacks queued by a multishot attack
-            _queuedAttack = [];
-            foreach(var attack in Attacks)
+            _queuedAttack.Clear();
+
+            bool canMove = true;
+
+            for (int i = Attacks.Count - 1; i >= 0; i--)
             {
-                if(attack is MultiShotAttack multiShotAttack)
+                var attack = Attacks[i];
+
+                attack.Update(gameTime);
+                canMove &= GetSourceCanMove(attack); //if any attack prevents movement, the source cannot move
+
+                if (attack is MultiShotAttack multiShotAttack)
                 {
-                    foreach(var atk in multiShotAttack.Shots)
-                        _queuedAttack.Add(atk); 
+                    foreach (var atk in multiShotAttack.Shots)
+                        _queuedAttack.Add(atk);
 
                     multiShotAttack.Shots.Clear();
                 }
             }
 
-            foreach(var attack in _queuedAttack)
+            foreach (var attack in _queuedAttack)
                 AddAttack(attack, gameTime);
+
+            SourceEntity.CanMove = canMove;
+            SourceEntity.CanAttack = canMove;
+        }
+
+        private static bool GetSourceCanMove(BasicAttack attack)
+        {
+            //Prevent the source from moving during an attack with a build up
+            if (attack.AttackPassedDelay())
+                return true;
+            //Prevent the source from moving during an attack that locks the source in place
+            else if (attack.AttackTimedOut())
+                return true;
+            else
+                return false;
         }
 
         public void AddAttack(BasicAttack atk, GameTime gameTime)
@@ -78,7 +82,6 @@ namespace SkeletonsAdventure.Attacks
             Attacks.Add(atk);
             LastAttackTime = gameTime.TotalGameTime;
             LastAttack = atk;
-            _attacked = true;
         }
 
         public void RemoveAttack(BasicAttack atk)
@@ -116,23 +119,33 @@ namespace SkeletonsAdventure.Attacks
             //check to see if the attack hit an entity
             foreach (var attack in Attacks)
             {
-                if(attack.AttackVisible)
+                //if the attack isn't visible it can't hit anything so skip it
+                if (attack.AttackVisible is false)
+                    continue;
+
+                foreach (var entity in entities)
                 {
-                    foreach (var entity in entities)
-                    {
-                        if (entity.IsDead)
-                            continue;//prevents attacking dead enemies
-                        if (entity.AttacksHitBy.Contains(attack) is true) //prevents an attack from hitting an opponent multiple times
-                            continue;
-                        if (SourceEntity == entity) //makes sure the entity cannot attack itself
-                            continue;
-                        if (entity is Enemy && SourceEntity is Enemy) //This line prevents enemies from attacking other enemies
-                            continue;
-                        if(attack.Hits(entity))
-                            entity.GetHitByAttack(attack, gameTime);
-                    }
+                    if (ValidTarget(attack, entity) is false)
+                        continue;
+
+                    if (attack.Hits(entity))
+                        entity.GetHitByAttack(attack, gameTime);
                 }
             }
+        }
+
+        private bool ValidTarget(BasicAttack attack, Entity target)
+        {
+            if (target.IsDead)
+                return false;//prevents attacking dead enemies
+            if (target.AttacksHitBy.Contains(attack) is true) //prevents an attack from hitting an opponent multiple times
+                return false;
+            if (SourceEntity == target) //makes sure the entity cannot attack itself
+                return false;
+            if (target is Enemy && SourceEntity is Enemy) //This line prevents enemies from attacking other enemies
+                return false;
+
+            return true;
         }
     }
 }

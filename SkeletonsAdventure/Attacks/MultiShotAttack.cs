@@ -82,23 +82,6 @@ namespace SkeletonsAdventure.Attacks
             //nothing is to be drawn
         }
 
-        public void ClearExpiredAttacks()
-        {
-            List<ShootingAttack> toRemove = [];
-
-            foreach (var attack in Shots)
-            {
-                if (attack.AttackTimedOut() || attack.Source.IsDead)
-                {
-                    attack.AttackVisible = false;
-                    toRemove.Add(attack);
-                }
-            }
-
-            foreach (var atk in toRemove)
-                Shots.Remove(atk);
-        }
-
         public override MultiShotAttackData ToData()
         {
             return new()
