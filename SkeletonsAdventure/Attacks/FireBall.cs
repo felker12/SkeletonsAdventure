@@ -19,7 +19,7 @@ namespace SkeletonsAdventure.Attacks
         private void Initialize()
         {
             if (AnimatedAttack)
-                SetFrames(3, 32, 28); 
+                SetFrames(3, 32, 28);
         }
 
         public override FireBall Clone()

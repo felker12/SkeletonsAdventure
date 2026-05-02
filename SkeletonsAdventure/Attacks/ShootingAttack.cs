@@ -44,10 +44,6 @@ namespace SkeletonsAdventure.Attacks
 
         public override void Offset()
         {
-            /*Width = 32;
-            Height = 28;
-            Frame= new(0, 0, Width, Height);*/
-
             //start the attack at the center of the entity
             AttackOffset = new(Source.Width / 2 - Width / 2, Source.Height / 2 - Height / 2);
         }

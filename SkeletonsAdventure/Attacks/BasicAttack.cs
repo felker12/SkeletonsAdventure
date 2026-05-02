@@ -1,6 +1,7 @@
 ﻿using RpgLibrary.AttackData;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.Quests;
 using System.Linq;
 
@@ -8,8 +9,6 @@ namespace SkeletonsAdventure.Attacks
 {
     public class BasicAttack : AnimatedSprite
     {
-        private Rectangle? _iconRectangle = null;
-
         public int AttackLength { get; set; } //The length includes AttackDelay
         public TimeSpan StartTime { get; set; }
         public TimeSpan Duration { get; set; }
@@ -32,21 +31,7 @@ namespace SkeletonsAdventure.Attacks
         public string Name => GetType().Name;
         public int AttackLengthMinusDelay => AttackLength - AttackDelay;
         public bool CanMoveDuringAttack { get; protected set; } = true;
-
-        public virtual Rectangle GetIconRectangle {
-            get
-            {
-                if (_iconRectangle.HasValue)
-                    return _iconRectangle.Value;
-                if (Name == "BasicAttack")
-                    return new(20, 80, 32, 60);
-                if (_animations.TryGetValue(AnimationKey.Right, out SpriteAnimation value))
-                    return value.Frames[0];
-
-                _iconRectangle = _animations[_animations.Keys.First()].Frames[0];
-                return _iconRectangle.Value;
-            }
-        }
+        internal AttackIcon AttackIcon { get; set; }
 
         public BasicAttack(AttackData attackData, Texture2D texture, Entity source = null) : base()
         {
@@ -108,6 +93,8 @@ namespace SkeletonsAdventure.Attacks
                 AttackVisible = false;
 
             LastAttackTime = TimeSpan.FromMilliseconds(-CoolDownLength);
+
+            AttackIcon = new();
         }
 
         public virtual BasicAttack Clone()
@@ -276,32 +263,9 @@ namespace SkeletonsAdventure.Attacks
             return ToString;
         }
 
-        //helper method to compute scale from a source frame to a desired target size.
-        public static float GetUniformScaleForTarget(Rectangle frame, int targetSize = 32)
-        {
-            if (frame.Width <= 0 || frame.Height <= 0)
-                return 1f;
-
-            float scaleX = (float)targetSize / frame.Width;
-            float scaleY = (float)targetSize / frame.Height;
-
-            // Preserve aspect ratio and fit the frame inside target square.
-            return Math.Min(scaleX, scaleY);
-        }
-
         public virtual void DrawIcon(SpriteBatch spriteBatch, Vector2 position, int size = 32, Color tint = default)
         {
-            if (tint == default)   
-                tint = Color.White;
-
-            Rectangle src = GetIconRectangle;
-            float scale = GetUniformScaleForTarget(src, size);
-
-            // Draw at `position` as a `size x size` box. We use a centered origin so the icon is centered in that box.
-            Vector2 origin = new(src.Width / 2f, src.Height / 2f);
-            Vector2 drawPos = position + new Vector2(size / 2f, size / 2f);
-
-            spriteBatch.Draw(Texture, drawPos, src, tint, 0f, origin, scale, SpriteEffects.None, 0f);
+            AttackIcon.DrawIcon(this, spriteBatch, position, size, tint);
         }
 
         public void AddRequiredSkill(BasicAttack attack)

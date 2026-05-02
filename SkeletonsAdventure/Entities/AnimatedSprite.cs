@@ -5,7 +5,7 @@ namespace SkeletonsAdventure.Entities
 {
     public class AnimatedSprite : Sprite
     {
-        public Dictionary<AnimationKey, SpriteAnimation> _animations;
+        public Dictionary<AnimationKey, SpriteAnimation> animations;
 
         protected bool IsAnimating { get; set; }
         public AnimationKey CurrentAnimation { get; set; }
@@ -18,7 +18,7 @@ namespace SkeletonsAdventure.Entities
         public override void Update(GameTime gameTime)
         {
             if (IsAnimating)
-                _animations[CurrentAnimation].Update(gameTime);
+                animations[CurrentAnimation].Update(gameTime);
 
             UpdateFrame();
             UpdateCurrentAnimation();
@@ -86,27 +86,27 @@ namespace SkeletonsAdventure.Entities
             int paddingY = 0,
             AnimationKey[] order = null)
         {
-            _animations = [];
+            animations = [];
 
             // Default order if not supplied
             order ??= [AnimationKey.Down, AnimationKey.Left, AnimationKey.Right, AnimationKey.Up];
 
             CloneAnimations(CreateAnimations(order, frameCount, frameWidth, frameHeight, xOffset, yOffset, paddingX, paddingY));
 
-            CurrentAnimation = _animations.Keys.First();
+            CurrentAnimation = animations.Keys.First();
 
             UpdateFrame();
         }
 
         protected void UpdateFrame()
         {
-            Frame = _animations[CurrentAnimation].CurrentFrameRect;
+            Frame = animations[CurrentAnimation].CurrentFrameRect;
         }
 
         protected void CloneAnimations(Dictionary<AnimationKey, SpriteAnimation> animation)
         {
             foreach (AnimationKey key in animation.Keys)
-                _animations.Add(key, (SpriteAnimation)animation[key].Clone());
+                animations.Add(key, (SpriteAnimation)animation[key].Clone());
         }
 
         protected void UpdateCurrentAnimation()
@@ -228,8 +228,8 @@ namespace SkeletonsAdventure.Entities
 
             //Fallback in case the current animation key is invalid
             //(like in the event the all animation keys aren't inluded in order for SetFrames)
-            if (_animations.ContainsKey(CurrentAnimation) is false)
-                CurrentAnimation = _animations.Keys.First();
+            if (animations.ContainsKey(CurrentAnimation) is false)
+                CurrentAnimation = animations.Keys.First();
         }
 
         /// <summary>

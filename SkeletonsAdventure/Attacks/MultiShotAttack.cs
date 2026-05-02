@@ -61,7 +61,7 @@ namespace SkeletonsAdventure.Attacks
 
             UpdateCooldown(gameTime);
 
-            // Check if it's time to fire the next shot
+            //check if it's time to fire the next shot
             if(Duration.TotalMilliseconds < AttackDelay)
                 return;
 

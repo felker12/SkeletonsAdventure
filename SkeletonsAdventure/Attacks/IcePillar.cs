@@ -1,13 +1,12 @@
 ﻿using RpgLibrary.AttackData;
 using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.GameUI;
 using System.Linq;
 
 namespace SkeletonsAdventure.Attacks
 {
     internal class IcePillar : PopUpAttack
     {
-        public override Rectangle GetIconRectangle => _animations.First().Value.Frames[0];
-
         public IcePillar(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
         {
             Width = Texture.Width;
@@ -30,6 +29,8 @@ namespace SkeletonsAdventure.Attacks
             }
 
             ResetDamageHitBox();
+
+            AttackIcon = new AttackIcon(animations.First().Value.Frames[0]);
         }
 
         public override IcePillar Clone()
@@ -59,9 +60,9 @@ namespace SkeletonsAdventure.Attacks
 
         private void AnimatePillar()
         {
-            int timePerFrame = (AttackLength - AttackDelay) / _animations.Count;
+            int timePerFrame = (AttackLength - AttackDelay) / animations.Count;
             int currentFrame = (int)(Duration.TotalMilliseconds - AttackDelay) / timePerFrame;
-            double progressPercent = (currentFrame * (100 / (_animations.Count + 2))) / 100.0; //the +2 is to make it shrink less per tick
+            double progressPercent = (currentFrame * (100 / (animations.Count + 2))) / 100.0; //the +2 is to make it shrink less per tick
 
             Frame = new Rectangle(0 + (currentFrame * Width), 0, Width, Height);
             DamageHitBox = new((int)Position.X + Width / 4, (int)(Position.Y + Height * progressPercent), Width / 2, (int)(Height * (1.0 - progressPercent)));
