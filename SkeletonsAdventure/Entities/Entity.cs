@@ -165,29 +165,22 @@ namespace SkeletonsAdventure.Entities
             Health -= dmg;
 
             if (Health < 1)
-            {
                 EntityDiedByAttack(attack);
-            }
         }
 
         private void ClearOldAttacksHitBy()
         {
-            List<BasicAttack> oldAttacks = [];
-
-            foreach (var atk in AttacksHitBy)
+            /*for (int i = AttacksHitBy.Count - 1; i >= 0; i--)
             {
-                if (atk.AttackTimedOut()) //removes attacks that have timed out
-                    oldAttacks.Add(atk);
-                else if (atk.Source.IsDead) //removes attacks from dead entities
-                    oldAttacks.Add(atk);
-            }
+                var atk = AttacksHitBy[i];
 
-            if (oldAttacks.Count > 0)
-            {
-                foreach (var oldAttack in oldAttacks)
-                    AttacksHitBy.Remove(oldAttack);
-            }
+                if (atk.AttackTimedOut() || atk.Source.IsDead) //removes attacks that have timed out or from dead entities
+                    AttacksHitBy.Remove(atk);
+            }*/
+
+            AttacksHitBy.RemoveWhere(atk => atk.AttackTimedOut() || atk.Source.IsDead);
         }
+
         public virtual void Respawn()
         {
             Health = MaxHealth;
@@ -221,7 +214,7 @@ namespace SkeletonsAdventure.Entities
                     if (quest is null || quest.ActiveTask is null)
                         continue;
 
-                    if (quest.ActiveTask is not null && quest.ActiveTask is SlayTask slayTask)
+                    if (quest.ActiveTask is SlayTask slayTask)
                     {
                         if (slayTask.GetEntityToSlay().GetType() == GetType())
                             quest.ProgressTask();
@@ -269,63 +262,6 @@ namespace SkeletonsAdventure.Entities
 
             entityAttack.Motion.Normalize();
             entityAttack.Motion *= entityAttack.Speed;
-        }
-
-        public virtual void PathToPoint(Vector2 target)
-        {
-            Vector2 movement = new(0,0);
-
-            if ((int)target.Y > (int)Position.Y)
-                movement.Y = 1;
-            else if ((int)target.Y < (int)Position.Y)
-                movement.Y = -1;
-            else if ((int)target.Y == (int)Position.Y)
-                movement.Y = 0;
-            if ((int)target.X > (int)Position.X)
-                movement.X = 1;
-            else if ((int)target.X < (int)Position.X)
-                movement.X = -1;
-            else if ((int)target.X == (int)Position.X)
-                movement.X = 0;
-
-            if (movement != Vector2.Zero)
-                movement.Normalize();
-
-            Motion = movement;
-        }
-
-        public void FaceTarget(Entity target)
-        {
-            //find the distance to the center of the target
-            Vector2 distance = Position - target.Center;
-            //convert the distance to an int so it can be used for the animation
-            distance.X = (int)distance.X;
-            distance.Y = (int)distance.Y;
-
-            if (distance.X > -Width/2 && distance.Y >= 0) //TODO update if adding diagonal animations
-            {
-                CurrentAnimation = AnimationKey.Left;
-                if (distance.Y > Width * .75)
-                    CurrentAnimation = AnimationKey.Up;
-            }
-            else if (distance.X <= -Width/2 && distance.Y >= 0)
-            {
-                CurrentAnimation = AnimationKey.Right;
-                if (distance.Y > Width * .75)
-                    CurrentAnimation = AnimationKey.Up;
-            }
-            else if (distance.X >= -Width / 4 && distance.Y < 0)
-            {
-                CurrentAnimation = AnimationKey.Left;
-                if (distance.Y < -Height - Height / 4)
-                    CurrentAnimation = AnimationKey.Down;
-            }
-            else if (distance.X <= -Width / 2 && distance.Y < 0)
-            {
-                CurrentAnimation = AnimationKey.Right;
-                if (distance.Y < -Height  -Height / 4)
-                    CurrentAnimation = AnimationKey.Down;
-            }
         }
     }
 }

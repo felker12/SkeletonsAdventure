@@ -77,7 +77,7 @@ namespace SkeletonsAdventure.Entities
             EnemyStatAdjustmentForLevel(); // Adjust the enemy's stats based on the level
         }
 
-        public void SetEnemyLevel(int level) //TODO
+        public void SetEnemyLevel(int level)
         {
             Level = level;
             EnemyStatAdjustmentForLevel();
@@ -181,8 +181,8 @@ namespace SkeletonsAdventure.Entities
             return table;
         }
 
-        // Returns a list of items that the enemy drops when killed
-        // this includes the items from the drop table and the guaranteed drops
+        //Returns a list of items that the enemy drops when killed
+        //this includes the items from the drop table and the guaranteed drops
         public virtual List<GameItem> GetDrops()
         {
             List<GameItem> items = GetDropTable().GetDropsList(NumberOfItemsToDrop);
@@ -198,6 +198,7 @@ namespace SkeletonsAdventure.Entities
         {
             base.GetHitByAttack(attack, gameTime);
 
+            //TODO: move out of this method and into the update method, but for now this is fine
             if (gameTime.TotalGameTime.TotalMilliseconds - LastTimeAttacked.TotalMilliseconds > 6000)
             {
                 ResetSquare();

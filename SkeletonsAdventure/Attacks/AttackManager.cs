@@ -6,6 +6,7 @@ namespace SkeletonsAdventure.Attacks
     public class AttackManager(Entity entity)
     {
         private readonly List<BasicAttack> _queuedAttack = [];
+
         public Entity SourceEntity { get; private set; } = entity;
         public List<BasicAttack> Attacks { get; private set; } = [];
         public TimeSpan LastAttackTime { get; private set; } = new(0, 0, 0, 0);
@@ -29,9 +30,6 @@ namespace SkeletonsAdventure.Attacks
 
         public void Update(GameTime gameTime)
         {
-            //remove any attacks that have expired
-            ClearExpiredAttacks();
-
             //add any attacks queued by a multishot attack
             _queuedAttack.Clear();
 
@@ -58,6 +56,9 @@ namespace SkeletonsAdventure.Attacks
 
             SourceEntity.CanMove = canMove;
             SourceEntity.CanAttack = canMove;
+
+            //remove any attacks that have expired. Clear the attacks after the attack.Update()
+            ClearExpiredAttacks();
         }
 
         private static bool GetSourceCanMove(BasicAttack attack)
@@ -82,13 +83,6 @@ namespace SkeletonsAdventure.Attacks
             Attacks.Add(atk);
             LastAttackTime = gameTime.TotalGameTime;
             LastAttack = atk;
-        }
-
-        public void RemoveAttack(BasicAttack atk)
-        {
-            atk.Position = Vector2.Zero;
-            atk.AttackVisible = true;
-            Attacks.Remove(atk);
         }
 
         public void ClearAttacks()

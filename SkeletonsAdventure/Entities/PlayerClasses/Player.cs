@@ -188,6 +188,8 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
             //Info.Text += $"\nCan Evolve: {CanEvolve}";
             //Info.Text += $"\nCan Move: {CanMove}";
+
+            Info.Text += $"\nAttacks hit by: {AttacksHitBy.Count}";
         }
 
         public void UpdatePlayerWithData(PlayerData playerData)
@@ -397,11 +399,6 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             return null;
         }
 
-        public override void GetHitByAttack(BasicAttack attack, GameTime gameTime)
-        {
-            base.GetHitByAttack(attack, gameTime);
-        }
-
         public void GainXp(int XpGained)
         {
             int currentLevel = GameManager.GetPlayerLevelAtXP(TotalXP);
@@ -548,11 +545,6 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                 motion.Normalize();
 
             Motion = motion; //(motion is normalized in collision detection of EntityManager)
-        }
-
-        public override void Respawn()
-        {
-            base.Respawn();
         }
 
         public override void PerformAttack(GameTime gameTime, BasicAttack entityAttack)

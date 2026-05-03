@@ -1,4 +1,6 @@
-﻿using SkeletonsAdventure.Entities.PlayerClasses;
+﻿using Assimp;
+using SkeletonsAdventure.Animations;
+using SkeletonsAdventure.Entities.PlayerClasses;
 
 namespace SkeletonsAdventure.Entities.EntityHelperClasses
 {
@@ -28,9 +30,9 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
 
             //if the enemy detects the player then move towerds the player
             if (!enemy.Rectangle.Intersects(player.Rectangle))
-                enemy.PathToPoint(player.Position);
+                PathToPoint(enemy, player.Position);
             else
-                enemy.FaceTarget(player);
+                FaceTarget(enemy, player);
 
             return playerInRange;
         }
@@ -70,7 +72,65 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
                     enemy.IdleBehavior(gameTime); //investigation over
             }
             else
-                enemy.PathToPoint(enemy.PositionLastAttackedFrom);
+                PathToPoint(enemy, enemy.PositionLastAttackedFrom);
+        }
+
+        private static void PathToPoint(Entity source, Vector2 target)
+        {
+            Vector2 movement = new(0, 0);
+            Vector2 position = source.Position;
+
+            if ((int)target.Y > (int)position.Y)
+                movement.Y = 1;
+            else if ((int)target.Y < (int)position.Y)
+                movement.Y = -1;
+            else if ((int)target.Y == (int)position.Y)
+                movement.Y = 0;
+            if ((int)target.X > (int)position.X)
+                movement.X = 1;
+            else if ((int)target.X < (int)position.X)
+                movement.X = -1;
+            else if ((int)target.X == (int)position.X)
+                movement.X = 0;
+
+            if (movement != Vector2.Zero)
+                movement.Normalize();
+
+            source.Motion = movement;
+        }
+
+        private static void FaceTarget(Entity source, Entity target)
+        {
+            //find the distance to the center of the target
+            Vector2 distance = source.Position - target.Center;
+            //convert the distance to an int so it can be used for the animation
+            distance.X = (int)distance.X;
+            distance.Y = (int)distance.Y;
+
+            if (distance.X > - source.Width / 2 && distance.Y >= 0) //TODO update if adding diagonal animations
+            {
+                source.CurrentAnimation = AnimationKey.Left;
+                if (distance.Y > source.Width * .75)
+                    source.CurrentAnimation = AnimationKey.Up;
+            }
+            else if (distance.X <= -source.Width / 2 && distance.Y >= 0)
+            {
+                source.CurrentAnimation = AnimationKey.Right;
+                if (distance.Y > source.Width * .75)
+                    source.CurrentAnimation = AnimationKey.Up;
+            }
+            else if (distance.X >= -source.Width / 4 && distance.Y < 0)
+            {
+                source.CurrentAnimation = AnimationKey.Left;
+                if (distance.Y < -source.Height - source.Height / 4)
+                    source.CurrentAnimation = AnimationKey.Down;
+            }
+            else if (distance.X <= -source.Width / 2 && distance.Y < 0)
+            {
+                source.CurrentAnimation = AnimationKey.Right;
+                if (distance.Y < -source.Height - source.Height / 4)
+                    source.CurrentAnimation = AnimationKey.Down;
+            }
         }
     }
 }
