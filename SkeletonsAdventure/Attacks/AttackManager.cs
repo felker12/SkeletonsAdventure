@@ -76,13 +76,17 @@ namespace SkeletonsAdventure.Attacks
         public void AddAttack(BasicAttack atk, GameTime gameTime)
         {
             if (atk is ShootingAttack shootingAtk)
-                shootingAtk.PathPoints = [];
+                shootingAtk.PathPoints.Clear();
 
             atk.InitialMotion = atk.Motion;
 
             Attacks.Add(atk);
-            LastAttackTime = gameTime.TotalGameTime;
-            LastAttack = atk;
+
+            if(atk is not MultiShotAttack)
+            {
+                LastAttackTime = gameTime.TotalGameTime;
+                LastAttack = atk;
+            }
         }
 
         public void ClearAttacks()
@@ -122,21 +126,31 @@ namespace SkeletonsAdventure.Attacks
                     if (ValidTarget(attack, entity) is false)
                         continue;
 
+                    if(IsWithinRange(attack, entity) is false)
+                        continue;
+
                     if (attack.Hits(entity))
                         entity.GetHitByAttack(attack, gameTime);
                 }
             }
         }
 
+        private static bool IsWithinRange(BasicAttack attack, Entity target, float threshold = 10000f)
+        {
+            //only do the math if they are reasonably close.
+            //10,000 is 100 pixels squared.
+            return Vector2.DistanceSquared(attack.Position, target.Position) < threshold;
+        }
+
         private bool ValidTarget(BasicAttack attack, Entity target)
         {
             if (target.IsDead)
                 return false;//prevents attacking dead enemies
-            if (target.AttacksHitBy.Contains(attack) is true) //prevents an attack from hitting an opponent multiple times
-                return false;
             if (SourceEntity == target) //makes sure the entity cannot attack itself
                 return false;
             if (target is Enemy && SourceEntity is Enemy) //This line prevents enemies from attacking other enemies
+                return false;
+            if (target.AttacksHitBy.Contains(attack) is true) //prevents an attack from hitting an opponent multiple times
                 return false;
 
             return true;

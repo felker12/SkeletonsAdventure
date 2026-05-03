@@ -19,7 +19,7 @@ namespace SkeletonsAdventure.Attacks
         public int ManaCost { get; set; }
         public bool AnimatedAttack { get; set; } = false;
         public Rectangle DamageHitBox { get; set; }
-        public int AttackDelay { get; set; }
+        public int AttackDelay { get; set; } //the length of time from when the attack is started until the attack actually happens in milliseconds. During this time, the attack is not visible and does not hit the target, but the source can still be locked in place if CanMoveDuringAttack is false
         public bool AttackVisible { get; set; } = true;
         public Vector2 StartPosition { get; set; } = new();
         public Vector2 InitialMotion { get; set; }

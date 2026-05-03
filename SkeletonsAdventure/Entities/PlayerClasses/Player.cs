@@ -61,13 +61,13 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             //GainXp(53400); //TODO delete this
 
             //TODO
-            FireBall fireBall = (FireBall)GameManager.EntityAttackClone["FireBall"];
+            FireBall fireBall = (FireBall)GameManager.GetAttackByName("FireBall");
             LearnAttack(fireBall);
 
-            IceBullet iceBullet = (IceBullet)GameManager.EntityAttackClone["IceBullet"];
+            IceBullet iceBullet = (IceBullet)GameManager.GetAttackByName("IceBullet");
             LearnAttack(iceBullet);
 
-            IceBullets iceBullets = (IceBullets)GameManager.EntityAttackClone["IceBullets"];
+            IceBullets iceBullets = (IceBullets)GameManager.GetAttackByName("IceBullets");
             LearnAttack(iceBullets);
 
             //Debug.WriteLine(LearnedAttackManager.ToString());
@@ -109,17 +109,17 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
         {
             Dictionary<Keys, BasicAttack> KeyBindings = new()
             {
-                { Keys.D1, (FireBall)GameManager.EntityAttackClone["FireBall"]},
-                { Keys.D2, (IcePillar)GameManager.EntityAttackClone["IcePillar"] },
-                { Keys.D3, (IceBullet)GameManager.EntityAttackClone["IceBullet"] },
-                { Keys.D4, (WaterBall)GameManager.EntityAttackClone["WaterBall"]  },
-                { Keys.D5, (FireWave)GameManager.EntityAttackClone["FireWave"] },
-                { Keys.D6, (BlueFireWave)GameManager.EntityAttackClone["BlueFireWave"] },
+                { Keys.D1, (FireBall)GameManager.GetAttackByName("FireBall") },
+                { Keys.D2, (IcePillar)GameManager.GetAttackByName("IcePillar") },
+                { Keys.D3, (IceBullet)GameManager.GetAttackByName("IceBullet") },
+                { Keys.D4, (WaterBall)GameManager.GetAttackByName("WaterBall") },
+                { Keys.D5, (FireWave)GameManager.GetAttackByName("FireWave") },
+                { Keys.D6, (BlueFireWave)GameManager.GetAttackByName("BlueFireWave") },
                 //{ Keys.D7, null },
                 //{ Keys.D8, null },
-                { Keys.D9, (IceBullets)GameManager.EntityAttackClone["IceBullets"] },
-                //{ Keys.D0, (TriangleAttack)GameManager.EntityAttackClone["TriangleAttack"] },
-                { Keys.D0, (SpinningTriangleAttack)GameManager.EntityAttackClone["SpinningTriangleAttack"] },
+                { Keys.D9, (IceBullets)GameManager.GetAttackByName("IceBullets") },
+                //{ Keys.D0, (TriangleAttack)GameManager.GetAttackByName("TriangleAttack") },
+                { Keys.D0, (SpinningTriangleAttack)GameManager.GetAttackByName("SpinningTriangleAttack") },
             };
 
             KeybindingsManager.SetKeybinding(KeyBindings);

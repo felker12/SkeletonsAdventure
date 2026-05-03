@@ -354,6 +354,7 @@ namespace SkeletonsAdventure.GameWorld
             return animations;
         }
 
+
         //Create the player levels and their XP values
         public static void CreatePlayerLevelXPs() //TODO adjust the xp as needed
         {
@@ -412,7 +413,7 @@ namespace SkeletonsAdventure.GameWorld
         //Get an item from the items dictionary by its name
         public static GameItem GetItemByName(string name)
         {
-            if (ItemsClone.TryGetValue(name, out GameItem item))
+            if (Items.TryGetValue(name, out GameItem item))
                 return item.Clone();
             else
                 return null;
@@ -420,7 +421,7 @@ namespace SkeletonsAdventure.GameWorld
 
         public static DropTable GetDropTableByName(string name)
         {
-            if (DropTablesClone.TryGetValue(name, out DropTable dropTable))
+            if (DropTables.TryGetValue(name, out DropTable dropTable))
                 return dropTable.Clone();
             else
                 return null;
@@ -428,7 +429,7 @@ namespace SkeletonsAdventure.GameWorld
 
         public static Enemy GetEnemyByName(string name)
         {
-            if (EnemiesClone.TryGetValue("SkeletonsAdventure.Entities." + name, out Enemy enemy))
+            if (Enemies.TryGetValue("SkeletonsAdventure.Entities." + name, out Enemy enemy))
                 return enemy.Clone();
 
             return null;
@@ -436,7 +437,7 @@ namespace SkeletonsAdventure.GameWorld
 
         public static BasicAttack GetAttackByName(string name)
         {
-            if(EntityAttackClone.TryGetValue(name, out BasicAttack attack))
+            if(EntityAttacks.TryGetValue(name, out BasicAttack attack))
                 return attack.Clone();
 
             return null;
