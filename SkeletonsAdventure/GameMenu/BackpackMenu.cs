@@ -9,7 +9,7 @@ namespace SkeletonsAdventure.GameMenu
 
         public BackpackMenu()
         {
-            Texture = GameManager.BackpackBackground;
+            Texture = GameManager.TexturesLibrary.BackpackBackground;
             Width = Texture.Width;
             Height = Texture.Height;
             Position = new(0, 0);

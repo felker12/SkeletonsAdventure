@@ -5,7 +5,7 @@ namespace SkeletonsAdventure.Attacks
 {
     internal class IceBullets : MultiShotAttack
     {
-        public IceBullets(MultiShotAttackData data, Texture2D iconImage) : base(data, iconImage)
+        public IceBullets(MultiShotAttackData data, Texture2D iconImage, ShootingAttack baseAttack) : base(data, iconImage, baseAttack)
         {
         }
 

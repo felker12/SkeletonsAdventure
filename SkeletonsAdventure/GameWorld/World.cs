@@ -137,7 +137,7 @@ namespace SkeletonsAdventure.GameWorld
 
             foreach (ItemData item in itemDatas)
             {
-                temp = GameManager.LoadGameItemFromItemData(item);
+                temp = GameManager.GameItemLoadingManager.LoadGameItemFromItemData(item);
 
                 Player.Backpack.Add(temp);
                 if (item.Equipped)
@@ -189,13 +189,13 @@ namespace SkeletonsAdventure.GameWorld
 
         public static void CreateLevels(ContentManager content, GraphicsDevice graphics)
         {
-            string tiledMapRoot = Path.Combine(GameManager.GamePath, "Content", "TiledFiles");
+            string tiledMapRoot = Path.Combine(GameManager.PathsLibrary.GamePath, "Content", "TiledFiles");
             string[] tiledMapFiles = Directory.GetFiles(tiledMapRoot, "*.tmx", SearchOption.AllDirectories);
 
             foreach (string filePath in tiledMapFiles)
             {
                 // Get the relative path for Content.Load (remove GamePath\Content\ and extension)
-                string relativePath = Path.GetRelativePath(Path.Combine(GameManager.GamePath, "Content"), filePath);
+                string relativePath = Path.GetRelativePath(Path.Combine(GameManager.PathsLibrary.GamePath, "Content"), filePath);
                 relativePath = Path.ChangeExtension(relativePath, null); // Remove extension
 
                 TiledMap tiledMap = content.Load<TiledMap>(relativePath);

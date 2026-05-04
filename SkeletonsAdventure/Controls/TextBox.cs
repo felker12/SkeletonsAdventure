@@ -23,7 +23,7 @@ namespace SkeletonsAdventure.Controls
         private void Initialize()
         {
             TextColor = Color.Black;
-            Background = GameManager.TextBoxTexture;
+            Background = GameManager.TexturesLibrary.TextBoxTexture;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

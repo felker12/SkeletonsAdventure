@@ -1,11 +1,12 @@
 ﻿using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.GameWorld;
+using SkeletonsAdventure.HelperClasses;
 
 namespace SkeletonsAdventure.Entities
 {
-    public class Sprite
+    public class Sprite : ICloneableGameClass<Sprite>
     {
-        public Texture2D Texture { get; set; } = GameManager.SkeletonTexture;
+        public Texture2D Texture { get; set; } = GameManager.TexturesLibrary.SkeletonTexture;
         public Color DefaultColor { get; set; } = Color.White;
         public Color SpriteColor { get; set; } = Color.White;
         public Vector2 Position { get; set; } = new();
@@ -27,6 +28,22 @@ namespace SkeletonsAdventure.Entities
 
         public Sprite() { }
 
+        public Sprite(Sprite sprite)
+        {
+            Texture = sprite.Texture;
+            DefaultColor = sprite.DefaultColor;
+            SpriteColor = sprite.SpriteColor;
+            Position = sprite.Position;
+            Motion = sprite.Motion;
+            Speed = sprite.Speed;
+            Width = sprite.Width;
+            Height = sprite.Height;
+            Frame = sprite.Frame;
+            RotationAngle = sprite.RotationAngle;
+            Scale = sprite.Scale;
+            CanMove = sprite.CanMove;
+        }
+
         public virtual void Update(GameTime gameTime)
         {
             Position = LockToMap(Position);
@@ -42,6 +59,11 @@ namespace SkeletonsAdventure.Entities
             //spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
 
             //Info.Draw(spriteBatch);
+        }
+
+        public virtual Sprite Clone()
+        {
+            return new Sprite(this);
         }
 
         public Vector2 LockToMap(Vector2 position)

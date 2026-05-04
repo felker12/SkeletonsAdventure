@@ -13,7 +13,7 @@ namespace SkeletonsAdventure.Entities
         private void Initialize()
         {
             //TODO
-            Texture = GameManager.SkeletonMageTexture;
+            Texture = GameManager.TexturesLibrary.SkeletonMageTexture;
             SetFrames(6, 64, 64, paddingX: 36, xOffset: 20, yOffset: 8, paddingY: 14);
             BasicAttackColor = new(11,29,131); //TODO
         }

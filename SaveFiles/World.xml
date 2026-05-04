@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:WorldClasses="RpgLibrary.WorldClasses" xmlns:ItemClasses="RpgLibrary.ItemClasses">
   <Asset Type="WorldClasses:WorldData">
-    <TotalTimeInWorld>PT6.5833465S</TotalTimeInWorld>
+    <TotalTimeInWorld>PT1.0833355S</TotalTimeInWorld>
     <CurrentLevel>Level0</CurrentLevel>
     <PlayerData>
       <Type>SkeletonsAdventure.Entities.PlayerClasses.Player</Type>
@@ -11,7 +11,7 @@
       <EntityLevel>0</EntityLevel>
       <BaseXP>1</BaseXP>
       <CurrentHealth>3000</CurrentHealth>
-      <Position>320 304</Position>
+      <Position>247.07101 354.35553</Position>
       <RespawnPosition>320 304</RespawnPosition>
       <IsDead>false</IsDead>
       <LastDeathTime>PT0S</LastDeathTime>
@@ -33,7 +33,7 @@
           <Description>A Simple Glove</Description>
           <Price>4</Price>
           <Weight>1</Weight>
-          <Equipped>false</Equipped>
+          <Equipped>true</Equipped>
           <Stackable>false</Stackable>
           <Consumable>false</Consumable>
           <Position>1120 32</Position>
@@ -99,7 +99,7 @@
           <Description>A Simple Shoe</Description>
           <Price>4</Price>
           <Weight>1</Weight>
-          <Equipped>false</Equipped>
+          <Equipped>true</Equipped>
           <Stackable>false</Stackable>
           <Consumable>false</Consumable>
           <Position>1216 32</Position>
@@ -546,7 +546,7 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>986 410</Position>
+                <Position>817.25 320</Position>
                 <RespawnPosition>736 320</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -566,7 +566,7 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>1898 457.75</Position>
+                <Position>1729.25 304</Position>
                 <RespawnPosition>1648 304</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -586,7 +586,7 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>890 1882</Position>
+                <Position>721.25 1712</Position>
                 <RespawnPosition>640 1712</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -606,7 +606,7 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>2378 1882.25</Position>
+                <Position>2209.25 1696</Position>
                 <RespawnPosition>2128 1696</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -626,7 +626,7 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>858 3066.75</Position>
+                <Position>689.25 2848</Position>
                 <RespawnPosition>608 2848</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -646,7 +646,7 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>810 4195.75</Position>
+                <Position>641.25 3952</Position>
                 <RespawnPosition>560 3952</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -666,7 +666,7 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>2938 3066.5</Position>
+                <Position>2769.25 2864</Position>
                 <RespawnPosition>2688 2864</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -686,7 +686,7 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>3776 3107.75</Position>
+                <Position>3617.25 2864</Position>
                 <RespawnPosition>3536 2864</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -706,7 +706,7 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>2890 490.25</Position>
+                <Position>2721.25 384</Position>
                 <RespawnPosition>2640 384</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -726,7 +726,7 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>3818 953.75</Position>
+                <Position>3649.25 800</Position>
                 <RespawnPosition>3568 800</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -746,7 +746,7 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>4314 954.75</Position>
+                <Position>4145.25 816</Position>
                 <RespawnPosition>4064 816</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -766,7 +766,7 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>4736.75 954.75</Position>
+                <Position>4609.25 816</Position>
                 <RespawnPosition>4528 816</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -786,7 +786,7 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>5146 1971.75</Position>
+                <Position>4977.25 1728</Position>
                 <RespawnPosition>4896 1728</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -806,7 +806,7 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>5354 2035.75</Position>
+                <Position>5185.25 1792</Position>
                 <RespawnPosition>5104 1792</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -826,7 +826,7 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>5226 2163.75</Position>
+                <Position>5057.25 1920</Position>
                 <RespawnPosition>4976 1920</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -846,7 +846,7 @@
                 <EntityLevel>2</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>24</CurrentHealth>
-                <Position>3882 1946.75</Position>
+                <Position>3713.25 1808</Position>
                 <RespawnPosition>3632 1808</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -866,7 +866,7 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>2122 3027.75</Position>
+                <Position>1953.25 2784</Position>
                 <RespawnPosition>1872 2784</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -886,7 +886,7 @@
                 <EntityLevel>1</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>22</CurrentHealth>
-                <Position>3642 3219.75</Position>
+                <Position>3473.25 2976</Position>
                 <RespawnPosition>3392 2976</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
@@ -913,19 +913,22 @@
                 <Max>4</Max>
               </LootAmountRange>
               <ItemDatas>
-                <Item>
-                  <Name>Coins</Name>
-                  <Type>Currency</Type>
-                  <Description>Money</Description>
+                <Item Type="ItemClasses:ConsumableData">
+                  <Name>Bones</Name>
+                  <Type>Consumable</Type>
+                  <Description>Bones of a creature</Description>
                   <Price>1</Price>
-                  <Weight>0</Weight>
+                  <Weight>1</Weight>
                   <Equipped>false</Equipped>
                   <Stackable>true</Stackable>
-                  <Consumable>false</Consumable>
+                  <Consumable>true</Consumable>
                   <Position>0 0</Position>
                   <Quantity>2</Quantity>
-                  <SourceRectangle>0 0 0 0</SourceRectangle>
-                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                  <SourceRectangle>0 0 32 32</SourceRectangle>
+                  <TexturePath>Items/Bones</TexturePath>
+                  <Effect>Heal</Effect>
+                  <EffectDuration>0</EffectDuration>
+                  <EffectBonus>5</EffectBonus>
                 </Item>
                 <Item Type="ItemClasses:ArmorData">
                   <Name>Shoes</Name>
@@ -949,45 +952,6 @@
                   <ArmorLocation>Feet</ArmorLocation>
                   <DefenseValue>1</DefenseValue>
                 </Item>
-                <Item Type="ItemClasses:ConsumableData">
-                  <Name>Bones</Name>
-                  <Type>Consumable</Type>
-                  <Description>Bones of a creature</Description>
-                  <Price>1</Price>
-                  <Weight>1</Weight>
-                  <Equipped>false</Equipped>
-                  <Stackable>true</Stackable>
-                  <Consumable>true</Consumable>
-                  <Position>0 0</Position>
-                  <Quantity>2</Quantity>
-                  <SourceRectangle>0 0 32 32</SourceRectangle>
-                  <TexturePath>Items/Bones</TexturePath>
-                  <Effect>Heal</Effect>
-                  <EffectDuration>0</EffectDuration>
-                  <EffectBonus>5</EffectBonus>
-                </Item>
-                <Item Type="ItemClasses:ArmorData">
-                  <Name>Robes</Name>
-                  <Type>Robes</Type>
-                  <Description>A Robe</Description>
-                  <Price>10</Price>
-                  <Weight>5</Weight>
-                  <Equipped>false</Equipped>
-                  <Stackable>false</Stackable>
-                  <Consumable>false</Consumable>
-                  <Position>0 0</Position>
-                  <Quantity>1</Quantity>
-                  <SourceRectangle>0 0 0 0</SourceRectangle>
-                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-                  <LevelRequirementData>
-                    <Level>0</Level>
-                    <Defence>0</Defence>
-                    <Attack>0</Attack>
-                    <Mana>0</Mana>
-                  </LevelRequirementData>
-                  <ArmorLocation>Body</ArmorLocation>
-                  <DefenseValue>2</DefenseValue>
-                </Item>
               </ItemDatas>
             </Item>
             <Item>
@@ -1001,43 +965,12 @@
                 <Max>4</Max>
               </LootAmountRange>
               <ItemDatas>
-                <Item>
-                  <Name>Coins</Name>
-                  <Type>Currency</Type>
-                  <Description>Money</Description>
-                  <Price>1</Price>
-                  <Weight>0</Weight>
-                  <Equipped>false</Equipped>
-                  <Stackable>true</Stackable>
-                  <Consumable>false</Consumable>
-                  <Position>0 0</Position>
-                  <Quantity>7</Quantity>
-                  <SourceRectangle>0 0 0 0</SourceRectangle>
-                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-                </Item>
-                <Item Type="ItemClasses:ConsumableData">
-                  <Name>Bones</Name>
-                  <Type>Consumable</Type>
-                  <Description>Bones of a creature</Description>
-                  <Price>1</Price>
-                  <Weight>1</Weight>
-                  <Equipped>false</Equipped>
-                  <Stackable>true</Stackable>
-                  <Consumable>true</Consumable>
-                  <Position>0 0</Position>
-                  <Quantity>2</Quantity>
-                  <SourceRectangle>0 0 32 32</SourceRectangle>
-                  <TexturePath>Items/Bones</TexturePath>
-                  <Effect>Heal</Effect>
-                  <EffectDuration>0</EffectDuration>
-                  <EffectBonus>5</EffectBonus>
-                </Item>
-                <Item Type="ItemClasses:ShieldData">
-                  <Name>Round Shield</Name>
-                  <Type>Shield</Type>
-                  <Description>A basic round shield</Description>
-                  <Price>40</Price>
-                  <Weight>10</Weight>
+                <Item Type="ItemClasses:WeaponData">
+                  <Name>Sword</Name>
+                  <Type>Slashing</Type>
+                  <Description>A Sword</Description>
+                  <Price>10</Price>
+                  <Weight>3</Weight>
                   <Equipped>false</Equipped>
                   <Stackable>false</Stackable>
                   <Consumable>false</Consumable>
@@ -1051,8 +984,22 @@
                     <Attack>0</Attack>
                     <Mana>0</Mana>
                   </LevelRequirementData>
-                  <NumberHands>Off</NumberHands>
-                  <DefenceValue>2</DefenceValue>
+                  <NumberHands>Main</NumberHands>
+                  <AttackValue>5</AttackValue>
+                </Item>
+                <Item>
+                  <Name>Coins</Name>
+                  <Type>Currency</Type>
+                  <Description>Money</Description>
+                  <Price>1</Price>
+                  <Weight>0</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>true</Stackable>
+                  <Consumable>false</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>5</Quantity>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
                 </Item>
               </ItemDatas>
             </Item>
@@ -1077,9 +1024,31 @@
                   <Stackable>true</Stackable>
                   <Consumable>false</Consumable>
                   <Position>0 0</Position>
-                  <Quantity>9</Quantity>
+                  <Quantity>10</Quantity>
                   <SourceRectangle>0 0 0 0</SourceRectangle>
                   <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                </Item>
+                <Item Type="ItemClasses:WeaponData">
+                  <Name>Sword</Name>
+                  <Type>Slashing</Type>
+                  <Description>A Sword</Description>
+                  <Price>10</Price>
+                  <Weight>3</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>false</Stackable>
+                  <Consumable>false</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>1</Quantity>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                  <LevelRequirementData>
+                    <Level>0</Level>
+                    <Defence>0</Defence>
+                    <Attack>0</Attack>
+                    <Mana>0</Mana>
+                  </LevelRequirementData>
+                  <NumberHands>Main</NumberHands>
+                  <AttackValue>5</AttackValue>
                 </Item>
                 <Item Type="ItemClasses:ConsumableData">
                   <Name>Bones</Name>
@@ -1098,50 +1067,6 @@
                   <EffectDuration>0</EffectDuration>
                   <EffectBonus>5</EffectBonus>
                 </Item>
-                <Item Type="ItemClasses:ShieldData">
-                  <Name>Round Shield</Name>
-                  <Type>Shield</Type>
-                  <Description>A basic round shield</Description>
-                  <Price>40</Price>
-                  <Weight>10</Weight>
-                  <Equipped>false</Equipped>
-                  <Stackable>false</Stackable>
-                  <Consumable>false</Consumable>
-                  <Position>0 0</Position>
-                  <Quantity>1</Quantity>
-                  <SourceRectangle>0 0 0 0</SourceRectangle>
-                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-                  <LevelRequirementData>
-                    <Level>0</Level>
-                    <Defence>0</Defence>
-                    <Attack>0</Attack>
-                    <Mana>0</Mana>
-                  </LevelRequirementData>
-                  <NumberHands>Off</NumberHands>
-                  <DefenceValue>2</DefenceValue>
-                </Item>
-                <Item Type="ItemClasses:ArmorData">
-                  <Name>Shoes</Name>
-                  <Type>Shoe</Type>
-                  <Description>A Simple Shoe</Description>
-                  <Price>4</Price>
-                  <Weight>1</Weight>
-                  <Equipped>false</Equipped>
-                  <Stackable>false</Stackable>
-                  <Consumable>false</Consumable>
-                  <Position>0 0</Position>
-                  <Quantity>1</Quantity>
-                  <SourceRectangle>0 0 0 0</SourceRectangle>
-                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-                  <LevelRequirementData>
-                    <Level>0</Level>
-                    <Defence>0</Defence>
-                    <Attack>0</Attack>
-                    <Mana>0</Mana>
-                  </LevelRequirementData>
-                  <ArmorLocation>Feet</ArmorLocation>
-                  <DefenseValue>1</DefenseValue>
-                </Item>
               </ItemDatas>
             </Item>
             <Item>
@@ -1155,12 +1080,26 @@
                 <Max>4</Max>
               </LootAmountRange>
               <ItemDatas>
+                <Item>
+                  <Name>Coins</Name>
+                  <Type>Currency</Type>
+                  <Description>Money</Description>
+                  <Price>1</Price>
+                  <Weight>0</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>true</Stackable>
+                  <Consumable>false</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>4</Quantity>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                </Item>
                 <Item Type="ItemClasses:ArmorData">
-                  <Name>Hood</Name>
-                  <Type>Hood</Type>
-                  <Description>A Simple Hood</Description>
-                  <Price>8</Price>
-                  <Weight>2</Weight>
+                  <Name>Robes</Name>
+                  <Type>Robes</Type>
+                  <Description>A Robe</Description>
+                  <Price>10</Price>
+                  <Weight>5</Weight>
                   <Equipped>false</Equipped>
                   <Stackable>false</Stackable>
                   <Consumable>false</Consumable>
@@ -1174,8 +1113,8 @@
                     <Attack>0</Attack>
                     <Mana>0</Mana>
                   </LevelRequirementData>
-                  <ArmorLocation>Head</ArmorLocation>
-                  <DefenseValue>1</DefenseValue>
+                  <ArmorLocation>Body</ArmorLocation>
+                  <DefenseValue>2</DefenseValue>
                 </Item>
                 <Item Type="ItemClasses:ConsumableData">
                   <Name>Bones</Name>
@@ -1187,7 +1126,7 @@
                   <Stackable>true</Stackable>
                   <Consumable>true</Consumable>
                   <Position>0 0</Position>
-                  <Quantity>1</Quantity>
+                  <Quantity>2</Quantity>
                   <SourceRectangle>0 0 32 32</SourceRectangle>
                   <TexturePath>Items/Bones</TexturePath>
                   <Effect>Heal</Effect>
@@ -1207,34 +1146,43 @@
                 <Max>4</Max>
               </LootAmountRange>
               <ItemDatas>
-                <Item Type="ItemClasses:ShieldData">
-                  <Name>Round Shield</Name>
-                  <Type>Shield</Type>
-                  <Description>A basic round shield</Description>
-                  <Price>40</Price>
-                  <Weight>10</Weight>
+                <Item Type="ItemClasses:ConsumableData">
+                  <Name>Bones</Name>
+                  <Type>Consumable</Type>
+                  <Description>Bones of a creature</Description>
+                  <Price>1</Price>
+                  <Weight>1</Weight>
                   <Equipped>false</Equipped>
-                  <Stackable>false</Stackable>
-                  <Consumable>false</Consumable>
+                  <Stackable>true</Stackable>
+                  <Consumable>true</Consumable>
                   <Position>0 0</Position>
                   <Quantity>1</Quantity>
-                  <SourceRectangle>0 0 0 0</SourceRectangle>
-                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
-                  <LevelRequirementData>
-                    <Level>0</Level>
-                    <Defence>0</Defence>
-                    <Attack>0</Attack>
-                    <Mana>0</Mana>
-                  </LevelRequirementData>
-                  <NumberHands>Off</NumberHands>
-                  <DefenceValue>2</DefenceValue>
+                  <SourceRectangle>0 0 32 32</SourceRectangle>
+                  <TexturePath>Items/Bones</TexturePath>
+                  <Effect>Heal</Effect>
+                  <EffectDuration>0</EffectDuration>
+                  <EffectBonus>5</EffectBonus>
                 </Item>
-                <Item Type="ItemClasses:ArmorData">
-                  <Name>Hood</Name>
-                  <Type>Hood</Type>
-                  <Description>A Simple Hood</Description>
-                  <Price>8</Price>
-                  <Weight>2</Weight>
+                <Item>
+                  <Name>Coins</Name>
+                  <Type>Currency</Type>
+                  <Description>Money</Description>
+                  <Price>1</Price>
+                  <Weight>0</Weight>
+                  <Equipped>false</Equipped>
+                  <Stackable>true</Stackable>
+                  <Consumable>false</Consumable>
+                  <Position>0 0</Position>
+                  <Quantity>9</Quantity>
+                  <SourceRectangle>0 0 0 0</SourceRectangle>
+                  <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
+                </Item>
+                <Item Type="ItemClasses:WeaponData">
+                  <Name>Sword</Name>
+                  <Type>Slashing</Type>
+                  <Description>A Sword</Description>
+                  <Price>10</Price>
+                  <Weight>3</Weight>
                   <Equipped>false</Equipped>
                   <Stackable>false</Stackable>
                   <Consumable>false</Consumable>
@@ -1248,8 +1196,8 @@
                     <Attack>0</Attack>
                     <Mana>0</Mana>
                   </LevelRequirementData>
-                  <ArmorLocation>Head</ArmorLocation>
-                  <DefenseValue>1</DefenseValue>
+                  <NumberHands>Main</NumberHands>
+                  <AttackValue>5</AttackValue>
                 </Item>
               </ItemDatas>
             </Item>
@@ -3034,9 +2982,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>1504 2240</Position>
                 <RespawnPosition>1504 2240</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3064,9 +3012,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>6000 3632</Position>
                 <RespawnPosition>6000 3632</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3079,9 +3027,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>6016 1856</Position>
                 <RespawnPosition>6016 1856</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3109,9 +3057,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>1552 2736</Position>
                 <RespawnPosition>1552 2736</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3124,9 +3072,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>1536 3280</Position>
                 <RespawnPosition>1536 3280</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3154,9 +3102,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>3824 3632</Position>
                 <RespawnPosition>3824 3632</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3169,9 +3117,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>2656 3632</Position>
                 <RespawnPosition>2656 3632</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3184,9 +3132,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>1504 3984</Position>
                 <RespawnPosition>1504 3984</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3244,9 +3192,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>2688 4864</Position>
                 <RespawnPosition>2688 4864</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3259,9 +3207,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>2752 4304</Position>
                 <RespawnPosition>2752 4304</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3274,9 +3222,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>3280 4192</Position>
                 <RespawnPosition>3280 4192</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3289,9 +3237,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>3424 4320</Position>
                 <RespawnPosition>3424 4320</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3304,9 +3252,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>4416 4896</Position>
                 <RespawnPosition>4416 4896</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3319,9 +3267,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>3344 4848</Position>
                 <RespawnPosition>3344 4848</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3334,9 +3282,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>3856 4976</Position>
                 <RespawnPosition>3856 4976</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3349,41 +3297,11 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>4400 3616</Position>
                 <RespawnPosition>4400 3616</RespawnPosition>
-                <IsDead>false</IsDead>
-                <LastDeathTime>PT0S</LastDeathTime>
-                <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
-              </Item>
-              <Item Type="RpgLibrary.EntityClasses.EnemyData">
-                <Type>SkeletonsAdventure.Entities.Spider</Type>
-                <BaseHealth>15</BaseHealth>
-                <BaseDefence>2</BaseDefence>
-                <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
-                <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
-                <Position>4560 1952</Position>
-                <RespawnPosition>4560 1952</RespawnPosition>
-                <IsDead>false</IsDead>
-                <LastDeathTime>PT0S</LastDeathTime>
-                <DropTableName>BasicDropTable</DropTableName>
-                <GuaranteedItems />
-              </Item>
-              <Item Type="RpgLibrary.EntityClasses.EnemyData">
-                <Type>SkeletonsAdventure.Entities.Spider</Type>
-                <BaseHealth>15</BaseHealth>
-                <BaseDefence>2</BaseDefence>
-                <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
-                <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
-                <Position>4752 1984</Position>
-                <RespawnPosition>4752 1984</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
@@ -3397,6 +3315,36 @@
                 <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
                 <CurrentHealth>23</CurrentHealth>
+                <Position>4560 1952</Position>
+                <RespawnPosition>4560 1952</RespawnPosition>
+                <IsDead>false</IsDead>
+                <LastDeathTime>PT0S</LastDeathTime>
+                <DropTableName>BasicDropTable</DropTableName>
+                <GuaranteedItems />
+              </Item>
+              <Item Type="RpgLibrary.EntityClasses.EnemyData">
+                <Type>SkeletonsAdventure.Entities.Spider</Type>
+                <BaseHealth>15</BaseHealth>
+                <BaseDefence>2</BaseDefence>
+                <BaseAttack>7</BaseAttack>
+                <EntityLevel>3</EntityLevel>
+                <BaseXP>4</BaseXP>
+                <CurrentHealth>21</CurrentHealth>
+                <Position>4752 1984</Position>
+                <RespawnPosition>4752 1984</RespawnPosition>
+                <IsDead>false</IsDead>
+                <LastDeathTime>PT0S</LastDeathTime>
+                <DropTableName>BasicDropTable</DropTableName>
+                <GuaranteedItems />
+              </Item>
+              <Item Type="RpgLibrary.EntityClasses.EnemyData">
+                <Type>SkeletonsAdventure.Entities.Spider</Type>
+                <BaseHealth>15</BaseHealth>
+                <BaseDefence>2</BaseDefence>
+                <BaseAttack>7</BaseAttack>
+                <EntityLevel>3</EntityLevel>
+                <BaseXP>4</BaseXP>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>3776 3072</Position>
                 <RespawnPosition>3776 3072</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3409,9 +3357,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>3776 2320</Position>
                 <RespawnPosition>3776 2320</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3424,9 +3372,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>3792 1472</Position>
                 <RespawnPosition>3792 1472</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3439,9 +3387,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>3984 1200</Position>
                 <RespawnPosition>3984 1200</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3454,9 +3402,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>4512 1200</Position>
                 <RespawnPosition>4512 1200</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3499,9 +3447,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>5280 1664</Position>
                 <RespawnPosition>5280 1664</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3529,9 +3477,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>5264 3008</Position>
                 <RespawnPosition>5264 3008</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3544,9 +3492,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>4</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>23</CurrentHealth>
                 <Position>5696 2928</Position>
                 <RespawnPosition>5696 2928</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3574,9 +3522,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>6272 4368</Position>
                 <RespawnPosition>6272 4368</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3589,9 +3537,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>5</EntityLevel>
+                <EntityLevel>3</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>25</CurrentHealth>
+                <CurrentHealth>21</CurrentHealth>
                 <Position>6032 4624</Position>
                 <RespawnPosition>6032 4624</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3604,9 +3552,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>5504 4928</Position>
                 <RespawnPosition>5504 4928</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3619,9 +3567,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>4</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>23</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>6016 4912</Position>
                 <RespawnPosition>6016 4912</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3649,9 +3597,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>4480 4240</Position>
                 <RespawnPosition>4480 4240</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3679,9 +3627,9 @@
                 <BaseHealth>15</BaseHealth>
                 <BaseDefence>2</BaseDefence>
                 <BaseAttack>7</BaseAttack>
-                <EntityLevel>3</EntityLevel>
+                <EntityLevel>5</EntityLevel>
                 <BaseXP>4</BaseXP>
-                <CurrentHealth>21</CurrentHealth>
+                <CurrentHealth>25</CurrentHealth>
                 <Position>4448 5472</Position>
                 <RespawnPosition>4448 5472</RespawnPosition>
                 <IsDead>false</IsDead>
@@ -3857,8 +3805,23 @@
                 <EntityLevel>70</EntityLevel>
                 <BaseXP>4</BaseXP>
                 <CurrentHealth>155</CurrentHealth>
-                <Position>896 928</Position>
-                <RespawnPosition>896 928</RespawnPosition>
+                <Position>960 672</Position>
+                <RespawnPosition>960 672</RespawnPosition>
+                <IsDead>false</IsDead>
+                <LastDeathTime>PT0S</LastDeathTime>
+                <DropTableName>BasicDropTable</DropTableName>
+                <GuaranteedItems />
+              </Item>
+              <Item Type="RpgLibrary.EntityClasses.EnemyData">
+                <Type>SkeletonsAdventure.Entities.Minotaur</Type>
+                <BaseHealth>20</BaseHealth>
+                <BaseDefence>6</BaseDefence>
+                <BaseAttack>15</BaseAttack>
+                <EntityLevel>70</EntityLevel>
+                <BaseXP>4</BaseXP>
+                <CurrentHealth>160</CurrentHealth>
+                <Position>320 1024</Position>
+                <RespawnPosition>320 1024</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>
@@ -3872,8 +3835,8 @@
                 <EntityLevel>70</EntityLevel>
                 <BaseXP>5</BaseXP>
                 <CurrentHealth>160</CurrentHealth>
-                <Position>480 864</Position>
-                <RespawnPosition>480 864</RespawnPosition>
+                <Position>448 800</Position>
+                <RespawnPosition>448 800</RespawnPosition>
                 <IsDead>false</IsDead>
                 <LastDeathTime>PT0S</LastDeathTime>
                 <DropTableName>BasicDropTable</DropTableName>

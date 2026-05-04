@@ -36,6 +36,7 @@ namespace SkeletonsAdventure.ItemClasses
             return def;
         }
 
+        //TODO: Implement mana bonus for equipped items
         public int EquippedItemsManaBonus()
         {
             //int mana = 0;
@@ -53,6 +54,7 @@ namespace SkeletonsAdventure.ItemClasses
             return 0; // Placeholder for future mana bonus implementation
         }
 
+        //TODO: Implement health bonus for equipped items
         public int EquippedItemsHealthBonus()
         {
             //int health = 0;

@@ -13,7 +13,7 @@ namespace SkeletonsAdventure.GameUI
         public Color BorderColor { get; set; } = Color.Black;
         public Color BackgroundColor { get; set; } = Color.Gray;
         public Color BarColor { get; set; } = Color.Red;
-        public Texture2D Texture { get; set; } = GameManager.StatusBarTexture;
+        public Texture2D Texture { get; set; } = GameManager.TexturesLibrary.StatusBarTexture;
         public bool Visible { get; set; } = true;
         public bool TextVisible { get; set; } = true;
         public float Transparency { get; set; } = 0.5f;
@@ -60,8 +60,8 @@ namespace SkeletonsAdventure.GameUI
                 // Draw the text
                 if(TextVisible)
                 {
-                    var textPosition = new Vector2(Position.X + Width / 2 - GameManager.Arial10.MeasureString(statusBarText).X / 2, Position.Y + Height / 2 - GameManager.Arial10.MeasureString(statusBarText).Y / 2);
-                    spriteBatch.DrawString(GameManager.Arial10, statusBarText, textPosition, Color.White * Transparency);
+                    var textPosition = new Vector2(Position.X + Width / 2 - GameManager.FontsLibrary.Arial10.MeasureString(statusBarText).X / 2, Position.Y + Height / 2 - GameManager.FontsLibrary.Arial10.MeasureString(statusBarText).Y / 2);
+                    spriteBatch.DrawString(GameManager.FontsLibrary.Arial10, statusBarText, textPosition, Color.White * Transparency);
                 }
             }
         }

@@ -10,7 +10,7 @@ namespace SkeletonsAdventure.GameMenu
     internal class ActionBarMenu : BaseMenu
     {
         private static readonly string defaultText = "None"; // Placeholder text for the dropdown
-        private readonly static Keys[] keyOrder = GameManager.KeyOrder;
+        private readonly static Keys[] keyOrder = KeybindingsManager.KeyOrder;
         private static Player Player { get; set; }
         private Dictionary<string, BasicAttack> LearnedAttacks { get; set; } = [];
         private List<string> ExcludedSkills { get; set; } = ["BasicAttack"]; //skills that should not be learnable by the player

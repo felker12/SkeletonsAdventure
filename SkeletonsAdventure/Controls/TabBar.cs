@@ -8,7 +8,7 @@ namespace SkeletonsAdventure.Controls
     {
         public Dictionary<Tab, BaseMenu> TabMenus { get; private set; } = [];
         public Vector2 Position { get; set; } = new();
-        public SpriteFont SpriteFont { get; set; } = GameManager.Arial20;
+        public SpriteFont SpriteFont { get; set; } = GameManager.FontsLibrary.Arial20;
         public int Width { get; set; } = 100;
         public int Height { get; set; } = 100;
         public BaseMenu ActiveMenu { get; set; } = null;
@@ -131,8 +131,7 @@ namespace SkeletonsAdventure.Controls
 
         public void SetAllTabsColors(Color color)
         {
-            Texture2D background = new(GameManager.GraphicsDevice, 1, 1);
-            background.SetData([color]);
+            Texture2D background = GameManager.TexturesLibrary.CreateTextureFromColor(color);
 
             foreach (Tab tab in TabMenus.Keys)
             {

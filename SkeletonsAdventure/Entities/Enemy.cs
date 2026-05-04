@@ -3,6 +3,7 @@ using RpgLibrary.EntityClasses;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameWorld;
+using SkeletonsAdventure.HelperClasses;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
 
@@ -23,7 +24,7 @@ namespace SkeletonsAdventure.Entities
         Regular, Elite, Boss
     }
 
-    public class Enemy : Entity
+    public class Enemy : Entity, ICloneableGameClass<Enemy>
     {
         private int x, y, x2, y2, walkDistance, detectionWidth, detectionHeight;
 

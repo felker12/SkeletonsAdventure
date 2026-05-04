@@ -55,7 +55,7 @@ namespace SkeletonsAdventure.GameObjects
             int width = TiledMapTileLayer.TileWidth;
             int height = TiledMapTileLayer.TileHeight;
 
-            foreach (TiledMapTile tile in GameManager.TileLocations(chest.ID, TiledMapTileLayer.Tiles))
+            foreach (TiledMapTile tile in TiledHelperClasses.TileLocations(chest.ID, TiledMapTileLayer.Tiles))
             {
                 chest.Position = new(tile.X * width, tile.Y * height);
                 chest.DetectionArea = new Rectangle((int)chest.Position.X - 25, (int)chest.Position.Y - 25,
@@ -87,7 +87,7 @@ namespace SkeletonsAdventure.GameObjects
                     {
                         chest.DropTable = GameManager.GetDropTableByName(chest.DropTableName);
                         chest.ChestEmptied = data.ChestEmptied;
-                        chest.Items = GameManager.LoadGameItemsFromItemData(data.ItemDatas);
+                        chest.Items = GameManager.GameItemLoadingManager.LoadGameItemsFromItemData(data.ItemDatas);
                     }
                 }
             }

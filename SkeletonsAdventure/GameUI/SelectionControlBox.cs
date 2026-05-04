@@ -18,7 +18,15 @@ namespace SkeletonsAdventure.GameUI
 
         public SelectionControlBox() : base()
         {
-            Texture = GameManager.CreateTextureFromColor(Color.LightGray);
+            Texture = GameManager.TexturesLibrary.CreateTextureFromColor(Color.LightGray);
+            Position = new();
+            Width = 600;
+            Height = 400;
+        }
+
+        public SelectionControlBox(Texture2D texture) : base()
+        {
+            Texture = texture;
             Position = new();
             Width = 600;
             Height = 400;

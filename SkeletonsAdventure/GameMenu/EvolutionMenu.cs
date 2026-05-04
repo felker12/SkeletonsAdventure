@@ -7,13 +7,13 @@ namespace SkeletonsAdventure.GameMenu
     internal class EvolutionMenu : BaseMenu
     {
         public Player Player { get; set; } = World.Player;
-        private readonly Texture2D buttonTexture = GameManager.ButtonTexture;
+        private readonly Texture2D buttonTexture = GameManager.TexturesLibrary.ButtonTexture;
 
         Button EvolveBtn { get; set; }
 
         public EvolutionMenu() : base()
         {
-            ControlManager = new(GameManager.Arial14);
+            ControlManager = new(GameManager.FontsLibrary.Arial14);
             CreateControls();
             PositionControls();
         }

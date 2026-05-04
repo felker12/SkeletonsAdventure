@@ -5,11 +5,8 @@ global using System;
 global using System.Collections.Generic;
 global using System.Diagnostics; //this is just for debugging purposes
 
-using MonoGame.Extended.Tiled;
-using RpgLibrary.AttackData;
 using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
-using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities;
@@ -20,848 +17,110 @@ using SkeletonsAdventure.ItemClasses.ItemManagement;
 using SkeletonsAdventure.Quests;
 using System.IO;
 using System.Linq;
-using Microsoft.Xna.Framework.Input;
+using SkeletonsAdventure.LibraryClasses;
+using SkeletonsAdventure.HelperClasses;
+using SkeletonsAdventure.Engines;
 
 namespace SkeletonsAdventure.GameWorld
 {
     internal class GameManager
     {
-        //SpriteFonts
-        public static SpriteFont Arial10 { get; private set; }
-        public static SpriteFont Arial12 { get; private set; }
-        public static SpriteFont Arial14 { get; private set; }
-        public static SpriteFont Arial16 { get; private set; }
-        public static SpriteFont Arial18 { get; private set; }
-        public static SpriteFont Arial20 { get; private set; }
+        //Libraries
+        public static FontsLibrary FontsLibrary { get; private set; }
+        public static TexturesLibrary TexturesLibrary { get; private set; }
+        public static AttackLibrary AttackLibrary { get; private set; }
+        public static PathsLibrary PathsLibrary { get; private set; }
+        public static XPTable XPTable { get; private set; }
+        public static SaveEngine SaveEngine { get; private set; }
 
-        //Strings
-        public static string GamePath { get; private set; }
-        public static string SavePath { get; private set; }
+        //Loading classes
+        public static GameItemLoadingManager GameItemLoadingManager { get; private set; }
 
         //Dictionaries
         private static Dictionary<string, Enemy> Enemies { get; set; } = [];
-        public static Dictionary<string, Enemy> EnemiesClone => GetEnemiesClone();
+        public static Dictionary<string, Enemy> EnemiesClone => CloneDictionary(Enemies);
 
         private static Dictionary<string, GameItem> Items { get; set; } = [];
-        public static Dictionary<string, GameItem> ItemsClone => GetItemsClone();
+        public static Dictionary<string, GameItem> ItemsClone => CloneDictionary(Items);
 
-        //This is a dictionary of items that can be dropped by enemies, it is used to create the drop table for the enemies
-        private static Dictionary<string, DropTableItem> DropTableItems { get; set; } = [];
-        public static Dictionary<string, DropTableItem> DropTableItemsClone => GetDropTableItemsClone();
-
-        //TODO create a dictinary for Drop Tables
         private static Dictionary<string, DropTable> DropTables { get; set; } = [];
-        public static Dictionary<string, DropTable> DropTablesClone => GetDropTablesClone();
+        public static Dictionary<string, DropTable> DropTablesClone => CloneDictionary(DropTables);
 
         private static Dictionary<string, Chest> Chests { get; set; } = [];
-        public static Dictionary<string, Chest> ChestsClone => GetChestsClone();
+        public static Dictionary<string, Chest> ChestsClone => CloneDictionary(Chests);
 
         private static Dictionary<string, BasicAttack> EntityAttacks { get; set; } = [];
-        public static Dictionary<string, BasicAttack> EntityAttackClone => GetEntityAttacksClone();
+        public static Dictionary<string, BasicAttack> EntityAttackClone => CloneDictionary(EntityAttacks);
 
         private static Dictionary<string, Quest> Quests { get; set; } = [];
-        public static Dictionary<string, Quest> QuestsClone => GetQuestsClone();
+        public static Dictionary<string, Quest> QuestsClone => CloneDictionary(Quests);
 
         private static Dictionary<string, NPC> NPCs { get; set; } = [];
-        public static Dictionary<string, NPC> NPCClone => GetNPCClone();
+        public static Dictionary<string, NPC> NPCClone => CloneDictionary(NPCs);
 
         private static Dictionary<string, TiledAnimation> TiledAnimations { get; set; } = [];
-        public static Dictionary<string, TiledAnimation> TiledAnimationsClone => GetTileAnimationsClone();
-
-        //=====Textures=====
-        //Entity Textures
-        public static Texture2D SkeletonTexture { get; private set; }
-        public static Texture2D SpiderTexture { get; private set; }
-        public static Texture2D GoblinTexture { get; private set; }
-        public static Texture2D SkeletalBruiserTexture { get; private set; } 
-        public static Texture2D ArmoredSkeletonTexture { get; private set; }
-        public static Texture2D SkeletonWarriorTexture { get; private set; }
-        public static Texture2D SkeletonMageTexture { get; private set; }
-        public static Texture2D MinotaurTexture { get; private set; }
-
-        //Attack Textures
-        public static Texture2D AttackAreaTexture { get; private set; }
-        public static Texture2D SkeletonAttackTexture { get; private set; }
-        public static Texture2D FireBallTexture { get; private set; }
-        public static Texture2D FireBallTexture2 { get; private set; }
-        public static Texture2D IcePillarTexture { get; private set; }
-        public static Texture2D IcePillarSpriteSheetTexture { get; private set; }
-        public static Texture2D IceBulletTexture { get; private set; }
-        public static Texture2D IceBulletsTexture { get; private set; }
-        public static Texture2D WaterBallSpriteSheetTexture { get; private set; }
-        public static Texture2D FireWallTexture { get; private set; }
-        public static Texture2D BlueFireWallTexture { get; private set; }
-        public static Texture2D FireWallSpriteSheetTexture { get; private set; }
-        public static Texture2D BlueFireWallSpriteSheetTexture { get; private set; }
-        public static Texture2D TriangleAttackTexture { get; private set; }
-        public static Texture2D SpinningTriangleAttackTexture { get; private set; }
-
-        //UI Textures
-        public static Texture2D ButtonBoxTexture { get; private set; }
-        public static Texture2D DefaultButtonTexture { get; private set; }
-        public static Texture2D GameMenuTexture { get; set; }
-        public static Texture2D BackpackBackground { get; set; }
-        public static Texture2D StatusBarTexture { get; set; }
-        public static Texture2D ButtonTexture { get; set; }
-        public static Texture2D TextBoxTexture { get; set; }
-
-        //Miscellaneous Textures
-        public static Texture2D DoorLeverAndChestAnimationTexture { get; private set; }
-        //==========
-
-        //Colors
-        public static Color TextBoxColor { get; set; }
-        //=========
-
-        //Attacks
-        public static AttackData BasicAttackData { get; set; }
-        public static AttackData FireBallData { get; set; }
-        public static AttackData IcePillarData { get; set; }
-        public static AttackData IceBulletData { get; set; }
-        public static MultiShotAttackData IceBulletsData { get; set; }
-        public static AttackData WaterBallData { get; set; }
-        public static AttackData FireWallData { get; set; }
-        public static AttackData BlueFireWallData { get; set; }
-        public static AttackData TriangleAttackData { get; set; }
-        public static AttackData SpinningTriangleAttackData { get; set; }
+        public static Dictionary<string, TiledAnimation> TiledAnimationsClone => CloneDictionary(TiledAnimations);
 
         //Miscellaneous Variables
-        public static Game1 Game { get; private set; }
-        public static GraphicsDevice GraphicsDevice { get; private set; }
         public static QuestManager QuestManager { get; set; } = new(); //TODO this isn't used
         public static ContentManager Content { get; private set; }
-        public static List<int> PlayerLevelXPs { get; private set; } = [];
-        public static List<Keys> PossibleKeybindings { get; } =
-            [Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5,
-            Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0];
-        public static Keys[] KeyOrder { get; } = [Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0];
-
-        public string GameManagerString { get; private set; } = "Test string";
 
         public GameManager(ContentManager content, GraphicsDevice graphicsDevice)
         {
             Content = content;
-            GraphicsDevice = graphicsDevice;
 
-            SetPaths();
-            CreatePlayerLevelXPs();
+            PathsLibrary = new();
+            FontsLibrary = new(content);
+            TexturesLibrary = new(content, graphicsDevice);
+            AttackLibrary = new(content, TexturesLibrary);
 
-            SetColors();
-            LoadFonts();
-            LoadTextures();
+            EntityAttacks = AttackLibrary.EntityAttacks;
 
-            LoadAttacks();
-            LoadTiledAnimations();
+            TiledAnimations = TiledHelperClasses.LoadTiledAnimations(Content);
 
-            CreateItems(); 
+            //The order of these is important because some of the data relies on other data to be created first.
+            XPTable = new(PathsLibrary.SavePath);
+            Items = GameCreationManager.CreateItems(Content);
+
+            GameItemLoadingManager = new GameItemLoadingManager(Items);
+
             DropTables = GameCreationManager.CreateDropTables();
+            Enemies = GameCreationManager.CreateEnemies(Content, PathsLibrary.GamePath);
+            Chests = GameCreationManager.CreateChests();
+            Quests = GameCreationManager.CreateQuests(ItemsClone);
+            NPCs = GameCreationManager.CreateNPCs(Content, PathsLibrary.GamePath, QuestsClone);
 
-            CreateEnemies();
-            //CreateEnemiesManually();
-
-            Chests = GameCreationManager.CreateChests(DropTablesClone);
-            CreateAttacks();
-            CreateQuests();
-            CreateNPCs();
+            SaveEngine = new();
         }
 
-        public static Texture2D CreateTextureFromColor(Color color)
+        public GameManager(Game1 game) : this(game.Content, game.GraphicsDevice)
         {
-            Texture2D texture = new(GraphicsDevice, 1, 1);
-            texture.SetData([color]);
-
-            return texture;
         }
 
-        private static void SetPaths()
-        {
-
-            GamePath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName; //Project Directory
-
-            string directory = Directory.GetCurrentDirectory();
-            Debug.WriteLine($"Current Directory: {directory}");
-
-            string testLocation = Directory.GetParent(directory).Parent.Parent.Parent.FullName;
-            Debug.WriteLine($"Test Path: {testLocation}");
-
-            string saveLoc = Path.GetFullPath(Path.Combine(testLocation, "SkeletonsAdventure"));
-            Debug.WriteLine(" Test path 2: " + saveLoc);
-
-
-            Debug.WriteLine($"Game Path: {GamePath}");
-            Debug.WriteLine($"same path is {string.Equals(GamePath, saveLoc)}");
-
-
-            GamePath = saveLoc;
-
-            SavePath = Path.GetFullPath(Path.Combine(saveLoc, @"..\SaveFiles")); //Directory of the saved files
-
-
-            //SavePath = Path.GetFullPath(Path.Combine(GamePath, @"..\SaveFiles")); //Directory of the saved files
-
-            /*
-            //TODO
-            string path = Path.Combine(GamePath, "Content", "EntityData");
-            string contentDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Content.RootDirectory);
-            Debug.WriteLine($"AppDomain: {AppDomain.CurrentDomain.BaseDirectory}");
-            Debug.WriteLine($"Path: {path}");
-            Debug.WriteLine($"Content Path: {contentDirectoryPath}");
-            */
-        }
-
-        //Load data from saved files
-
-        public static GameItem LoadGameItemFromItemData(ItemData itemData)
-        {
-            GameItem item = null;
-
-            foreach (GameItem gameItem in Items.Values)
-            {
-                if (itemData.Name == gameItem.Name)
-                {
-                    item = gameItem.Clone();
-                    item.SetQuantity(itemData.Quantity);
-                    item.Position = itemData.Position;
-                }
-            }
-
-            return item;
-        }
-        public static List<GameItem> LoadGameItemsFromItemData(List<ItemData> itemDatas)
-        {
-            List<GameItem> items = [];
-
-            foreach (ItemData item in itemDatas)
-                items.Add(LoadGameItemFromItemData(item));
-
-            return items;
-        }
-
-        public static GameItem LoadGameItemFromItemBaseData(ItemBaseData itemBaseData)
-        {
-            GameItem item = null;
-
-            foreach (GameItem gameItem in Items.Values)
-            {
-                if (itemBaseData.Name == gameItem.Name)
-                {
-                    item = gameItem.Clone();
-                    item.SetQuantity(itemBaseData.Quantity);
-                }
-            }
-
-            return item;
-        }
-
-        public static List<GameItem> LoadGameItemsFromItemBaseData(List<ItemBaseData> itemDatas)
-        {
-            List<GameItem> items = [];
-
-            foreach (ItemBaseData item in itemDatas)
-                items.Add(LoadGameItemFromItemBaseData(item));
-
-            return items;
-        }
         //Get a clone of the dictionaries
-        private static Dictionary<string, GameItem> GetItemsClone()
+        private static Dictionary<string, T> CloneDictionary<T>(Dictionary<string, T> source) where T : class, ICloneableGameClass<T>
         {
-            Dictionary<string, GameItem> items = [];
-
-            foreach (var item in Items)
-                items.Add(item.Key, item.Value.Clone());
-
-            return items;
+            return source.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Clone());
         }
 
-        private static Dictionary<string, DropTableItem> GetDropTableItemsClone()
+        public static T GetClonedValue<T>(Dictionary<string, T> source, string name) where T : class, ICloneableGameClass<T>
         {
-            Dictionary<string, DropTableItem> dropTableItems = [];
-
-            foreach (var item in DropTableItems)
-                dropTableItems.Add(item.Key, item.Value.Clone());
-
-            return dropTableItems;
+            return source.TryGetValue(name, out T value) ? value.Clone() : null;
         }
 
-        private static Dictionary<string, DropTable> GetDropTablesClone()
+        private static void DictionaryWriteTest<T>(Dictionary<string, T> dictionary) where T : class
         {
-            Dictionary<string, DropTable> dropTables = [];
-
-            foreach (var item in DropTables)
-                dropTables.Add(item.Key, item.Value.Clone());
-
-            return dropTables;
-        }
-
-        private static Dictionary<string, Chest> GetChestsClone()
-        {
-            Dictionary<string, Chest> chests = [];
-
-            foreach (var item in Chests)
-                chests.Add(item.Key, item.Value.Clone());
-
-            return chests;
-        }
-
-
-        private static Dictionary<string, Enemy> GetEnemiesClone()
-        {
-            Dictionary<string, Enemy> enemy = [];
-
-            foreach (var item in Enemies)
-                enemy.Add(item.Key, item.Value.Clone());
-
-            return enemy;
-        }
-
-        private static Dictionary<string, BasicAttack> GetEntityAttacksClone()
-        {
-            Dictionary<string, BasicAttack> attack = [];
-
-            foreach (KeyValuePair<string, BasicAttack> item in EntityAttacks)
-                attack.Add(item.Key, item.Value.Clone());
-
-            return attack;
-        }
-
-        private static Dictionary<string, Quest> GetQuestsClone()
-        {
-            Dictionary<string, Quest> Quest = [];
-
-            foreach (var quest in Quests)
-                Quest.Add(quest.Key, quest.Value.Clone());
-
-            return Quest;
-        }
-
-        private static Dictionary<string, NPC> GetNPCClone()
-        {
-            Dictionary<string, NPC> NPC = [];
-
-            foreach (var npc in NPCs)
-                NPC.Add(npc.Key, npc.Value.Clone());
-
-            return NPC;
-        }
-
-        private static Dictionary<string, TiledAnimation> GetTileAnimationsClone()
-        {
-            Dictionary<string, TiledAnimation> animations = [];
-
-            foreach (var animation in TiledAnimations)
-                animations.Add(animation.Key, animation.Value.Clone());
-
-            return animations;
-        }
-
-
-        //Create the player levels and their XP values
-        public static void CreatePlayerLevelXPs() //TODO adjust the xp as needed
-        {
-            string levelsSavePath = Path.Combine(SavePath, "PlayerLevels.txt");
-
-            if (File.Exists(levelsSavePath)) //If the file exists load the data
+            foreach (var item in dictionary)
             {
-                List<string> lines = [.. File.ReadAllLines(levelsSavePath)];
-
-                foreach (var line in lines)
-                {
-                    string[] parts = line.Split(',');
-                    if (int.TryParse(parts[1], out int xp))
-                    {
-                        PlayerLevelXPs.Add(xp);
-                    }
-                }
+                Debug.WriteLine($"Key: {item.Key}, Value: {item.Value}");
             }
-            else
-            {
-                File.CreateText(levelsSavePath).Close(); //create the file if it doesn't exist
-                string levels = string.Empty;
-
-                for (int i = 0; i < 101; i++)
-                {
-                    if (i == 0)
-                        PlayerLevelXPs.Add(0);
-                    else
-                        PlayerLevelXPs.Add((int)Math.Pow(i + 1, 2) * 20);
-
-                    levels += $"{i},{PlayerLevelXPs[i]}" + Environment.NewLine;
-                }
-
-                File.WriteAllText(levelsSavePath, levels);
-            }
-        }
-
-        //Get the level the player is at given the XP
-        public static int GetPlayerLevelAtXP(int XP)
-        {
-            int level = 0;
-
-            foreach (var levelXP in PlayerLevelXPs)
-                if (XP > levelXP)
-                    level = PlayerLevelXPs.IndexOf(levelXP);
-
-            return level;
-        }
-
-        //Get the XP needed for the level
-        public static int GetLevelXPAtLevel(int level)
-        {
-            return PlayerLevelXPs[level];
         }
 
         //Get an item from the items dictionary by its name
-        public static GameItem GetItemByName(string name)
-        {
-            if (Items.TryGetValue(name, out GameItem item))
-                return item.Clone();
-            else
-                return null;
-        }
-
-        public static DropTable GetDropTableByName(string name)
-        {
-            if (DropTables.TryGetValue(name, out DropTable dropTable))
-                return dropTable.Clone();
-            else
-                return null;
-        }
-
-        public static Enemy GetEnemyByName(string name)
-        {
-            if (Enemies.TryGetValue("SkeletonsAdventure.Entities." + name, out Enemy enemy))
-                return enemy.Clone();
-
-            return null;
-        }
-
-        public static BasicAttack GetAttackByName(string name)
-        {
-            if(EntityAttacks.TryGetValue(name, out BasicAttack attack))
-                return attack.Clone();
-
-            return null;
-        }
-
-        //Set the Colors
-        private static void SetColors()
-        {
-            TextBoxColor = new Color(210, 210, 210, 220);
-        }
-
-        //Load the data from the content folder
-        private static void LoadFonts()
-        {
-            Arial10 = Content.Load<SpriteFont>("Fonts/Arial10");
-            Arial12 = Content.Load<SpriteFont>("Fonts/Arial12");
-            Arial14 = Content.Load<SpriteFont>("Fonts/Arial14");
-            Arial16 = Content.Load<SpriteFont>("Fonts/Arial16");
-            Arial18 = Content.Load<SpriteFont>("Fonts/Arial18");
-            Arial20 = Content.Load<SpriteFont>("Fonts/Arial20");
-        }
-
-        private static void LoadTextures()
-        {
-            //Entity Textures
-            SkeletonTexture = Content.Load<Texture2D>(@"Player/SkeletonSpriteSheet");
-            SkeletonAttackTexture = Content.Load<Texture2D>(@"Player/SkeletonAttackSprites");
-            SpiderTexture = Content.Load<Texture2D>(@"EntitySprites/spider");
-            GoblinTexture = Content.Load<Texture2D>(@"EntitySprites/goblin");
-            SkeletalBruiserTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletalBruiser");
-            SkeletonWarriorTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletonWarrior");
-            SkeletonMageTexture = Content.Load<Texture2D>(@"EntitySprites/SkeletonMage");
-            ArmoredSkeletonTexture = Content.Load<Texture2D>(@"Player/ArmoredSkeletonSpriteSheet");
-            MinotaurTexture = Content.Load<Texture2D>(@"EntitySprites/MinotaurSpriteSheet");
-
-            //Attack Textures
-            FireBallTexture = Content.Load<Texture2D>(@"AttackSprites/FireBall_01");
-            FireBallTexture2 = Content.Load<Texture2D>(@"AttackSprites/FireBallSpriteSheet");
-            IcePillarTexture = Content.Load<Texture2D>(@"AttackSprites/IcePillar");
-            IcePillarSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/IcePillarSpriteSheet");
-            IceBulletTexture = Content.Load<Texture2D>(@"AttackSprites/IceBullet");
-            IceBulletsTexture = Content.Load<Texture2D>(@"AttackSprites/IceBullets");
-            WaterBallSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/WaterBallSpriteSheet");
-            FireWallTexture = Content.Load<Texture2D>(@"AttackSprites/FireWall_Red");
-            BlueFireWallTexture = Content.Load<Texture2D>(@"AttackSprites/FireWall_Blue");
-            FireWallSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/FireWaveSpriteSheet");
-            BlueFireWallSpriteSheetTexture = Content.Load<Texture2D>(@"AttackSprites/FireWaveSpriteSheetBlue");
-            TriangleAttackTexture = Content.Load<Texture2D>(@"AttackSprites/TriangleAttack");
-            SpinningTriangleAttackTexture = Content.Load<Texture2D>(@"AttackSprites/SpinningTriangleAttack");
-
-            AttackAreaTexture = new(GraphicsDevice, 1, 1);
-            AttackAreaTexture.SetData([new Color(153, 29, 20, 250)]);
-
-            //UI Textures
-            ButtonBoxTexture = new(GraphicsDevice, 1, 1);
-            ButtonBoxTexture.SetData([new Color(83, 105, 140, 230)]);
-
-            DefaultButtonTexture = new(GraphicsDevice, 1, 1);
-            DefaultButtonTexture.SetData([new Color(83, 105, 140, 230)]);
-
-            GameMenuTexture = new(GraphicsDevice, 1, 1);
-            GameMenuTexture.SetData([new Color(171, 144, 91, 250)]);
-
-            BackpackBackground = Content.Load<Texture2D>(@"TiledFiles/BackpackBackground");
-
-            StatusBarTexture = CreateTextureFromColor(Color.White);
-
-            ButtonTexture = Content.Load<Texture2D>("Controls/Button");
-
-            TextBoxTexture = CreateTextureFromColor(TextBoxColor);
-
-            //Miscellaneous Textures
-            DoorLeverAndChestAnimationTexture = Content.Load<Texture2D>(@"TiledFiles/doors_lever_chest_animation_0");
-        }
-
-        private static void LoadAttacks()
-        {
-            BasicAttackData = Content.Load<AttackData>(@"AttackData/BasicAttack");
-
-            FireBallData = Content.Load<AttackData>(@"AttackData/FireBall");
-            FireWallData = Content.Load<AttackData>(@"AttackData/FireWall");
-            BlueFireWallData = Content.Load<AttackData>(@"AttackData/BlueFireWall");
-
-            IcePillarData = Content.Load<AttackData>(@"AttackData/IcePillar");
-            IceBulletData = Content.Load<AttackData>(@"AttackData/IceBullet");
-            IceBulletsData = Content.Load<MultiShotAttackData>(@"AttackData/IceBullets");
-
-            WaterBallData = Content.Load<AttackData>(@"AttackData/WaterBall");
-
-            TriangleAttackData = Content.Load<AttackData>(@"AttackData/TriangleAttack");
-            SpinningTriangleAttackData = Content.Load<AttackData>(@"AttackData/SpinningTriangleAttack");
-        }
-
-        private static void LoadTiledAnimations()
-        {
-            TiledMapTileset tiledMapTileset = Content.Load<TiledMapTileset>(@"TiledFiles/doors_lever_chest_animation");
-            string tileName = tiledMapTileset.Name;
-
-            foreach (var tile in tiledMapTileset.Tiles)
-            {
-                if(tile is TiledMapTilesetAnimatedTile animatedTile)
-                {
-                    //to have a unique key for each animated tile the name will be the texture name + "_" + the tile id
-                    TiledAnimations.Add(tileName + "_" + tile.LocalTileIdentifier, new(tiledMapTileset, animatedTile));
-                }
-            }
-        }
-
-        //Create the items from the content folder
-        private static void CreateItems()
-        {
-            string[] folders = Directory.GetDirectories(@"Content\Items");
-            string[] names;
-            string filePath;
-
-            ItemData itemData;
-            Texture2D itemTexure;
-            GameItem gameItem;
-
-            foreach (string folder in folders)
-            {
-                //the name of the folder without extensions and the complete file path
-                names = [.. Directory.GetFiles(folder).Select(fileName => Path.GetFileNameWithoutExtension(fileName))];
-
-                foreach (string name in names)
-                {
-                    filePath = $@"..\{folder}\{name}"; //add the folder name to the path of the folder to get the file path without the extension
-
-                    itemData = Content.Load<ItemData>(filePath);
-                    itemTexure = Content.Load<Texture2D>(@$"{itemData.TexturePath}");
-
-                    gameItem = CreateGameItemFromData(itemData);
-
-                    if (Items.ContainsKey(gameItem.Name) == false)
-                        Items.Add(gameItem.Name, gameItem);
-
-                    CreateDropTableItemFromGameItem(gameItem); //Create a drop table item from the game item
-                }
-            }
-        }
-
-        public static GameItem CreateGameItemFromData(ItemData itemData)
-        {
-            GameItem gameItem;
-            Weapon weapon;
-            Armor armor;
-            Shield shield;
-            Consumable consumable;
-
-            //cast the itemData to the correct type
-            if (itemData is WeaponData weaponData)
-            {
-                weapon = new(weaponData.Clone());
-                gameItem = weapon;
-            }
-            else if (itemData is ArmorData armorData)
-            {
-                armor = new(armorData.Clone());
-                gameItem = armor;
-            }
-            else if (itemData is ShieldData shieldData)
-            {
-                shield = new(shieldData.Clone());
-                gameItem = shield;
-            }
-            else if (itemData is ConsumableData consumableData)
-            {
-                consumable = new(consumableData.Clone());
-                gameItem = consumable;
-            }
-            else
-            {
-                gameItem = new(itemData.Clone());
-            }
-
-            return gameItem;
-        }
-
-        private static bool CreateDropTableItemFromGameItem(GameItem item)
-        {
-            if (item is not null && item.Name is not null)
-            {
-                DropTableItem dropTableItem = new(item.Name, 1, 1, 1);
-                DropTableItems.Add(dropTableItem.ItemName, dropTableItem);
-                return true; // Return true if the item was successfully added
-            }
-
-            return false; // Return false if the item was null or invalid
-        }
-
-        //Create the enemies from the content folder
-        private static void CreateEnemies()
-        {
-            // Use reflection to build a lookup table of all concrete Enemy subclasses in the current assembly.
-            // This maps full type names (e.g., "SkeletonsAdventure.Entities.Skeleton") to Type objects,
-            // allowing us to dynamically instantiate the correct enemy class based on the type name 
-            // stored in each EnemyData XML file. Only non-abstract Enemy subclasses are included.
-            var enemyTypes = typeof(Enemy).Assembly.GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(Enemy)) && !t.IsAbstract)
-                .ToDictionary(t => t.FullName, t => t);
-
-            string EnemiesPath = Path.Combine(GamePath, "Content", "EntityData");
-            string[] fileNames = Directory.GetFiles(EnemiesPath);
-
-            // Iterate through each enemy data file and create the corresponding enemy instance
-            foreach (string s in fileNames)
-            {
-                string fileName = Path.GetFileNameWithoutExtension(s);
-                EnemyData data = Content.Load<EnemyData>($"EntityData/{fileName}");
-
-                // Attempt to find the enemy type in our lookup table using the type name from the data file
-                if (enemyTypes.TryGetValue(data.Type, out Type enemyType))
-                {
-                    // Dynamically create the specific enemy subclass and add to dictionary
-                    Enemy en = (Enemy)Activator.CreateInstance(enemyType, data);
-                    Enemies.Add(en.GetType().FullName, en);
-
-                    //Debug.WriteLine($"Adding enemy: {en.GetType().FullName}");
-                }
-                else
-                {
-                    Debug.WriteLine($"Warning: Type '{data.Type}' not found in {fileName}");
-                }
-            }
-
-            /* string EnemiesPath = Path.Combine(GamePath, "Content", "EntityData");
-             string[] fileNames = Directory.GetFiles(EnemiesPath);
-
-             foreach (string s in fileNames)
-             {
-                 // Get just the filename without extension and path
-                 string fileName = Path.GetFileNameWithoutExtension(s);
-
-                 // Load using Content.Load with the correct content path format
-                 EnemyData data = Content.Load<EnemyData>($"EntityData/{fileName}");
-                 Enemy en = (Enemy)Activator.CreateInstance(Type.GetType(data.Type), data);
-                 var en2 = new Enemy(data);
-
-                 Debug.WriteLine($"Adding enemy: {en.GetType().FullName} & the test full name is: {en2.GetType().FullName}");
-
-                 Enemies.Add(en.GetType().FullName, en); //Add the entity to the dictionary of enemies
-             }*/
-        }
-
-        //This is the old method for creating enemies. It is kept for reference and testing purposes
-        private static void CreateEnemiesManually()
-        {
-            //Create the entities from the data and add their items to their loot list
-            EnemyData entityData = new(Content.Load<EnemyData>(@"EntityData/SkeletonData"));
-
-            Skeleton skeleton = new(entityData);
-            EliteSkeleton eliteSkeleton = new(entityData);
-
-            entityData = new(Content.Load<EnemyData>(@"EntityData/SpiderData"));
-
-            Spider spider = new(entityData);
-
-            //Add the entities to the dictionary
-            Enemies.Add(skeleton.GetType().FullName, skeleton);
-            Enemies.Add(eliteSkeleton.GetType().FullName, eliteSkeleton);
-            Enemies.Add(spider.GetType().FullName, spider);
-
-            //TODO these are temprorary paths, the files created here are not
-            //saved in the content folder and will need to be moved to the content folder
-            //ItemPath = Path.Combine(SavePath, "Items"); //Directory of the items
-            string EnemyPath = Path.Combine(SavePath, "Enemies"); //Directory of the enemies
-
-            //if (Path.Exists(ItemPath) == false)
-            //    Directory.CreateDirectory(ItemPath); //Create the directory if it doesn't exist
-            if (Path.Exists(EnemyPath) == false)
-                Directory.CreateDirectory(EnemyPath); //Create the directory if it doesn't exist
-
-            //TODO test this
-            foreach (var enemy in Enemies)//shouldn't be needed now
-            {
-                XnaSerializer.Serialize($@"{EnemyPath}\{enemy.Value.GetType().Name}Data.xml", enemy.Value.ToData());
-            }
-        }
-
-        private static void CreateAttacks()
-        {
-            //Create the attacks from the content folder
-            BasicAttack attack = new(BasicAttackData, SkeletonAttackTexture);
-            EntityAttacks.Add(attack.GetType().Name, attack);
-
-            //Fire attacks
-            FireBall fireball = new(FireBallData, FireBallTexture2);
-            EntityAttacks.Add(fireball.GetType().Name, fireball);
-
-            //FireWave fireWave = new(FireWallData, FireWallTexture);
-            FireWave fireWave = new(FireWallData, FireWallSpriteSheetTexture);
-            EntityAttacks.Add(fireWave.GetType().Name, fireWave);
-
-            //BlueFireWave blueFireWave = new(BlueFireWallData, BlueFireWallTexture);
-            BlueFireWave blueFireWave = new(BlueFireWallData, BlueFireWallSpriteSheetTexture);
-            EntityAttacks.Add(blueFireWave.GetType().Name, blueFireWave);
-
-            //Ice attacks
-            IcePillar icePillar = new(IcePillarData, IcePillarSpriteSheetTexture);
-            EntityAttacks.Add(icePillar.GetType().Name, icePillar);
-
-            IceBullet iceBullet = new(IceBulletData, IceBulletTexture);
-            EntityAttacks.Add(iceBullet.GetType().Name, iceBullet);
-
-            IceBullets iceBullets = new(IceBulletsData, IceBulletsTexture);
-            EntityAttacks.Add(iceBullets.GetType().Name, iceBullets);
-
-            //Water attacks
-            WaterBall waterBall = new(WaterBallData, WaterBallSpriteSheetTexture);
-            EntityAttacks.Add(waterBall.GetType().Name, waterBall);
-
-            //Non elemental attacks
-            TriangleAttack triangleAttack = new(TriangleAttackData, TriangleAttackTexture);
-            EntityAttacks.Add(triangleAttack.GetType().Name, triangleAttack);
-
-            SpinningTriangleAttack spinningTriangleAttack = new(SpinningTriangleAttackData, SpinningTriangleAttackTexture);
-            EntityAttacks.Add(spinningTriangleAttack.Name, spinningTriangleAttack);
-        }
-
-        private static void CreateQuests() //TODO
-        {
-            BaseTask task = new()
-            {
-                RequiredAmount = 3,
-                TaskToComplete = "Kill that thing"
-            };
-            BaseTask task2 = new()
-            {
-                RequiredAmount = 5,
-                TaskToComplete = "Do that thing"
-            };
-            BaseTask task3 = new()
-            {
-                RequiredAmount = 5,
-                TaskToComplete = "talk to that person"
-            };
-            SlayTask slayTask = new()
-            {
-                RequiredAmount = 10,
-                TaskToComplete = "Slay Entity: Skeleton",
-                MonsterToSlay = typeof(Skeleton).FullName,
-            };
-
-            List <BaseTask> Tasks = [task.Clone(), task2.Clone(), task3.Clone(), slayTask.Clone()];
-
-            LevelRequirements requirements = new()
-            {
-                Attack = 0,
-                Defence = 0,
-                Level = 0,
-            };
-
-            Quest quest = new()
-            {
-                Name = "Test Quest",
-                Description = "This is a test quest to test the quest system.",
-                Requirements = requirements,
-                Tasks = Tasks,
-            };
-
-            Quest quest2 = quest.Clone();
-            quest2.Name = "Test2";
-            quest2.RequiredQuestNames.Add(quest.Name);
-
-            Quest quest3 = new(quest.GetQuestData())
-            {
-                Name = "Test3",
-            };
-
-            QuestReward questReward = new()
-            {
-                Coins = 100,
-                XP = 50,
-                Items = [..ItemsClone.Values] // Convert the Dictionary to a List
-            };
-
-            Quest SlaySkeletons = new()
-            {
-                Name = "SlaySkeletons",
-                Description = "Kill 10 skeletons",
-                Requirements = requirements,
-                Reward = questReward,
-            };
-            SlaySkeletons.Tasks.Add(slayTask.Clone());
-
-            List<Quest> quests = [quest, quest2, quest3, SlaySkeletons];
-
-            foreach(var q in quests)
-            {
-                Quests.Add(q.Name, q);
-            }
-        }
-
-        private static void CreateNPCs() //TODO
-        {
-            /*
-            NPCData data = new()
-            {
-
-            };
-            */
-        }
-
-        public static List<TiledMapTile> TileLocations(int id, TiledMapTile[] tiles)
-        {
-            List<TiledMapTile> mapTiles = [];
-
-            foreach (var tile in tiles)
-            {
-                if (tile.GlobalIdentifier == id)
-                    mapTiles.Add(tile);
-            }
-            return mapTiles;
-        }
-
-        public static List<TiledMapObject> ObjectLocations(string name, TiledMapObject[] objects)
-        {
-            List<TiledMapObject> mapObjects = [];
-            foreach (var obj in objects)
-            {
-                if (obj.Name == name)
-                    mapObjects.Add(obj);
-            }
-            return mapObjects;
-        }
+        public static Enemy GetEnemyByName(string name) => GetClonedValue(Enemies, "SkeletonsAdventure.Entities." + name);
+        public static GameItem GetItemByName(string name) => GetClonedValue(Items, name);
+        public static DropTable GetDropTableByName(string name) => GetClonedValue(DropTables, name);
+        public static BasicAttack GetAttackByName(string name) => GetClonedValue(EntityAttacks, name);
+        public static Quest GetQuestByName(string name) => GetClonedValue(Quests, name);
     }
 }

@@ -2,10 +2,11 @@
 using System.Linq;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.Entities.PlayerClasses;
+using SkeletonsAdventure.HelperClasses;
 
 namespace SkeletonsAdventure.Quests
 {
-    public class Quest
+    public class Quest : ICloneableGameClass<Quest>
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

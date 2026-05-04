@@ -12,9 +12,9 @@ namespace SkeletonsAdventure.Attacks
         public int ShotsFired { get; set; } = 0;
         public List<ShootingAttack> Shots { get; private set; } = [];
 
-        public MultiShotAttack(MultiShotAttackData data, Texture2D iconImage) : base(data, iconImage)
+        public MultiShotAttack(MultiShotAttackData data, Texture2D iconImage, ShootingAttack baseAttack) : base(data, iconImage)
         {
-            Shot = (ShootingAttack)GameManager.GetAttackByName(data.ShotName);
+            Shot = baseAttack.Clone();
             ShotCount = data.ShotCount;
             ShotInterval = data.ShotInterval;
             Initialize();

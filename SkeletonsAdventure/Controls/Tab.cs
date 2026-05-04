@@ -10,8 +10,8 @@ namespace SkeletonsAdventure.Controls
         public int Height { get; set; } = 30;
         public Vector2 Position { get; set; } = new();
         public string Text { get; set; } = "Tab";
-        public Texture2D Texture { get; set; } = GameManager.GameMenuTexture;
-        public SpriteFont SpriteFont { get; set; } = GameManager.Arial20;
+        public Texture2D Texture { get; set; } = GameManager.TexturesLibrary.GameMenuTexture;
+        public SpriteFont SpriteFont { get; set; } = GameManager.FontsLibrary.Arial20;
         public bool Active { get; set; } = false;
         public bool Visible { get; set; } = false;
         private Color TintColor { get; set; } = Color.White;

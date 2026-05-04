@@ -4,12 +4,13 @@ using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.GameWorld;
+using SkeletonsAdventure.HelperClasses;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
 
 namespace SkeletonsAdventure.GameObjects
 {
-    internal class Chest
+    internal class Chest : ICloneableGameClass<Chest>
     {
         public ChestType ChestType { get; set; } //TODO add different types of chests
         public DropTable DropTable { get; set; } = null;//TODO
@@ -20,13 +21,13 @@ namespace SkeletonsAdventure.GameObjects
         public GameButtonBox ChestMenu { get; set; } = new()
         {
             Visible = false,
-            Texture = GameManager.ButtonBoxTexture,
+            Texture = GameManager.TexturesLibrary.ButtonBoxTexture,
         };
         public Label Info { get; set; } = new()
         {
             Text = "",
             Visible = false,
-            SpriteFont = GameManager.Arial12
+            SpriteFont = GameManager.FontsLibrary.Arial12
         };
         public List<GameItem> Items { get; set; } = null;
         public int LootCount => Items.Count;
@@ -132,7 +133,7 @@ namespace SkeletonsAdventure.GameObjects
 
         private GameButton CreateGameButton(GameItem item)
         {
-            GameButton btn = new(GameManager.DefaultButtonTexture, GameManager.Arial10)
+            GameButton btn = new(GameManager.TexturesLibrary.DefaultButtonTexture, GameManager.FontsLibrary.Arial10)
             {
                 Text = $"{item.Name} x{item.Quantity}"  // Add text to show item name and quantity
             };

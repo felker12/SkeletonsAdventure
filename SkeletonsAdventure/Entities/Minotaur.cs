@@ -19,7 +19,7 @@ namespace SkeletonsAdventure.Entities
 
         private void Initialize()
         {
-            Texture = GameManager.MinotaurTexture;
+            Texture = GameManager.TexturesLibrary.MinotaurTexture;
             SetFrames(6, 96, 96, order: [AnimationKey.Down, AnimationKey.Right, AnimationKey.Up, AnimationKey.Left]);
             EnemyType = EnemyType.Humanoid;
         }

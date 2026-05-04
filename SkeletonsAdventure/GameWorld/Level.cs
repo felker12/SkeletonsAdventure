@@ -137,9 +137,9 @@ namespace SkeletonsAdventure.GameWorld
                 spriteBatch.DrawRectangle(rec, Color.White, 1, 0); //used to see where the hitboxes are for the exits
 
             if (LevelEntrance is not null && LevelEntrance.ExitTextVisible)
-                spriteBatch.DrawString(GameManager.Arial12, LevelEntrance.ExitText, LevelEntrance.ExitPosition, Color.White);
+                spriteBatch.DrawString(GameManager.FontsLibrary.Arial12, LevelEntrance.ExitText, LevelEntrance.ExitPosition, Color.White);
             if (LevelExit is not null && LevelExit.ExitTextVisible)
-                spriteBatch.DrawString(GameManager.Arial12, LevelExit.ExitText, LevelExit.ExitPosition, Color.White);
+                spriteBatch.DrawString(GameManager.FontsLibrary.Arial12, LevelExit.ExitText, LevelExit.ExitPosition, Color.White);
 
             spriteBatch.End();
         }
@@ -199,7 +199,7 @@ namespace SkeletonsAdventure.GameWorld
             //Clear out the current entities and load in the saved ones
             EntityManager.Clear();
             EntityManager.Add(Player);
-            EntityManager.DroppedLootManager.Items = GameManager.LoadGameItemsFromItemData(levelData.DroppedItemDatas);
+            EntityManager.DroppedLootManager.Items = GameManager.GameItemLoadingManager.LoadGameItemsFromItemData(levelData.DroppedItemDatas);
             LoadEnemies(levelData.EntityManagerData);
 
             //Load the chests and their contents
@@ -241,7 +241,7 @@ namespace SkeletonsAdventure.GameWorld
                         {
                             Enemy en = (Enemy)Activator.CreateInstance(enemy.GetType(), data);
                             en.SetEnemyLevel(data.EntityLevel);
-                            en.GuaranteedDrops.Add(GameManager.LoadGameItemsFromItemBaseData(data.GuaranteedItems));
+                            en.GuaranteedDrops.Add(GameManager.GameItemLoadingManager.LoadGameItemsFromItemBaseData(data.GuaranteedItems));
 
                             EntityManager.Add(en);
                         }
@@ -391,7 +391,7 @@ namespace SkeletonsAdventure.GameWorld
 
             List<Enemy> enemies = [];
 
-            foreach (TiledMapObject obj in GameManager.ObjectLocations(Enemy.Name, _mapSpawnerLayer.Objects))
+            foreach (TiledMapObject obj in TiledHelperClasses.ObjectLocations(Enemy.Name, _mapSpawnerLayer.Objects))
             {
                 Enemy enemy = Enemy.Clone();
                 enemy.Position = obj.Position;

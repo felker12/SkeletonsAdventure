@@ -14,8 +14,8 @@ namespace SkeletonsAdventure.States
     {
         public MenuScreen(Game1 game) : base(game)
         {
-            var buttonTexture = GameManager.ButtonTexture;
-            var buttonFont = GameManager.Arial12;
+            var buttonTexture = GameManager.TexturesLibrary.ButtonTexture;
+            var buttonFont = GameManager.FontsLibrary.Arial12;
 
             var newGameButton = new Button(buttonTexture, buttonFont)
             {
@@ -81,7 +81,7 @@ namespace SkeletonsAdventure.States
             //load saved data
             try
             {
-                string savePath = GameManager.SavePath;
+                string savePath = GameManager.PathsLibrary.SavePath;
 
                 if (Directory.Exists(savePath) == false)
                     Directory.CreateDirectory(savePath);

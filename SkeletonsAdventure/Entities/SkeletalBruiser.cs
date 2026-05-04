@@ -13,7 +13,7 @@ namespace SkeletonsAdventure.Entities
 
         private void Initialize()
         {
-            Texture = GameManager.SkeletalBruiserTexture;
+            Texture = GameManager.TexturesLibrary.SkeletalBruiserTexture;
             SetFrames(4, 48, 48, paddingX: 20, order: [AnimationKey.Up, AnimationKey.Right, AnimationKey.Down, AnimationKey.Left]);
             BasicAttackColor = Color.Bisque;
             EnemyType = EnemyType.Skeleton;

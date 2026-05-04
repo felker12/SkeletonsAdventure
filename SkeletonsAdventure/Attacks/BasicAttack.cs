@@ -2,11 +2,12 @@
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.GameUI;
+using SkeletonsAdventure.HelperClasses;
 using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.Attacks
 {
-    public class BasicAttack : AnimatedSprite
+    public class BasicAttack : AnimatedSprite, ICloneableGameClass<BasicAttack>
     {
         public int AttackLength { get; set; } //The length includes AttackDelay
         public TimeSpan StartTime { get; set; } //The time when the attack was started, and is used to determine if the attack has timed out or passed the delay
@@ -96,7 +97,7 @@ namespace SkeletonsAdventure.Attacks
             AttackIcon = new();
         }
 
-        public virtual BasicAttack Clone()
+        public override BasicAttack Clone()
         {
             return new BasicAttack(this);
         }

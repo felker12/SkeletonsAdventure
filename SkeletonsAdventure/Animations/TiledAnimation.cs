@@ -1,8 +1,9 @@
 ﻿using MonoGame.Extended.Tiled;
+using SkeletonsAdventure.HelperClasses;
 
 namespace SkeletonsAdventure.Animations
 {
-    internal class TiledAnimation
+    internal class TiledAnimation : ICloneableGameClass<TiledAnimation>
     {
         public string Name { get; set; } = "TiledAnimation";
         public int TileWidth { get; set; } = 16;

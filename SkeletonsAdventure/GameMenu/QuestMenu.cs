@@ -75,7 +75,7 @@ namespace SkeletonsAdventure.GameMenu
         private void CreateControls()
         {
             //Create the labels
-            QuestsLbl = new(GameManager.Arial16)
+            QuestsLbl = new(GameManager.FontsLibrary.Arial16)
             {
                 Text = "Quests",
             };
@@ -107,10 +107,9 @@ namespace SkeletonsAdventure.GameMenu
             ControlManager.Add(CompletedQuestsToggle);
             ControlManager.Add(StartedQuestsToggle);
 
-            QuestSelectionControlBox = new()
+            QuestSelectionControlBox = new(GameManager.TexturesLibrary.TextBoxTexture)
             {
                 Visible = true,
-                Texture = GameManager.TextBoxTexture,
                 DrawOutline = true,
             };
 
@@ -119,7 +118,7 @@ namespace SkeletonsAdventure.GameMenu
             SelectedQuestTextBox = new()
             {
                 Visible = true,
-                Background = GameManager.TextBoxTexture,
+                Background = GameManager.TexturesLibrary.TextBoxTexture,
             };
             ControlManager.Add(SelectedQuestTextBox);
         }

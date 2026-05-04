@@ -6,7 +6,7 @@ namespace SkeletonsAdventure.GameUI
     {
         public Vector2 Position { get; set; } = new();
         public Vector2 ControlOffset { get; set; } = new(4, 4);
-        public Texture2D Texture { get; set; } = GameManager.ButtonBoxTexture;
+        public Texture2D Texture { get; set; } = GameManager.TexturesLibrary.ButtonBoxTexture;
         public int Width { get; set; } = 100;
         public int Height { get; set; } = 100;
         public Color Color { get; set; } = Color.White;

@@ -8,11 +8,15 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 {
     public class KeybindingsManager
     {
+        public static Keys[] KeyOrder { get; } = [Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0];
+
         public Player Player { get; init; }
         public Dictionary<Keys, BasicAttack> Keybindings { get; private set; } = [];
 
-        //default possible keybindings are 0..9 (Keys.D0..Keys.D9) but this can be changed in the GameManager.PossibleKeybindings list
-        public List<Keys> PossibleKeybindings = GameManager.PossibleKeybindings;
+        //default possible keybindings are 0..9 (Keys.D0..Keys.D9)
+        public static List<Keys> PossibleKeybindings { get; } =
+            [Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5,
+            Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0];
 
         public KeybindingsManager(Player player)
         {

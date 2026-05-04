@@ -1,11 +1,12 @@
 ﻿using RpgLibrary.DataClasses;
 using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.GameWorld;
+using SkeletonsAdventure.HelperClasses;
 using System.Linq;
 
 namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
-    public class DropTable
+    public class DropTable : ICloneableGameClass<DropTable>
     {
         public Dictionary<string, DropTableItem> DropTableDictionary { get; private set; } = [];
         private static Random Random { get; set; } = new Random(); // Random number generator

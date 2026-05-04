@@ -5,11 +5,12 @@ using RpgLibrary.GameObjectClasses;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.Entities.PlayerClasses;
+using SkeletonsAdventure.HelperClasses;
 using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.GameObjects
 {
-    internal class InteractableObject : AnimatedSprite
+    internal class InteractableObject : AnimatedSprite, ICloneableGameClass<InteractableObject>
     {
         public string TypeOfObject { get; set; } = string.Empty;
         public bool Active { get; set; } = true;
@@ -111,7 +112,7 @@ namespace SkeletonsAdventure.GameObjects
             spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
         }
 
-        public virtual InteractableObject Clone()
+        public override InteractableObject Clone()
         {
             return new InteractableObject(this);
         }

@@ -1,9 +1,11 @@
 ﻿using RpgLibrary.EntityClasses;
+using SkeletonsAdventure.HelperClasses;
 using SkeletonsAdventure.Quests;
+using System.Linq;
 
 namespace SkeletonsAdventure.Entities.NPCs
 {
-    internal class NPC : AnimatedSprite
+    internal class NPC : AnimatedSprite, ICloneableGameClass<NPC>
     {
         List<Quest> Quests { get; set; } = [];
 
@@ -13,7 +15,7 @@ namespace SkeletonsAdventure.Entities.NPCs
 
         public NPC(NPC npc) : base()
         {
-            Quests = npc.Quests;
+            Quests = [.. npc.Quests.Select(q => new Quest(q))]; //Create a deep copy of the quests
         }
 
         public NPC(NPCData data) : base()
@@ -22,9 +24,9 @@ namespace SkeletonsAdventure.Entities.NPCs
                 Quests.Add(new Quest(questData));
         }
 
-        public NPC Clone() 
+        public override NPC Clone() 
         { 
-            return new NPC(this); 
+            return new NPC(this);
         }
 
         public override void Update(GameTime gameTime)

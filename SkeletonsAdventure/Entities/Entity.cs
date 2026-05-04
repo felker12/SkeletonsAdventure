@@ -5,11 +5,12 @@ using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.GameWorld;
+using SkeletonsAdventure.HelperClasses;
 using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.Entities
 {
-    public class Entity : AnimatedSprite
+    public class Entity : AnimatedSprite, ICloneableGameClass<Entity>
     {
         public TimeSpan LastDeathTime { get; set; } = new();
         public Vector2 RespawnPosition { get; set; } = Vector2.Zero;
@@ -66,7 +67,7 @@ namespace SkeletonsAdventure.Entities
 
             XP = BaseXP;
 
-            BasicAttack = new(GameManager.BasicAttackData, GameManager.SkeletonAttackTexture, this);
+            BasicAttack = new(GameManager.AttackLibrary.BasicAttackData, GameManager.TexturesLibrary.SkeletonAttackTexture, this);
         }
 
         public override void Update(GameTime gameTime)
@@ -137,7 +138,7 @@ namespace SkeletonsAdventure.Entities
                 LastDeathTime = (TimeSpan)entityData.LastDeathTime;
         }
 
-        public virtual Entity Clone()
+        public override Entity Clone()
         {
             return new(ToData())
             {

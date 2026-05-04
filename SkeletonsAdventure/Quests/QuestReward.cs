@@ -30,7 +30,7 @@ namespace SkeletonsAdventure.Quests
 
             foreach (ItemData itemData in data.Items)
             {
-                GameItem item = GameManager.LoadGameItemFromItemData(itemData);
+                GameItem item = GameManager.GameItemLoadingManager.LoadGameItemFromItemData(itemData);
                 Items.Add(item); 
             }
         }

@@ -14,7 +14,7 @@ namespace SkeletonsAdventure.Entities
         private void Initialize()
         {
             //TODO
-            Texture = GameManager.SkeletonWarriorTexture;
+            Texture = GameManager.TexturesLibrary.SkeletonWarriorTexture;
             SetFrames(5, 64, 64, order: [AnimationKey.Down, AnimationKey.Left, AnimationKey.Up, AnimationKey.Right],
                 paddingX: 15, xOffset: 10); 
             BasicAttackColor = Color.DarkGray; //TODO

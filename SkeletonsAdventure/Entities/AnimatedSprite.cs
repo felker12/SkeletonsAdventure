@@ -1,9 +1,10 @@
 ﻿using SkeletonsAdventure.Animations;
+using SkeletonsAdventure.HelperClasses;
 using System.Linq;
 
 namespace SkeletonsAdventure.Entities
 {
-    public class AnimatedSprite : Sprite
+    public class AnimatedSprite : Sprite, ICloneableGameClass<AnimatedSprite>
     {
         public Dictionary<AnimationKey, SpriteAnimation> animations;
 
@@ -29,6 +30,11 @@ namespace SkeletonsAdventure.Entities
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
+        }
+
+        public override AnimatedSprite Clone()
+        {
+            return new();
         }
 
         /// <summary>

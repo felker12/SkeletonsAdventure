@@ -105,21 +105,21 @@ namespace SkeletonsAdventure.GameMenu
             SaveMenu.SetBackgroundColor(Color.MidnightBlue);
 
             //Add controls to the Menu
-            SaveGameLabel = new(GameManager.Arial20)
+            SaveGameLabel = new(GameManager.FontsLibrary.Arial20)
             {
                 Text = "Press to save the game",
                 TabStop = true,
             };
             SaveGameLabel.Position = new(Game1.ScreenWidth / 2 - SaveGameLabel.SpriteFont.MeasureString(SaveGameLabel.Text).X / 2, 300);
 
-            ReturnToGameLabel = new(GameManager.Arial20)
+            ReturnToGameLabel = new(GameManager.FontsLibrary.Arial20)
             {
                 Text = "Press to return to the game",
                 TabStop = true,
             };
             ReturnToGameLabel.Position = new(Game1.ScreenWidth / 2 - ReturnToGameLabel.SpriteFont.MeasureString(ReturnToGameLabel.Text).X / 2, 350);
 
-            ReturnToMenuLabel = new(GameManager.Arial20)
+            ReturnToMenuLabel = new(GameManager.FontsLibrary.Arial20)
             {
                 Text = "Press to return to menu screen",
                 TabStop = true,

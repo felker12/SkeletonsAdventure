@@ -22,7 +22,7 @@ namespace SkeletonsAdventure.Controls
         public bool Enabled { get; set; } = true;
         public bool Visible { get; set; } = true;
         public bool TabStop { get; set; } = false;
-        public SpriteFont SpriteFont{ get; set; } = GameManager.Arial12;
+        public SpriteFont SpriteFont{ get; set; } = GameManager.FontsLibrary.Arial12;
         public Color TextColor { get; set; } = Color.White;
         public Color BackgroundColor { get; set; } = Color.White;
         public Rectangle Rectangle

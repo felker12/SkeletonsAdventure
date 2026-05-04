@@ -10,7 +10,7 @@ namespace SkeletonsAdventure.GameUI
         public float Speed { get; set; } = 160f; // Default speed in pixels per second
         public float Duration { get; set; } = 0.8f; // Default duration
         public float ElapsedTime { get; private set; } = 0f;
-        public SpriteFont Font { get; } = GameManager.Arial14;
+        public SpriteFont Font { get; } = GameManager.FontsLibrary.Arial14;
         public bool TimedOut { get; private set; } = false; // Property to check if the pop-up has timed out
         public Color Color { get; set; } = Color.White; // Default color for the text
 

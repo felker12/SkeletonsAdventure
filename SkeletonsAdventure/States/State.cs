@@ -9,7 +9,7 @@ namespace SkeletonsAdventure.States
         protected GraphicsDevice GraphicsDevice { get; set; }
         protected Game1 Game {  get; set; }
         protected StateManager StateManager { get; set; }
-        public SpriteFont MenuFont { get; set; } = GameManager.Arial20;
+        public SpriteFont MenuFont { get; set; } = GameManager.FontsLibrary.Arial20;
         protected ControlManager ControlManager { get; set; }
         protected PlayerIndex PlayerIndexInControl { get; set; } = PlayerIndex.One;
 

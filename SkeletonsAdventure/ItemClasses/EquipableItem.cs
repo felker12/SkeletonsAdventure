@@ -49,6 +49,7 @@ namespace SkeletonsAdventure.ItemClasses
             return new(base.ToData())
             {
                 LevelRequirementData = LevelRequirements.ToData(),
+                Equipped = this.Equipped,
             };
         }
     }

@@ -81,8 +81,8 @@ namespace SkeletonsAdventure.States
         {
             ActionBar = new(
                 Player.KeybindingsManager.Keybindings,
-                GameManager.Arial10,
-                GameManager.CreateTextureFromColor(Color.White), 
+                GameManager.FontsLibrary.Arial10,
+                GameManager.TexturesLibrary.CreateTextureFromColor(Color.White),
                 slotSize: 36
             );
 
@@ -145,8 +145,8 @@ namespace SkeletonsAdventure.States
 
             World.Update(gameTime);
 
-            int lvlXP = GameManager.GetLevelXPAtLevel(Player.Level);
-            int nextLvlXP = GameManager.GetLevelXPAtLevel(Player.Level + 1);
+            int lvlXP = GameManager.XPTable.GetLevelXPAtLevel(Player.Level);
+            int nextLvlXP = GameManager.XPTable.GetLevelXPAtLevel(Player.Level + 1);
             int playerXPToLevel = nextLvlXP - lvlXP;
             int playerXPSinceLastLevel = Player.TotalXP - lvlXP;
 
@@ -355,10 +355,10 @@ namespace SkeletonsAdventure.States
 
         public void CreatePopUpBox()
         {
-            Texture2D texture = GameManager.DefaultButtonTexture;
-            SpriteFont font = GameManager.Arial10;
+            Texture2D texture = GameManager.TexturesLibrary.DefaultButtonTexture;
+            SpriteFont font = GameManager.FontsLibrary.Arial10;
 
-            GameItemPopUpBox = new(Vector2.Zero, GameManager.ButtonBoxTexture, 100, 100)
+            GameItemPopUpBox = new(Vector2.Zero, GameManager.TexturesLibrary.ButtonBoxTexture, 100, 100)
             {
                 Visible = false,
             };

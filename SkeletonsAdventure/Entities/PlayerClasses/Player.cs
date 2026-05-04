@@ -265,16 +265,15 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                 var name = binding.Value;
                 BasicAttack attack;
 
-                // Prefer the player's learned attack instance so multiple bindings
-                // referencing the same attack name share cooldown/state.
+                //Prefer the player's learned attack instance so multiple bindings
+                //referencing the same attack name share cooldown/state.
                 if (LearnedAttackManager?.LearnedAttacks != null && LearnedAttackManager.LearnedAttacks.TryGetValue(name, out var learnedAttack))
                 {
                     attack = learnedAttack;
                 }
                 else
                 {
-                    // Fall back to getting an attack from the global manager
-                    attack = GameManager.GetAttackByName(name);
+                    attack = GameManager.GetAttackByName(name); //Fall back to getting an attack from the global manager
                 }
 
                 SetKeyBinding(binding.Key, attack);
@@ -401,10 +400,10 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
         public void GainXp(int XpGained)
         {
-            int currentLevel = GameManager.GetPlayerLevelAtXP(TotalXP);
+            int currentLevel = GameManager.XPTable.GetPlayerLevelAtXP(TotalXP);
 
             TotalXP += (int)(XpGained * XPModifier);
-            Level = GameManager.GetPlayerLevelAtXP(TotalXP);
+            Level = GameManager.XPTable.GetPlayerLevelAtXP(TotalXP);
 
             if (Level > currentLevel)
             {
@@ -665,7 +664,7 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                     //dont do anything, already set to skeleton
                     break;
                 case PlayerEvolutionType.ArmoredSkeleton:
-                    Texture = GameManager.ArmoredSkeletonTexture;
+                    Texture = GameManager.TexturesLibrary.ArmoredSkeletonTexture;
                     SetFrames(4, 64, 64, xOffset: 14, yOffset: 2, paddingX: 26, paddingY: 4,
                         order: [AnimationKey.Down, AnimationKey.Right, AnimationKey.Up, AnimationKey.Left]);
                     break;

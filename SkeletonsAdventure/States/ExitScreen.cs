@@ -1,13 +1,6 @@
-﻿using RpgLibrary.AttackData;
-using RpgLibrary.DataClasses;
-using RpgLibrary.EntityClasses;
-using RpgLibrary.MenuClasses;
-using RpgLibrary.SettingsClasses;
-using RpgLibrary.WorldClasses;
-using SkeletonsAdventure.Entities.PlayerClasses;
+﻿using RpgLibrary.MenuClasses;
+using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.GameMenu;
-using SkeletonsAdventure.GameWorld;
-using System.IO;
 
 namespace SkeletonsAdventure.States
 {
@@ -49,37 +42,7 @@ namespace SkeletonsAdventure.States
 
         private void SaveGame()
         {
-            string savePath = GameManager.SavePath;
-            Player player = World.Player;
-
-            try
-            {
-                if (Directory.Exists(savePath) == false)
-                    Directory.CreateDirectory(savePath);
-
-                MenuManagerData GameScreenMenuData = new();
-                foreach (BaseMenu baseMenu in Game.GameScreen.Menus)
-                {
-                    if (baseMenu is TabbedMenu tabbedMenu)
-                        GameScreenMenuData.Menus.Add(tabbedMenu.GetTabbedMenuData());
-                    else if (baseMenu is not null)
-                        GameScreenMenuData.Menus.Add(baseMenu.GetMenuData());
-                }
-
-                //save the data
-                XnaSerializer.Serialize<WorldData>(savePath + @"\World.xml", World.GetWorldData());
-                XnaSerializer.Serialize<MenuManagerData>(savePath + @"\GameScreenMenuData.xml", GameScreenMenuData);
-                XnaSerializer.Serialize<TabbedMenuData>(savePath + @"\ExitScreenData.xml", ExitScreenMenu.GetTabbedMenuData());
-                XnaSerializer.Serialize<List<String>>(Path.Combine(savePath, "MessageBox.xml"), Game.GameScreen.MessageBox.Messages);
-                XnaSerializer.Serialize<KeyBindingsManagerData>(savePath + @"\Keybindings.xml", player.KeybindingsManager.ToData());
-                XnaSerializer.Serialize<LearnedAttackManagerData>(savePath + @"\LearnedAttackManager.Xml", player.LearnedAttackManager.ToData());
-            }
-            catch (Exception ex)
-            {
-                //TODO handle exception
-                Debug.WriteLine(ex);
-                return;
-            }
+            SaveEngine.SaveGame(Game, ExitScreenMenu);
         }
 
         public void SetExitScreenMenuData(TabbedMenuData settingsMenu)

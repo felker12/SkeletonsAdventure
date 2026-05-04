@@ -9,7 +9,7 @@ namespace SkeletonsAdventure.Controls
         #endregion
         #region Properties
         public event EventHandler Click;
-        public Texture2D Texture { get; set; } = GameManager.ButtonTexture;
+        public Texture2D Texture { get; set; } = GameManager.TexturesLibrary.ButtonTexture;
         public Color DisabledColor { get; set; } = Color.DarkGray;
         public Color HoverColor { get; set; } = Color.Gray;
         public bool Clicked { get; private set; } = false;

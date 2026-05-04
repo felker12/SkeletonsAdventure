@@ -2,10 +2,11 @@
 using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.GameWorld;
+using SkeletonsAdventure.HelperClasses;
 
 namespace SkeletonsAdventure.ItemClasses
 {
-    public class GameItem
+    public class GameItem : ICloneableGameClass<GameItem>
     {
         public Vector2 Position { get; set; } = Vector2.Zero;
         public Texture2D Image { get; }
@@ -21,7 +22,7 @@ namespace SkeletonsAdventure.ItemClasses
         public Label ToolTip { get; set; } = new()
         {
             Visible = false,
-            SpriteFont = GameManager.Arial10,
+            SpriteFont = GameManager.FontsLibrary.Arial10,
             TextColor = Color.Aqua
         };
         public string Name { get; set; } = string.Empty;

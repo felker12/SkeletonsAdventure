@@ -9,7 +9,7 @@ namespace SkeletonsAdventure.GameMenu
         public Player Player { get; private set; }
 
         // This menu is used to display player information such as stats, and such.
-        private readonly Texture2D buttonTexture = GameManager.ButtonTexture;
+        private readonly Texture2D buttonTexture = GameManager.TexturesLibrary.ButtonTexture;
 
         //Controls for displaying player information can be added here
         Label LevelLbl, AttributePointsLbl, BaseAttackLbl, BaseDefenceLbl,
@@ -24,13 +24,13 @@ namespace SkeletonsAdventure.GameMenu
 
         public PlayerInfoMenu() : base()
         {
-            ControlManager = new(GameManager.Arial14);
+            ControlManager = new(GameManager.FontsLibrary.Arial14);
             CreateControls();
         }
 
         public PlayerInfoMenu(int width, int height) : base(width, height)
         {
-            ControlManager = new(GameManager.Arial14);
+            ControlManager = new(GameManager.FontsLibrary.Arial14);
             CreateControls();
         }
 

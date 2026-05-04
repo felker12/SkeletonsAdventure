@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using SkeletonsAdventure.Attacks;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.GameUI
@@ -17,7 +18,7 @@ namespace SkeletonsAdventure.GameUI
         private readonly Color _frameBackground = frameBackground ?? new(15, 15, 15, 200);
 
         // Draw keys in order: 1..9 then 0
-        private readonly static Keys[] keyOrder = GameManager.KeyOrder;
+        private readonly static Keys[] keyOrder = KeybindingsManager.KeyOrder;
 
         public static int SlotCount => keyOrder.Length;
         public Dictionary<Keys, BasicAttack> KeyBindings { get; private set; } = keyBindings ?? [];
