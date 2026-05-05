@@ -50,7 +50,7 @@ namespace SkeletonsAdventure.States
         public GameScreen(Game1 game, WorldData worldData) : base(game)
         {
             Initialize();
-            World.LoadWorldDataIntoLevels(worldData);
+            SaveManager.LoadGame(worldData);
         }
 
         public void Initialize()

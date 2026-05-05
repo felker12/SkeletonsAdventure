@@ -89,17 +89,11 @@ namespace SkeletonsAdventure.ItemClasses
                return;
 
             if (gameItem is Weapon weapon)
-            {
                 TryEquipWeapon(weapon);
-            }
             else if (gameItem is Armor armor)
-            {
                 TryEquipArmor(armor);
-            }
             else if(gameItem is Shield shield)
-            {
                 TryEquipShield(shield);
-            }
         }
 
         private void TryEquipWeapon(Weapon weapon)

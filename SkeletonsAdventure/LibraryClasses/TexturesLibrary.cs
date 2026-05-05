@@ -1,6 +1,4 @@
 ﻿
-using SkeletonsAdventure.ItemClasses;
-
 namespace SkeletonsAdventure.LibraryClasses
 {
     internal class TexturesLibrary

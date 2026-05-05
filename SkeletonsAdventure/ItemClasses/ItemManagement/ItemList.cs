@@ -1,5 +1,4 @@
 ﻿using RpgLibrary.ItemClasses;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
@@ -19,9 +18,9 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
             if (item is null)
                 return false;
 
-            if (item is StackableItem stackable && ContainsItem(stackable)) //if the item is stackable and already exists in the backpack, increase the quantity of that item
+            if (item.Stackable && ContainsItem(item)) //if the item is stackable and already exists in the backpack, increase the quantity of that item
             {
-                return AddItemToStack(stackable); //returns true if the item was added to an existing stack
+                return AddItemToStack(item); //returns true if the item was added to an existing stack
             }
             else
             {
@@ -112,6 +111,7 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
                 if (item.Name == gameItem.Name)
                     return true;
             }
+
             return false;
         }
     }

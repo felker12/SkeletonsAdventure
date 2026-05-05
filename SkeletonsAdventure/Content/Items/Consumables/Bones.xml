@@ -12,7 +12,7 @@
     <Position>0 0</Position>
     <Quantity>1</Quantity>
     <SourceRectangle>0 0 32 32</SourceRectangle>
-    <TexturePath>Items/Bones</TexturePath>
+    <TexturePath>ItemSprites/Bones</TexturePath>
     <Effect>Heal</Effect>
     <EffectDuration>0</EffectDuration>
     <EffectBonus>5</EffectBonus>

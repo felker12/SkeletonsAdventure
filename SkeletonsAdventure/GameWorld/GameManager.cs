@@ -5,8 +5,6 @@ global using System;
 global using System.Collections.Generic;
 global using System.Diagnostics; //this is just for debugging purposes
 
-using RpgLibrary.DataClasses;
-using RpgLibrary.EntityClasses;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities;
@@ -15,11 +13,9 @@ using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
 using SkeletonsAdventure.Quests;
-using System.IO;
 using System.Linq;
 using SkeletonsAdventure.LibraryClasses;
 using SkeletonsAdventure.HelperClasses;
-using SkeletonsAdventure.Engines;
 
 namespace SkeletonsAdventure.GameWorld
 {
@@ -31,7 +27,6 @@ namespace SkeletonsAdventure.GameWorld
         public static AttackLibrary AttackLibrary { get; private set; }
         public static PathsLibrary PathsLibrary { get; private set; }
         public static XPTable XPTable { get; private set; }
-        public static SaveEngine SaveEngine { get; private set; }
 
         //Loading classes
         public static GameItemLoadingManager GameItemLoadingManager { get; private set; }
@@ -85,12 +80,10 @@ namespace SkeletonsAdventure.GameWorld
             GameItemLoadingManager = new GameItemLoadingManager(Items);
 
             DropTables = GameCreationManager.CreateDropTables();
-            Enemies = GameCreationManager.CreateEnemies(Content, PathsLibrary.GamePath);
+            Enemies = GameCreationManager.CreateEnemies(Content);
             Chests = GameCreationManager.CreateChests();
             Quests = GameCreationManager.CreateQuests(ItemsClone);
-            NPCs = GameCreationManager.CreateNPCs(Content, PathsLibrary.GamePath, QuestsClone);
-
-            SaveEngine = new();
+            NPCs = GameCreationManager.CreateNPCs(Content, QuestsClone);
         }
 
         public GameManager(Game1 game) : this(game.Content, game.GraphicsDevice)
@@ -108,7 +101,7 @@ namespace SkeletonsAdventure.GameWorld
             return source.TryGetValue(name, out T value) ? value.Clone() : null;
         }
 
-        private static void DictionaryWriteTest<T>(Dictionary<string, T> dictionary) where T : class
+        public static void DictionaryWriteTest<T>(Dictionary<string, T> dictionary) where T : class
         {
             foreach (var item in dictionary)
             {

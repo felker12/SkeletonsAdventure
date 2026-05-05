@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-using RpgLibrary.DataClasses;
-using RpgLibrary.EntityClasses;
+﻿using RpgLibrary.EntityClasses;
 using RpgLibrary.GameObjectClasses;
 using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.Entities;
@@ -8,70 +6,52 @@ using SkeletonsAdventure.Entities.NPCs;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
-using SkeletonsAdventure.LibraryClasses;
 using SkeletonsAdventure.Quests;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
 
 namespace SkeletonsAdventure.GameWorld
 {
     internal static class GameCreationManager
     {
         //Create the enemies from the content folder
-        internal static Dictionary<string, Enemy> CreateEnemies(ContentManager content, string gamePath)
+        internal static Dictionary<string, Enemy> CreateEnemies(ContentManager content)
         {
-            // Use reflection to build a lookup table of all concrete Enemy subclasses in the current assembly.
-            // This maps full type names (e.g., "SkeletonsAdventure.Entities.Skeleton") to Type objects,
-            // allowing us to dynamically instantiate the correct enemy class based on the type name 
-            // stored in each EnemyData XML file. Only non-abstract Enemy subclasses are included.
+            //Use reflection to build a lookup table of all concrete Enemy subclasses in the current assembly.
+            //This maps full type names (e.g., "SkeletonsAdventure.Entities.Skeleton") to Type objects,
+            //allowing us to dynamically instantiate the correct enemy class based on the type name 
+            //stored in each EnemyData XML file. Only non-abstract Enemy subclasses are included.
             var enemyTypes = typeof(Enemy).Assembly.GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(Enemy)) && !t.IsAbstract)
+                .Where(t => t.IsSubclassOf(typeof(Enemy)) && t.IsAbstract is false)
                 .ToDictionary(t => t.FullName, t => t);
 
-            string EnemiesPath = Path.Combine(gamePath, "Content", "EntityData");
-            string[] fileNames = Directory.GetFiles(EnemiesPath);
+            string EnemiesPath = Path.Combine(content.RootDirectory, "EntityData");
+            string[] fileNames = Directory.GetFiles(EnemiesPath, "*.xnb", SearchOption.AllDirectories);
 
             Dictionary<string, Enemy> enemies = [];
 
-            // Iterate through each enemy data file and create the corresponding enemy instance
-            foreach (string s in fileNames)
+            //Iterate through each enemy data file and create the corresponding enemy instance
+            foreach (string filePath in fileNames)
             {
-                string fileName = Path.GetFileNameWithoutExtension(s);
-                EnemyData data = content.Load<EnemyData>($"EntityData/{fileName}");
+                //Get the path relative to the content root (trims content from the start of the path)
+                string relativePath = Path.GetRelativePath(content.RootDirectory, filePath);
+                //Remove the file extension to get the content path
+                string contentPath = Path.ChangeExtension(relativePath, null); 
 
-                // Attempt to find the enemy type in our lookup table using the type name from the data file
+                EnemyData data = content.Load<EnemyData>(contentPath);
+
+                //Attempt to find the enemy type in our lookup table using the type name from the data file
                 if (enemyTypes.TryGetValue(data.Type, out Type enemyType))
                 {
-                    // Dynamically create the specific enemy subclass and add to dictionary
+                    //Dynamically create the specific enemy subclass and add to dictionary
                     Enemy en = (Enemy)Activator.CreateInstance(enemyType, data);
                     enemies.Add(en.GetType().FullName, en);
-
-                    //Debug.WriteLine($"Adding enemy: {en.GetType().FullName}");
                 }
                 else
                 {
-                    Debug.WriteLine($"Warning: Type '{data.Type}' not found in {fileName}");
+                    Debug.WriteLine($"Warning: Type '{data.Type}' not found in {contentPath}");
                 }
             }
-
-            /* string EnemiesPath = Path.Combine(GamePath, "Content", "EntityData");
-             string[] fileNames = Directory.GetFiles(EnemiesPath);
-
-             foreach (string s in fileNames)
-             {
-                 // Get just the filename without extension and path
-                 string fileName = Path.GetFileNameWithoutExtension(s);
-
-                 // Load using Content.Load with the correct content path format
-                 EnemyData data = Content.Load<EnemyData>($"EntityData/{fileName}");
-                 Enemy en = (Enemy)Activator.CreateInstance(Type.GetType(data.Type), data);
-                 var en2 = new Enemy(data);
-
-                 Debug.WriteLine($"Adding enemy: {en.GetType().FullName} & the test full name is: {en2.GetType().FullName}");
-
-                 Enemies.Add(en.GetType().FullName, en); //Add the entity to the dictionary of enemies
-             }*/
 
             return enemies;
         }
@@ -79,32 +59,30 @@ namespace SkeletonsAdventure.GameWorld
         //Create the items from the content folder
         internal static Dictionary<string, GameItem> CreateItems(ContentManager content)
         {
-            string[] folders = Directory.GetDirectories(@"Content\Items");
-            string[] names;
-            string filePath;
-
-            ItemData itemData;
-            Texture2D itemTexure;
-            GameItem gameItem;
-
             Dictionary<string, GameItem> items = [];
 
-            foreach (string folder in folders)
+            string rootDirectory = content.RootDirectory;
+            string itemsPath = Path.Combine(rootDirectory, "Items");
+            string[] fileNames = Directory.GetFiles(itemsPath, "*.xnb", SearchOption.AllDirectories);
+
+            foreach (string filePath in fileNames)
             {
-                //the name of the folder without extensions and the complete file path
-                names = [.. Directory.GetFiles(folder).Select(fileName => Path.GetFileNameWithoutExtension(fileName))];
-
-                foreach (string name in names)
+                try
                 {
-                    filePath = $@"..\{folder}\{name}"; //add the folder name to the path of the folder to get the file path without the extension
+                    //Get the path relative to the content root, e.g., "Items/Weapons/Sword.xnb" (trims content from the start of the path)
+                    string relativePath = Path.GetRelativePath(content.RootDirectory, filePath);
+                    //Remove the file extension to get the content path, e.g., "Items/Weapons/Sword"
+                    string contentPath = Path.ChangeExtension(relativePath, null); 
 
-                    itemData = content.Load<ItemData>(filePath);
-                    itemTexure = content.Load<Texture2D>(@$"{itemData.TexturePath}");
+                    ItemData itemData = content.Load<ItemData>(contentPath);
+                    Texture2D itemTexture = content.Load<Texture2D>(itemData.TexturePath);
+                    GameItem gameItem = CreateGameItemFromData(itemData, itemTexture);
 
-                    gameItem = CreateGameItemFromData(itemData);
-
-                    if (items.ContainsKey(gameItem.Name) == false)
-                        items.Add(gameItem.Name, gameItem);
+                    items.TryAdd(gameItem.Name, gameItem);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error loading item from {filePath}: {ex.Message}");
                 }
             }
 
@@ -163,15 +141,15 @@ namespace SkeletonsAdventure.GameWorld
             return chests;
         }
 
-        private static GameItem CreateGameItemFromData(ItemData itemData)
+        private static GameItem CreateGameItemFromData(ItemData itemData, Texture2D texture)
         {
             return itemData switch
             {
-                WeaponData w => new Weapon(w.Clone()),
-                ArmorData a => new Armor(a.Clone()),
-                ShieldData s => new Shield(s.Clone()),
-                ConsumableData c => new Consumable(c.Clone()),
-                _ => new GameItem(itemData.Clone())
+                WeaponData w => new Weapon(w.Clone(), texture),
+                ArmorData a => new Armor(a.Clone(), texture),
+                ShieldData s => new Shield(s.Clone(), texture),
+                ConsumableData c => new Consumable(c.Clone(), texture),
+                _ => new GameItem(itemData.Clone(), texture)
             };
         }
 
@@ -252,7 +230,7 @@ namespace SkeletonsAdventure.GameWorld
             return Quests;
         }
 
-        internal static Dictionary<string, NPC> CreateNPCs(ContentManager content, string gamePath, Dictionary<string, Quest> quests) //TODO
+        internal static Dictionary<string, NPC> CreateNPCs(ContentManager content, Dictionary<string, Quest> quests) //TODO
         {
             Dictionary<string, NPC> npcs = [];
 

@@ -42,7 +42,7 @@ namespace SkeletonsAdventure.States
 
         private void SaveGame()
         {
-            SaveEngine.SaveGame(Game, ExitScreenMenu);
+            SaveManager.SaveGame(Game, ExitScreenMenu);
         }
 
         public void SetExitScreenMenuData(TabbedMenuData settingsMenu)

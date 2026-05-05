@@ -29,15 +29,9 @@ namespace SkeletonsAdventure.ItemClasses
         public string Description { get; set; } = string.Empty;
         public string TexturePath { get; set; } = string.Empty;
 
-        public GameItem(ItemData item, int quantity, Texture2D texture) : this(item)
+        public GameItem(ItemData item, Texture2D texture)
         {
             Image = texture;
-            Quantity = quantity;
-        }
-
-        public GameItem(ItemData item)
-        {
-            Image = GameManager.Content.Load<Texture2D>(@$"{item.TexturePath}");
             SourceRectangle = item.SourceRectangle;
             Type = item.Type;
             Quantity = item.Quantity;
@@ -112,7 +106,7 @@ namespace SkeletonsAdventure.ItemClasses
         public void SetQuantity(int quantity)
         {
             if (Stackable is false)
-                return; // Only allow setting quantity for stackable items
+                return; //Only allow setting quantity for stackable items
 
             Quantity = quantity;
         }
@@ -125,7 +119,7 @@ namespace SkeletonsAdventure.ItemClasses
         public void RemoveQuantity(int quantity)
         {
             if (Stackable is false)
-                return; // Only allow removing quantity for stackable items
+                return; //Only allow removing quantity for stackable items
 
             SetQuantity(Quantity - quantity);
         }

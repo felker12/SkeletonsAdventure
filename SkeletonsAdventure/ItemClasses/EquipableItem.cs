@@ -15,11 +15,12 @@ namespace SkeletonsAdventure.ItemClasses
             LevelRequirements = item.LevelRequirements;
         }
 
-        public EquipableItem(EquipableItemData data) : base(data)
+        public EquipableItem(EquipableItemData data, Texture2D texture) : base(data, texture)
         {
             Equipped = data.Equipped;
             LevelRequirements = new(data.LevelRequirementData);
         }
+
         public void SetEquipped(bool equipped)
         {
             Equipped = equipped;

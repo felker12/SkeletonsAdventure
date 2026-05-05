@@ -1,6 +1,5 @@
 ﻿using MonoGame.Extended.Tiled;
 using RpgLibrary.GameObjectClasses;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.GameObjects
 {
@@ -49,24 +48,6 @@ namespace SkeletonsAdventure.GameObjects
             }
         }
 
-        public List<Chest> GetChestsFromTiledMapTileLayer(Chest chest)
-        {
-            List<Chest> chests = [];
-            int width = TiledMapTileLayer.TileWidth;
-            int height = TiledMapTileLayer.TileHeight;
-
-            foreach (TiledMapTile tile in TiledHelperClasses.TileLocations(chest.ID, TiledMapTileLayer.Tiles))
-            {
-                chest.Position = new(tile.X * width, tile.Y * height);
-                chest.DetectionArea = new Rectangle((int)chest.Position.X - 25, (int)chest.Position.Y - 25,
-                    TiledMapTileLayer.TileWidth + 50, TiledMapTileLayer.TileHeight + 50);
-
-                chests.Add(chest.Clone());
-            }
-
-            return chests;
-        }
-
         public List<ChestData> GetChestDatas()
         {
             List<ChestData> chestDatas = [];
@@ -75,22 +56,6 @@ namespace SkeletonsAdventure.GameObjects
                 chestDatas.Add(chest.ToData());
 
             return chestDatas;
-        }
-
-        public void UpdateFromSave(List<ChestData> chestDatas)
-        {
-            foreach (Chest chest in Chests)
-            {
-                foreach(ChestData data in chestDatas)
-                {
-                    if(chest.Position == data.Position)
-                    {
-                        chest.DropTable = GameManager.GetDropTableByName(chest.DropTableName);
-                        chest.ChestEmptied = data.ChestEmptied;
-                        chest.Items = GameManager.GameItemLoadingManager.LoadGameItemsFromItemData(data.ItemDatas);
-                    }
-                }
-            }
         }
     }
 }

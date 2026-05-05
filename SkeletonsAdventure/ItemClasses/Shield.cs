@@ -7,16 +7,16 @@ namespace SkeletonsAdventure.ItemClasses
         public Hands NumberHands { get; set; }
         public int DefenceValue { get; set; }
 
-
-        public Shield(ShieldData data) : base(data)
-        {
-            NumberHands = data.NumberHands;
-            DefenceValue = data.DefenceValue;
-        }
         public Shield(Shield item) : base(item)
         {
             NumberHands = item.NumberHands;
             DefenceValue = item.DefenceValue;
+        }
+
+        public Shield(ShieldData data, Texture2D texture) : base(data, texture)
+        {
+            NumberHands = data.NumberHands;
+            DefenceValue = data.DefenceValue;
         }
 
         public override Shield Clone()
@@ -31,7 +31,6 @@ namespace SkeletonsAdventure.ItemClasses
                 NumberHands = NumberHands,
                 DefenceValue = DefenceValue
             };
-
         }
     }
 }
