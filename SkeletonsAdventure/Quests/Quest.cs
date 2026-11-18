@@ -22,17 +22,7 @@ namespace SkeletonsAdventure.Quests
 
         public Quest() { }
 
-        public Quest(Quest quest)
-        {
-            Name = quest.Name;
-            Description = quest.Description;
-            IsCompleted = quest.IsCompleted;
-            Active = quest.Active;
-            Requirements = quest.Requirements;
-            Reward = quest.Reward.Clone();
-            RequiredQuestNames = quest.RequiredQuestNames;
-            Tasks = quest.Tasks;
-        }
+        public Quest(Quest quest) : this(quest.GetQuestData()) { }
 
         public Quest(QuestData data)
         {

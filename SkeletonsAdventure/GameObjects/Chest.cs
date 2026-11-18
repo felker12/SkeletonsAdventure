@@ -177,6 +177,7 @@ namespace SkeletonsAdventure.GameObjects
                 Position = Position,
                 ItemDatas = itemDatas,
                 ChestEmptied = ChestEmptied,
+                ContentsGenerated = Items is not null,
                 LootAmountRange = new MinMaxPair(LootAmountRange.Min, LootAmountRange.Max)
             };
         }

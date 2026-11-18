@@ -21,6 +21,9 @@ namespace SkeletonsAdventure.GameWorld
             SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         {
             Player = player ?? throw new ArgumentNullException(nameof(player));
+            Camera = new(Game1.ScreenWidth, Game1.ScreenHeight);
+            TotalTimeInWorld = new();
+            MessagesToAdd = [];
             //Clear the levels dictionary because the levels are static and will persist between game instances
             Levels = [];
 
@@ -38,6 +41,7 @@ namespace SkeletonsAdventure.GameWorld
 
         public static void Update(GameTime gameTime)
         {
+            TotalTimeInWorld.ElapsedGameTime = gameTime.ElapsedGameTime;
             TotalTimeInWorld.TotalGameTime += gameTime.ElapsedGameTime;
 
             CurrentLevel.Update(gameTime, TotalTimeInWorld); 
@@ -114,6 +118,36 @@ namespace SkeletonsAdventure.GameWorld
                 PlayerData = Player.GetPlayerData(),
                 Levels = levels,
                 CurrentLevel = name
+            };
+        }
+
+        // Loading builds a replacement world. Restore these references if any stage fails.
+        internal static Action CaptureRestorePoint()
+        {
+            var levels = Levels;
+            var current = CurrentLevel;
+            var player = Player;
+            var camera = Camera;
+            var time = TotalTimeInWorld;
+            var messages = MessagesToAdd;
+            var visibility = new List<Action>();
+            if (levels is not null)
+                foreach (var level in levels.Values)
+                    foreach (var layer in level.TiledMap.Layers)
+                    {
+                        bool visible = layer.IsVisible;
+                        visibility.Add(() => layer.IsVisible = visible);
+                    }
+            return () =>
+            {
+                Levels = levels;
+                CurrentLevel = current;
+                Player = player;
+                Camera = camera;
+                TotalTimeInWorld = time;
+                MessagesToAdd = messages;
+                foreach (var restore in visibility)
+                    restore();
             };
         }
 

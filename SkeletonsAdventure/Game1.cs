@@ -10,7 +10,7 @@ namespace SkeletonsAdventure
         public GraphicsDeviceManager Graphics { get; set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public GameScreen GameScreen { get; set; }
-        public ExitScreen ExitScreen { get; private set; }
+        public ExitScreen ExitScreen { get; internal set; }
         public StateManager StateManager { get; private set; } = new();
         public static int ScreenWidth { get; set; } = 1280;
         public static int ScreenHeight { get; set; } = 720;

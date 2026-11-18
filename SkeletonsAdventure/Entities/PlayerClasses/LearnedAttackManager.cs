@@ -100,7 +100,7 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
         public void UpdateWithData(LearnedAttackManagerData data)
         {
-            LearnedAttacks = [];
+            LearnedAttacks.Clear();
 
             foreach (string name in data.LearnedAttackNames)
             {
@@ -110,11 +110,11 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                 if (_attackTemplates.TryGetValue(name, out BasicAttack attack))
                 {
                     LearnedAttacks[name] = attack.Clone();
+                    LearnedAttacks[name].Source = Player;
                 }
                 else
                 {
-                    // If not found, skip or optionally log for debugging
-                    Debug.WriteLine($"Learned attack template not found: {name}");
+                    throw new System.IO.InvalidDataException($"Learned attack template not found: {name}");
                 }
             }
         }

@@ -232,6 +232,7 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
             Texture = texture;
             UpdateEvolutionTexture();
+            CanEvolve = CheckCanEvolve();
         }
 
         public PlayerData GetPlayerData()
@@ -272,25 +273,20 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
         public void SetKeybinding(Dictionary<Keys, string> keybindings)
         {
+            foreach (var key in KeybindingsManager.PossibleKeybindings)
+                KeybindingsManager.RemoveKeybinding(key);
             foreach (var binding in keybindings)
             {
                 var name = binding.Value;
-                BasicAttack attack;
-
-                //Prefer the player's learned attack instance so multiple bindings
-                //referencing the same attack name share cooldown/state.
-                if (LearnedAttackManager?.LearnedAttacks != null && LearnedAttackManager.LearnedAttacks.TryGetValue(name, out var learnedAttack))
-                {
-                    attack = learnedAttack;
-                }
-                else
-                {
-                    attack = GetAttackByName(name);
-                }
-
-                SetKeyBinding(binding.Key, attack);
+                if (string.IsNullOrEmpty(name))
+                    continue;
+                if (!LearnedAttackManager.LearnedAttacks.TryGetValue(name, out var attack) ||
+                    !KeybindingsManager.SetKeybinding(binding.Key, attack))
+                    throw new System.IO.InvalidDataException($"Cannot restore skill binding: {name}");
             }
         }
+
+        internal void RefreshEquipmentStats() => UpdateStatsWithBonusses();
 
         private protected void UpdateStatsWithBonusses()
         {

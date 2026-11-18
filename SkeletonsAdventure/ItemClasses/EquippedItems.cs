@@ -8,6 +8,13 @@ namespace SkeletonsAdventure.ItemClasses
         private GameItem Mainhand, Offhand, BodySlot, HeadSlot, HandsSlot, FeetSlot;
         private readonly Player _player = player;
 
+        public void Clear()
+        {
+            foreach (var item in new[] { Mainhand, Offhand, BodySlot, HeadSlot, HandsSlot, FeetSlot })
+                if (item is not null)
+                    TryUnequipItem(item);
+        }
+
         public int EquippedItemsAttackBonus()
         {
             int att = 0;

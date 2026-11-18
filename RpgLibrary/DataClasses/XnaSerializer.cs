@@ -23,7 +23,7 @@ namespace RpgLibrary.DataClasses
         public static T Deserialize<T>(string filename)
         {
             T data;
-            using (FileStream stream = new(filename, FileMode.Open))
+            using (FileStream stream = File.OpenRead(filename))
             {
                 using XmlReader reader = XmlReader.Create(stream);
 

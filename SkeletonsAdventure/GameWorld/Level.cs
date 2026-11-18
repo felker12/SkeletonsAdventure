@@ -156,7 +156,7 @@ namespace SkeletonsAdventure.GameWorld
             ChestManager.Update(gameTime);
             CheckIfPlayerNearChest();
 
-            InteractableObjectManager.Update(gameTime, Player);
+            InteractableObjectManager.Update(totalTimeInWorld, Player);
             TeleporterManager.Update(Player);
             DamagePopUpManager.Update(gameTime);
 
@@ -183,7 +183,17 @@ namespace SkeletonsAdventure.GameWorld
             List<(string, bool)> layerVisibility = [];
 
             foreach (TiledMapLayer layer in TiledMap.Layers)
-                layerVisibility.Add((layer.Name, layer.IsVisible));
+            {
+                bool visible = layer.IsVisible;
+                // Animations are transient; load their completed door/lever state.
+                foreach (var gameEvent in GameEventManager.ActiveEvents)
+                    if (gameEvent is ToggleLayerVisibility toggle && toggle.Layer == layer && !toggle.IsComplete)
+                        visible = !visible;
+                foreach (var delayed in GameEventManager.DelayedEvents)
+                    if (delayed.StoredEvent is ToggleLayerVisibility toggle && toggle.Layer == layer && !toggle.IsComplete)
+                        visible = !visible;
+                layerVisibility.Add((layer.Name, visible));
+            }
 
             //Create and return the level data
             return new()

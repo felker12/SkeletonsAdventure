@@ -12,6 +12,8 @@ namespace RpgLibrary.GameObjectClasses
         public Vector2 Position { get; set; } = new();
         public string DropTableName { get; set; } = string.Empty;
         public bool ChestEmptied { get; set; } = false;
+        [Microsoft.Xna.Framework.Content.ContentSerializer(Optional = true)]
+        public bool? ContentsGenerated { get; set; }
         public MinMaxPair LootAmountRange { get; set; } = new(2, 4);
         public List<ItemData> ItemDatas { get; set; } = new();
 
@@ -25,6 +27,7 @@ namespace RpgLibrary.GameObjectClasses
             ID = data.ID;
             ItemDatas = new List<ItemData>(data.ItemDatas);
             ChestEmptied = data.ChestEmptied;
+            ContentsGenerated = data.ContentsGenerated;
             LootAmountRange = new MinMaxPair(data.LootAmountRange.Min, data.LootAmountRange.Max);
         }
 

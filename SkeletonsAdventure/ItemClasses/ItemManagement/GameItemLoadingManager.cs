@@ -14,18 +14,8 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
         //Load data from saved files
         public GameItem LoadGameItemFromItemData(ItemData itemData)
         {
-            GameItem item = null;
-
-            foreach (GameItem gameItem in Items.Values)
-            {
-                if (itemData.Name == gameItem.Name)
-                {
-                    item = gameItem.Clone();
-                    item.SetQuantity(itemData.Quantity);
-                    item.Position = itemData.Position;
-                }
-            }
-
+            GameItem item = LoadItem(itemData.Name, itemData.Quantity);
+            item.Position = itemData.Position;
             return item;
         }
 
@@ -41,17 +31,17 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
 
         public GameItem LoadGameItemFromItemBaseData(ItemBaseData itemBaseData)
         {
-            GameItem item = null;
+            return LoadItem(itemBaseData.Name, itemBaseData.Quantity);
+        }
 
-            foreach (GameItem gameItem in Items.Values)
-            {
-                if (itemBaseData.Name == gameItem.Name)
-                {
-                    item = gameItem.Clone();
-                    item.SetQuantity(itemBaseData.Quantity);
-                }
-            }
-
+        private GameItem LoadItem(string name, int quantity)
+        {
+            if (string.IsNullOrEmpty(name) || !Items.TryGetValue(name, out var template))
+                throw new System.IO.InvalidDataException($"Unknown saved item: {name}");
+            if (quantity < 1 || (!template.Stackable && quantity != 1))
+                throw new System.IO.InvalidDataException($"Invalid saved quantity for {name}: {quantity}");
+            var item = template.Clone();
+            item.SetQuantity(quantity);
             return item;
         }
 

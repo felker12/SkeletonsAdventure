@@ -11,7 +11,7 @@ using SkeletonsAdventure.States;
 
 namespace xUnitTests
 {
-    public class UnitTest1
+    public partial class UnitTest1
     {
         private static void Log(string message)
         {

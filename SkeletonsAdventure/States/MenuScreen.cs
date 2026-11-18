@@ -1,9 +1,4 @@
-﻿using RpgLibrary.AttackData;
-using RpgLibrary.DataClasses;
-using RpgLibrary.MenuClasses;
-using RpgLibrary.SettingsClasses;
-using RpgLibrary.WorldClasses;
-using SkeletonsAdventure.GameMenu;
+using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.GameWorld;
 using System.IO;
 
@@ -34,29 +29,11 @@ namespace SkeletonsAdventure.States
 
         private void LoadGame()
         {
-            WorldData worldData;
-            Texture2D playerTexture;
-            MenuManagerData gameScreenMenuData;
-            TabbedMenuData exitScreenData;
-            List<string> messageBoxText;
-            KeyBindingsManagerData bindings;
-            LearnedAttackManagerData learnedAttacks;
-
             _loadStatus = string.Empty;
             try
             {
-                string savePath = GameManager.PathsLibrary.SavePath;
-
-                if (Directory.Exists(savePath) == false)
-                    Directory.CreateDirectory(savePath);
-
-                worldData = XnaSerializer.Deserialize<WorldData>(savePath + @"\World.xml");
-                gameScreenMenuData = XnaSerializer.Deserialize<MenuManagerData>(savePath + @"\GameScreenMenuData.xml");
-                exitScreenData = XnaSerializer.Deserialize<TabbedMenuData>(savePath + @"\ExitScreenData.xml");
-                messageBoxText = XnaSerializer.Deserialize<List<String>>(Path.Combine(savePath, "MessageBox.xml"));
-                bindings = XnaSerializer.Deserialize<KeyBindingsManagerData>(savePath + @"\Keybindings.xml");
-                learnedAttacks = XnaSerializer.Deserialize<LearnedAttackManagerData>(savePath + @"\LearnedAttackManager.xml");
-                playerTexture = Game.Content.Load<Texture2D>(worldData.PlayerData.TextureName);
+                var data = SaveStorage.Read(GameManager.PathsLibrary.SavePath);
+                SaveManager.RestoreGame(Game, Assets, data);
             }
             catch (FileNotFoundException)
             {
@@ -69,46 +46,15 @@ namespace SkeletonsAdventure.States
                 _loadStatus = "Could not load the saved game.";
                 return;
             }
-
-            //Update the game with the saved information
-            Game.GameScreen = new(Game, Assets, worldData, playerTexture);
-            Game.GameScreen.MessageBox.AddMessages(messageBoxText);
-            UpdateMenusFromSave(gameScreenMenuData);
-            Game.ExitScreen.SetExitScreenMenuData(exitScreenData);
-            World.Player.SetKeybinding(bindings.Keybindings);
-            World.Player.LearnedAttackManager.UpdateWithData(learnedAttacks);
-
             //return to the game screen
             StateManager.ChangeState(Game.GameScreen);
-        }
-
-        public void UpdateMenusFromSave(MenuManagerData menuManagerData)
-        {
-            foreach (MenuData menuData in menuManagerData.Menus)
-            {
-                foreach(BaseMenu gameMenu in Game.GameScreen.Menus)
-                {
-                    if(menuData.Title == gameMenu.Title)
-                    {
-                        if (menuData is TabbedMenuData tabbedMenuData && gameMenu is TabbedMenu tabbedMenu)
-                        {
-                            //update tabbed menus from loaded data
-                            tabbedMenu.SetMenuData(tabbedMenuData);
-                        }
-                        else if (menuData is not null)
-                        {
-                            //update regular menus from loaded data
-                            gameMenu.SetMenuData(menuData);
-                        }
-                    }
-                }
-            }
         }
 
         private void NewGame()
         {
             Game.GameScreen = new(Game, Assets);
             World.FillPlayerBackback(); //TODO
+            Game.ExitScreen = new(Game, Assets);
 
             StateManager.ChangeState(Game.GameScreen);
         }

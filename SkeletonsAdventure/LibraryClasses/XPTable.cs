@@ -31,6 +31,7 @@ namespace SkeletonsAdventure.LibraryClasses
 
         public static List<int> CreatePlayerLevelXPs(string savePath) //TODO adjust the xp as needed
         {
+            Directory.CreateDirectory(savePath);
             string levelsSavePath = Path.Combine(savePath, "PlayerLevels.txt");
             List<int> playerLevelXPs = [];
 

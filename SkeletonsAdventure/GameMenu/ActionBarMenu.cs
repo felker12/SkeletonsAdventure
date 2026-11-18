@@ -11,7 +11,7 @@ namespace SkeletonsAdventure.GameMenu
     {
         private static readonly string defaultText = "None"; // Placeholder text for the dropdown
         private readonly static Keys[] keyOrder = KeybindingsManager.KeyOrder;
-        private static Player Player { get; set; }
+        private Player Player { get; set; }
         private Dictionary<string, BasicAttack> LearnedAttacks { get; set; } = [];
         private List<string> ExcludedSkills { get; set; } = ["BasicAttack"]; //skills that should not be learnable by the player
         private List<string> attackNames;
@@ -33,11 +33,9 @@ namespace SkeletonsAdventure.GameMenu
         public void UpdateLearnedAttacks()
         {
             Player = World.Player;
-            LearnedAttacks = Player.LearnedAttackManager.LearnedAttacks;
-
-            //remove excluded skills
-            foreach (string excludedSkill in ExcludedSkills)
-                LearnedAttacks.Remove(excludedSkill);
+            LearnedAttacks = Player.LearnedAttackManager.LearnedAttacks
+                .Where(entry => !ExcludedSkills.Contains(entry.Key))
+                .ToDictionary(entry => entry.Key, entry => entry.Value);
 
             attackNames = [.. LearnedAttacks.Keys];
         }

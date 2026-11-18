@@ -7,6 +7,7 @@ namespace SkeletonsAdventure.GameObjects
     {
         private List<InteractableObject> InteractableObjects { get; set; } = [];
         public int Count => InteractableObjects.Count;
+        public IReadOnlyList<InteractableObject> Objects => InteractableObjects;
 
         private readonly SpriteFont _font;
 
@@ -52,10 +53,18 @@ namespace SkeletonsAdventure.GameObjects
 
         public void LoadFromData(InteractableObjectManagerData data)
         {
-            InteractableObjects.Clear();
-
             foreach (var objData in data.InteractableObjectsData)
-                InteractableObjects.Add(new(objData, _font));
+            {
+                // Keep map-created subtypes, quests, requirements, animations and callbacks.
+                var obj = InteractableObjects.Find(candidate =>
+                    candidate.Position == objData.Position && candidate.TypeOfObject == objData.TypeOfObject);
+                if (obj is null)
+                    throw new System.IO.InvalidDataException($"Unknown saved interactable: {objData.TypeOfObject}");
+                obj.Active = objData.Active;
+                obj.Visible = objData.Visible;
+                obj.CooldownTime = objData.CooldownTime;
+                obj.LastInteractedTime = objData.LastInteractedTime;
+            }
         }
     }
 }

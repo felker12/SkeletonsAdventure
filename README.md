@@ -101,6 +101,12 @@ Build the solution. `SkeletonsAdventure.Content` compiles the assets and supplie
 
 Run the main game project.
 
+**Saving and loading**
+
+The pause menu saves a versioned snapshot to `SaveFiles/SaveGame.xml` in a development checkout. Packaged builds use `%LOCALAPPDATA%/SkeletonsAdventure/SaveFiles`. The path is independent of the working directory.
+
+Saving writes and validates a temporary file before atomically replacing the current snapshot. `SaveGame.xml.bak` retains the previous snapshot and is loaded automatically if the main file is damaged. The original six-file XML saves are still readable and are left untouched; the next save writes the new format. Loading failures leave the current game session intact. Lever animations reload in their completed state.
+
 🎮 **Using the Editor**
 The project includes a custom-built editor to support rapid development and data creation.
 
