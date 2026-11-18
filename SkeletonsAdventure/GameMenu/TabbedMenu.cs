@@ -5,17 +5,17 @@ namespace SkeletonsAdventure.GameMenu
 {
     internal class TabbedMenu : BaseMenu
     {
-        public TabBar TabBar { get; set; } = new();
+        public TabBar TabBar { get; }
 
-        public TabbedMenu() : base()
+        public TabbedMenu(Texture2D texture, Texture2D tabTexture, SpriteFont font)
+            : this(600, 500, texture, tabTexture, font)
         {
-            Width = 600;
-            Height = 500;
-            Initialize();
         }
 
-        public TabbedMenu(int width, int height) : base(width, height)
+        public TabbedMenu(int width, int height, Texture2D texture, Texture2D tabTexture, SpriteFont font, Color? backgroundColor = null)
+            : base(width, height, texture, backgroundColor)
         {
+            TabBar = new(tabTexture, font);
             Initialize();
         }
 
@@ -27,13 +27,16 @@ namespace SkeletonsAdventure.GameMenu
             TabBar.Position = Position;
         }
 
-        public TabbedMenu(TabbedMenuData tabbedMenuData) : base(tabbedMenuData)
+        public TabbedMenu(TabbedMenuData tabbedMenuData, Texture2D tabTexture, SpriteFont font,
+            Func<Color, Texture2D> createBackground)
+            : base(tabbedMenuData, createBackground(tabbedMenuData.BackgroundColor))
         {
+            TabBar = new(tabTexture, font);
             BaseMenu activeMenu = null;
 
             foreach(MenuData menuData in tabbedMenuData.MenuDatas)
             {
-                TabBar.AddMenu(new BaseMenu(menuData));
+                TabBar.AddMenu(new BaseMenu(menuData, createBackground(menuData.BackgroundColor)));
             }
 
             foreach(BaseMenu menu in TabBar.TabMenus.Values)

@@ -1,6 +1,4 @@
-﻿using SkeletonsAdventure.GameWorld;
-
-namespace SkeletonsAdventure.GameUI
+﻿namespace SkeletonsAdventure.GameUI
 {
     internal class DamagePopUp
     {
@@ -10,17 +8,16 @@ namespace SkeletonsAdventure.GameUI
         public float Speed { get; set; } = 160f; // Default speed in pixels per second
         public float Duration { get; set; } = 0.8f; // Default duration
         public float ElapsedTime { get; private set; } = 0f;
-        public SpriteFont Font { get; } = GameManager.FontsLibrary.Arial14;
+        public SpriteFont Font { get; }
         public bool TimedOut { get; private set; } = false; // Property to check if the pop-up has timed out
         public Color Color { get; set; } = Color.White; // Default color for the text
 
-        public DamagePopUp(string text, Vector2 position)
+        public DamagePopUp(string text, Vector2 position, SpriteFont font)
         {
+            Font = font ?? throw new ArgumentNullException(nameof(font));
             Text = text;
             Position = position;
         }
-
-        public DamagePopUp() { }
 
         public void Update(GameTime gameTime)
         {

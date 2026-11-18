@@ -7,11 +7,6 @@ namespace SkeletonsAdventure.Controls
         public bool TransformMouse { get; set; } = false;
         public Matrix Transformation { get; set; }
 
-        public GameButton(Texture2D texture) : base(texture)
-        {
-            Position = new(-1000, -1000); // Start off-screen
-        }
-
         public GameButton(Texture2D texture, SpriteFont font) : base(texture, font)
         {
             Position = new(-1000, -1000); // Start off-screen

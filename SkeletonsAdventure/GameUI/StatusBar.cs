@@ -1,8 +1,6 @@
-﻿using SkeletonsAdventure.GameWorld;
-
-namespace SkeletonsAdventure.GameUI
+﻿namespace SkeletonsAdventure.GameUI
 {
-    public class StatusBar()
+    public class StatusBar(Texture2D texture, SpriteFont font)
     {
         public int Value { get; set; } = 1;
         public int MaxValue { get; set; } = 10;
@@ -13,7 +11,8 @@ namespace SkeletonsAdventure.GameUI
         public Color BorderColor { get; set; } = Color.Black;
         public Color BackgroundColor { get; set; } = Color.Gray;
         public Color BarColor { get; set; } = Color.Red;
-        public Texture2D Texture { get; set; } = GameManager.TexturesLibrary.StatusBarTexture;
+        public Texture2D Texture { get; } = texture ?? throw new ArgumentNullException(nameof(texture));
+        public SpriteFont Font { get; } = font ?? throw new ArgumentNullException(nameof(font));
         public bool Visible { get; set; } = true;
         public bool TextVisible { get; set; } = true;
         public float Transparency { get; set; } = 0.5f;
@@ -60,8 +59,9 @@ namespace SkeletonsAdventure.GameUI
                 // Draw the text
                 if(TextVisible)
                 {
-                    var textPosition = new Vector2(Position.X + Width / 2 - GameManager.FontsLibrary.Arial10.MeasureString(statusBarText).X / 2, Position.Y + Height / 2 - GameManager.FontsLibrary.Arial10.MeasureString(statusBarText).Y / 2);
-                    spriteBatch.DrawString(GameManager.FontsLibrary.Arial10, statusBarText, textPosition, Color.White * Transparency);
+                    Vector2 textSize = Font.MeasureString(statusBarText);
+                    var textPosition = new Vector2(Position.X + Width / 2 - textSize.X / 2, Position.Y + Height / 2 - textSize.Y / 2);
+                    spriteBatch.DrawString(Font, statusBarText, textPosition, Color.White * Transparency);
                 }
             }
         }

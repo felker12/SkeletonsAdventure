@@ -2,41 +2,43 @@
 using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.Controls;
+using System.Linq;
 
 namespace SkeletonsAdventure.GameMenu
 {
     internal class LearnSkillsMenu : BaseMenu
     {
         private static Player Player { get; set; } = World.Player;
-        private static Dictionary<string, BasicAttack> Skills { get; } = GameManager.EntityAttackClone;
+        private readonly Dictionary<string, BasicAttack> _skills;
         private Dictionary<string, Button> SkillButtons { get; set; } = [];
-        private List<string> ExcludedSkills { get; set; } = ["BasicAttack"]; //skills that should not be learnable by the player
 
-        public LearnSkillsMenu() 
+        public LearnSkillsMenu(Texture2D texture, Texture2D buttonTexture, SpriteFont buttonFont,
+            Color color, IReadOnlyDictionary<string, BasicAttack> attackTemplates)
+            : base(texture, color)
         {
-            Button btn = new();
-
-            //remove excluded skills
-            foreach (string excludedSkill in ExcludedSkills)
-                Skills.Remove(excludedSkill);
+            ArgumentNullException.ThrowIfNull(attackTemplates);
+            _skills = attackTemplates.Where(entry => entry.Key != nameof(BasicAttack))
+                .ToDictionary(entry => entry.Key, entry => entry.Value);
 
             //Get the longest length of any of the skill names to use for button sizing
             Vector2 largestBtnTxt = new(), currentText;
-            foreach(string name in Skills.Keys)
+            foreach(string name in _skills.Keys)
             {
-                currentText = btn.SpriteFont.MeasureString(name);
+                currentText = buttonFont.MeasureString(name);
                 if (currentText.X > largestBtnTxt.X)
                     largestBtnTxt = currentText;
             }
 
             int widthBuffer = 18; //extra width to add to button for padding
-            foreach (var skill in Skills)
+            foreach (var skill in _skills)
             {
-                btn = new(skill.Key)
+                Button btn = new(buttonTexture, buttonFont)
                 {
+                    Text = skill.Key,
                     Visible = true,
                     Name = skill.Key,
-                    Width = (int)largestBtnTxt.X + widthBuffer,
+                    Width = Math.Max(138, (int)largestBtnTxt.X + widthBuffer),
+                    Height = 42,
                 };
 
                 btn.Click += LearnSkillButton_Click;
@@ -53,7 +55,7 @@ namespace SkeletonsAdventure.GameMenu
 
         public void UpdateButtonsEnabled()
         {
-            foreach (var skill in Skills)
+            foreach (var skill in _skills)
                 UpdateButtonEnabled(SkillButtons[skill.Key], skill);
         }
 
@@ -82,11 +84,18 @@ namespace SkeletonsAdventure.GameMenu
             UpdateButtonsEnabled();
         }
 
+        public override void Arrange(Rectangle bounds)
+        {
+            base.Arrange(bounds);
+            PositionSkillButtons();
+        }
+
         private void PositionSkillButtons()
         {
-            Vector2 originalPos = new(40, 40);
-            int maxCols = 5;
-            int padding = 6;
+            Vector2 originalPos = Position + new Vector2(26, 26);
+            int padding = 10;
+            int buttonWidth = SkillButtons.Values.FirstOrDefault()?.Width ?? 138;
+            int maxCols = Math.Max(1, (Width - 42) / (buttonWidth + padding));
             int count = 0;
 
             foreach (var btn in SkillButtons.Values)
@@ -106,7 +115,7 @@ namespace SkeletonsAdventure.GameMenu
         private void LearnSkillButton_Click(object sender, EventArgs e)
         {
             Button button = (Button)sender;
-            var skillToLearn = Skills[button.Name];
+            var skillToLearn = _skills[button.Name].Clone();
 
             Player.LearnAttack(skillToLearn);
             UpdateButtonsEnabled();

@@ -8,7 +8,7 @@ namespace SkeletonsAdventure.Attacks
     {
         public List<Vector2> PathPoints { get; set; } = [];
 
-        public ShootingAttack(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
+        public ShootingAttack(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
         }
 

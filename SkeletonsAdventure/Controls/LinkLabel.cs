@@ -11,23 +11,9 @@ namespace SkeletonsAdventure.Controls
         public Color SelectedColor{ get; set; } = Color.Red;
         #endregion
         #region Constructor Region
-        public LinkLabel()
+        public LinkLabel(SpriteFont font, string text = null) : base(font)
         {
-            Initialize();
-        }
-
-        public LinkLabel(SpriteFont font) : base(font)
-        {
-            Initialize();
-        }
-
-        public LinkLabel(string text) : base(text)
-        {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
+            Text = text;
             TabStop = true;
             HasFocus = false;
             Position = Vector2.Zero;

@@ -9,16 +9,16 @@ namespace SkeletonsAdventure.Entities.NPCs
     {
         List<Quest> Quests { get; set; } = [];
 
-        public NPC() : base()
+        public NPC(Texture2D texture, SpriteFont infoFont) : base(texture, infoFont)
         {
         }
 
-        public NPC(NPC npc) : base()
+        public NPC(NPC npc) : base(npc.Texture, npc.Info.SpriteFont)
         {
             Quests = [.. npc.Quests.Select(q => new Quest(q))]; //Create a deep copy of the quests
         }
 
-        public NPC(NPCData data) : base()
+        public NPC(NPCData data, Texture2D texture, SpriteFont infoFont) : base(texture, infoFont)
         {
             foreach (var questData in data.QuestDatas)
                 Quests.Add(new Quest(questData));

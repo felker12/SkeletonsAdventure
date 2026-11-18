@@ -1,32 +1,30 @@
 ﻿using RpgLibrary.EntityClasses;
 using SkeletonsAdventure.Animations;
-using SkeletonsAdventure.GameWorld;
 
 
 namespace SkeletonsAdventure.Entities
 {
     internal class Minotaur : Enemy
     {
-        public Minotaur(EnemyData data) : base(data)
+        public Minotaur(EnemyData data, EntityAssets assets) : base(data, assets)
         {
             Initialize();
         }
 
-        public Minotaur() : base()
+        public Minotaur(EntityAssets assets) : base(assets)
         {
             Initialize();
         }
 
         private void Initialize()
         {
-            Texture = GameManager.TexturesLibrary.MinotaurTexture;
             SetFrames(6, 96, 96, order: [AnimationKey.Down, AnimationKey.Right, AnimationKey.Up, AnimationKey.Left]);
             EnemyType = EnemyType.Humanoid;
         }
 
         public override Minotaur Clone()
         {
-            Minotaur minotaur = new(ToData())
+            Minotaur minotaur = new(ToData(), Assets)
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

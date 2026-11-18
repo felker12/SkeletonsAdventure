@@ -11,10 +11,6 @@ namespace SkeletonsAdventure.GameUI
         {
         }
 
-        public ButtonBox() : base()
-        {
-        }
-
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (Visible is false)

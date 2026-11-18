@@ -10,7 +10,7 @@ namespace SkeletonsAdventure.Attacks
         protected readonly float rotateSpeed = .8f; // radians/sec adjust until looks 
         private readonly List<float> baseAngles = [];
 
-        public SpinningTriangleAttack(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
+        public SpinningTriangleAttack(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
             Initialize();
         }

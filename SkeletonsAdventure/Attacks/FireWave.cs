@@ -6,7 +6,7 @@ namespace SkeletonsAdventure.Attacks
 {
     internal class FireWave : ShootingAttack
     {
-        public FireWave(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
+        public FireWave(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
             AnimatedAttack = true;
             Initialize();

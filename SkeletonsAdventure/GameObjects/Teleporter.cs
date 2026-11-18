@@ -21,22 +21,11 @@ namespace SkeletonsAdventure.GameObjects
         internal List<string> RequiredQuestNames { get; set; } = [];
         internal LevelRequirements Requirements { get; set; } = new();
         internal bool Teleported { get; set; } = false;
-        internal Label Info { get; set; } = new(string.Empty)
-        {
-            Visible = true,
-        };
+        internal Label Info { get; }
 
-        internal Teleporter() { }
-
-        internal Teleporter(string name)
+        internal Teleporter(SpriteFont font)
         {
-            Name = name;
-        }
-
-        internal Teleporter(string name, Vector2 destination)
-        {
-            Name = name;
-            Destination = destination;
+            Info = new(font, string.Empty);
         }
 
         internal void Update(Player player)
@@ -73,7 +62,7 @@ namespace SkeletonsAdventure.GameObjects
 
         internal Teleporter Clone()
         {
-            return new Teleporter(Name, Destination);
+            return new Teleporter(Info.SpriteFont) { Name = Name, Destination = Destination };
         }
 
         internal bool Intersects(Rectangle rec)

@@ -1,23 +1,21 @@
 ﻿using RpgLibrary.EntityClasses;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities
 {
     internal class Spider : Enemy
     {
-        public Spider(EnemyData data) : base(data)
+        public Spider(EnemyData data, EntityAssets assets) : base(data, assets)
         {
             Initialize();
         }
 
-        public Spider() : base()
+        public Spider(EntityAssets assets) : base(assets)
         {
             Initialize();
         }
 
         private void Initialize()
         {
-            Texture = GameManager.TexturesLibrary.SpiderTexture;
             SetFrames(6, 32, 32);
             BasicAttackColor = Color.Gray;
             EnemyType = EnemyType.Spider;
@@ -25,7 +23,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Spider Clone()
         {
-            Spider spider = new(ToData())
+            Spider spider = new(ToData(), Assets)
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

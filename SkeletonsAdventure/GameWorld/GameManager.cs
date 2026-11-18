@@ -5,6 +5,7 @@ global using System;
 global using System.Collections.Generic;
 global using System.Diagnostics; //this is just for debugging purposes
 
+using MonoGame.Extended.Tiled;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities;
@@ -22,9 +23,9 @@ namespace SkeletonsAdventure.GameWorld
     internal class GameManager
     {
         //Libraries
-        public static FontsLibrary FontsLibrary { get; private set; }
-        public static TexturesLibrary TexturesLibrary { get; private set; }
-        public static AttackLibrary AttackLibrary { get; private set; }
+        public FontsLibrary FontsLibrary { get; }
+        public TexturesLibrary TexturesLibrary { get; }
+        internal EntityAssets DefaultEntityAssets { get; }
         public static PathsLibrary PathsLibrary { get; private set; }
         public static XPTable XPTable { get; private set; }
 
@@ -44,8 +45,7 @@ namespace SkeletonsAdventure.GameWorld
         private static Dictionary<string, Chest> Chests { get; set; } = [];
         public static Dictionary<string, Chest> ChestsClone => CloneDictionary(Chests);
 
-        private static Dictionary<string, BasicAttack> EntityAttacks { get; set; } = [];
-        public static Dictionary<string, BasicAttack> EntityAttackClone => CloneDictionary(EntityAttacks);
+        internal IReadOnlyDictionary<string, BasicAttack> AttackTemplates { get; }
 
         private static Dictionary<string, Quest> Quests { get; set; } = [];
         public static Dictionary<string, Quest> QuestsClone => CloneDictionary(Quests);
@@ -53,35 +53,39 @@ namespace SkeletonsAdventure.GameWorld
         private static Dictionary<string, NPC> NPCs { get; set; } = [];
         public static Dictionary<string, NPC> NPCClone => CloneDictionary(NPCs);
 
-        private static Dictionary<string, TiledAnimation> TiledAnimations { get; set; } = [];
-        public static Dictionary<string, TiledAnimation> TiledAnimationsClone => CloneDictionary(TiledAnimations);
+        internal TiledAnimation LeverAnimation { get; }
 
         //Miscellaneous Variables
         public static QuestManager QuestManager { get; set; } = new(); //TODO this isn't used
-        public static ContentManager Content { get; private set; }
+        public ContentManager Content { get; }
 
         public GameManager(ContentManager content, GraphicsDevice graphicsDevice)
         {
-            Content = content;
+            Content = content ?? throw new ArgumentNullException(nameof(content));
 
             PathsLibrary = new();
             FontsLibrary = new(content);
             TexturesLibrary = new(content, graphicsDevice);
-            AttackLibrary = new(content, TexturesLibrary);
+            var attackLibrary = new AttackLibrary(content, TexturesLibrary, FontsLibrary.Arial12);
+            DefaultEntityAssets = new(TexturesLibrary.SkeletonTexture, FontsLibrary.Arial12,
+                TexturesLibrary.StatusBarTexture, FontsLibrary.Arial10, attackLibrary.BasicAttackData,
+                TexturesLibrary.SkeletonAttackTexture);
 
-            EntityAttacks = AttackLibrary.EntityAttacks;
+            AttackTemplates = attackLibrary.EntityAttacks;
 
-            TiledAnimations = TiledHelperClasses.LoadTiledAnimations(Content);
+            var tileset = content.Load<TiledMapTileset>("TiledFiles/doors_lever_chest_animation");
+            LeverAnimation = TiledHelperClasses.CreateTiledAnimation(tileset, 30);
 
             //The order of these is important because some of the data relies on other data to be created first.
             XPTable = new(PathsLibrary.SavePath);
-            Items = GameCreationManager.CreateItems(Content);
+            Items = GameCreationManager.CreateItems(Content, FontsLibrary.Arial10);
 
             GameItemLoadingManager = new GameItemLoadingManager(Items);
 
             DropTables = GameCreationManager.CreateDropTables();
-            Enemies = GameCreationManager.CreateEnemies(Content);
-            Chests = GameCreationManager.CreateChests();
+            Enemies = GameCreationManager.CreateEnemies(Content, DefaultEntityAssets, TexturesLibrary, GetItemByName("Bones"));
+            Chests = GameCreationManager.CreateChests(TexturesLibrary.ButtonBoxTexture, TexturesLibrary.DefaultButtonTexture,
+                FontsLibrary.Arial10, FontsLibrary.Arial12);
             Quests = GameCreationManager.CreateQuests(ItemsClone);
             NPCs = GameCreationManager.CreateNPCs(Content, QuestsClone);
         }
@@ -113,7 +117,6 @@ namespace SkeletonsAdventure.GameWorld
         public static Enemy GetEnemyByName(string name) => GetClonedValue(Enemies, "SkeletonsAdventure.Entities." + name);
         public static GameItem GetItemByName(string name) => GetClonedValue(Items, name);
         public static DropTable GetDropTableByName(string name) => GetClonedValue(DropTables, name);
-        public static BasicAttack GetAttackByName(string name) => GetClonedValue(EntityAttacks, name);
         public static Quest GetQuestByName(string name) => GetClonedValue(Quests, name);
     }
 }

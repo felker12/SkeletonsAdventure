@@ -14,7 +14,6 @@ namespace SkeletonsAdventure
         public StateManager StateManager { get; private set; } = new();
         public static int ScreenWidth { get; set; } = 1280;
         public static int ScreenHeight { get; set; } = 720;
-        public static GameManager GameManager { get; private set; }
         public static GameTime GameTime { get; private set; }
         public static float DeltaTime => (float)GameTime.ElapsedGameTime.TotalSeconds;
         public static int BaseSpeedMultiplier { get; set; } = 50;
@@ -23,6 +22,7 @@ namespace SkeletonsAdventure
         public Game1()
         {
             Content.RootDirectory = "Content";
+            Window.Title = "The Adventures of the Skeleton";
 
             Graphics = new GraphicsDeviceManager(this)
             {
@@ -41,16 +41,13 @@ namespace SkeletonsAdventure
             base.Initialize();
             IsMouseVisible = true;
 
-            GameManager = new(Content, GraphicsDevice);
+            var gameManager = new GameManager(Content, GraphicsDevice);
             Components.Add(new InputHandler(this));
-            GameScreen = new(this);
-            ExitScreen = new(this);
+            GameScreen = new(this, gameManager);
+            ExitScreen = new(this, gameManager);
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            //TODO
-            //StateManager.CurrentState = new StartScreen(this);
-            StateManager.ChangeState(new MenuScreen(this));
-            //StateManager.CurrentState = GameScreen;
+            StateManager.ChangeState(new StartScreen(this, gameManager));
         }
 
         protected override void LoadContent()

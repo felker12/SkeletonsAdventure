@@ -8,6 +8,7 @@ using SkeletonsAdventure.GameMenu;
 using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.Quests;
 using SkeletonsAdventure.Entities.PlayerClasses;
+using MessageBox = SkeletonsAdventure.GameUI.MessageBox;
 
 namespace SkeletonsAdventure.States
 {
@@ -32,36 +33,38 @@ namespace SkeletonsAdventure.States
         private StatusBar HealthBar { get; set; }
         private StatusBar ManaBar { get; set; }
         private StatusBar XPProgress { get; set; }
-        public Label QuestToDisplay { get; set; } = new()
-        {
-            Text = "No Quest",
-        };
-        public MessageBox MessageBox { get; private set; } = new();
+        public Label QuestToDisplay { get; private set; }
+        public MessageBox MessageBox { get; private set; }
         private ActionBar ActionBar { get; set; }
 
         //private FPSCounter FPS { get; set; } = new();
 
-        public GameScreen(Game1 game) : base(game)
+        public GameScreen(Game1 game, GameManager assets) : base(game, assets)
         {
             Initialize();
             MessageBox.AddMessage("Welcome!");
         }
 
-        public GameScreen(Game1 game, WorldData worldData) : base(game)
+        public GameScreen(Game1 game, GameManager assets, WorldData worldData, Texture2D playerTexture) : base(game, assets)
         {
             Initialize();
-            SaveManager.LoadGame(worldData);
+            SaveManager.LoadGame(worldData, playerTexture);
         }
 
-        public void Initialize()
+        private void Initialize()
         {
-            World = new(Content, GraphicsDevice);
+            QuestToDisplay = new(Assets.FontsLibrary.Arial12, "No Quest");
+            MessageBox = new(Assets.FontsLibrary.Arial12);
+            var player = new Player(Assets.DefaultEntityAssets, Assets.TexturesLibrary.ArmoredSkeletonTexture,
+                Assets.AttackTemplates, GameManager.GetItemByName("Coins"));
+            World = new(Game.Content, GraphicsDevice, player, Assets.FontsLibrary.Arial12,
+                Assets.FontsLibrary.Arial14, Assets.LeverAnimation);
             Camera = World.CurrentLevel.Camera;
             Player = World.CurrentLevel.Player;
 
             CreatePopUpBox();
 
-            BackpackMenu = new()
+            BackpackMenu = new(Assets.TexturesLibrary.BackpackBackground)
             {
                 Visible = true,
             };
@@ -81,8 +84,8 @@ namespace SkeletonsAdventure.States
         {
             ActionBar = new(
                 Player.KeybindingsManager.Keybindings,
-                GameManager.FontsLibrary.Arial10,
-                GameManager.TexturesLibrary.CreateTextureFromColor(Color.White),
+                Assets.FontsLibrary.Arial10,
+                Assets.TexturesLibrary.CreateTextureFromColor(Color.White),
                 slotSize: 36
             );
 
@@ -355,10 +358,10 @@ namespace SkeletonsAdventure.States
 
         public void CreatePopUpBox()
         {
-            Texture2D texture = GameManager.TexturesLibrary.DefaultButtonTexture;
-            SpriteFont font = GameManager.FontsLibrary.Arial10;
+            Texture2D texture = Assets.TexturesLibrary.DefaultButtonTexture;
+            SpriteFont font = Assets.FontsLibrary.Arial10;
 
-            GameItemPopUpBox = new(Vector2.Zero, GameManager.TexturesLibrary.ButtonBoxTexture, 100, 100)
+            GameItemPopUpBox = new(Vector2.Zero, Assets.TexturesLibrary.ButtonBoxTexture, 100, 100)
             {
                 Visible = false,
             };
@@ -384,7 +387,9 @@ namespace SkeletonsAdventure.States
 
         private void CreateStatusBars()
         {
-            HealthBar = new()
+            Texture2D statusBarTexture = Assets.TexturesLibrary.StatusBarTexture;
+            SpriteFont font = Assets.FontsLibrary.Arial10;
+            HealthBar = new(statusBarTexture, font)
             {
                 Width = 200,
                 Height = 18,
@@ -395,7 +400,7 @@ namespace SkeletonsAdventure.States
                 Transparency = 0.5f,
             };
 
-            ManaBar = new()
+            ManaBar = new(statusBarTexture, font)
             {
                 Width = HealthBar.Width,
                 Height = HealthBar.Height,
@@ -406,7 +411,7 @@ namespace SkeletonsAdventure.States
                 Transparency = HealthBar.Transparency,
             };
 
-            XPProgress = new()
+            XPProgress = new(statusBarTexture, font)
             {
                 Width = HealthBar.Width,
                 Height = HealthBar.Height,

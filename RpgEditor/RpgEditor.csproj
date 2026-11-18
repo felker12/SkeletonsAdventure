@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.Content.Pipeline" Version="3.8.1.303" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\RpgLibrary\RpgLibrary.csproj" />
   </ItemGroup>
 

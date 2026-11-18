@@ -3,15 +3,21 @@ using MonoGame.Extended;
 using MonoGame.Extended.Tiled;
 using RpgLibrary.GameObjectClasses;
 using SkeletonsAdventure.Engines;
-using SkeletonsAdventure.Entities;
+using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.HelperClasses;
 using SkeletonsAdventure.Quests;
 
 namespace SkeletonsAdventure.GameObjects
 {
-    internal class InteractableObject : AnimatedSprite, ICloneableGameClass<InteractableObject>
+    internal class InteractableObject : ICloneableGameClass<InteractableObject>
     {
+        public Vector2 Position { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public Color SpriteColor { get; set; } = Color.White;
+        public Label Info { get; }
+        public Rectangle Rectangle => new((int)Position.X, (int)Position.Y, Width, Height);
         public string TypeOfObject { get; set; } = string.Empty;
         public bool Active { get; set; } = true;
         public bool Visible { get; set; } = true;
@@ -21,8 +27,9 @@ namespace SkeletonsAdventure.GameObjects
         public KillRequirements KillRequirements { get; set; } = null;
         public string InfoText { get; set; } = "Press R to Interact";
 
-        public InteractableObject(TiledMapObject obj) : base()
+        public InteractableObject(TiledMapObject obj, SpriteFont font)
         {
+            Info = new(font);
             Position = new Vector2(obj.Position.X, obj.Position.Y);
             Width = (int)obj.Size.Width;
             Height = (int)obj.Size.Height;
@@ -33,10 +40,15 @@ namespace SkeletonsAdventure.GameObjects
             Initialize();
         }
 
-        public InteractableObject(InteractableObject obj) : base()
+        public InteractableObject(InteractableObject obj)
         {
             TypeOfObject = obj.TypeOfObject;
-            Info = obj.Info;
+            Info = new(obj.Info.SpriteFont, obj.Info.Text)
+            {
+                Visible = obj.Info.Visible,
+                Position = obj.Info.Position,
+                TextColor = obj.Info.TextColor
+            };
             Active = obj.Active;
             Width = obj.Width;
             Height = obj.Height;
@@ -48,8 +60,9 @@ namespace SkeletonsAdventure.GameObjects
             KillRequirements = obj.KillRequirements;
         }
 
-        public InteractableObject(InteractableObjectData obj)
+        public InteractableObject(InteractableObjectData obj, SpriteFont font)
         {
+            Info = new(font);
             TypeOfObject = obj.TypeOfObject;
             Active = obj.Active;
             Width = obj.Width;
@@ -101,7 +114,7 @@ namespace SkeletonsAdventure.GameObjects
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             if (Visible is false)
                 return;
@@ -112,7 +125,7 @@ namespace SkeletonsAdventure.GameObjects
             spriteBatch.DrawRectangle(Rectangle, SpriteColor, 1, 0); //TODO
         }
 
-        public override InteractableObject Clone()
+        public virtual InteractableObject Clone()
         {
             return new InteractableObject(this);
         }

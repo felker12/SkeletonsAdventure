@@ -4,13 +4,13 @@ namespace SkeletonsAdventure.GameEvents
 {
     internal class AnimatedTileEvent : GameEvent
     {
-        public TiledAnimation TiledAnimation { get; set; } = null;
+        public TiledAnimation TiledAnimation { get; }
         public Vector2 Position { get; set; } = Vector2.Zero;
-        public AnimatedTileEvent() { }
 
         public AnimatedTileEvent(TiledAnimation animation, Vector2 position)
         {
-            SetAnimation(animation);
+            TiledAnimation = animation ?? throw new ArgumentNullException(nameof(animation));
+            Duration = TiledAnimation.Animation.TotalDuration;
 
             Position = position;
         }
@@ -18,19 +18,12 @@ namespace SkeletonsAdventure.GameEvents
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            TiledAnimation?.Update(gameTime);
+            TiledAnimation.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            TiledAnimation?.Draw(spriteBatch, Position);
-        }
-
-        public void SetAnimation(TiledAnimation animation)
-        {
-            TiledAnimation = animation;
-            if (TiledAnimation?.Animation?.Frames is not null)
-                Duration = TiledAnimation.Animation.TotalDuration;
+            TiledAnimation.Draw(spriteBatch, Position);
         }
 
         public override string ToString()

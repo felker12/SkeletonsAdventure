@@ -12,7 +12,13 @@ namespace SkeletonsAdventure.GameObjects
         public string GameEventName { get; set; } = string.Empty;
         public Vector2 LeverPosition { get; set; } = new(); //in the event the lever event needs to be drawn at a different location than the interactable objects position
 
-        public Lever(TiledMapObject obj) : base(obj) { Initialize(obj); }
+        private readonly TiledAnimation _animation;
+
+        public Lever(TiledMapObject obj, SpriteFont font, TiledAnimation animation) : base(obj, font)
+        {
+            _animation = animation ?? throw new ArgumentNullException(nameof(animation));
+            Initialize(obj);
+        }
 
         private void Initialize(TiledMapObject obj)
         {
@@ -35,13 +41,7 @@ namespace SkeletonsAdventure.GameObjects
         {
             if (GameEventName == "PlayLeverAnimation")
             {
-                TiledAnimation tiledAnimation = GameManager.TiledAnimationsClone["TiledFiles/doors_lever_chest_animation_0_30"];
-                AnimatedTileEvent animatedTileEvent = new()
-                {
-                    TiledAnimation = tiledAnimation,
-                    Position = LeverPosition,
-                    Duration = tiledAnimation.Animation.TotalDuration
-                };
+                AnimatedTileEvent animatedTileEvent = new(_animation.Clone(), LeverPosition);
 
                 World.CurrentLevel.AddGameEvent(animatedTileEvent);
 

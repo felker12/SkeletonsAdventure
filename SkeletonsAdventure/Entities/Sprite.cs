@@ -6,7 +6,11 @@ namespace SkeletonsAdventure.Entities
 {
     public class Sprite : ICloneableGameClass<Sprite>
     {
-        public Texture2D Texture { get; set; } = GameManager.TexturesLibrary.SkeletonTexture;
+        public Texture2D Texture
+        {
+            get;
+            protected set => field = value ?? throw new ArgumentNullException(nameof(value));
+        }
         public Color DefaultColor { get; set; } = Color.White;
         public Color SpriteColor { get; set; } = Color.White;
         public Vector2 Position { get; set; } = new();
@@ -18,19 +22,19 @@ namespace SkeletonsAdventure.Entities
         public float RotationAngle { get; set; } = 0.0f;
         public float Scale { get; set; } = 1.0f;
         public bool CanMove { get; set; } = true;
-        public Label Info { get; set; } = new(string.Empty)
-        {
-            Visible = true,
-        };
+        public Label Info { get; }
         public Rectangle Rectangle => new((int)Position.X, (int)Position.Y, Width, Height);
         public Vector2 SpriteCenter => new(Width / 2, Height / 2);
         public Vector2 Center => Position + SpriteCenter;
 
-        public Sprite() { }
-
-        public Sprite(Sprite sprite)
+        public Sprite(Texture2D texture, SpriteFont infoFont)
         {
-            Texture = sprite.Texture;
+            Texture = texture ?? throw new ArgumentNullException(nameof(texture));
+            Info = new Label(infoFont, string.Empty);
+        }
+
+        public Sprite(Sprite sprite) : this(sprite.Texture, sprite.Info.SpriteFont)
+        {
             DefaultColor = sprite.DefaultColor;
             SpriteColor = sprite.SpriteColor;
             Position = sprite.Position;

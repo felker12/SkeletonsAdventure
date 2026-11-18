@@ -13,7 +13,7 @@ namespace SkeletonsAdventure.ItemClasses
             DefenceValue = item.DefenceValue;
         }
 
-        public Shield(ShieldData data, Texture2D texture) : base(data, texture)
+        public Shield(ShieldData data, Texture2D texture, SpriteFont tooltipFont) : base(data, texture, tooltipFont)
         {
             NumberHands = data.NumberHands;
             DefenceValue = data.DefenceValue;

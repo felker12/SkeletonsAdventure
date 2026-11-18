@@ -3,82 +3,46 @@ using RpgLibrary.DataClasses;
 using RpgLibrary.MenuClasses;
 using RpgLibrary.SettingsClasses;
 using RpgLibrary.WorldClasses;
-using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.GameMenu;
 using SkeletonsAdventure.GameWorld;
 using System.IO;
 
 namespace SkeletonsAdventure.States
 {
-    internal class MenuScreen : State
+    internal class MenuScreen : FrontScreen
     {
-        public MenuScreen(Game1 game) : base(game)
+        private string _loadStatus = string.Empty;
+
+        public MenuScreen(Game1 game, GameManager assets) : base(game, assets)
         {
-            var buttonTexture = GameManager.TexturesLibrary.ButtonTexture;
-            var buttonFont = GameManager.FontsLibrary.Arial12;
-
-            var newGameButton = new Button(buttonTexture, buttonFont)
-            {
-                Position = new Vector2(300, 200),
-                Text = "New Game",
-            };
-
-            newGameButton.Click += NewGameButton_Click;
-
-            var loadGameButton = new Button(buttonTexture, buttonFont)
-            {
-                Position = new Vector2(300, 250),
-                Text = "Load Game",
-            };
-
-            loadGameButton.Click += LoadGameButton_Click;
-
-            var quitGameButton = new Button(buttonTexture, buttonFont)
-            {
-                Position = new Vector2(300, 300),
-                Text = "Quit Game",
-            };
-
-            quitGameButton.Click += QuitGameButton_Click;
-
-            ControlManager.Add(newGameButton);
-            ControlManager.Add(loadGameButton);
-            ControlManager.Add(quitGameButton);
+            AddButton(new(98, 291, 336, 48), "New Game", NewGame, primary: true);
+            AddButton(new(98, 349, 336, 48), "Load Game", LoadGame);
+            AddButton(new(98, 407, 336, 48), "Quit Game", Game.Exit);
         }
 
-        public override void PostUpdate(GameTime gameTime)
+        protected override void DrawForeground(SpriteBatch batch)
         {
-            //remove sprites if they're not needed
+            DrawTitle(batch, 82, 134, 0.76f);
+            DrawRule(batch, 84, 231, 365);
+            Fill(batch, new(80, 272, 372, 205), new Color(75, 98, 87));
+            Fill(batch, new(81, 273, 370, 203), new Color(10, 28, 27));
+            DrawText(batch, Assets.FontsLibrary.Arial12, "Up / Down to select    |    Enter or A to confirm",
+                84, 499, MutedText);
+            if (_loadStatus.Length > 0)
+                DrawText(batch, Assets.FontsLibrary.Arial12, _loadStatus, 84, 533, Ivory);
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            ControlManager.Update(gameTime, PlayerIndexInControl);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            GraphicsDevice.Clear(Color.CadetBlue);
-
-            spriteBatch.Begin();
-            ControlManager.Draw(spriteBatch);
-            spriteBatch.End();
-        }
-
-        public override void HandleInput(PlayerIndex playerIndex)
-        {
-        }
-
-        private void LoadGameButton_Click(object sender, EventArgs e)
+        private void LoadGame()
         {
             WorldData worldData;
+            Texture2D playerTexture;
             MenuManagerData gameScreenMenuData;
             TabbedMenuData exitScreenData;
             List<string> messageBoxText;
             KeyBindingsManagerData bindings;
             LearnedAttackManagerData learnedAttacks;
 
-            //load saved data
+            _loadStatus = string.Empty;
             try
             {
                 string savePath = GameManager.PathsLibrary.SavePath;
@@ -92,15 +56,22 @@ namespace SkeletonsAdventure.States
                 messageBoxText = XnaSerializer.Deserialize<List<String>>(Path.Combine(savePath, "MessageBox.xml"));
                 bindings = XnaSerializer.Deserialize<KeyBindingsManagerData>(savePath + @"\Keybindings.xml");
                 learnedAttacks = XnaSerializer.Deserialize<LearnedAttackManagerData>(savePath + @"\LearnedAttackManager.xml");
+                playerTexture = Game.Content.Load<Texture2D>(worldData.PlayerData.TextureName);
+            }
+            catch (FileNotFoundException)
+            {
+                _loadStatus = "No complete save was found.";
+                return;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);//TODO: Handle exception
+                Debug.WriteLine(ex);
+                _loadStatus = "Could not load the saved game.";
                 return;
             }
 
             //Update the game with the saved information
-            Game.GameScreen = new(Game, worldData);
+            Game.GameScreen = new(Game, Assets, worldData, playerTexture);
             Game.GameScreen.MessageBox.AddMessages(messageBoxText);
             UpdateMenusFromSave(gameScreenMenuData);
             Game.ExitScreen.SetExitScreenMenuData(exitScreenData);
@@ -134,25 +105,13 @@ namespace SkeletonsAdventure.States
             }
         }
 
-        private void NewGameButton_Click(object sender, EventArgs e)
+        private void NewGame()
         {
-            Game.GameScreen = new(Game);
+            Game.GameScreen = new(Game, Assets);
             World.FillPlayerBackback(); //TODO
 
             StateManager.ChangeState(Game.GameScreen);
         }
 
-        private void QuitGameButton_Click(object sender, EventArgs e)
-        {
-            Game.Exit();
-        }
-
-        public override void StateChangeToHandler()
-        {
-        }
-
-        public override void StateChangeFromHandler()
-        {
-        }
     }
 }

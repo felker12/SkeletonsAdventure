@@ -9,23 +9,9 @@ namespace SkeletonsAdventure.Controls
         public Color HasFocusColor { get; set; } = Color.DarkSlateGray;
         public bool Clicked { get; private set; } = false;
 
-        public SelectionControl()
+        public SelectionControl(SpriteFont font, string text = null) : base(font)
         {
-            Initialize();
-        }
-
-        public SelectionControl(string text) : base(text)
-        {
-            Initialize();
-        }
-
-        public SelectionControl(SpriteFont font) : base(font)
-        {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
+            Text = text;
             TextColor = Color.Black;
 
             Click += SelectionControl_Click;

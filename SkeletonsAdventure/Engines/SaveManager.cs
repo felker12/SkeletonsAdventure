@@ -18,7 +18,7 @@ namespace SkeletonsAdventure.Engines
 {
     internal class SaveManager
     {
-        public static void SaveGame(Game1 game, ExitScreenMenu exitScreen)
+        public static bool SaveGame(Game1 game, ExitScreenMenu exitScreen)
         {
             string savePath = GameManager.PathsLibrary.SavePath;
             Player player = World.Player;
@@ -45,20 +45,20 @@ namespace SkeletonsAdventure.Engines
 
                 XnaSerializer.Serialize<KeyBindingsManagerData>(savePath + @"\Keybindings.xml", player.KeybindingsManager.ToData());
                 XnaSerializer.Serialize<LearnedAttackManagerData>(savePath + @"\LearnedAttackManager.Xml", player.LearnedAttackManager.ToData());
+                return true;
             }
             catch (Exception ex)
             {
-                //TODO handle exception
                 Debug.WriteLine(ex);
-                return;
+                return false;
             }
         }
 
         //Load the world
-        public static void LoadGame(WorldData worldData)
+        public static void LoadGame(WorldData worldData, Texture2D playerTexture)
         {
             //Restore Player Stats and Basic Info
-            World.Player.UpdatePlayerWithData(worldData.PlayerData);
+            World.Player.UpdatePlayerWithData(worldData.PlayerData, playerTexture);
             World.TotalTimeInWorld.TotalGameTime = worldData.TotalTimeInWorld;
 
             //Restore Backpack and Equipment
@@ -138,8 +138,9 @@ namespace SkeletonsAdventure.Engines
                 {
                     if (entityData is EnemyData data && enemy.GetType().FullName == data.Type)
                     {
-                        Enemy en = (Enemy)Activator.CreateInstance(enemy.GetType(), data);
+                        Enemy en = (Enemy)Activator.CreateInstance(enemy.GetType(), data, enemy.Assets);
                         en.SetEnemyLevel(data.EntityLevel);
+                        en.GuaranteedDrops.Add(enemy.GuaranteedDrops.Items);
                         en.GuaranteedDrops.Add(GameManager.GameItemLoadingManager.LoadGameItemsFromItemBaseData(data.GuaranteedItems));
                         level.EntityManager.Add(en);
                     }

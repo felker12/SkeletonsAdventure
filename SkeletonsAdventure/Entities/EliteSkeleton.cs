@@ -4,7 +4,7 @@ namespace SkeletonsAdventure.Entities
 {
     internal class EliteSkeleton : Skeleton
     {
-        public EliteSkeleton(EnemyData data) : base(data)
+        public EliteSkeleton(EnemyData data, EntityAssets assets) : base(data, assets)
         {
             EnemyClass = EnemyClass.Elite;
             DefaultColor = new Color(Color.Black, 255);
@@ -13,7 +13,7 @@ namespace SkeletonsAdventure.Entities
 
         public override EliteSkeleton Clone()
         {
-            EliteSkeleton skeleton = new(ToData())
+            EliteSkeleton skeleton = new(ToData(), Assets)
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using RpgLibrary.WorldClasses;
 using SkeletonsAdventure.Engines;
+using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameEvents;
 using SkeletonsAdventure.ItemClasses;
@@ -16,13 +17,14 @@ namespace SkeletonsAdventure.GameWorld
         public static GameTime TotalTimeInWorld { get; set; } = new();
         public static List<string> MessagesToAdd { get; private set; } = [];
 
-        public World(ContentManager content, GraphicsDevice graphics)
+        public World(ContentManager content, GraphicsDevice graphics, Player player,
+            SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         {
-            Player = new();
+            Player = player ?? throw new ArgumentNullException(nameof(player));
             //Clear the levels dictionary because the levels are static and will persist between game instances
             Levels = [];
 
-            LevelCreator levelCreator = new(content, graphics);
+            LevelCreator levelCreator = new(content, graphics, exitFont, damageFont, leverAnimation);
             Levels = levelCreator.Levels;
 
             //TODO

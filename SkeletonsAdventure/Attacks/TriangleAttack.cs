@@ -15,7 +15,7 @@ namespace SkeletonsAdventure.Attacks
         protected readonly float spreadSpeed = .8f; // radians/sec
         protected float maxSpread;
 
-        public TriangleAttack(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
+        public TriangleAttack(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
             Initialize();
         }

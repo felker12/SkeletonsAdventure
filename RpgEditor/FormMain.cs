@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-using RpgEditor;
+﻿using RpgEditor;
 using RpgLibrary.DataClasses;
 using RpgLibrary.GameObjectClasses;
 using RpgLibrary.ItemClasses;

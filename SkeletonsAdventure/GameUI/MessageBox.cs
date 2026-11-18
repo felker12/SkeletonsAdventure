@@ -1,5 +1,4 @@
 ﻿using MonoGame.Extended;
-using SkeletonsAdventure.GameWorld;
 using Microsoft.Xna.Framework.Input;
 using System.Text;
 
@@ -15,7 +14,7 @@ namespace SkeletonsAdventure.GameUI
         public int MaxLines { get; set; } = 10;
         public Color BackgroundColor { get; set; } = Color.LightGray * 0.4f;
         public Color TextColor { get; set; } = Color.White;
-        public SpriteFont Font { get; set; } = GameManager.FontsLibrary.Arial12;
+        public SpriteFont Font { get; }
         public Vector2 Position { get; set; } = new Vector2(0, 0);
         public int Width { get; set; } = 480;
         public int Height => (int)Font.MeasureString($"1").Y * MaxLines + BorderWidth * 2 + MessageBoxPadding;
@@ -33,28 +32,23 @@ namespace SkeletonsAdventure.GameUI
         private Rectangle _handleBounds;
         private int scrollWheelDelta;
 
-        public MessageBox()
+        public MessageBox(SpriteFont font)
         {
+            Font = font ?? throw new ArgumentNullException(nameof(font));
         }
 
-        public MessageBox(Color backgroundColor, Color textColor) : this()
+        public MessageBox(Color backgroundColor, Color textColor, SpriteFont font) : this(font)
         {
             BackgroundColor = backgroundColor;
             TextColor = textColor;
         }
 
-        public MessageBox(Vector2 position, int width, int maxLines, Color backgroundColor, Color textColor)
-            : this(backgroundColor, textColor)
+        public MessageBox(Vector2 position, int width, int maxLines, Color backgroundColor, Color textColor, SpriteFont font)
+            : this(backgroundColor, textColor, font)
         {
             Position = position;
             Width = width;
             MaxLines = maxLines;
-        }
-
-        public MessageBox(Vector2 position, int width, int maxLines, Color backgroundColor, Color textColor, SpriteFont font)
-            : this(position, width, maxLines, backgroundColor, textColor)
-        {
-            Font = font;
         }
 
         public void Update()

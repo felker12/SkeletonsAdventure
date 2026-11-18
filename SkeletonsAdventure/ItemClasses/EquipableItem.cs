@@ -15,7 +15,7 @@ namespace SkeletonsAdventure.ItemClasses
             LevelRequirements = item.LevelRequirements;
         }
 
-        public EquipableItem(EquipableItemData data, Texture2D texture) : base(data, texture)
+        public EquipableItem(EquipableItemData data, Texture2D texture, SpriteFont tooltipFont) : base(data, texture, tooltipFont)
         {
             Equipped = data.Equipped;
             LevelRequirements = new(data.LevelRequirementData);

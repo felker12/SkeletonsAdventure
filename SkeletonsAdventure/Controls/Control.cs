@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Input;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Controls
 {
@@ -22,7 +21,7 @@ namespace SkeletonsAdventure.Controls
         public bool Enabled { get; set; } = true;
         public bool Visible { get; set; } = true;
         public bool TabStop { get; set; } = false;
-        public SpriteFont SpriteFont{ get; set; } = GameManager.FontsLibrary.Arial12;
+        public SpriteFont SpriteFont { get; }
         public Color TextColor { get; set; } = Color.White;
         public Color BackgroundColor { get; set; } = Color.White;
         public Rectangle Rectangle
@@ -34,16 +33,12 @@ namespace SkeletonsAdventure.Controls
         }
         #endregion
         #region Constructor Region
-        public Control()
+        protected Control()
         {
         }
-        public Control(SpriteFont font)
+        protected Control(SpriteFont font)
         {
-            SpriteFont = font;
-        }
-        public Control(string text)
-        {
-            Text = text;
+            SpriteFont = font ?? throw new ArgumentNullException(nameof(font));
         }
 
         #endregion

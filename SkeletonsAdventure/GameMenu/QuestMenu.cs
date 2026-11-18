@@ -16,20 +16,14 @@ namespace SkeletonsAdventure.GameMenu
         private ToggleButton CompletedQuestsToggle, StartedQuestsToggle;
         private SelectionControlBox QuestSelectionControlBox;
         private TextBox SelectedQuestTextBox;
+        private readonly SpriteFont _font;
 
-        public QuestMenu() : base()
+        public QuestMenu(Texture2D texture, Texture2D buttonTexture, Texture2D textBoxTexture,
+            SpriteFont font, SpriteFont headingFont, Color color)
+            : base(texture, color)
         {
-            Initialize();
-        }
-
-        public QuestMenu(int width, int height) : base(width, height)
-        {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            CreateControls();
+            _font = font ?? throw new ArgumentNullException(nameof(font));
+            CreateControls(buttonTexture, textBoxTexture, headingFont);
             SetPositions();
         }
 
@@ -72,27 +66,31 @@ namespace SkeletonsAdventure.GameMenu
                 QuestSelectionControlBox_ActiveSelectionChanged(this, null); //this updates the text box with any changes that may have happened to the active quest
         }
 
-        private void CreateControls()
+        private void CreateControls(Texture2D buttonTexture, Texture2D textBoxTexture, SpriteFont headingFont)
         {
+
             //Create the labels
-            QuestsLbl = new(GameManager.FontsLibrary.Arial16)
+            QuestsLbl = new(headingFont)
             {
-                Text = "Quests",
+                Text = "Quest log",
+                TextColor = MenuStyle.Ivory,
             };
 
             //Create the Toggles for the quests
-            CompletedQuestsToggle = new()
+            CompletedQuestsToggle = new(buttonTexture, _font)
             {
                 Text = "Hide Completed",
-                ToggledText = "Show completed",
+                ToggledText = "Show Completed",
+                ToggledColor = MenuStyle.Selection,
             };
-            CompletedQuestsToggle.Height = (int)CompletedQuestsToggle.SpriteFont.MeasureString(CompletedQuestsToggle.Text).Y + 4;
-            CompletedQuestsToggle.Width = (int)CompletedQuestsToggle.SpriteFont.MeasureString(CompletedQuestsToggle.Text).X + 10;
+            CompletedQuestsToggle.Height = 34;
+            CompletedQuestsToggle.Width = 175;
 
-            StartedQuestsToggle = new()
+            StartedQuestsToggle = new(buttonTexture, _font)
             {
                 Text = "Hide not Started",
                 ToggledText = "Show not Started",
+                ToggledColor = MenuStyle.Selection,
                 Height = CompletedQuestsToggle.Height,
                 Width = CompletedQuestsToggle.Width
             };
@@ -107,28 +105,38 @@ namespace SkeletonsAdventure.GameMenu
             ControlManager.Add(CompletedQuestsToggle);
             ControlManager.Add(StartedQuestsToggle);
 
-            QuestSelectionControlBox = new(GameManager.TexturesLibrary.TextBoxTexture)
+            QuestSelectionControlBox = new(textBoxTexture)
             {
                 Visible = true,
                 DrawOutline = true,
+                Color = MenuStyle.Surface,
+                OutlineColor = MenuStyle.Border,
             };
 
             QuestSelectionControlBox.ActiveSelectionChanged += QuestSelectionControlBox_ActiveSelectionChanged;
 
-            SelectedQuestTextBox = new()
+            SelectedQuestTextBox = new(textBoxTexture, _font)
             {
                 Visible = true,
-                Background = GameManager.TexturesLibrary.TextBoxTexture,
+                BackgroundColor = MenuStyle.Surface,
+                BackgroundOutlineColor = MenuStyle.Border,
+                TextColor = MenuStyle.Ivory,
             };
             ControlManager.Add(SelectedQuestTextBox);
         }
 
 
+        public override void Arrange(Rectangle bounds)
+        {
+            base.Arrange(bounds);
+            SetPositions();
+        }
+
         private void SetPositions()
         {
             int labelSpace = 10;
 
-            QuestsLbl.Position = new(Position.X + 15, Position.Y + 15);
+            QuestsLbl.Position = new(Position.X + 26, Position.Y + 26);
 
             CompletedQuestsToggle.Position = new(QuestsLbl.Position.X, QuestsLbl.Position.Y + QuestsLbl.SpriteFont.LineSpacing + labelSpace);
             StartedQuestsToggle.Position = new(CompletedQuestsToggle.Position.X, CompletedQuestsToggle.Position.Y + CompletedQuestsToggle.Height + labelSpace);
@@ -160,7 +168,7 @@ namespace SkeletonsAdventure.GameMenu
                         continue;
                 }
 
-                QuestSelectionControlBox.AddSelectionControl(new(quest.Name){TextColor = Color.Black});
+                QuestSelectionControlBox.AddSelectionControl(new(_font, quest.Name) { TextColor = MenuStyle.Ivory, HoverColor = MenuStyle.Brass, HasFocusColor = MenuStyle.Brass });
             }
         }
 

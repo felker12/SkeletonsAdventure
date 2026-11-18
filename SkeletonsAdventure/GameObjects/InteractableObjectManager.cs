@@ -8,7 +8,12 @@ namespace SkeletonsAdventure.GameObjects
         private List<InteractableObject> InteractableObjects { get; set; } = [];
         public int Count => InteractableObjects.Count;
 
-        public InteractableObjectManager() { }
+        private readonly SpriteFont _font;
+
+        public InteractableObjectManager(SpriteFont font)
+        {
+            _font = font ?? throw new ArgumentNullException(nameof(font));
+        }
 
         public void Update(GameTime gameTime, Player player)
         {
@@ -50,7 +55,7 @@ namespace SkeletonsAdventure.GameObjects
             InteractableObjects.Clear();
 
             foreach (var objData in data.InteractableObjectsData)
-                InteractableObjects.Add(new(objData));
+                InteractableObjects.Add(new(objData, _font));
         }
     }
 }

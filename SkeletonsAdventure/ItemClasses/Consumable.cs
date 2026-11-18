@@ -17,7 +17,7 @@ namespace SkeletonsAdventure.ItemClasses
             EffectDuration = item.EffectDuration;
         }
 
-        public Consumable(ConsumableData data, Texture2D texture) : base(data, texture)
+        public Consumable(ConsumableData data, Texture2D texture, SpriteFont tooltipFont) : base(data, texture, tooltipFont)
         {
             IsConsumable = data.Consumable;
             Effect = data.Effect;

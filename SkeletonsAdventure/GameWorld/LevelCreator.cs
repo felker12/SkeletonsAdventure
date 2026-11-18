@@ -1,6 +1,7 @@
 ﻿using MonoGame.Extended.Tiled;
 using RpgLibrary.DataClasses;
 using System.IO;
+using SkeletonsAdventure.Animations;
 
 namespace SkeletonsAdventure.GameWorld
 {
@@ -8,12 +9,14 @@ namespace SkeletonsAdventure.GameWorld
     {
         public Dictionary<string, Level> Levels { get; private set; } = [];
 
-        public LevelCreator(ContentManager content, GraphicsDevice graphics)
+        public LevelCreator(ContentManager content, GraphicsDevice graphics,
+            SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         { 
-            CreateLevels(content, graphics);
+            CreateLevels(content, graphics, exitFont, damageFont, leverAnimation);
         }
 
-        private void CreateLevels(ContentManager content, GraphicsDevice graphics)
+        private void CreateLevels(ContentManager content, GraphicsDevice graphics,
+            SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         {
             string contentPath = content.RootDirectory;
             string tiledFilesPath = Path.Combine(contentPath, "TiledFiles");
@@ -32,7 +35,8 @@ namespace SkeletonsAdventure.GameWorld
                 {
                     TiledMap tiledMap = content.Load<TiledMap>(relativePath);
                     MinMaxPair pair = GetMinMaxPairFromTiledMap(tiledMap);
-                    Level level = new(graphics, tiledMap, GameManager.EnemiesClone, pair);
+                    Level level = new(graphics, tiledMap, GameManager.EnemiesClone, pair,
+                        exitFont, damageFont, leverAnimation);
 
                     Levels.Add(level.Name, level);
                 }

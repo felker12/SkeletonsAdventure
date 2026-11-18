@@ -1,12 +1,11 @@
 ﻿using RpgLibrary.EntityClasses;
 using SkeletonsAdventure.Animations;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities
 {
     internal class SkeletonWarrior : Skeleton
     {
-        public SkeletonWarrior(EnemyData data) : base(data)
+        public SkeletonWarrior(EnemyData data, EntityAssets assets) : base(data, assets)
         {
             Initialize();
         }
@@ -14,7 +13,6 @@ namespace SkeletonsAdventure.Entities
         private void Initialize()
         {
             //TODO
-            Texture = GameManager.TexturesLibrary.SkeletonWarriorTexture;
             SetFrames(5, 64, 64, order: [AnimationKey.Down, AnimationKey.Left, AnimationKey.Up, AnimationKey.Right],
                 paddingX: 15, xOffset: 10); 
             BasicAttackColor = Color.DarkGray; //TODO
@@ -22,7 +20,7 @@ namespace SkeletonsAdventure.Entities
 
         public override SkeletonWarrior Clone()
         {
-            return new(ToData())
+            return new(ToData(), Assets)
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

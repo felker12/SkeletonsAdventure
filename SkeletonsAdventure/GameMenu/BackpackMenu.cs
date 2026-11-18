@@ -1,5 +1,4 @@
-﻿using SkeletonsAdventure.GameWorld;
-using SkeletonsAdventure.ItemClasses;
+﻿using SkeletonsAdventure.ItemClasses;
 
 namespace SkeletonsAdventure.GameMenu
 {
@@ -7,9 +6,8 @@ namespace SkeletonsAdventure.GameMenu
     {
         public List<GameItem> Items { get; set; } = [];
 
-        public BackpackMenu()
+        public BackpackMenu(Texture2D texture) : base(texture)
         {
-            Texture = GameManager.TexturesLibrary.BackpackBackground;
             Width = Texture.Width;
             Height = Texture.Height;
             Position = new(0, 0);

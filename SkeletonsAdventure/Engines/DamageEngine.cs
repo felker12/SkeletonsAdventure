@@ -39,12 +39,7 @@ namespace SkeletonsAdventure.Engines
             target.PositionLastAttackedFrom = attack.Source.Center;
 
             int dmg = (int)(CalculateDamage(attack.Source, target) * attack.DamageModifier);
-            DamagePopUp damagePopUp = new(dmg.ToString(), target.Center);
-
-            if (target is Enemy)
-                damagePopUp.Color = Color.Cyan;
-
-            World.CurrentLevel.DamagePopUpManager.Add(damagePopUp);
+            World.CurrentLevel.DamagePopUpManager.Add(dmg.ToString(), target.Center, target is Enemy ? Color.Cyan : Color.White);
             //TODO add logic for critical hits and color the attack orange if it is a critical
 
             target.Health -= dmg;

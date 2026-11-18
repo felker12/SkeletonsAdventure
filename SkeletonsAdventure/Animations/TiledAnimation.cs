@@ -8,8 +8,8 @@ namespace SkeletonsAdventure.Animations
         public string Name { get; set; } = "TiledAnimation";
         public int TileWidth { get; set; } = 16;
         public int TileHeight { get; set; } = 16;
-        public Texture2D Texture { get; set; } = null;
-        public TileAnimation Animation { get; set; } = null;
+        public Texture2D Texture { get; }
+        public TileAnimation Animation { get; }
         private float elapsedTime = 0f;
         private bool animate = true;
 
@@ -17,7 +17,7 @@ namespace SkeletonsAdventure.Animations
         {
             get
             {
-                if (Animation is null || Texture is null || animate is false)
+                if (animate is false)
                     return Rectangle.Empty;
 
                 TileAnimationFrame currentFrame = Animation.GetCurrentFrame();
@@ -33,30 +33,25 @@ namespace SkeletonsAdventure.Animations
             }
         }
 
-        public TiledAnimation() { }
-
         public TiledAnimation(string name, Texture2D texture, TileAnimation animation, int tileWidth = 16, int tileHeight = 16)
         {
             Name = name;
-            Texture = texture;
-            Animation = animation;
+            Texture = texture ?? throw new ArgumentNullException(nameof(texture));
+            Animation = animation ?? throw new ArgumentNullException(nameof(animation));
             TileWidth = tileWidth;
             TileHeight = tileHeight;
         }
 
         public TiledAnimation(TiledMapTileset tiledMapTileset, TiledMapTilesetAnimatedTile animatedTile)
+            : this(tiledMapTileset.Name, tiledMapTileset.Texture, new TileAnimation(animatedTile),
+                  tiledMapTileset.TileWidth, tiledMapTileset.TileHeight)
         {
-            Name = tiledMapTileset.Name;
-            Texture = tiledMapTileset.Texture;
-            TileWidth = tiledMapTileset.TileWidth;
-            TileHeight = tiledMapTileset.TileHeight;
-            Animation = new TileAnimation(animatedTile);
         }
 
         public void Update(GameTime gameTime)
         {
             // Implementation for playing the animation
-            if (Animation is null || Texture is null || animate is false)
+            if (animate is false)
                 return;
 
             elapsedTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -82,7 +77,7 @@ namespace SkeletonsAdventure.Animations
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
-            if (Animation == null || Texture == null || animate is false)
+            if (animate is false)
                 return;
 
             spriteBatch.Draw(Texture, position, Frame, Color.White);
@@ -95,7 +90,7 @@ namespace SkeletonsAdventure.Animations
 
         public TiledAnimation Clone()
         {
-            return new TiledAnimation(Name, Texture, Animation, TileWidth, TileHeight);
+            return new TiledAnimation(Name, Texture, Animation.Clone(), TileWidth, TileHeight);
         }
     }
 }

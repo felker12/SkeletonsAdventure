@@ -1,14 +1,14 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using SkeletonsAdventure.GameMenu;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Controls
 {
     internal class TabBar
     {
+        private readonly Texture2D _tabTexture;
         public Dictionary<Tab, BaseMenu> TabMenus { get; private set; } = [];
         public Vector2 Position { get; set; } = new();
-        public SpriteFont SpriteFont { get; set; } = GameManager.FontsLibrary.Arial20;
+        public SpriteFont SpriteFont { get; }
         public int Width { get; set; } = 100;
         public int Height { get; set; } = 100;
         public BaseMenu ActiveMenu { get; set; } = null;
@@ -16,14 +16,16 @@ namespace SkeletonsAdventure.Controls
         public event EventHandler TabClicked;
         protected MouseState _currentMouse, _previousMouse;
 
-        public TabBar()
+        public TabBar(Texture2D tabTexture, SpriteFont font)
         {
+            _tabTexture = tabTexture ?? throw new ArgumentNullException(nameof(tabTexture));
+            SpriteFont = font ?? throw new ArgumentNullException(nameof(font));
             TabClicked += HandleTabSelected;
         }
 
         public void Update(GameTime gameTime)
         {
-            Vector2 position = new(), spacer = new(5, 0);
+            ArrangeTabs();
             _previousMouse = _currentMouse;
             _currentMouse = Mouse.GetState();
             var mouseRectangle = new Rectangle(_currentMouse.X, _currentMouse.Y, 1, 1);
@@ -32,9 +34,6 @@ namespace SkeletonsAdventure.Controls
             {
                 if(tab.Visible)
                 {
-                    tab.Position = Position + position;
-                    position += new Vector2(tab.Width, 0) + spacer;
-                    tab.Update();
                     if (mouseRectangle.Intersects(tab.Rectangle))
                     {
                         tab.IsHovering = true;
@@ -55,12 +54,26 @@ namespace SkeletonsAdventure.Controls
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            ArrangeTabs();
             foreach (Tab tab in TabMenus.Keys)
             {
                 if(tab.Visible)
                 {
                     tab.Draw(spriteBatch);
                 }
+            }
+        }
+
+        private void ArrangeTabs()
+        {
+            Vector2 position = Position;
+            foreach (Tab tab in TabMenus.Keys)
+            {
+                if (!tab.Visible)
+                    continue;
+
+                tab.Position = position;
+                position.X += tab.Width + 8;
             }
         }
 
@@ -75,11 +88,11 @@ namespace SkeletonsAdventure.Controls
 
         public void AddMenu(BaseMenu menu)
         {
-            Tab tab = new()
+            Tab tab = new(_tabTexture, SpriteFont)
             {
                 Text = menu.Title,
-                Width = (int)SpriteFont.MeasureString(menu.Title).X,
-                Height = (int)SpriteFont.MeasureString(menu.Title).Y,
+                Width = Math.Max(88, (int)Math.Ceiling(SpriteFont.MeasureString(menu.Title).X) + 32),
+                Height = 38,
                 Visible = true,
             };
 
@@ -119,24 +132,6 @@ namespace SkeletonsAdventure.Controls
             }
 
             return maxHeight;
-        }
-
-        public void SetAllTabsTextures(Texture2D texture)
-        {
-            foreach (Tab tab in TabMenus.Keys)
-            {
-                tab.Texture = texture;
-            }
-        }
-
-        public void SetAllTabsColors(Color color)
-        {
-            Texture2D background = GameManager.TexturesLibrary.CreateTextureFromColor(color);
-
-            foreach (Tab tab in TabMenus.Keys)
-            {
-                tab.Texture = background;
-            }
         }
 
         public BaseMenu GetFirstVisibleMenu()

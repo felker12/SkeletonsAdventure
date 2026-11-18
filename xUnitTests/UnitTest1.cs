@@ -2,10 +2,12 @@ using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameWorld;
+using SkeletonsAdventure.States;
 
 namespace xUnitTests
 {
@@ -23,12 +25,63 @@ namespace xUnitTests
         {
             Log("Test GameManager Loads");
 
-            //SkeletonsAdventure.Game1.GameManager = new(new());
-            GameManager manager = new(new());
-
-            Log("GameManagerString: " + manager.GameManagerString);
+            using var game = new SkeletonsAdventure.Game1();
+            var manager = new GameManager(game);
+            Assert.Same(game.Content, manager.Content);
 
             Log("GameManager Loads");
+        }
+
+        [Fact]
+        public void RestoringAWorldUsesSuppliedPlayerAndEnemyTextures()
+        {
+            using var game = new SkeletonsAdventure.Game1();
+            var manager = new GameManager(game);
+            _ = new GameScreen(game, manager);
+
+            var savedWorld = World.ToData();
+            var level = World.Levels.Values.First(level => level.EntityManager.Entities.OfType<Enemy>().Any());
+            var originalEnemy = level.EntityManager.Entities.OfType<Enemy>().First();
+            var playerTexture = manager.TexturesLibrary.GoblinTexture;
+
+            _ = new GameScreen(game, manager, savedWorld, playerTexture);
+
+            Assert.Same(playerTexture, World.Player.Texture);
+            var restoredEnemy = World.Levels[level.Name].EntityManager.Entities.OfType<Enemy>()
+                .First(enemy => enemy.GetType() == originalEnemy.GetType());
+            Assert.Same(originalEnemy.Texture, restoredEnemy.Texture);
+            Assert.Same(originalEnemy.Info.SpriteFont, restoredEnemy.Info.SpriteFont);
+        }
+
+        [Fact]
+        public void ExitScreenRestoresActiveTabUsingCurrentLayout()
+        {
+            using var game = new SkeletonsAdventure.Game1();
+            var manager = new GameManager(game);
+            _ = new GameScreen(game, manager);
+            var exitScreen = new ExitScreen(game, manager);
+            var menu = exitScreen.ExitScreenMenu;
+            var savedMenu = menu.GetTabbedMenuData();
+            savedMenu.ActiveMenu = "Quests";
+            savedMenu.Position = Vector2.Zero;
+            savedMenu.Width = 640;
+            foreach (var tab in savedMenu.MenuDatas)
+                tab.Position = new Vector2(0, 28);
+
+            exitScreen.SetExitScreenMenuData(savedMenu);
+
+            Assert.Equal("Quests", menu.TabBar.ActiveMenu.Title);
+            Assert.Equal(game.GraphicsDevice.Viewport.Width, menu.Width);
+            using var spriteBatch = new SpriteBatch(game.GraphicsDevice);
+            foreach (var (tab, page) in menu.TabBar.TabMenus)
+            {
+                if (!tab.Visible)
+                    continue;
+
+                Assert.True(page.Position.Y >= menu.TabBar.Position.Y + menu.TabBar.Height);
+                menu.TabBar.SetActiveTab(page);
+                exitScreen.Draw(spriteBatch);
+            }
         }
 
         [Theory]
@@ -65,7 +118,9 @@ namespace xUnitTests
         {
             Log("Testing Enemy Scaling with Level...");
 
-            Enemy enemy = new();
+            using var game = new SkeletonsAdventure.Game1();
+            var manager = new GameManager(game);
+            Enemy enemy = new(manager.DefaultEntityAssets);
             int baseHealth = enemy.BaseHealth;
             int baseDefence = enemy.BaseDefence;
             int baseAttack = enemy.BaseAttack;
@@ -120,8 +175,10 @@ namespace xUnitTests
         {
             Log("Testing KeybindingsManager.SetKeybinding stores attack...");
 
+            using var game = new SkeletonsAdventure.Game1();
+            var manager = new GameManager(game);
             var kbm = new KeybindingsManager(null);
-            var attack = new BasicAttack(null, null, null);
+            var attack = new BasicAttack(new(), manager.DefaultEntityAssets.BasicAttackTexture, manager.DefaultEntityAssets.InfoFont);
 
             kbm.SetKeybinding(Keys.D1, attack);
 
@@ -147,8 +204,10 @@ namespace xUnitTests
         {
             Log("Testing KeybindingsManager.Update updates attack cooldown...");
 
+            using var game = new SkeletonsAdventure.Game1();
+            var manager = new GameManager(game);
             var kbm = new KeybindingsManager(null);
-            var attack = new BasicAttack(null, null, null)
+            var attack = new BasicAttack(new(), manager.DefaultEntityAssets.BasicAttackTexture, manager.DefaultEntityAssets.InfoFont)
             {
                 // Configure cooldown and last attack time
                 CoolDownLength = 500, // ms

@@ -1,13 +1,14 @@
 ﻿using SkeletonsAdventure.Attacks;
 using RpgLibrary.AttackData;
 using System.Linq;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities.PlayerClasses
 {
-    public class LearnedAttackManager(Player player)
+    public class LearnedAttackManager(Player player, IReadOnlyDictionary<string, BasicAttack> attackTemplates)
     {
         public Player Player { get; init; } = player;
+        private readonly IReadOnlyDictionary<string, BasicAttack> _attackTemplates =
+            attackTemplates ?? throw new ArgumentNullException(nameof(attackTemplates));
         public Dictionary<string, BasicAttack> LearnedAttacks { get; private set; } = [];
 
         public void LearnAttack(string attackName, BasicAttack attack)
@@ -101,23 +102,19 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
         {
             LearnedAttacks = [];
 
-            // Resolve attacks from the GameManager attack templates without
-            // using GetAttackByName to avoid creating an extra clone. Use the
-            // EntityAttackClone dictionary which provides constructed attack
-            // instances suitable for assigning to the player's learned attacks.
             foreach (string name in data.LearnedAttackNames)
             {
                 if (string.IsNullOrEmpty(name))
                     continue;
 
-                if (GameManager.EntityAttackClone.TryGetValue(name, out BasicAttack attack))
+                if (_attackTemplates.TryGetValue(name, out BasicAttack attack))
                 {
-                    LearnedAttacks[name] = attack;
+                    LearnedAttacks[name] = attack.Clone();
                 }
                 else
                 {
                     // If not found, skip or optionally log for debugging
-                    Debug.WriteLine($"Learned attack not found in GameManager: {name}");
+                    Debug.WriteLine($"Learned attack template not found: {name}");
                 }
             }
         }

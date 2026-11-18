@@ -9,26 +9,6 @@ namespace SkeletonsAdventure.Controls
         int selectedControl = 0;
 
         bool AcceptInput { get; set; } = true;
-        public SpriteFont SpriteFont { get; set; }
-        #endregion
-        #region Constructors
-        public ControlManager(SpriteFont spriteFont)
-        : base()
-        {
-            SpriteFont = spriteFont;
-        }
-
-        public ControlManager(SpriteFont spriteFont, int capacity)
-        : base(capacity)
-        {
-            SpriteFont = spriteFont;
-        }
-
-        public ControlManager(SpriteFont spriteFont, IEnumerable<Control> collection)
-        : base(collection)
-        {
-            SpriteFont = spriteFont;
-        }
         #endregion
 
         #region Event Region

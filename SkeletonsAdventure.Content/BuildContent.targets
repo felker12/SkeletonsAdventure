@@ -1,0 +1,18 @@
+<Project>
+  <PropertyGroup>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+
+  <Target Name="IncludeCompiledGameContent" BeforeTargets="AssignTargetPaths" Condition="'$(DesignTimeBuild)' != 'true'">
+    <MSBuild Projects="$(MSBuildThisFileDirectory)SkeletonsAdventure.Content.csproj"
+             Targets="GetCompiledAssets"
+             RemoveProperties="TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;SelfContained;OutputPath">
+      <Output TaskParameter="TargetOutputs" ItemName="_CompiledGameAsset" />
+    </MSBuild>
+    <ItemGroup>
+      <Content Include="@(_CompiledGameAsset->'%(FullPath)')"
+               CopyToOutputDirectory="PreserveNewest"
+               CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+  </Target>
+</Project>

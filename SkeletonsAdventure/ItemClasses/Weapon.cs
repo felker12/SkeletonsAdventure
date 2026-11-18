@@ -13,7 +13,7 @@ namespace SkeletonsAdventure.ItemClasses
             AttackValue = item.AttackValue;
         }
 
-        public Weapon(WeaponData data, Texture2D texture) : base(data, texture)
+        public Weapon(WeaponData data, Texture2D texture, SpriteFont tooltipFont) : base(data, texture, tooltipFont)
         {
             NumberHands = data.NumberHands;
             AttackValue = data.AttackValue;

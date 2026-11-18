@@ -1,7 +1,6 @@
 ﻿using MonoGame.Extended;
 using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.Controls;
-using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.HelperClasses;
 
 namespace SkeletonsAdventure.ItemClasses
@@ -19,19 +18,15 @@ namespace SkeletonsAdventure.ItemClasses
         public int Price { get; set; } = 0;
         public float Weight { get; set;} = 0f;
         public bool Stackable { get; set; } = false;
-        public Label ToolTip { get; set; } = new()
-        {
-            Visible = false,
-            SpriteFont = GameManager.FontsLibrary.Arial10,
-            TextColor = Color.Aqua
-        };
+        public Label ToolTip { get; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string TexturePath { get; set; } = string.Empty;
 
-        public GameItem(ItemData item, Texture2D texture)
+        public GameItem(ItemData item, Texture2D texture, SpriteFont tooltipFont)
         {
-            Image = texture;
+            Image = texture ?? throw new ArgumentNullException(nameof(texture));
+            ToolTip = new(tooltipFont) { Visible = false, TextColor = Color.Aqua };
             SourceRectangle = item.SourceRectangle;
             Type = item.Type;
             Quantity = item.Quantity;
@@ -60,10 +55,9 @@ namespace SkeletonsAdventure.ItemClasses
             Price = gameItem.Price;
             Weight = gameItem.Weight;
 
-            ToolTip = new()
+            ToolTip = new(gameItem.ToolTip.SpriteFont)
             {
                 Visible = false,
-                SpriteFont = gameItem.ToolTip.SpriteFont,
                 TextColor = gameItem.ToolTip.TextColor,
                 Text = gameItem.ToolTip.Text,
                 Position = gameItem.ToolTip.Position

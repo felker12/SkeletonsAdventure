@@ -1,8 +1,9 @@
 ﻿
 namespace SkeletonsAdventure.GameUI
 {
-    internal class DamagePopUpManager()
+    internal class DamagePopUpManager(SpriteFont font)
     {
+        private readonly SpriteFont _font = font ?? throw new ArgumentNullException(nameof(font));
         public List<DamagePopUp> DamagePopUps { get; } = [];
 
         public void Update(GameTime gameTime)
@@ -36,12 +37,9 @@ namespace SkeletonsAdventure.GameUI
             }
         }
 
-        public void Add(DamagePopUp popUp)
+        public void Add(string text, Vector2 position, Color color)
         {
-            if (popUp != null)
-            {
-                DamagePopUps.Add(popUp);
-            }
+            DamagePopUps.Add(new DamagePopUp(text, position, _font) { Color = color });
         }
 
         public void Remove(DamagePopUp popUp)

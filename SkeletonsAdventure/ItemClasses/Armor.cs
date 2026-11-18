@@ -13,7 +13,7 @@ namespace SkeletonsAdventure.ItemClasses
             DefenseValue = armor.DefenseValue;
         }
 
-        public Armor(ArmorData data, Texture2D texture) : base(data, texture)
+        public Armor(ArmorData data, Texture2D texture, SpriteFont tooltipFont) : base(data, texture, tooltipFont)
         {
             ArmorLocation = data.ArmorLocation;
             DefenseValue = data.DefenseValue;

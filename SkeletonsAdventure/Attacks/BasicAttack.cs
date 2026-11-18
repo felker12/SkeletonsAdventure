@@ -33,9 +33,9 @@ namespace SkeletonsAdventure.Attacks
         public bool CanMoveDuringAttack { get; protected set; } = true;
         internal AttackIcon AttackIcon { get; set; }
 
-        public BasicAttack(AttackData attackData, Texture2D texture, Entity source = null) : base()
+        public BasicAttack(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(texture, infoFont)
         {
-            attackData ??= new(); // Use default values if attackData is null
+            ArgumentNullException.ThrowIfNull(attackData);
 
             AttackLength = attackData.AttackLength;
             StartTime = attackData.StartTime;
@@ -50,17 +50,15 @@ namespace SkeletonsAdventure.Attacks
             LevelRequirements = new(attackData.LevelRequirement);
             SkillRequirementsNames = attackData.SkillRequirementsNames;
 
-            Texture = texture;
             Source = source;
 
             Initialize();
         }
 
-        protected BasicAttack(BasicAttack attack) : base()
+        protected BasicAttack(BasicAttack attack) : base(attack.Texture, attack.Info.SpriteFont)
         {
             Width = attack.Width;
             Height = attack.Height;
-            Texture = attack.Texture;
             AttackLength = attack.AttackLength;
             StartTime = attack.StartTime;
             AttackOffset = attack.AttackOffset;

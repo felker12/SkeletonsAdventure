@@ -14,7 +14,7 @@ namespace SkeletonsAdventure.Controls
         private int _scrollOffset = 0;
         private Rectangle _headerRectangle;
         private Rectangle _dropdownRectangle;
-        private Texture2D _pixel;
+        private readonly Texture2D _pixel;
         #endregion
 
         #region Properties
@@ -73,18 +73,10 @@ namespace SkeletonsAdventure.Controls
         #endregion
 
         #region Constructor
-        public DropdownList()
+        public DropdownList(Texture2D pixel, SpriteFont font, string text = null) : base(font)
         {
-            Initialize();
-        }
-
-        public DropdownList(SpriteFont font) : base(font)
-        {
-            Initialize();
-        }
-
-        public DropdownList(string text) : base(text)
-        {
+            _pixel = pixel ?? throw new ArgumentNullException(nameof(pixel));
+            Text = text;
             Initialize();
         }
 
@@ -104,15 +96,6 @@ namespace SkeletonsAdventure.Controls
         #endregion
 
         #region Helper Methods
-        private void CreatePixelTexture(GraphicsDevice graphicsDevice)
-        {
-            if (_pixel == null)
-            {
-                _pixel = new Texture2D(graphicsDevice, 1, 1);
-                _pixel.SetData([Color.White]);
-            }
-        }
-
         private void UpdateRectangles()
         {
             _headerRectangle = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
@@ -218,8 +201,6 @@ namespace SkeletonsAdventure.Controls
         {
             if (!Visible)
                 return;
-
-            CreatePixelTexture(spriteBatch.GraphicsDevice);
 
             // Draw header background
             spriteBatch.Draw(_pixel, _headerRectangle, BackgroundColor);

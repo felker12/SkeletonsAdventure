@@ -18,27 +18,24 @@ namespace SkeletonsAdventure.GameObjects
         public Vector2 Position { get; set; } = new();
         public int ID { get; set; } = -1;
         public Rectangle DetectionArea { get; set; }
-        public GameButtonBox ChestMenu { get; set; } = new()
-        {
-            Visible = false,
-            Texture = GameManager.TexturesLibrary.ButtonBoxTexture,
-        };
-        public Label Info { get; set; } = new()
-        {
-            Text = "",
-            Visible = false,
-            SpriteFont = GameManager.FontsLibrary.Arial12
-        };
+        public GameButtonBox ChestMenu { get; }
+        public Label Info { get; }
+        private readonly Texture2D _buttonTexture;
+        private readonly SpriteFont _buttonFont;
         public List<GameItem> Items { get; set; } = null;
         public int LootCount => Items.Count;
         public bool ChestEmptied { get; set; } = false;
         public MinMaxPair LootAmountRange { get; set; } = new(2, 4);
 
-        public Chest()
+        public Chest(Texture2D menuTexture, Texture2D buttonTexture, SpriteFont buttonFont, SpriteFont infoFont)
         {
+            _buttonTexture = buttonTexture ?? throw new ArgumentNullException(nameof(buttonTexture));
+            _buttonFont = buttonFont ?? throw new ArgumentNullException(nameof(buttonFont));
+            ChestMenu = new(Vector2.Zero, menuTexture, 100, 100);
+            Info = new(infoFont, string.Empty) { Visible = false };
         }
 
-        public Chest(Chest chest)
+        public Chest(Chest chest) : this(chest.ChestMenu.Texture, chest._buttonTexture, chest._buttonFont, chest.Info.SpriteFont)
         {
             Position = chest.Position;
             DetectionArea = chest.DetectionArea;
@@ -133,7 +130,7 @@ namespace SkeletonsAdventure.GameObjects
 
         private GameButton CreateGameButton(GameItem item)
         {
-            GameButton btn = new(GameManager.TexturesLibrary.DefaultButtonTexture, GameManager.FontsLibrary.Arial10)
+            GameButton btn = new(_buttonTexture, _buttonFont)
             {
                 Text = $"{item.Name} x{item.Quantity}"  // Add text to show item name and quantity
             };

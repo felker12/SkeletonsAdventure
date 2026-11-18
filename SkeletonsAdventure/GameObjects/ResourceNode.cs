@@ -4,7 +4,7 @@ namespace SkeletonsAdventure.GameObjects
 {
     internal class ResourceNode : InteractableObject
     {
-        public ResourceNode(TiledMapObject obj) : base(obj)
+        public ResourceNode(TiledMapObject obj, SpriteFont font) : base(obj, font)
         {
 
         }

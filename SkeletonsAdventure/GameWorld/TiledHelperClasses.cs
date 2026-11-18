@@ -1,5 +1,6 @@
 ﻿using MonoGame.Extended.Tiled;
 using RpgLibrary.DataClasses;
+using System.Linq;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.GameObjects;
@@ -32,23 +33,11 @@ namespace SkeletonsAdventure.GameWorld
             return mapObjects;
         }
 
-        public static Dictionary<string, TiledAnimation> LoadTiledAnimations(ContentManager content)
+        public static TiledAnimation CreateTiledAnimation(TiledMapTileset tileset, int tileId)
         {
-            TiledMapTileset tiledMapTileset = content.Load<TiledMapTileset>(@"TiledFiles/doors_lever_chest_animation");
-            string tileName = tiledMapTileset.Name;
-
-            Dictionary<string, TiledAnimation> tiledAnimations = [];
-
-            foreach (var tile in tiledMapTileset.Tiles)
-            {
-                if (tile is TiledMapTilesetAnimatedTile animatedTile)
-                {
-                    //to have a unique key for each animated tile the name will be the texture name + "_" + the tile id
-                    tiledAnimations.Add(tileName + "_" + tile.LocalTileIdentifier, new(tiledMapTileset, animatedTile));
-                }
-            }
-
-            return tiledAnimations;
+            var tile = tileset.Tiles.OfType<TiledMapTilesetAnimatedTile>()
+                .First(tile => tile.LocalTileIdentifier == tileId);
+            return new TiledAnimation(tileset, tile);
         }
 
         public static int GetLevelFromTiledMap(TiledMapObject obj)

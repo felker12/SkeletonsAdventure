@@ -5,7 +5,7 @@ namespace SkeletonsAdventure.Attacks
 {
     internal class FireBall : ShootingAttack
     {
-        public FireBall(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
+        public FireBall(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
             AnimatedAttack = true;
             Initialize();

@@ -6,21 +6,21 @@ namespace SkeletonsAdventure.Controls
     public class PictureBox : Control
     {
         #region Property Region
-        public Texture2D Image { get; set; }
+        public Texture2D Image { get; }
         public Rectangle SourceRectangle { get; set; }
         public Rectangle DestinationRectangle { get; set; }
         #endregion
         #region Constructors
         public PictureBox(Texture2D image, Rectangle destination)
         {
-            Image = image;
+            Image = image ?? throw new ArgumentNullException(nameof(image));
             DestinationRectangle = destination;
             SourceRectangle = new Rectangle(0, 0, image.Width, image.Height);
             TextColor = Color.White;
         }
         public PictureBox(Texture2D image, Rectangle destination, Rectangle source)
         {
-            Image = image;
+            Image = image ?? throw new ArgumentNullException(nameof(image));
             DestinationRectangle = destination;
             SourceRectangle = source;
 

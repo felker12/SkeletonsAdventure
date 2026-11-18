@@ -1,19 +1,17 @@
 ﻿using RpgLibrary.EntityClasses;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities
 {
     internal class Skeleton : Enemy
     {
-        public Skeleton(EnemyData data) : base(data)
+        public Skeleton(EnemyData data, EntityAssets assets) : base(data, assets)
         {
             EnemyType = EnemyType.Skeleton;
-            GuaranteedDrops.Add(GameManager.GetItemByName("Bones"));
         }
 
         public override Skeleton Clone()
         {
-            return new(ToData())
+            return new(ToData(), Assets)
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

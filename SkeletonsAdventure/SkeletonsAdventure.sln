@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgEditor", "..\RpgEditor\R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xUnitTests", "..\xUnitTests\xUnitTests.csproj", "{8DE6C546-63CD-422E-A8BC-F7B4F55A8E99}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkeletonsAdventure.Content", "..\SkeletonsAdventure.Content\SkeletonsAdventure.Content.csproj", "{91A2FE34-AC3C-417A-AEE6-07E0E9E827BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{8DE6C546-63CD-422E-A8BC-F7B4F55A8E99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DE6C546-63CD-422E-A8BC-F7B4F55A8E99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DE6C546-63CD-422E-A8BC-F7B4F55A8E99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91A2FE34-AC3C-417A-AEE6-07E0E9E827BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91A2FE34-AC3C-417A-AEE6-07E0E9E827BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91A2FE34-AC3C-417A-AEE6-07E0E9E827BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91A2FE34-AC3C-417A-AEE6-07E0E9E827BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

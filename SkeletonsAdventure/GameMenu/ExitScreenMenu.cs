@@ -1,198 +1,172 @@
-﻿using SkeletonsAdventure.Controls;
+using SkeletonsAdventure.Attacks;
+using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.GameWorld;
+using SkeletonsAdventure.LibraryClasses;
 
 namespace SkeletonsAdventure.GameMenu
 {
-    internal class ExitScreenMenu : TabbedMenu
+    internal sealed class ExitScreenMenu : TabbedMenu
     {
-        //Create the menus
-        public BaseMenu SaveMenu { get; set; }
-        public BaseMenu Settings { get; private set; }
-        public PlayerInfoMenu PlayerMenu { get; set; }
-        public EvolutionMenu EvolutionMenu { get; set; }
-        public QuestMenu QuestMenu { get; set; }
-        public LearnSkillsMenu SkillsMenu { get; set; }
-        public ActionBarMenu ActionBarMenu { get; set; }
+        private const int Margin = 56;
+        private const int TabTop = 123;
+        private const int PanelTop = 171;
+        private static readonly TimeSpan SaveFeedbackDuration = TimeSpan.FromSeconds(1.5);
+        private readonly MenuButton[] _saveActions;
+        private readonly MenuButton _saveButton;
+        private TimeSpan _saveFeedbackRemaining;
+        private readonly Label _settingsMessage;
+        private readonly BaseMenu _saveMenu;
+        private readonly EvolutionMenu _evolutionMenu;
+        private readonly SpriteFont _titleFont;
+        private readonly SpriteFont _hintFont;
 
-        //Create labels
-        public LinkLabel SaveGameLabel { get; set; }
-        public LinkLabel ReturnToGameLabel { get; set; }
-        public LinkLabel ReturnToMenuLabel { get; set; } 
-
-        public ExitScreenMenu(int Width, int Height) : base(Width, Height)
+        public ExitScreenMenu(int width, int height, Texture2D pixel, FontsLibrary fonts,
+            IReadOnlyDictionary<string, BasicAttack> attackTemplates,
+            Func<bool> saveGame, Action resumeGame, Action returnToMenu)
+            : base(width, height, pixel, pixel, fonts.Arial14, MenuStyle.Panel)
         {
-            Initialize();
+            Title = "ExitScreenMenu";
+            Visible = true;
+            _titleFont = fonts.Title;
+            _hintFont = fonts.Arial12;
+
+            _saveMenu = new BaseMenu(pixel, MenuStyle.Panel) { Title = "Save", Visible = true };
+            _saveButton = new(pixel, fonts.Arial16, "Save Game", () => Save(saveGame), primary: true) { HasFocus = true };
+            _saveActions =
+            [
+                _saveButton,
+                new(pixel, fonts.Arial16, "Resume Game", resumeGame),
+                new(pixel, fonts.Arial16, "Return to Main Menu", returnToMenu)
+            ];
+            _saveMenu.ControlManager.AddRange(_saveActions);
+            AddMenu(_saveMenu);
+
+            var settings = new BaseMenu(pixel, MenuStyle.Panel) { Title = "Settings", Visible = true };
+            _settingsMessage = new Label(fonts.Arial16, "No settings available.") { TextColor = MenuStyle.MutedText };
+            settings.ControlManager.Add(_settingsMessage);
+            AddMenu(settings);
+
+            AddMenu(new PlayerInfoMenu(pixel, pixel, fonts.Arial12, MenuStyle.Panel) { Title = "Player", Visible = true });
+            AddMenu(new QuestMenu(pixel, pixel, pixel, fonts.Arial12, fonts.Arial16, MenuStyle.Panel)
+                { Title = "Quests", Visible = true });
+
+            _evolutionMenu = new EvolutionMenu(pixel, pixel, fonts.Arial12, MenuStyle.Panel) { Title = "Evolution" };
+            AddMenu(_evolutionMenu);
+            AddMenu(new LearnSkillsMenu(pixel, pixel, fonts.Arial12, MenuStyle.Panel, attackTemplates)
+                { Title = "Skills", Visible = true });
+            AddMenu(new ActionBarMenu(pixel, pixel, fonts.Arial12, MenuStyle.Panel)
+                { Title = "Action Bar", Visible = true });
+
+            foreach (BaseMenu menu in TabBar.TabMenus.Values)
+            {
+                foreach (Control control in menu.ControlManager)
+                {
+                    if (control is Button button)
+                        MenuStyle.Apply(button);
+                }
+            }
+
+            Arrange(new Rectangle(0, 0, width, height));
+            TabBar.SetActiveTab(_saveMenu);
         }
 
-        private void Initialize()
+        private void Save(Func<bool> saveGame)
         {
-            Visible = false;
-            Title = "ExitScreenMenu";
-
-            CreateTabbedMenu();
+            _saveButton.Enabled = false;
+            _saveButton.Text = saveGame() ? "Game saved" : "Could not save game";
+            _saveFeedbackRemaining = SaveFeedbackDuration;
         }
 
         public override void Update(GameTime gameTime)
         {
+            if (_saveFeedbackRemaining > TimeSpan.Zero)
+            {
+                _saveFeedbackRemaining -= gameTime.ElapsedGameTime;
+                if (_saveFeedbackRemaining <= TimeSpan.Zero)
+                {
+                    _saveButton.Text = "Save Game";
+                    _saveButton.Enabled = true;
+                }
+            }
+
             base.Update(gameTime);
+        }
+
+        public override void Arrange(Rectangle bounds)
+        {
+            base.Arrange(bounds);
+            TabBar.Position = new(bounds.X + Margin, bounds.Y + TabTop);
+            TabBar.Width = Math.Max(1, bounds.Width - Margin * 2);
+            var panel = new Rectangle(bounds.X + Margin + 1, bounds.Y + PanelTop + 1,
+                Math.Max(1, TabBar.Width - 2), Math.Max(1, bounds.Height - PanelTop - 40));
+
+            foreach (BaseMenu menu in TabBar.TabMenus.Values)
+            {
+                menu.Arrange(panel);
+                menu.TintColor = MenuStyle.Panel;
+            }
+
+            for (int i = 0; i < _saveActions.Length; i++)
+                _saveActions[i].Arrange(new(panel.X + 26, panel.Y + 26 + i * 58, Math.Clamp(panel.Width - 52, 3, 340), 46));
+
+            _settingsMessage.Position = new(panel.X + 26, panel.Y + 26);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            base.Draw(spriteBatch);
-        }
+            if (!Visible)
+                return;
 
-        public override void HandleInput(PlayerIndex playerIndex)
-        {
-            base.HandleInput(playerIndex);
-        }
+            spriteBatch.Begin();
+            var titlePosition = Position + new Vector2(Margin, 30);
+            spriteBatch.DrawString(_titleFont, "Paused", titlePosition, MenuStyle.Ivory, 0, Vector2.Zero,
+                0.7f, SpriteEffects.None, 0);
 
-        private void CreateTabbedMenu()
-        {
-            //Create the child menus for the tabbed menu
-            CreateSaveMenu();
-            CreateSettingsMenu();
-            CreatePlayerMenu();
-            CreateQuestsMenu();
-            CreateEvolutionMenu();
-            CreateSkillsMenu();
-            CreateActionBarMenu();
+            const string hint = "Esc to resume";
+            var hintPosition = new Vector2(Rectangle.Right - Margin - _hintFont.MeasureString(hint).X, Position.Y + 56);
+            spriteBatch.DrawString(_hintFont, hint, hintPosition, MenuStyle.MutedText);
 
-            //Add the menus to the tab bar
-            AddMenu(SaveMenu);
-            AddMenu(Settings);
-            AddMenu(PlayerMenu);
-            AddMenu(QuestMenu);
-            AddMenu(EvolutionMenu);
-            AddMenu(SkillsMenu);
-            AddMenu(ActionBarMenu);
+            int ruleY = (int)Position.Y + 103;
+            spriteBatch.Draw(Texture, new Rectangle((int)TabBar.Position.X, ruleY, TabBar.Width, 1), MenuStyle.Border);
+            spriteBatch.Draw(Texture, new Rectangle((int)TabBar.Position.X, ruleY - 1, 38, 3), MenuStyle.Brass);
+            TabBar.Draw(spriteBatch);
 
-            TabBar.SetActiveTab(SaveMenu); //Set the active tab
+            BaseMenu activeMenu = TabBar.ActiveMenu;
+            if (activeMenu is not null)
+            {
+                Rectangle border = activeMenu.Rectangle;
+                border.Inflate(1, 1);
+                spriteBatch.Draw(Texture, border, MenuStyle.Border);
+            }
+
+            spriteBatch.End();
+            activeMenu?.Draw(spriteBatch);
+            if (activeMenu == _saveMenu && _saveMenu.Visible)
+            {
+                spriteBatch.Begin();
+                spriteBatch.DrawString(_hintFont, "Tab to select  |  Enter or A to confirm",
+                    _saveActions[^1].Position + new Vector2(0, 63), MenuStyle.MutedText);
+                spriteBatch.End();
+            }
         }
 
         public override void MenuOpened()
         {
-            TabBar.ActiveMenu?.MenuOpened(); //Call MenuOpened on the active menu to update it
-            base.MenuOpened(); //Call the base MenuOpened method to handle any additional logic
-
-            //Update the Evolution menu visibility based on whether the player can evolve
-            EvolutionMenu.Player = World.Player;
-            EvolutionMenu.Visible = World.Player.CanEvolve; //should only be visible if the player can evolve
-
-            //Find the Evolution tab and update its visibility
-            foreach (var tabMenu in TabBar.TabMenus)
+            _evolutionMenu.Player = World.Player;
+            _evolutionMenu.Visible = World.Player.CanEvolve;
+            foreach (var (tab, menu) in TabBar.TabMenus)
             {
-                if (tabMenu.Value == EvolutionMenu)
+                if (menu == _evolutionMenu)
                 {
-                    tabMenu.Key.Visible = World.Player.CanEvolve;
-
-                    //If the Evolution tab is not visible and is currently active, switch to the first visible tab
-                    if (TabBar.ActiveMenu == EvolutionMenu)
-                        TabBar.SetActiveTab(TabBar.GetFirstVisibleMenu());
-
+                    tab.Visible = _evolutionMenu.Visible;
                     break;
                 }
             }
-        }
 
-        private void CreateSaveMenu()
-        {
-            SaveMenu = new()
-            {
-                Visible = true,
-                Title = "Save",
-            };
-            SaveMenu.SetBackgroundColor(Color.MidnightBlue);
-
-            //Add controls to the Menu
-            SaveGameLabel = new(GameManager.FontsLibrary.Arial20)
-            {
-                Text = "Press to save the game",
-                TabStop = true,
-            };
-            SaveGameLabel.Position = new(Game1.ScreenWidth / 2 - SaveGameLabel.SpriteFont.MeasureString(SaveGameLabel.Text).X / 2, 300);
-
-            ReturnToGameLabel = new(GameManager.FontsLibrary.Arial20)
-            {
-                Text = "Press to return to the game",
-                TabStop = true,
-            };
-            ReturnToGameLabel.Position = new(Game1.ScreenWidth / 2 - ReturnToGameLabel.SpriteFont.MeasureString(ReturnToGameLabel.Text).X / 2, 350);
-
-            ReturnToMenuLabel = new(GameManager.FontsLibrary.Arial20)
-            {
-                Text = "Press to return to menu screen",
-                TabStop = true,
-            };
-            ReturnToMenuLabel.Position = new(Game1.ScreenWidth / 2 - ReturnToMenuLabel.SpriteFont.MeasureString(ReturnToMenuLabel.Text).X / 2,
-                ReturnToGameLabel.Position.Y + ReturnToGameLabel.SpriteFont.MeasureString(ReturnToGameLabel.Text).Y + 20);
-
-
-            SaveMenu.ControlManager.Add(SaveGameLabel);
-            SaveMenu.ControlManager.Add(ReturnToGameLabel);
-            SaveMenu.ControlManager.Add(ReturnToMenuLabel);
-
-            SaveMenu.ControlManager.NextControl(); //Initialize the selected control and set the selected control to have focus
-        }
-
-        private void CreateSettingsMenu()
-        {
-            Settings = new()
-            {
-                Visible = true,
-                Title = "Settings",
-            };
-            Settings.SetBackgroundColor(Color.MidnightBlue);
-        }
-
-        private void CreatePlayerMenu()
-        {
-            PlayerMenu = new PlayerInfoMenu()
-            {
-                Visible = true,
-                Title = "Player",
-            };
-            PlayerMenu.SetBackgroundColor(Color.MidnightBlue);
-        }
-
-        private void CreateQuestsMenu()
-        {
-            QuestMenu = new()
-            {
-                Visible = true,
-                Title = "Quests",
-            };
-            QuestMenu.SetBackgroundColor(Color.MidnightBlue);
-        }
-
-        private void CreateEvolutionMenu()
-        {
-            EvolutionMenu = new()
-            {
-                Visible = true,
-                Title = "Evolution",
-            };
-            EvolutionMenu.SetBackgroundColor(Color.MidnightBlue);
-        }
-
-        private void CreateSkillsMenu()
-        {
-            SkillsMenu = new()
-            {
-                Visible = true,
-                Title = "Skills",
-            };
-            SkillsMenu.SetBackgroundColor(Color.MidnightBlue);
-        }
-
-        private void CreateActionBarMenu()
-        {
-            ActionBarMenu = new()
-            {
-                Visible = true,
-                Title = "Action Bar",
-            };
-            ActionBarMenu.SetBackgroundColor(Color.MidnightBlue);
+            if (!_evolutionMenu.Visible && TabBar.ActiveMenu == _evolutionMenu)
+                TabBar.SetActiveTab(_saveMenu);
+            else
+                base.MenuOpened();
         }
     }
 }

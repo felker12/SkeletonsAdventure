@@ -1,4 +1,4 @@
-﻿using SkeletonsAdventure.Controls;
+using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameWorld;
 
@@ -8,9 +8,6 @@ namespace SkeletonsAdventure.GameMenu
     {
         public Player Player { get; private set; }
 
-        // This menu is used to display player information such as stats, and such.
-        private readonly Texture2D buttonTexture = GameManager.TexturesLibrary.ButtonTexture;
-
         //Controls for displaying player information can be added here
         Label LevelLbl, AttributePointsLbl, BaseAttackLbl, BaseDefenceLbl,
             BaseHealthLbl, BaseManaLbl, AttackLbl, DefenceLbl,
@@ -19,19 +16,15 @@ namespace SkeletonsAdventure.GameMenu
 
         Button ApplyBtn, CancelBtn, IncreaseAttackBtn, IncreaseDefenceBtn, IncreaseHealthBtn, IncreaseManaBtn;
 
+        private readonly List<Button> _increaseFiveButtons = [];
+
         private int currentAttributePoints,
             attackToAdd = 0, defenceToAdd = 0, healthToAdd = 0, manaToAdd = 0;
 
-        public PlayerInfoMenu() : base()
+        public PlayerInfoMenu(Texture2D texture, Texture2D buttonTexture, SpriteFont font, Color color)
+            : base(texture, color)
         {
-            ControlManager = new(GameManager.FontsLibrary.Arial14);
-            CreateControls();
-        }
-
-        public PlayerInfoMenu(int width, int height) : base(width, height)
-        {
-            ControlManager = new(GameManager.FontsLibrary.Arial14);
-            CreateControls();
+            CreateControls(buttonTexture, font);
         }
 
         public override void Update(GameTime gameTime)
@@ -69,6 +62,7 @@ namespace SkeletonsAdventure.GameMenu
             healthToAdd = 0;
             manaToAdd = 0;
             SetToAddLabelsText();
+            CheckEnoughAttributePoints();
         }
 
         private void UpdateLabelText(Player player)
@@ -82,25 +76,25 @@ namespace SkeletonsAdventure.GameMenu
             BaseManaLbl.Text = $"Base Mana: {player.BaseMana}";
 
             AttackLbl.Text = $"Total Attack: {player.Attack}, Base Attack: {player.BaseAttack}, " +
-                $"Attack From Level: {player.bonusAttackFromLevel}, " +
-                $"Attack From Attributes: {player.bonusAttackFromAttributePoints}, " +
-                $"Attack From Equipment: {player.EquippedItems.EquippedItemsAttackBonus()}," +
-                $"Attack From Evolution: {player.bonusAttackFromEvolution}";
+                $"Level: {player.bonusAttackFromLevel}, " +
+                $"Attributes: {player.bonusAttackFromAttributePoints}, " +
+                $"Gear: {player.EquippedItems.EquippedItemsAttackBonus()}," +
+                $"Evolution: {player.bonusAttackFromEvolution}";
             DefenceLbl.Text = $"Total Defence: {player.Defence}, Base Defence: {player.BaseDefence}, " +
-                $"Defence From Level: {player.bonusDefenceFromLevel}, " +
-                $"Defence From Attributes: {player.bonusDefenceFromAttributePoints}, " +
-                $"Defence From Equipment: {player.EquippedItems.EquippedItemsDefenceBonus()}, " +
-                $"Defence From Evolution: {player.bonusDefenceFromEvolution}";
+                $"Level: {player.bonusDefenceFromLevel}, " +
+                $"Attributes: {player.bonusDefenceFromAttributePoints}, " +
+                $"Gear: {player.EquippedItems.EquippedItemsDefenceBonus()}, " +
+                $"Evolution: {player.bonusDefenceFromEvolution}";
             HealthLbl.Text = $"Total Health: {player.MaxHealth}, Base Health: {player.BaseHealth}, " +
-                $"Health From Level: {player.bonusHealthFromLevel}, " +
-                $"Health From Attributes: {player.bonusHealthFromAttributePoints}, " +
-                $"Health From Equipment: {player.EquippedItems.EquippedItemsHealthBonus()}, " +
-                $"Health From Evolution: {player.bonusHealthFromEvolution}";
+                $"Level: {player.bonusHealthFromLevel}, " +
+                $"Attributes: {player.bonusHealthFromAttributePoints}, " +
+                $"Gear: {player.EquippedItems.EquippedItemsHealthBonus()}, " +
+                $"Evolution: {player.bonusHealthFromEvolution}";
             ManaLbl.Text = $"Mana: {player.MaxMana}, Base Mana: {player.BaseMana}, " +
-                $"Mana From Level: {player.bonusManaFromLevel}, " +
-                $"Mana From Attributes: {player.bonusManaFromAttributePoints}, " +
-                $"Mana From Equipment: {player.EquippedItems.EquippedItemsManaBonus()}, " +
-                $"Mana From Evolution: {player.bonusManaFromEvolution}";
+                $"Level: {player.bonusManaFromLevel}, " +
+                $"Attributes: {player.bonusManaFromAttributePoints}, " +
+                $"Gear: {player.EquippedItems.EquippedItemsManaBonus()}, " +
+                $"Evolution: {player.bonusManaFromEvolution}";
 
             SetToAddLabelsText();
         }
@@ -116,20 +110,18 @@ namespace SkeletonsAdventure.GameMenu
 
         private void CheckEnoughAttributePoints()
         {
-            if(currentAttributePoints == 0)
-            {
-                IncreaseAttackBtn.Enabled = false;
-                IncreaseDefenceBtn.Enabled = false;
-                IncreaseHealthBtn.Enabled = false;
-                IncreaseManaBtn.Enabled = false;
-            }
-            else
-            {
-                IncreaseAttackBtn.Enabled = true;
-                IncreaseDefenceBtn.Enabled = true;
-                IncreaseHealthBtn.Enabled = true;
-                IncreaseManaBtn.Enabled = true;
-            }
+            IncreaseAttackBtn.Enabled = currentAttributePoints >= 1;
+            IncreaseDefenceBtn.Enabled = currentAttributePoints >= 1;
+            IncreaseHealthBtn.Enabled = currentAttributePoints >= 1;
+            IncreaseManaBtn.Enabled = currentAttributePoints >= 1;
+            foreach (Button button in _increaseFiveButtons)
+                button.Enabled = currentAttributePoints >= 5;
+        }
+        public override void Arrange(Rectangle bounds)
+        {
+            base.Arrange(bounds);
+            if (Player is not null)
+                SetPositions();
         }
 
         private void SetPositions()
@@ -141,7 +133,7 @@ namespace SkeletonsAdventure.GameMenu
             int longestLbl = GetLongestLabel(labels);
 
             //Position the controls
-            LevelLbl.Position = new(Position.X + 15, Position.Y + 15);
+            LevelLbl.Position = new(Position.X + 26, Position.Y + 26);
             AttributePointsLbl.Position = LevelLbl.Position +
                 new Vector2(0, LevelLbl.SpriteFont.LineSpacing + labelSpace);
             BaseAttackLbl.Position = AttributePointsLbl.Position +
@@ -156,7 +148,7 @@ namespace SkeletonsAdventure.GameMenu
             ApplyBtn.Position = BaseManaLbl.Position +
                 new Vector2(0, BaseManaLbl.SpriteFont.LineSpacing + 20);
             CancelBtn.Position = ApplyBtn.Position +
-                new Vector2(CancelBtn.Width + labelSpace, 0);
+                new Vector2(ApplyBtn.Width + labelSpace, 0);
 
             AttackLbl.Position = new Vector2(BaseManaLbl.Position.X,
                 CancelBtn.Position.Y + CancelBtn.SpriteFont.LineSpacing + CancelBtn.Height + labelSpace);
@@ -167,18 +159,25 @@ namespace SkeletonsAdventure.GameMenu
             ManaLbl.Position = HealthLbl.Position +
                 new Vector2(0, HealthLbl.SpriteFont.LineSpacing + labelSpace);
 
-            IncreaseAttackBtn.Position = new(labelSpace * 2 + longestLbl, BaseAttackLbl.Position.Y);
-            IncreaseDefenceBtn.Position = new(labelSpace * 2 + longestLbl, BaseDefenceLbl.Position.Y);
-            IncreaseHealthBtn.Position = new(labelSpace * 2 + longestLbl, BaseHealthLbl.Position.Y);
-            IncreaseManaBtn.Position = new(labelSpace * 2 + longestLbl, BaseManaLbl.Position.Y);
+            IncreaseAttackBtn.Position = new(LevelLbl.Position.X + labelSpace * 2 + longestLbl, BaseAttackLbl.Position.Y);
+            IncreaseDefenceBtn.Position = new(LevelLbl.Position.X + labelSpace * 2 + longestLbl, BaseDefenceLbl.Position.Y);
+            IncreaseHealthBtn.Position = new(LevelLbl.Position.X + labelSpace * 2 + longestLbl, BaseHealthLbl.Position.Y);
+            IncreaseManaBtn.Position = new(LevelLbl.Position.X + labelSpace * 2 + longestLbl, BaseManaLbl.Position.Y);
 
-            AttackToAddLabel.Position = IncreaseAttackBtn.Position +
+            Button[] increaseOneButtons = [IncreaseAttackBtn, IncreaseDefenceBtn, IncreaseHealthBtn, IncreaseManaBtn];
+            for (int i = 0; i < increaseOneButtons.Length; i++)
+            {
+                _increaseFiveButtons[i].Position = increaseOneButtons[i].Position +
+                    new Vector2(increaseOneButtons[i].Width + labelSpace, 0);
+            }
+
+            AttackToAddLabel.Position = _increaseFiveButtons[0].Position +
                 new Vector2(IncreaseAttackBtn.Width + labelSpace, 0);
-            DefenceToAddLabel.Position = IncreaseDefenceBtn.Position +
+            DefenceToAddLabel.Position = _increaseFiveButtons[1].Position +
                 new Vector2(IncreaseDefenceBtn.Width + labelSpace, 0);
-            HealthToAddLabel.Position = IncreaseHealthBtn.Position +
+            HealthToAddLabel.Position = _increaseFiveButtons[2].Position +
                 new Vector2(IncreaseHealthBtn.Width + labelSpace, 0);
-            ManaToAddLabel.Position = IncreaseManaBtn.Position +
+            ManaToAddLabel.Position = _increaseFiveButtons[3].Position +
                 new Vector2(IncreaseManaBtn.Width + labelSpace, 0);
         }
 
@@ -197,61 +196,78 @@ namespace SkeletonsAdventure.GameMenu
             return longest;
         }
 
-        public void CreateControls()
+        private void CreateControls(Texture2D buttonTexture, SpriteFont font)
         {
-            LevelLbl = new();
-            AttributePointsLbl = new(); 
-            BaseAttackLbl = new(); 
-            BaseDefenceLbl = new();
-            BaseHealthLbl = new(); 
-            BaseManaLbl = new(); 
-            AttackLbl = new(); 
-            DefenceLbl = new();
-            HealthLbl = new(); 
-            ManaLbl = new(); 
-            AttackToAddLabel = new();
-            DefenceToAddLabel = new(); 
-            HealthToAddLabel = new(); 
-            ManaToAddLabel = new();
+            LevelLbl = new(font);
+            AttributePointsLbl = new(font);
+            BaseAttackLbl = new(font);
+            BaseDefenceLbl = new(font);
+            BaseHealthLbl = new(font);
+            BaseManaLbl = new(font);
+            AttackLbl = new(font);
+            DefenceLbl = new(font);
+            HealthLbl = new(font);
+            ManaLbl = new(font);
+            AttackToAddLabel = new(font);
+            DefenceToAddLabel = new(font);
+            HealthToAddLabel = new(font);
+            ManaToAddLabel = new(font);
 
             //Initialize the buttons
-            ApplyBtn = new(buttonTexture)
+            ApplyBtn = new(buttonTexture, font)
             {
                 Text = "Apply",
-                Width = 80,
+                Width = 105,
+                Height = 34,
             };
-            CancelBtn = new(buttonTexture) 
+            CancelBtn = new(buttonTexture, font)
             { 
                 Text = "Cancel",
-                Width = 80,
+                Width = 105,
+                Height = 34,
             };
-            IncreaseAttackBtn = new(buttonTexture)
+            IncreaseAttackBtn = new(buttonTexture, font)
             {
-                Text = " +1 ",
+                Text = "+1",
             };
-            IncreaseAttackBtn.Height = (int)IncreaseAttackBtn.SpriteFont.MeasureString(IncreaseAttackBtn.Text).Y;
-            IncreaseAttackBtn.Width = (int)IncreaseAttackBtn.SpriteFont.MeasureString(IncreaseAttackBtn.Text).X;
+            IncreaseAttackBtn.Height = 24;
+            IncreaseAttackBtn.Width = 42;
 
-            IncreaseDefenceBtn = new(buttonTexture)
+            IncreaseDefenceBtn = new(buttonTexture, font)
             {
-                Text = " +1 ",
+                Text = "+1",
             };
-            IncreaseDefenceBtn.Height = (int)IncreaseDefenceBtn.SpriteFont.MeasureString(IncreaseDefenceBtn.Text).Y;
-            IncreaseDefenceBtn.Width = (int)IncreaseDefenceBtn.SpriteFont.MeasureString(IncreaseDefenceBtn.Text).X;
+            IncreaseDefenceBtn.Height = 24;
+            IncreaseDefenceBtn.Width = 42;
 
-            IncreaseHealthBtn = new(buttonTexture)
+            IncreaseHealthBtn = new(buttonTexture, font)
             {
-                Text = " +1 ",
+                Text = "+1",
             };
-            IncreaseHealthBtn.Height = (int)IncreaseHealthBtn.SpriteFont.MeasureString(IncreaseHealthBtn.Text).Y;
-            IncreaseHealthBtn.Width = (int)IncreaseHealthBtn.SpriteFont.MeasureString(IncreaseHealthBtn.Text).X;
+            IncreaseHealthBtn.Height = 24;
+            IncreaseHealthBtn.Width = 42;
 
-            IncreaseManaBtn = new(buttonTexture)
+            IncreaseManaBtn = new(buttonTexture, font)
             {
-                Text = " +1 ",
+                Text = "+1",
             };
-            IncreaseManaBtn.Height = (int)IncreaseManaBtn.SpriteFont.MeasureString(IncreaseManaBtn.Text).Y;
-            IncreaseManaBtn.Width = (int)IncreaseManaBtn.SpriteFont.MeasureString(IncreaseManaBtn.Text).X;
+            IncreaseManaBtn.Height = 24;
+            IncreaseManaBtn.Width = 42;
+
+            Action[] increaseFiveActions =
+            [
+                () => AllocatePoints(ref attackToAdd, 5),
+                () => AllocatePoints(ref defenceToAdd, 5),
+                () => AllocatePoints(ref healthToAdd, 5),
+                () => AllocatePoints(ref manaToAdd, 5)
+            ];
+            foreach (Action allocate in increaseFiveActions)
+            {
+                var button = new Button(buttonTexture, font) { Text = "+5", Width = 42, Height = 24 };
+                button.Click += (sender, e) => allocate();
+                _increaseFiveButtons.Add(button);
+                ControlManager.Add(button);
+            }
 
             //Add the event handlers
             ApplyBtn.Click += ApplyBtn_Click;
@@ -304,53 +320,25 @@ namespace SkeletonsAdventure.GameMenu
             CheckApplyAndCancelShouldBeEnabled();
         }
 
-        private void IncreaseManaBtn_Click(object sender, EventArgs e)
+        private void IncreaseManaBtn_Click(object sender, EventArgs e) => AllocatePoints(ref manaToAdd, 1);
+
+        private void IncreaseHealthBtn_Click(object sender, EventArgs e) => AllocatePoints(ref healthToAdd, 1);
+
+        private void IncreaseDefenceBtn_Click(object sender, EventArgs e) => AllocatePoints(ref defenceToAdd, 1);
+
+        private void IncreaseAttackBtn_Click(object sender, EventArgs e) => AllocatePoints(ref attackToAdd, 1);
+
+        private void AllocatePoints(ref int pendingPoints, int amount)
         {
-            if (currentAttributePoints > 0 is false)
+            if (currentAttributePoints < amount)
                 return;
 
-            manaToAdd++;
-            currentAttributePoints--;
+            pendingPoints += amount;
+            currentAttributePoints -= amount;
             SetToAddLabelsText();
             CheckEnoughAttributePoints();
             CheckApplyAndCancelShouldBeEnabled();
         }
-
-        private void IncreaseHealthBtn_Click(object sender, EventArgs e)
-        {
-            if (currentAttributePoints > 0 is false)
-                return;
-
-            healthToAdd++;
-            currentAttributePoints--;
-            SetToAddLabelsText(); 
-            CheckEnoughAttributePoints();
-            CheckApplyAndCancelShouldBeEnabled();
-        }
-
-        private void IncreaseDefenceBtn_Click(object sender, EventArgs e)
-        {
-            if (currentAttributePoints > 0 is false)
-                return;
-
-            defenceToAdd++;
-            currentAttributePoints--;
-            SetToAddLabelsText();
-            CheckEnoughAttributePoints();
-            CheckApplyAndCancelShouldBeEnabled();
-        }
-        private void IncreaseAttackBtn_Click(object sender, EventArgs e)
-        {
-            if (currentAttributePoints > 0 is false)
-                return;
-
-            attackToAdd++;
-            currentAttributePoints--;
-            SetToAddLabelsText();
-            CheckEnoughAttributePoints();
-            CheckApplyAndCancelShouldBeEnabled();
-        }
-
         public void CheckApplyAndCancelShouldBeEnabled()
         {
             if ((defenceToAdd + attackToAdd + healthToAdd + manaToAdd) > 0)

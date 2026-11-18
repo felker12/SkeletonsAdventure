@@ -1,6 +1,5 @@
 ﻿using MonoGame.Extended;
 using SkeletonsAdventure.Controls;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.GameUI
 {
@@ -16,20 +15,8 @@ namespace SkeletonsAdventure.GameUI
         {
         }
 
-        public SelectionControlBox() : base()
+        public SelectionControlBox(Texture2D texture) : this(Vector2.Zero, texture, 600, 400)
         {
-            Texture = GameManager.TexturesLibrary.CreateTextureFromColor(Color.LightGray);
-            Position = new();
-            Width = 600;
-            Height = 400;
-        }
-
-        public SelectionControlBox(Texture2D texture) : base()
-        {
-            Texture = texture;
-            Position = new();
-            Width = 600;
-            Height = 400;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

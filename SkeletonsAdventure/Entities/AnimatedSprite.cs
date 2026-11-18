@@ -11,7 +11,7 @@ namespace SkeletonsAdventure.Entities
         protected bool IsAnimating { get; set; }
         public AnimationKey CurrentAnimation { get; set; }
 
-        public AnimatedSprite() : base()
+        public AnimatedSprite(Texture2D texture, SpriteFont infoFont) : base(texture, infoFont)
         {
             SetFrames(3, 32, 64, paddingY: 10); //This is the default which is used by the skeleton spritesheet
         }
@@ -34,7 +34,7 @@ namespace SkeletonsAdventure.Entities
 
         public override AnimatedSprite Clone()
         {
-            return new();
+            return new(Texture, Info.SpriteFont);
         }
 
         /// <summary>

@@ -1,29 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Controls
 {
     internal class TextBox : Control
     {
-        public Texture2D Background { get; set; }
+        public Texture2D Background { get; }
         public Color BackgroundOutlineColor { get; set; } = Color.Black;
 
-        public TextBox() : base()
+        public TextBox(Texture2D background, SpriteFont font) : base(font)
         {
-            Initialize();
-        }
-
-        public TextBox(SpriteFont font) : base(font)
-        {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
+            Background = background ?? throw new ArgumentNullException(nameof(background));
             TextColor = Color.Black;
-            Background = GameManager.TexturesLibrary.TextBoxTexture;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -31,7 +20,7 @@ namespace SkeletonsAdventure.Controls
             if (Visible is false)
                 return;
 
-            spriteBatch.Draw(Background, Rectangle, Color.White);
+            spriteBatch.Draw(Background, Rectangle, BackgroundColor);
             spriteBatch.DrawRectangle(Rectangle, BackgroundOutlineColor, 2, 0);
 
             if (Text == string.Empty || Text is null)

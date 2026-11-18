@@ -5,22 +5,19 @@ namespace SkeletonsAdventure.States
 {
     internal abstract class State
     {
-        protected ContentManager Content { get; set; }
         protected GraphicsDevice GraphicsDevice { get; set; }
         protected Game1 Game {  get; set; }
         protected StateManager StateManager { get; set; }
-        public SpriteFont MenuFont { get; set; } = GameManager.FontsLibrary.Arial20;
-        protected ControlManager ControlManager { get; set; }
+        protected GameManager Assets { get; }
+        protected ControlManager ControlManager { get; } = new();
         protected PlayerIndex PlayerIndexInControl { get; set; } = PlayerIndex.One;
 
-        public State(Game1 game)
+        protected State(Game1 game, GameManager assets)
         {
             Game = game;
+            Assets = assets ?? throw new ArgumentNullException(nameof(assets));
             GraphicsDevice = game.GraphicsDevice;
-            Content = game.Content;
             StateManager = game.StateManager;
-
-            ControlManager = new ControlManager(MenuFont);
         }
 
         public abstract void StateChangeToHandler();

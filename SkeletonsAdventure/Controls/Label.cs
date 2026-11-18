@@ -2,23 +2,9 @@
 {
     public class Label : Control
     {
-        public Label()
-        {
-            Initialize();
-        }
-        public Label(string text)
+        public Label(SpriteFont font, string text = null) : base(font)
         {
             Text = text;
-            Initialize();
-        }
-
-        public Label(SpriteFont font) : base(font)
-        {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
             TabStop = false;
         }
 

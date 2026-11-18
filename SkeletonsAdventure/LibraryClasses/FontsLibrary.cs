@@ -10,10 +10,12 @@ namespace SkeletonsAdventure.LibraryClasses
         public SpriteFont Arial16 { get; private set; }
         public SpriteFont Arial18 { get; private set; }
         public SpriteFont Arial20 { get; private set; }
+        public SpriteFont Title { get; }
 
         public FontsLibrary(ContentManager content)
         {
             LoadArialFonts(content);
+            Title = content.Load<SpriteFont>("Fonts/Title");
         }
 
         private void LoadArialFonts(ContentManager content)

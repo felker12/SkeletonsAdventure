@@ -5,6 +5,7 @@ using MonoGame.Extended.Tiled.Renderers;
 using RpgLibrary.DataClasses;
 using RpgLibrary.WorldClasses;
 using SkeletonsAdventure.Engines;
+using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.Entities.EntityHelperClasses;
 using SkeletonsAdventure.Entities.PlayerClasses;
@@ -39,8 +40,9 @@ namespace SkeletonsAdventure.GameWorld
         public TiledMapTileLayer ConditionalLayer { get; private set; } = null;
         public LevelExit LevelExit { get; set; } = null;
         public LevelExit LevelEntrance { get; set; } = null;
-        internal InteractableObjectManager InteractableObjectManager { get; private set; } = new();
-        public DamagePopUpManager DamagePopUpManager { get; } = new(); //used to show damage popups when an entity is hit by an attack
+        internal InteractableObjectManager InteractableObjectManager { get; }
+        public DamagePopUpManager DamagePopUpManager { get; }
+        private readonly SpriteFont _exitFont;
         public TeleporterManager TeleporterManager { get; private set; } = new(); // used to manage teleporters in the level
         public GameEventManager GameEventManager { get; } = new(); //used to manage timed game events
         public Dictionary<string, Enemy> Enemies { get; private set; } = [];
@@ -52,11 +54,15 @@ namespace SkeletonsAdventure.GameWorld
 
         public List<Rectangle> EnterExitLayerObjectRectangles { get; private set; } = []; //TODO used to temporarily see where hitboxes are for exits
 
-        public Level(GraphicsDevice graphics, TiledMap tiledMap, Dictionary<string, Enemy> enemies, MinMaxPair enemyLevels)
+        public Level(GraphicsDevice graphics, TiledMap tiledMap, Dictionary<string, Enemy> enemies, MinMaxPair enemyLevels,
+            SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         {
             GraphicsDevice = graphics;
+            _exitFont = exitFont ?? throw new ArgumentNullException(nameof(exitFont));
+            DamagePopUpManager = new(damageFont);
+            InteractableObjectManager = new(_exitFont);
             Enemies = enemies;
-            CreateMap(tiledMap);
+            CreateMap(tiledMap ?? throw new ArgumentNullException(nameof(tiledMap)));
 
             //Load the chests from the tiled map and add them to the chest manager
             ChestManager.Add(TiledHelperClasses.LoadChestsFromTiledMap(ChestManager.TiledMapTileLayer, GameManager.ChestsClone)); 
@@ -64,7 +70,7 @@ namespace SkeletonsAdventure.GameWorld
             EnemyLevels = enemyLevels;
 
             CreateEntityManager();
-            LoadInteractableObjects();
+            LoadInteractableObjects(leverAnimation);
             LoadTeleporters();
         }
 
@@ -129,9 +135,9 @@ namespace SkeletonsAdventure.GameWorld
                 spriteBatch.DrawRectangle(rec, Color.White, 1, 0); //used to see where the hitboxes are for the exits
 
             if (LevelEntrance is not null && LevelEntrance.ExitTextVisible)
-                spriteBatch.DrawString(GameManager.FontsLibrary.Arial12, LevelEntrance.ExitText, LevelEntrance.ExitPosition, Color.White);
+                spriteBatch.DrawString(_exitFont, LevelEntrance.ExitText, LevelEntrance.ExitPosition, Color.White);
             if (LevelExit is not null && LevelExit.ExitTextVisible)
-                spriteBatch.DrawString(GameManager.FontsLibrary.Arial12, LevelExit.ExitText, LevelExit.ExitPosition, Color.White);
+                spriteBatch.DrawString(_exitFont, LevelExit.ExitText, LevelExit.ExitPosition, Color.White);
 
             spriteBatch.End();
         }
@@ -191,7 +197,7 @@ namespace SkeletonsAdventure.GameWorld
             };
         }
 
-        private void LoadInteractableObjects()//TODO 
+        private void LoadInteractableObjects(TiledAnimation leverAnimation)
         {
             if (InteractableObjectLayerObjects is not null)
             {
@@ -203,7 +209,7 @@ namespace SkeletonsAdventure.GameWorld
                         {
                             if (obj.Properties.TryGetValue("Quests", out TiledMapPropertyValue quests))
                             {
-                                QuestNode questNode = new(obj);
+                                QuestNode questNode = new(obj, _exitFont);
                                 string[] Quests = quests.ToString().Split(',', StringSplitOptions.TrimEntries);
 
                                 foreach (string questName in Quests)
@@ -217,18 +223,18 @@ namespace SkeletonsAdventure.GameWorld
                         }
                         else if (value == "Resource")
                         {
-                            InteractableObjectManager.Add(new ResourceNode(obj)); //TODO resource logic still needs added
+                            InteractableObjectManager.Add(new ResourceNode(obj, _exitFont)); //TODO resource logic still needs added
                         }
                         else if (value == "Lever")
                         {
-                            Lever lever = new(obj);
+                            Lever lever = new(obj, _exitFont, leverAnimation);
                             SetLeverProperties(obj, lever);
 
                             InteractableObjectManager.Add(lever);
                         }
                         else
                         {
-                            InteractableObjectManager.Add(new InteractableObject(obj));
+                            InteractableObjectManager.Add(new InteractableObject(obj, _exitFont));
                         }
                     }
                 }
@@ -294,8 +300,9 @@ namespace SkeletonsAdventure.GameWorld
             foreach (TiledMapObject obj in TeleporterLayer.Objects)
             {
                 name = obj.Name ?? string.Empty;
-                teleporter = new(name)
+                teleporter = new(_exitFont)
                 {
+                    Name = name,
                     Position = obj.Position,
                     Width = (int)obj.Size.Width,
                     Height = (int)obj.Size.Height,

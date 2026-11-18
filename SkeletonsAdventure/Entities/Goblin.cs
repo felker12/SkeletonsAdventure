@@ -1,23 +1,21 @@
 ﻿using RpgLibrary.EntityClasses;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities
 {
     internal class Goblin : Enemy
     {
-        public Goblin(EnemyData data) : base(data)
+        public Goblin(EnemyData data, EntityAssets assets) : base(data, assets)
         {
             Initialize();
         }
 
-        public Goblin() : base()
+        public Goblin(EntityAssets assets) : base(assets)
         {
             Initialize();
         }
 
         private void Initialize()
         {
-            Texture = GameManager.TexturesLibrary.GoblinTexture;
             SetFrames(4, 23, 40);
             BasicAttackColor = Color.DarkGreen;
             EnemyType = EnemyType.Goblin;
@@ -25,7 +23,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Goblin Clone()
         {
-            Goblin goblin = new(ToData())
+            Goblin goblin = new(ToData(), Assets)
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

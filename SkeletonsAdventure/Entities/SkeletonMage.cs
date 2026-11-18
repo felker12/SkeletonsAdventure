@@ -1,11 +1,10 @@
 ﻿using RpgLibrary.EntityClasses;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Entities
 {
     internal class SkeletonMage : Skeleton
     {
-        public SkeletonMage(EnemyData data) : base(data)
+        public SkeletonMage(EnemyData data, EntityAssets assets) : base(data, assets)
         {
             Initialize();
         }
@@ -13,14 +12,13 @@ namespace SkeletonsAdventure.Entities
         private void Initialize()
         {
             //TODO
-            Texture = GameManager.TexturesLibrary.SkeletonMageTexture;
             SetFrames(6, 64, 64, paddingX: 36, xOffset: 20, yOffset: 8, paddingY: 14);
             BasicAttackColor = new(11,29,131); //TODO
         }
 
         public override SkeletonMage Clone()
         {
-            return new(ToData())
+            return new(ToData(), Assets)
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,

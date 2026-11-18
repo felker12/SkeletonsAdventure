@@ -48,10 +48,18 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
         public int HealhExcludingEquipment { get; private set; } = 0;
         public bool CanEvolve { get; private set; } = false;
 
-        public Player() : base()
+        private readonly Texture2D _armoredTexture;
+        private readonly GameItem _coinTemplate;
+        private readonly IReadOnlyDictionary<string, BasicAttack> _attackTemplates;
+
+        public Player(EntityAssets assets, Texture2D armoredTexture, IReadOnlyDictionary<string, BasicAttack> attackTemplates,
+            GameItem coinTemplate) : base(assets)
         {
+            _armoredTexture = armoredTexture ?? throw new ArgumentNullException(nameof(armoredTexture));
+            _attackTemplates = attackTemplates ?? throw new ArgumentNullException(nameof(attackTemplates));
+            _coinTemplate = coinTemplate ?? throw new ArgumentNullException(nameof(coinTemplate));
             TotalXP = 0;
-            LearnedAttackManager = new(this);
+            LearnedAttackManager = new(this, _attackTemplates);
             KeybindingsManager = new(this);
             InitializeBaseStats();
             Initialize();
@@ -61,13 +69,13 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             //GainXp(53400); //TODO delete this
 
             //TODO
-            FireBall fireBall = (FireBall)GameManager.GetAttackByName("FireBall");
+            FireBall fireBall = (FireBall)GetAttackByName("FireBall");
             LearnAttack(fireBall);
 
-            IceBullet iceBullet = (IceBullet)GameManager.GetAttackByName("IceBullet");
+            IceBullet iceBullet = (IceBullet)GetAttackByName("IceBullet");
             LearnAttack(iceBullet);
 
-            IceBullets iceBullets = (IceBullets)GameManager.GetAttackByName("IceBullets");
+            IceBullets iceBullets = (IceBullets)GetAttackByName("IceBullets");
             LearnAttack(iceBullets);
 
             //Debug.WriteLine(LearnedAttackManager.ToString());
@@ -75,6 +83,9 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             //TODO
             InitializeAttacks(); //this is for testing
         }
+
+        private BasicAttack GetAttackByName(string name) =>
+            _attackTemplates.TryGetValue(name, out var attack) ? attack.Clone() : null;
 
         private void InitializeBaseStats()
         {
@@ -109,17 +120,17 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
         {
             Dictionary<Keys, BasicAttack> KeyBindings = new()
             {
-                { Keys.D1, (FireBall)GameManager.GetAttackByName("FireBall") },
-                { Keys.D2, (IcePillar)GameManager.GetAttackByName("IcePillar") },
-                { Keys.D3, (IceBullet)GameManager.GetAttackByName("IceBullet") },
-                { Keys.D4, (WaterBall)GameManager.GetAttackByName("WaterBall") },
-                { Keys.D5, (FireWave)GameManager.GetAttackByName("FireWave") },
-                { Keys.D6, (BlueFireWave)GameManager.GetAttackByName("BlueFireWave") },
+                { Keys.D1, (FireBall)GetAttackByName("FireBall") },
+                { Keys.D2, (IcePillar)GetAttackByName("IcePillar") },
+                { Keys.D3, (IceBullet)GetAttackByName("IceBullet") },
+                { Keys.D4, (WaterBall)GetAttackByName("WaterBall") },
+                { Keys.D5, (FireWave)GetAttackByName("FireWave") },
+                { Keys.D6, (BlueFireWave)GetAttackByName("BlueFireWave") },
                 //{ Keys.D7, null },
                 //{ Keys.D8, null },
-                { Keys.D9, (IceBullets)GameManager.GetAttackByName("IceBullets") },
-                //{ Keys.D0, (TriangleAttack)GameManager.GetAttackByName("TriangleAttack") },
-                { Keys.D0, (SpinningTriangleAttack)GameManager.GetAttackByName("SpinningTriangleAttack") },
+                { Keys.D9, (IceBullets)GetAttackByName("IceBullets") },
+                //{ Keys.D0, (TriangleAttack)GetAttackByName("TriangleAttack") },
+                { Keys.D0, (SpinningTriangleAttack)GetAttackByName("SpinningTriangleAttack") },
             };
 
             KeybindingsManager.SetKeybinding(KeyBindings);
@@ -192,8 +203,9 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             Info.Text += $"\nAttacks hit by: {AttacksHitBy.Count}";
         }
 
-        public void UpdatePlayerWithData(PlayerData playerData)
+        public void UpdatePlayerWithData(PlayerData playerData, Texture2D texture)
         {
+            ArgumentNullException.ThrowIfNull(texture);
             EvolutionType = playerData.EvolutionType;
             TotalXP = playerData.totalXP;
 
@@ -218,7 +230,7 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             SetBonussesFromEvolution();
             PlayerStatAdjustmentForLevel();
 
-            Texture = GameManager.Content.Load<Texture2D>(playerData.TextureName); //TODO
+            Texture = texture;
             UpdateEvolutionTexture();
         }
 
@@ -273,7 +285,7 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                 }
                 else
                 {
-                    attack = GameManager.GetAttackByName(name); //Fall back to getting an attack from the global manager
+                    attack = GetAttackByName(name);
                 }
 
                 SetKeyBinding(binding.Key, attack);
@@ -353,7 +365,7 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             GainXp(reward.XP);
             //TODO give gold and items
 
-            GameItem coins = new(GameManager.ItemsClone["Coins"]);
+            GameItem coins = new(_coinTemplate);
             coins.SetQuantity(reward.Coins);
 
             //if the items wont fit in the backpack, drop them on the ground
@@ -664,7 +676,7 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                     //dont do anything, already set to skeleton
                     break;
                 case PlayerEvolutionType.ArmoredSkeleton:
-                    Texture = GameManager.TexturesLibrary.ArmoredSkeletonTexture;
+                    Texture = _armoredTexture;
                     SetFrames(4, 64, 64, xOffset: 14, yOffset: 2, paddingX: 26, paddingY: 4,
                         order: [AnimationKey.Down, AnimationKey.Right, AnimationKey.Up, AnimationKey.Left]);
                     break;

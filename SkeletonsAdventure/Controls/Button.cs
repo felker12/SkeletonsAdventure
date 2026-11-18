@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Input;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.Controls
 {
@@ -9,41 +8,15 @@ namespace SkeletonsAdventure.Controls
         #endregion
         #region Properties
         public event EventHandler Click;
-        public Texture2D Texture { get; set; } = GameManager.TexturesLibrary.ButtonTexture;
+        public Texture2D Texture { get; }
         public Color DisabledColor { get; set; } = Color.DarkGray;
         public Color HoverColor { get; set; } = Color.Gray;
         public bool Clicked { get; private set; } = false;
         #endregion
         #region Constructors
-        public Button()
-        {
-            Initialize();
-        }
-
-        public Button(string text) : base(text)
-        {
-            Initialize();
-        }
-
-        public Button(SpriteFont font) : base(font)
-        {
-            Initialize();
-        }
-
-        public Button(Texture2D texture)
-        {
-            Texture = texture;
-            Initialize();
-        }
-
         public Button(Texture2D texture, SpriteFont font) : base(font)
         {
-            Texture = texture;
-            Initialize();
-        }
-
-        private void Initialize()
-        {
+            Texture = texture ?? throw new ArgumentNullException(nameof(texture));
             Width = Texture.Width;
             Height = Texture.Height;
             TextColor = Color.Black;

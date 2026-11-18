@@ -9,14 +9,6 @@ namespace SkeletonsAdventure.GameUI
 
         public GameButtonBox(Vector2 pos, Texture2D texture, int width, int height) : base(pos, texture, width, height)
         {
-            Position = pos;
-            Texture = texture;
-            Width = width;
-            Height = height;
-        }
-
-        public GameButtonBox() : base()
-        {
         }
 
         public override void Draw(SpriteBatch spriteBatch)

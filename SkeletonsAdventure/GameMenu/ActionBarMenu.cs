@@ -16,9 +16,15 @@ namespace SkeletonsAdventure.GameMenu
         private List<string> ExcludedSkills { get; set; } = ["BasicAttack"]; //skills that should not be learnable by the player
         private List<string> attackNames;
         private readonly Dictionary<Keys, DropdownList> DropdownDictionary = [];
+        private readonly Dictionary<Keys, Label> _keyLabels = [];
+        private readonly Texture2D _pixel;
+        private readonly SpriteFont _font;
 
-        public ActionBarMenu()
+        public ActionBarMenu(Texture2D texture, Texture2D pixel, SpriteFont font, Color color)
+            : base(texture, color)
         {
+            _pixel = pixel ?? throw new ArgumentNullException(nameof(pixel));
+            _font = font ?? throw new ArgumentNullException(nameof(font));
             UpdateLearnedAttacks();
             CreateControls();
             LoadedAttacksToDropdowns();
@@ -38,33 +44,32 @@ namespace SkeletonsAdventure.GameMenu
 
         private void CreateControls() //TODO add functionality to load the player's current keybindings into the dropdowns when the menu is opened
         {
-            Vector2 startLabelPos = new(60, 65);
-            Vector2 startDropdownPos = new(90, 60);
-            int dropdownWidth = 200;
-            int dropdownHeight = 30;
-            int spacing = 40; // Space between each dropdown and label
             Label dropdownLabel;
             DropdownList dropdownList;
             
             foreach (Keys key in keyOrder)
             {
                 // Create and configure the label
-                dropdownLabel = new()
+                dropdownLabel = new(_font)
                 {
-                    Position = startLabelPos,
-                    Text = key.ToString(),
+                    Text = DisplayKey(key),
+                    TextColor = MenuStyle.Brass,
                     Visible = true,
                 };
                 ControlManager.Add(dropdownLabel);
 
-                startLabelPos.Y += spacing; // Move the next label down
+                _keyLabels[key] = dropdownLabel;
 
                 // Create and configure the dropdown list
-                dropdownList = new()
+                dropdownList = new(_pixel, _font)
                 {
-                    Position = startDropdownPos,
-                    Width = dropdownWidth,
-                    Height = dropdownHeight,
+                    Height = 36,
+                    BackgroundColor = MenuStyle.Surface,
+                    DropdownBackgroundColor = MenuStyle.Surface,
+                    BorderColor = MenuStyle.Border,
+                    HoverColor = MenuStyle.Selection,
+                    SelectedItemColor = MenuStyle.Selection,
+                    TextColor = MenuStyle.Ivory,
                     Text = defaultText, // Placeholder text
                     Visible = true,
                 };
@@ -85,7 +90,6 @@ namespace SkeletonsAdventure.GameMenu
 
                 DropdownDictionary[key] = dropdownList; // Map the key to its corresponding dropdown for easy access later
 
-                startDropdownPos.Y += spacing; // Move the next dropdown down
             }
 
             //Add the dropdowns to the control manager in reverse order to ensure
@@ -93,7 +97,33 @@ namespace SkeletonsAdventure.GameMenu
             var dropdowns = DropdownDictionary.Values.Reverse().ToList();
             foreach (var dropdown in dropdowns)
                 ControlManager.Add(dropdown);
+
+            ArrangeControls();
         }
+
+        public override void Arrange(Rectangle bounds)
+        {
+            base.Arrange(bounds);
+            ArrangeControls();
+        }
+
+        private void ArrangeControls()
+        {
+            int rowsPerColumn = (keyOrder.Length + 1) / 2;
+            int columnWidth = Width / 2;
+            for (int i = 0; i < keyOrder.Length; i++)
+            {
+                Keys key = keyOrder[i];
+                var position = Position + new Vector2(26 + i / rowsPerColumn * columnWidth, 26 + i % rowsPerColumn * 50);
+                _keyLabels[key].Position = position + new Vector2(0, 8);
+                DropdownDictionary[key].Position = position + new Vector2(45, 0);
+                DropdownDictionary[key].Width = Math.Clamp(columnWidth - 80, 90, 330);
+            }
+        }
+
+        private static string DisplayKey(Keys key) => key is >= Keys.D0 and <= Keys.D9
+            ? ((int)key - (int)Keys.D0).ToString()
+            : key.ToString();
 
         private void LoadedAttacksToDropdowns()
         {

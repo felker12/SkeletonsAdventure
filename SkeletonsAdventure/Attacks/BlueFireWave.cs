@@ -6,7 +6,7 @@ namespace SkeletonsAdventure.Attacks
 {
     internal class BlueFireWave : ShootingAttack
     {
-        public BlueFireWave(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
+        public BlueFireWave(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
             AnimatedAttack = true;
             Initialize();

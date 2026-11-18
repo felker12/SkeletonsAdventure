@@ -15,7 +15,8 @@ namespace SkeletonsAdventure.Entities
         public TimeSpan LastDeathTime { get; set; } = new();
         public Vector2 RespawnPosition { get; set; } = Vector2.Zero;
         public string Type { get; set; } = string.Empty;
-        public StatusBar HealthBar { get; set; } = new();
+        public StatusBar HealthBar { get; }
+        internal EntityAssets Assets { get; }
         public int AttackCoolDownLength { get; protected set; } = 600; //minimum length of the delay between attacks in milliseconds
         public AttackManager AttackManager { get; set; } 
         public BasicAttack BasicAttack { get; set; }
@@ -41,19 +42,19 @@ namespace SkeletonsAdventure.Entities
         public TimeSpan LastTimeAttacked { get; set; }
         public Vector2 PositionLastAttackedFrom { get; set; } // the position of the center of the entity that last attacked this entity
 
-        public Entity() : base()
+        public Entity(EntityAssets assets) : this(null, assets)
         {
-            Health = BaseHealth;
-            Position = new();
-            Type = GetType().FullName;
-
-            Initialize();
         }
 
-        public Entity(EntityData data) : base()
+        public Entity(EntityData data, EntityAssets assets)
+            : base((assets ?? throw new ArgumentNullException(nameof(assets))).Texture, assets.InfoFont)
         {
+            Assets = assets;
+            HealthBar = new(assets.StatusBarTexture, assets.StatusBarFont);
             Type = GetType().FullName;
-            UpdateEntityWithData(data);
+            if (data is not null)
+                UpdateEntityWithData(data);
+
             Initialize();
         }
 
@@ -64,10 +65,8 @@ namespace SkeletonsAdventure.Entities
             MaxHealth = BaseHealth;
             Defence = BaseDefence;
             Attack = BaseAttack;
-
             XP = BaseXP;
-
-            BasicAttack = new(GameManager.AttackLibrary.BasicAttackData, GameManager.TexturesLibrary.SkeletonAttackTexture, this);
+            BasicAttack = new(Assets.BasicAttackData, Assets.BasicAttackTexture, Assets.InfoFont, this);
         }
 
         public override void Update(GameTime gameTime)
@@ -140,7 +139,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Entity Clone()
         {
-            return new(ToData())
+            return new(ToData(), Assets)
             {
                 Position = Position,
                 Level = Level,
@@ -155,12 +154,7 @@ namespace SkeletonsAdventure.Entities
             PositionLastAttackedFrom = attack.Source.Center;
 
             int dmg = (int)(DamageEngine.CalculateDamage(attack.Source, this) * attack.DamageModifier);
-            DamagePopUp damagePopUp = new(dmg.ToString(), Center);
-
-            if (this is Enemy)
-                damagePopUp.Color = Color.Cyan;
-
-            World.CurrentLevel.DamagePopUpManager.Add(damagePopUp);
+            World.CurrentLevel.DamagePopUpManager.Add(dmg.ToString(), Center, this is Enemy ? Color.Cyan : Color.White);
             //TODO add logic for critical hits and color the attack orange if it is a critical
 
             Health -= dmg;

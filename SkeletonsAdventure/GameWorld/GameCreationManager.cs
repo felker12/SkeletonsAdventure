@@ -6,6 +6,7 @@ using SkeletonsAdventure.Entities.NPCs;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
+using SkeletonsAdventure.LibraryClasses;
 using SkeletonsAdventure.Quests;
 using System.IO;
 using System.Linq;
@@ -15,7 +16,8 @@ namespace SkeletonsAdventure.GameWorld
     internal static class GameCreationManager
     {
         //Create the enemies from the content folder
-        internal static Dictionary<string, Enemy> CreateEnemies(ContentManager content)
+        internal static Dictionary<string, Enemy> CreateEnemies(ContentManager content, EntityAssets defaultAssets, TexturesLibrary textures,
+            GameItem skeletonDrop)
         {
             //Use reflection to build a lookup table of all concrete Enemy subclasses in the current assembly.
             //This maps full type names (e.g., "SkeletonsAdventure.Entities.Skeleton") to Type objects,
@@ -44,7 +46,20 @@ namespace SkeletonsAdventure.GameWorld
                 if (enemyTypes.TryGetValue(data.Type, out Type enemyType))
                 {
                     //Dynamically create the specific enemy subclass and add to dictionary
-                    Enemy en = (Enemy)Activator.CreateInstance(enemyType, data);
+                    Texture2D texture = enemyType.Name switch
+                    {
+                        nameof(Goblin) => textures.GoblinTexture,
+                        nameof(Minotaur) => textures.MinotaurTexture,
+                        nameof(Spider) => textures.SpiderTexture,
+                        nameof(SkeletalBruiser) => textures.SkeletalBruiserTexture,
+                        nameof(SkeletonMage) => textures.SkeletonMageTexture,
+                        nameof(SkeletonWarrior) => textures.SkeletonWarriorTexture,
+                        _ => defaultAssets.Texture
+                    };
+                    Enemy en = (Enemy)Activator.CreateInstance(enemyType, data, defaultAssets with { Texture = texture });
+                    if (en is Skeleton)
+                        en.GuaranteedDrops.Add(skeletonDrop);
+
                     enemies.Add(en.GetType().FullName, en);
                 }
                 else
@@ -57,7 +72,7 @@ namespace SkeletonsAdventure.GameWorld
         }
 
         //Create the items from the content folder
-        internal static Dictionary<string, GameItem> CreateItems(ContentManager content)
+        internal static Dictionary<string, GameItem> CreateItems(ContentManager content, SpriteFont tooltipFont)
         {
             Dictionary<string, GameItem> items = [];
 
@@ -76,7 +91,7 @@ namespace SkeletonsAdventure.GameWorld
 
                     ItemData itemData = content.Load<ItemData>(contentPath);
                     Texture2D itemTexture = content.Load<Texture2D>(itemData.TexturePath);
-                    GameItem gameItem = CreateGameItemFromData(itemData, itemTexture);
+                    GameItem gameItem = CreateGameItemFromData(itemData, itemTexture, tooltipFont);
 
                     items.TryAdd(gameItem.Name, gameItem);
                 }
@@ -110,11 +125,11 @@ namespace SkeletonsAdventure.GameWorld
             return dropTables;
         }
 
-        internal static Dictionary<string, Chest> CreateChests() //TODO
+        internal static Dictionary<string, Chest> CreateChests(Texture2D menuTexture, Texture2D buttonTexture, SpriteFont buttonFont, SpriteFont infoFont) //TODO
         {
             Dictionary<string, Chest> chests = [];
 
-            Chest BasicChest = new()
+            Chest BasicChest = new(menuTexture, buttonTexture, buttonFont, infoFont)
             {
                 ID = 8,
                 ChestType = ChestType.Basic,
@@ -126,7 +141,7 @@ namespace SkeletonsAdventure.GameWorld
             if (chests.ContainsKey(name) == false)
                 chests.Add(name, BasicChest);
 
-            Chest BasicChest2 = new()
+            Chest BasicChest2 = new(menuTexture, buttonTexture, buttonFont, infoFont)
             {
                 ID = 784,
                 ChestType = ChestType.Basic,
@@ -141,15 +156,15 @@ namespace SkeletonsAdventure.GameWorld
             return chests;
         }
 
-        private static GameItem CreateGameItemFromData(ItemData itemData, Texture2D texture)
+        private static GameItem CreateGameItemFromData(ItemData itemData, Texture2D texture, SpriteFont tooltipFont)
         {
             return itemData switch
             {
-                WeaponData w => new Weapon(w.Clone(), texture),
-                ArmorData a => new Armor(a.Clone(), texture),
-                ShieldData s => new Shield(s.Clone(), texture),
-                ConsumableData c => new Consumable(c.Clone(), texture),
-                _ => new GameItem(itemData.Clone(), texture)
+                WeaponData w => new Weapon(w.Clone(), texture, tooltipFont),
+                ArmorData a => new Armor(a.Clone(), texture, tooltipFont),
+                ShieldData s => new Shield(s.Clone(), texture, tooltipFont),
+                ConsumableData c => new Consumable(c.Clone(), texture, tooltipFont),
+                _ => new GameItem(itemData.Clone(), texture, tooltipFont)
             };
         }
 

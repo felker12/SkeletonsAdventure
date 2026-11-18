@@ -1,12 +1,10 @@
-﻿using SkeletonsAdventure.GameWorld;
-
-namespace SkeletonsAdventure.GameUI
+﻿namespace SkeletonsAdventure.GameUI
 {
     public abstract class ControlBox
     {
         public Vector2 Position { get; set; } = new();
         public Vector2 ControlOffset { get; set; } = new(4, 4);
-        public Texture2D Texture { get; set; } = GameManager.TexturesLibrary.ButtonBoxTexture;
+        public Texture2D Texture { get; }
         public int Width { get; set; } = 100;
         public int Height { get; set; } = 100;
         public Color Color { get; set; } = Color.White;
@@ -18,13 +16,9 @@ namespace SkeletonsAdventure.GameUI
         public ControlBox(Vector2 pos, Texture2D texture, int width, int height)
         {
             Position = pos;
-            Texture = texture;
+            Texture = texture ?? throw new ArgumentNullException(nameof(texture));
             Width = width;
             Height = height;
-        }
-
-        public ControlBox()
-        {
         }
 
         public abstract void Draw(SpriteBatch spriteBatch);

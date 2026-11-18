@@ -9,12 +9,7 @@ namespace SkeletonsAdventure.Controls
         public Color ToggledColor { get; set; } = Color.LightGray;
         public string ToggledText { get; set; } = string.Empty;
 
-        public ToggleButton() : base()
-        {
-
-        }
-
-        public ToggleButton(SpriteFont font) : base(font)
+        public ToggleButton(Texture2D texture, SpriteFont font) : base(texture, font)
         {
 
         }
@@ -31,7 +26,7 @@ namespace SkeletonsAdventure.Controls
             }
             else
             {
-                color = BackgroundColor; 
+                color = _isHovering ? HoverColor : BackgroundColor;
                 text = Text;
             }
 
@@ -39,8 +34,8 @@ namespace SkeletonsAdventure.Controls
 
             if (!string.IsNullOrEmpty(text))
             {
-                var x = (Rectangle.X + (Rectangle.Width / 2)) - (SpriteFont.MeasureString(Text).X / 2);
-                var y = (Rectangle.Y + (Rectangle.Height / 2)) - (SpriteFont.MeasureString(Text).Y / 2);
+                var x = (Rectangle.X + (Rectangle.Width / 2)) - (SpriteFont.MeasureString(text).X / 2);
+                var y = (Rectangle.Y + (Rectangle.Height / 2)) - (SpriteFont.MeasureString(text).Y / 2);
 
                 spriteBatch.DrawString(SpriteFont, text, new Vector2(x, y), TextColor);
             }

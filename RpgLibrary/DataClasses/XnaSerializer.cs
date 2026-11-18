@@ -5,6 +5,9 @@ namespace RpgLibrary.DataClasses
 {
     public static class XnaSerializer
     {
+        // Keep relative references as stored in the XML, with no relocation root.
+        private const string NoReferenceRelocation = null!;
+
         public static void Serialize<T>(string filename, T data)
         {
             XmlWriterSettings settings = new()
@@ -14,7 +17,7 @@ namespace RpgLibrary.DataClasses
 
             using XmlWriter writer = XmlWriter.Create(filename, settings);
 
-            IntermediateSerializer.Serialize<T>(writer, data, null);
+            IntermediateSerializer.Serialize<T>(writer, data, NoReferenceRelocation);
         }
 
         public static T Deserialize<T>(string filename)
@@ -24,7 +27,7 @@ namespace RpgLibrary.DataClasses
             {
                 using XmlReader reader = XmlReader.Create(stream);
 
-                data = IntermediateSerializer.Deserialize<T>(reader, null);
+                data = IntermediateSerializer.Deserialize<T>(reader, NoReferenceRelocation);
             }
             return data;
         }

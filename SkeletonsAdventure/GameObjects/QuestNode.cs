@@ -30,7 +30,7 @@ namespace SkeletonsAdventure.GameObjects
             }
         }
 
-        public QuestNode(TiledMapObject obj) : base(obj)
+        public QuestNode(TiledMapObject obj, SpriteFont font) : base(obj, font)
         {
 
         }
@@ -40,7 +40,7 @@ namespace SkeletonsAdventure.GameObjects
 
         }
 
-        public QuestNode(QuestNodeData data) : base(data)
+        public QuestNode(QuestNodeData data, SpriteFont font) : base(data, font)
         {
 
         }

@@ -7,7 +7,7 @@ namespace SkeletonsAdventure.Attacks
 {
     internal class IcePillar : PopUpAttack
     {
-        public IcePillar(AttackData attackData, Texture2D texture, Entity source = null) : base(attackData, texture, source)
+        public IcePillar(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
             Width = Texture.Width;
             Height = Texture.Height;

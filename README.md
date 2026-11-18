@@ -42,7 +42,7 @@ SkeletonsAdventure/
 ├── Game/            # Gameplay systems and RPG mechanics
 ├── Editor/          # Custom map and asset editor
 ├── Libraries/       # Shared utilities and frameworks
-├── Content/         # Game assets and configuration files
+├── SkeletonsAdventure.Content/ # Game assets and MonoGame content pipeline
 └── Data/            # Save files and serialized data
 **Core Subsystems**
 
@@ -83,11 +83,9 @@ Prerequisites
 
 Windows 10 or later
 
-.NET SDK
+.NET 11 SDK and .NET 8 Desktop Runtime (for the RPG editor)
 
 Visual Studio (recommended)
-
-MonoGame Framework
 
 **Installation**
 
@@ -99,7 +97,7 @@ Open the solution in Visual Studio.
 
 Restore NuGet packages if prompted.
 
-Build the solution.
+Build the solution. `SkeletonsAdventure.Content` compiles the assets and supplies them to the game and tests. Add source files under `SkeletonsAdventure.Content/Assets` and edit `SkeletonsAdventure.Content/Builder/Builder.cs` when an asset needs a new build rule.
 
 Run the main game project.
 

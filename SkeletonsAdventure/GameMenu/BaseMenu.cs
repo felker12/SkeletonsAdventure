@@ -1,36 +1,38 @@
 ﻿using RpgLibrary.MenuClasses;
 using SkeletonsAdventure.Controls;
-using SkeletonsAdventure.GameWorld;
 
 namespace SkeletonsAdventure.GameMenu
 {
     internal class BaseMenu
     {
-        public ControlManager ControlManager { get; set; } = new(GameManager.FontsLibrary.Arial20);
+        public ControlManager ControlManager { get; } = new();
         protected PlayerIndex PlayerIndexInControl { get; set; } = PlayerIndex.One;
         public string Title { get; set; } = "Menu";
         public bool Visible { get; set; } = false;
         public Vector2 Position { get; set; } = new();
         public int Width { get; set; } = 400;
         public int Height { get; set; } = 400;
-        public Texture2D Texture { get; set; } = GameManager.TexturesLibrary.GameMenuTexture;
+        public Texture2D Texture { get; }
         public Rectangle Rectangle => new((int)Position.X, (int)Position.Y, Width, Height);
         public Color TintColor { get; set; } = Color.White;
 
-        //This is just used to save the background color used by the SetBackgroundColor method to color the texture
-        protected Color BackgroundColor { get; private set; } = Color.White;
+        protected Color BackgroundColor { get; }
 
-        public BaseMenu()
+        public BaseMenu(Texture2D texture, Color? backgroundColor = null)
         {
+            Texture = texture ?? throw new ArgumentNullException(nameof(texture));
+            BackgroundColor = backgroundColor ?? Color.White;
         }
 
-        public BaseMenu(int width, int height)
+        public BaseMenu(int width, int height, Texture2D texture, Color? backgroundColor = null)
+            : this(texture, backgroundColor)
         {
             Width = width;
             Height = height;
         }
 
-        public BaseMenu(MenuData menuData)
+        public BaseMenu(MenuData menuData, Texture2D texture)
+            : this(texture, menuData.BackgroundColor)
         {
             Visible = menuData.Visible;
             Position = menuData.Position;
@@ -38,14 +40,19 @@ namespace SkeletonsAdventure.GameMenu
             Height = menuData.Height;
             TintColor = menuData.TintColor;
             Title = menuData.Title;
-
-            SetBackgroundColor(menuData.BackgroundColor);
         }
 
         public virtual void Update(GameTime gameTime)
         {
             if (Visible)
                 ControlManager.Update(gameTime, PlayerIndexInControl);
+        }
+
+        public virtual void Arrange(Rectangle bounds)
+        {
+            Position = new(bounds.X, bounds.Y);
+            Width = bounds.Width;
+            Height = bounds.Height;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
@@ -78,14 +85,6 @@ namespace SkeletonsAdventure.GameMenu
             TintColor = menuData.TintColor;
             Title = menuData.Title;
         }
-        public void SetBackgroundColor(Color color)
-        {
-            Texture2D background = GameManager.TexturesLibrary.CreateTextureFromColor(color);
-
-            Texture = background;
-            BackgroundColor = color;
-        }
-
         public void ToggleVisibility()
         {
             Visible = !Visible;

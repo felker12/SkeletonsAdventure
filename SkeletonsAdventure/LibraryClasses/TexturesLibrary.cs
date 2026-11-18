@@ -1,4 +1,5 @@
 ﻿
+
 namespace SkeletonsAdventure.LibraryClasses
 {
     internal class TexturesLibrary
@@ -38,9 +39,7 @@ namespace SkeletonsAdventure.LibraryClasses
         public Texture2D StatusBarTexture { get; set; }
         public Texture2D ButtonTexture { get; set; }
         public Texture2D TextBoxTexture { get; set; }
-
-        //Miscellaneous Textures
-        public Texture2D DoorLeverAndChestAnimationTexture { get; private set; }
+        public Texture2D TitleBackdrop { get; private set; }
 
         public GraphicsDevice GraphicsDevice { get; set; }
 
@@ -57,8 +56,6 @@ namespace SkeletonsAdventure.LibraryClasses
             //UI Textures
             LoadUITextures(content, graphicsDevice);
 
-            //Miscellaneous Textures
-            DoorLeverAndChestAnimationTexture = content.Load<Texture2D>(@"TiledFiles/doors_lever_chest_animation_0");
         }
 
         private void LoadUITextures(ContentManager content, GraphicsDevice graphicsDevice)
@@ -77,6 +74,7 @@ namespace SkeletonsAdventure.LibraryClasses
             StatusBarTexture = CreateTextureFromColor(Color.White);
 
             ButtonTexture = content.Load<Texture2D>("Controls/Button");
+            TitleBackdrop = content.Load<Texture2D>("FrontEnd/DungeonBackdrop");
 
             TextBoxTexture = CreateTextureFromColor(new Color(210, 210, 210, 220));
         }

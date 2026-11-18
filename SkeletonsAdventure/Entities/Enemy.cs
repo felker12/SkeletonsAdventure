@@ -41,19 +41,13 @@ namespace SkeletonsAdventure.Entities
         public string Name { get; set; }
         public List<BasicAttack> SpecialAttacks { get; set; } = [];
 
-        public Enemy(EnemyData data) : base(data)
+        public Enemy(EnemyData data, EntityAssets assets) : base(data, assets)
         {
             Initialize();
             UpdateEntityWithData(data);
-
-            foreach(var itemData in data.GuaranteedItems)
-            {
-                var item = GameManager.GetItemByName(itemData.Name);
-                item.SetQuantity(itemData.Quantity);
-            }
         }
 
-        public Enemy() : base()
+        public Enemy(EntityAssets assets) : base(assets)
         {
             Initialize();
         }
@@ -133,7 +127,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Enemy Clone()
         {
-            return new(ToData())
+            return new(ToData(), Assets)
             {
                 Position = Position,
                 GuaranteedDrops = GuaranteedDrops,
