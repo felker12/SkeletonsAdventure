@@ -1,5 +1,6 @@
 using System.Xml;
 using System.Xml.Linq;
+using System.Globalization;
 using SkeletonsAdventure.Content;
 using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
@@ -22,6 +23,64 @@ internal static class ContentReferenceValidator
         "TiledFiles/walls_floor.png"
     ];
     internal const string LeverTileset = "TiledFiles/doors_lever_chest_animation.tsx";
+    internal sealed record QuestTarget(QuestLocationAction Action, string Map, int ObjectId, string Name)
+    {
+        public override string ToString() => $"{Map} · {Name} (#{ObjectId})";
+    }
+
+    internal static IReadOnlyList<QuestTarget> ReadQuestTargets(string root)
+    {
+        var targets = new List<QuestTarget>();
+        foreach (string level in MapCatalog.LevelNames)
+        {
+            string path = Path.Combine(root, MapCatalog.AssetName(level) + ".tmx");
+            var map = ReadRoot(path, "map");
+            AddTargets(MapCatalog.InteractableLayer, QuestLocationAction.Interact);
+            AddTargets(MapCatalog.QuestAreaLayer, QuestLocationAction.ReachArea);
+
+            void AddTargets(string layerName, QuestLocationAction action)
+            {
+                var layer = map.Elements("objectgroup").FirstOrDefault(candidate => (string?)candidate.Attribute("name") == layerName);
+                if (layer is null)
+                    return;
+                foreach (var obj in layer.Elements("object"))
+                {
+                    if (!int.TryParse((string?)obj.Attribute("id"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int id) ||
+                        id <= 0 || !HasSize(obj))
+                        continue;
+                    if (action == QuestLocationAction.ReachArea)
+                    {
+                        if (obj.Elements().Any(child => child.Name != "properties") ||
+                            obj.Attribute("gid") is not null || obj.Attribute("template") is not null || IsRotated(obj))
+                            continue;
+                    }
+                    else
+                    {
+                        var properties = obj.Element("properties")?.Elements("property").ToArray() ?? [];
+                        var type = properties.FirstOrDefault(property => (string?)property.Attribute("name") == "TypeOfObject");
+                        if (type is null)
+                            continue;
+                        if (((string?)type.Attribute("value") ?? type.Value) == "Quest" &&
+                            !properties.Any(property => (string?)property.Attribute("name") == "Quests"))
+                            continue;
+                    }
+
+                    string name = (string?)obj.Attribute("name") ?? "";
+                    targets.Add(new(action, level, id, string.IsNullOrWhiteSpace(name) ?
+                        (action == QuestLocationAction.Interact ? "Interactable" : "Quest area") : name));
+                }
+            }
+        }
+        return targets;
+
+        static bool HasSize(XElement obj) =>
+            double.TryParse((string?)obj.Attribute("width"), NumberStyles.Float, CultureInfo.InvariantCulture, out double width) &&
+            double.TryParse((string?)obj.Attribute("height"), NumberStyles.Float, CultureInfo.InvariantCulture, out double height) &&
+            width is >= 1 and <= int.MaxValue && height is >= 1 and <= int.MaxValue;
+
+        static bool IsRotated(XElement obj) => obj.Attribute("rotation") is { } rotation &&
+            (!double.TryParse(rotation.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double angle) || angle != 0);
+    }
 
     internal static void WriteAssetList(string sourceDirectory, string destination)
     {
@@ -155,6 +214,7 @@ internal static class ContentReferenceValidator
                 throw Error(path, $"Invalid or duplicate quest name '{quest.Name}'.");
         }
         var names = BuiltInQuests.Names.Concat(authored.Keys).ToHashSet(StringComparer.Ordinal);
+        HashSet<(QuestLocationAction Action, string Map, int ObjectId)>? targetIds = null;
         foreach (var (quest, path) in authored.Values)
         {
             foreach (string required in quest.RequiredQuestNameData)
@@ -165,6 +225,14 @@ internal static class ContentReferenceValidator
             foreach (var task in quest.BaseTasksData.OfType<SlayTaskData>())
                 if (!enemies.Contains(task.MonsterToSlay))
                     throw Error(path, $"Unknown slay target '{task.MonsterToSlay}'.");
+            foreach (var task in quest.BaseTasksData.OfType<LocationTaskData>())
+            {
+                targetIds ??= ReadQuestTargets(root).Select(target => (target.Action, target.Map, target.ObjectId)).ToHashSet();
+                if (!targetIds.Contains((task.Action, task.MapName, task.ObjectId)))
+                    throw Error(path, $"Invalid {task.Action} target in '{task.MapName}', object {task.ObjectId}.");
+                if (task.RequiredAmount != 1 || task.CompletedAmount is < 0 or > 1)
+                    throw Error(path, $"Location task '{task.TaskToComplete}' must have a required count of one and progress of zero or one.");
+            }
         }
         var visiting = new HashSet<string>(StringComparer.Ordinal);
         var visited = new HashSet<string>(StringComparer.Ordinal);

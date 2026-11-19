@@ -1,11 +1,39 @@
 using RpgLibrary.ItemClasses;
 using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
+using RpgLibrary.QuestClasses;
 
 namespace RpgEditor.Tests;
 
 public sealed class ItemDialogTests
 {
+    [Theory]
+    [InlineData("Interact with object", QuestLocationAction.Interact, 14)]
+    [InlineData("Reach area", QuestLocationAction.ReachArea, 20)]
+    public async Task QuestTaskPickerOffersOnlyTargetsForTheSelectedAction(string action, QuestLocationAction kind, int id)
+    {
+        await OnUiThread(() =>
+        {
+            using var dialog = new FormAddTask();
+            dialog.Configure([], true, null, [
+                new(QuestLocationAction.Interact, "Level0", 14, "Shrine"),
+                new(QuestLocationAction.ReachArea, "Level1", 20, "Catacombs")]);
+            Submit(dialog, () =>
+            {
+                Field<ComboBox>(dialog, "cbType").SelectedItem = action;
+                Field<TextBox>(dialog, "tbDescription").Text = "Find the objective";
+                var target = Field<ComboBox>(dialog, "questLocation");
+                Assert.Equal(id, Assert.IsType<ContentReferenceValidator.QuestTarget>(Assert.Single(target.Items)).ObjectId);
+                target.SelectedIndex = 0;
+                Field<Button>(dialog, "btnOK").PerformClick();
+            });
+            var result = Assert.IsType<LocationTaskData>(dialog.TaskData);
+            Assert.Equal(kind, result.Action);
+            Assert.Equal(id, result.ObjectId);
+            Assert.Equal(1, result.RequiredAmount);
+        });
+    }
+
     [Fact]
     public async Task EnemyTemplateShowsEffectiveDropsAndTiledPlacementsWithRegisteredChoices()
     {

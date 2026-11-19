@@ -43,6 +43,7 @@ namespace SkeletonsAdventure.GameWorld
         public LevelExit LevelExit { get; set; } = null;
         public LevelExit LevelEntrance { get; set; } = null;
         internal InteractableObjectManager InteractableObjectManager { get; }
+        internal QuestAreaTracker QuestAreas { get; }
         public DamagePopUpManager DamagePopUpManager { get; }
         private readonly SpriteFont _exitFont;
         public TeleporterManager TeleporterManager { get; private set; } = new(); // used to manage teleporters in the level
@@ -76,6 +77,12 @@ namespace SkeletonsAdventure.GameWorld
             CreateEntityManager();
             LoadInteractableObjects(leverAnimation);
             LoadTeleporters();
+            QuestAreas = new(Name);
+            if (TiledMap.Layers.GetLayer<TilemapObjectLayer>(MapCatalog.QuestAreaLayer) is { } areas)
+                foreach (var obj in areas.Objects)
+                    if (obj is TilemapRectangleObject && obj.Rotation == 0 && obj.Bounds.Width >= 1 && obj.Bounds.Height >= 1)
+                        QuestAreas.Add(obj.Id, new Rectangle((int)obj.Position.X, (int)obj.Position.Y,
+                            (int)obj.Bounds.Width, (int)obj.Bounds.Height));
         }
 
         private void CreateMap(Tilemap tiledMap, string name)
@@ -88,7 +95,7 @@ namespace SkeletonsAdventure.GameWorld
             _mapSpawnerLayer = tiledMap.Layers.GetLayer<TilemapObjectLayer>("SpawnerLayer");
             ChestManager = new(tiledMap.Layers.GetLayer<TilemapTileLayer>("ChestLayer"));
             EnterExitLayer = TiledMap.Layers.GetLayer<TilemapObjectLayer>("EnterExitLayer");
-            InteractableObjectLayerObjects = TiledMap.Layers.GetLayer<TilemapObjectLayer>("InteractableObjectLayerObjects");
+            InteractableObjectLayerObjects = TiledMap.Layers.GetLayer<TilemapObjectLayer>(MapCatalog.InteractableLayer);
             InteractableObjectLayerTiles = TiledMap.Layers.GetLayer<TilemapTileLayer>("InteractableObjectLayer");
             TeleporterLayer = TiledMap.Layers.GetLayer<TilemapObjectLayer>("TeleporterLayer");
             ConditionalLayer = TiledMap.Layers.GetLayer<TilemapTileLayer>("ConditionalLayer");
@@ -173,6 +180,7 @@ namespace SkeletonsAdventure.GameWorld
 
             InteractableObjectManager.Update(gameTime, Player);
             TeleporterManager.Update(Player);
+            QuestAreas.Update(Player);
             DamagePopUpManager.Update(gameTime);
 
             if (LevelExit != null)
@@ -243,26 +251,32 @@ namespace SkeletonsAdventure.GameWorld
                                         questNode.Quests.Add(quest.Clone()); //Clone the quest to prevent modifying the original quest
                                 }
 
-                                InteractableObjectManager.Add(questNode);
+                                Register(questNode);
                             }
                         }
                         else if (value.AsString() == "Resource")
                         {
-                            InteractableObjectManager.Add(new ResourceNode(obj, _exitFont)); //TODO resource logic still needs added
+                            Register(new ResourceNode(obj, _exitFont)); //TODO resource logic still needs added
                         }
                         else if (value.AsString() == "Lever")
                         {
                             Lever lever = new(obj, _exitFont, leverAnimation);
                             SetLeverProperties(obj, lever);
 
-                            InteractableObjectManager.Add(lever);
+                            Register(lever);
                         }
                         else
                         {
-                            InteractableObjectManager.Add(new InteractableObject(obj, _exitFont));
+                            Register(new InteractableObject(obj, _exitFont));
                         }
                     }
                 }
+            }
+
+            void Register(InteractableObject obj)
+            {
+                obj.MapName = Name;
+                InteractableObjectManager.Add(obj);
             }
         }
 

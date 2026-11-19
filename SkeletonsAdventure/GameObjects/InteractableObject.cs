@@ -2,6 +2,7 @@
 using MonoGame.Extended;
 using MonoGame.Extended.Tilemaps;
 using RpgLibrary.GameObjectClasses;
+using RpgLibrary.QuestClasses;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.Entities.PlayerClasses;
@@ -26,9 +27,12 @@ namespace SkeletonsAdventure.GameObjects
         public LevelRequirements LevelRequirements { get; set; } = null;
         public KillRequirements KillRequirements { get; set; } = null;
         public string InfoText { get; set; } = "Press R to Interact";
+        public int TiledObjectId { get; }
+        public string MapName { get; set; } = string.Empty;
 
         public InteractableObject(TilemapObject obj, SpriteFont font)
         {
+            TiledObjectId = obj.Id;
             Info = new(font);
             Position = new Vector2(obj.Position.X, obj.Position.Y);
             Width = (int)obj.Bounds.Width;
@@ -42,6 +46,8 @@ namespace SkeletonsAdventure.GameObjects
 
         public InteractableObject(InteractableObject obj)
         {
+            TiledObjectId = obj.TiledObjectId;
+            MapName = obj.MapName;
             TypeOfObject = obj.TypeOfObject;
             Info = new(obj.Info.SpriteFont, obj.Info.Text)
             {
@@ -85,8 +91,11 @@ namespace SkeletonsAdventure.GameObjects
 
         public virtual void Update(GameTime gameTime, Player player)
         {
-            if (!Visible || !Active)
+            if (!Visible || !Active || player.IsDead || player.Health <= 0)
+            {
+                Info.Visible = false;
                 return;
+            }
 
             if (CheckPlayerNear(player))
             {
@@ -158,7 +167,7 @@ namespace SkeletonsAdventure.GameObjects
         public virtual void HandleInput(GameTime gameTime, Player player)
         {
             // This method can be overridden in derived classes to handle specific input logic
-            if (InputHandler.KeyReleased(Keys.R) || InputHandler.ButtonDown(Buttons.A, PlayerIndex.One))
+            if (InputHandler.KeyReleased(Keys.R) || InputHandler.ButtonPressed(Buttons.A, PlayerIndex.One))
             {
                 Interact(gameTime, player);
             }
@@ -166,17 +175,23 @@ namespace SkeletonsAdventure.GameObjects
 
         public virtual void Interact(GameTime gameTime, Player player)
         {
-            // Check for cooldown
-            if (LastInteractedTime + TimeSpan.FromMilliseconds(CooldownTime) < gameTime.TotalGameTime is false)
+            if (!CanInteract(gameTime, player))
                 return;
 
             LastInteractedTime = gameTime.TotalGameTime;
-
-            //TODO
-            /*
-            Debug.WriteLine($"Interacting with {TypeOfObject} at {Position}" +
-                $", of type {this.GetType().Name}, at GameTime: {gameTime.TotalGameTime}");
-            */
+            ProgressInteractionTasks(player);
         }
+
+        protected bool CanInteract(GameTime gameTime, Player player) =>
+            Active && Visible && !player.IsDead && player.Health > 0 && Rectangle.Intersects(player.Rectangle) &&
+            (LevelRequirements is null || LevelRequirements.CheckRequirements(player)) &&
+            (KillRequirements is null || KillRequirements.CheckRequirements(player)) &&
+            (CooldownTime <= 0 || LastInteractedTime + TimeSpan.FromMilliseconds(CooldownTime) <= gameTime.TotalGameTime);
+
+        protected bool HasInteractionTask(Player player) =>
+            TiledObjectId > 0 && player.HasLocationTask(QuestLocationAction.Interact, MapName, TiledObjectId);
+
+        protected bool ProgressInteractionTasks(Player player) =>
+            TiledObjectId > 0 && player.ProgressLocationTasks(QuestLocationAction.Interact, MapName, id => id == TiledObjectId);
     }
 }

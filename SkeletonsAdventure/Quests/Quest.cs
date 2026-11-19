@@ -35,26 +35,16 @@ namespace SkeletonsAdventure.Quests
 
             RequiredQuestNames = [.. data.RequiredQuestNameData.Select(q => q)];
 
-            //TODO  type check the base task to see what type of task it is
             foreach (var taskData in data.BaseTasksData)
             {
-                if(taskData is SlayTaskData slayTaskData)
+                if (taskData is null)
+                    continue;
+                Tasks.Add(taskData switch
                 {
-                    Tasks.Add(new SlayTask(slayTaskData));
-                }
-                //TODO: Uncomment and implement other task types as needed
-                //else if (taskData is CollectTaskData collectTaskData)
-                //{
-                //    Tasks.Add(new CollectTask(collectTaskData));
-                //}
-                //else if (taskData is TalkToTaskData talkToTaskData)
-                //{
-                //    Tasks.Add(new TalkToTask(talkToTaskData));
-                //}
-                else if (taskData is not null)
-                {
-                    Tasks.Add(new BaseTask(taskData));
-                }
+                    SlayTaskData slay => new SlayTask(slay),
+                    LocationTaskData location => new LocationTask(location),
+                    _ => new BaseTask(taskData)
+                });
             }
         }
 

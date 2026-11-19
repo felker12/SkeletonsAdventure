@@ -82,7 +82,16 @@ public partial class FormQuestDetails : Form
             return;
         using var dialog = new FormAddTask();
         var enemies = project?.Assets.Where(entry => entry.Data is EnemyData).Select(entry => entry.Name) ?? [];
-        dialog.Configure(enemies, project?.IsGameContent == true, index < 0 ? null : (BaseTaskData)lbTasks.Items[index]);
+        IReadOnlyList<ContentReferenceValidator.QuestTarget> targets = [];
+        if (project?.IsGameContent == true)
+        {
+            try { targets = ContentReferenceValidator.ReadQuestTargets(project.Root); }
+            catch (Exception ex) when (ex is InvalidDataException or IOException or UnauthorizedAccessException or FormatException or OverflowException)
+            {
+                MessageBox.Show(this, ex.Message, "Tiled Targets Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+        dialog.Configure(enemies, project?.IsGameContent == true, index < 0 ? null : (BaseTaskData)lbTasks.Items[index], targets);
         if (dialog.ShowDialog(this) != DialogResult.OK || dialog.TaskData is not { } task)
             return;
         if (index < 0)

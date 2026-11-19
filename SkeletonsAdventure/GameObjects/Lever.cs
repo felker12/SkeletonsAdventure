@@ -27,14 +27,13 @@ namespace SkeletonsAdventure.GameObjects
 
         public override void Interact(GameTime gameTime, Player player)
         {
-            // Check for cooldown
-            if(CooldownTime > 0 && 
-                LastInteractedTime + TimeSpan.FromMilliseconds(CooldownTime) < gameTime.TotalGameTime is false)
+            if (!CanInteract(gameTime, player))
                 return;
 
             HandleLeverActivation();
 
             LastInteractedTime = gameTime.TotalGameTime;
+            ProgressInteractionTasks(player);
         }
 
         private void HandleLeverActivation()

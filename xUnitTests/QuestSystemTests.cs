@@ -1,4 +1,6 @@
 using Microsoft.Xna.Framework;
+using MonoGame.Extended.Tilemaps;
+using RpgLibrary.DataClasses;
 using RpgLibrary.GameObjectClasses;
 using RpgLibrary.QuestClasses;
 using SkeletonsAdventure.Engines;
@@ -13,6 +15,100 @@ namespace xUnitTests;
 
 public partial class UnitTest1
 {
+    [Fact]
+    public void InteractionRequiresAnActiveMatchingTaskAndAValidUse()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        _ = new GameScreen(game, assets);
+        var player = World.Player;
+        string map = World.CurrentLevel.Name;
+        var template = new Quest(new QuestData
+        {
+            Name = "Use the shrine",
+            BaseTasksData = [new LocationTaskData { Action = QuestLocationAction.Interact, MapName = map, ObjectId = 42 }]
+        });
+        var obj = new TilemapRectangleObject(42, player.Position, new Vector2(64, 64));
+        var shrine = new QuestNode(obj, assets.FontsLibrary.Arial12) { MapName = map, Quests = [template] };
+        var time = new GameTime(TimeSpan.FromSeconds(2), TimeSpan.Zero);
+        shrine.Interact(time, player);
+        var quest = Assert.Single(player.ActiveQuests);
+        Assert.Equal(0, quest.ActiveTask.CompletedAmount);
+
+        shrine.Interact(time, player);
+        Assert.False(quest.IsCompleted); // Same interaction is still on cooldown.
+        time.TotalGameTime = TimeSpan.FromSeconds(4);
+        shrine.MapName = "DifferentLevel";
+        shrine.Interact(time, player);
+        Assert.False(quest.IsCompleted);
+        shrine.MapName = map;
+        shrine.LevelRequirements = new LevelRequirements { Level = player.Level + 1 };
+        shrine.Interact(time, player);
+        Assert.False(quest.IsCompleted);
+        shrine.LevelRequirements = null;
+        shrine.Interact(time, player);
+        Assert.True(quest.IsCompleted);
+    }
+
+    [Fact]
+    public void AreasOnlyAdvanceTheCurrentObjectiveOnEntryAndLocationTasksRoundTrip()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        _ = new GameScreen(game, assets);
+        var player = World.Player;
+        var level = World.CurrentLevel;
+        var start = player.Position;
+        var area = new Rectangle((int)start.X, (int)start.Y, 64, 64);
+        level.QuestAreas.Add(7, area);
+        level.QuestAreas.Add(8, area);
+        var template = new Quest(new QuestData
+        {
+            Name = "Visit the area",
+            BaseTasksData =
+            [
+                new LocationTaskData { Action = QuestLocationAction.Interact, MapName = level.Name, ObjectId = 5 },
+                new LocationTaskData { Action = QuestLocationAction.ReachArea, MapName = level.Name, ObjectId = 7 },
+                new LocationTaskData { Action = QuestLocationAction.ReachArea, MapName = level.Name, ObjectId = 8 }
+            ]
+        });
+        Assert.True(player.TryStartQuest(template));
+        var active = Assert.Single(player.ActiveQuests);
+        level.QuestAreas.Update(player);
+        Assert.Equal(0, active.Tasks[1].CompletedAmount);
+        Assert.True(player.ProgressLocationTasks(QuestLocationAction.Interact, level.Name, id => id == 5));
+        level.QuestAreas.Update(player);
+        Assert.Equal(0, active.Tasks[1].CompletedAmount);
+
+        player.Position = start + new Vector2(100, 0);
+        level.QuestAreas.Update(player);
+        player.Position = start;
+        level.QuestAreas.Update(player);
+        Assert.Equal(1, active.Tasks[1].CompletedAmount);
+        Assert.Equal(0, active.Tasks[2].CompletedAmount);
+
+        string path = Path.GetTempFileName();
+        try
+        {
+            XnaSerializer.Serialize(path, active.GetQuestData());
+            var restored = new Quest(XnaSerializer.Deserialize<QuestData>(path));
+            var next = Assert.IsType<LocationTask>(restored.ActiveTask);
+            Assert.Equal(8, next.ObjectId);
+            Assert.Equal(level.Name, next.MapName);
+            Assert.Equal(QuestLocationAction.ReachArea, next.Action);
+            Assert.Equal(1, restored.Tasks[1].CompletedAmount);
+            player.ActiveQuests[0] = restored;
+            level.QuestAreas.Update(player);
+            Assert.False(restored.IsCompleted);
+            player.Position = start + new Vector2(100, 0);
+            level.QuestAreas.Update(player);
+            player.Position = start;
+            level.QuestAreas.Update(player);
+            Assert.True(restored.IsCompleted);
+        }
+        finally { File.Delete(path); }
+    }
+
     private static Quest SimpleQuest(string name) => new()
     {
         Name = name,

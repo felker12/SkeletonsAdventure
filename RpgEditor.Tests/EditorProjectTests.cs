@@ -8,6 +8,48 @@ namespace RpgEditor.Tests;
 public sealed class EditorProjectTests
 {
     [Fact]
+    public void LocationTargetsAreDiscoveredByLayerAndRejectBrokenReferences()
+    {
+        using var directory = new TestDirectory();
+        string root = directory.Path;
+        Directory.CreateDirectory(Path.Combine(root, "Items"));
+        Directory.CreateDirectory(Path.Combine(root, "Quests"));
+        Directory.CreateDirectory(Path.Combine(root, "TiledFiles"));
+        foreach (string level in new[] { "Level0", "Level0_Test", "Level1", "TestLevel" })
+            File.WriteAllText(Path.Combine(root, $"TiledFiles/{level}.tmx"), "<map />");
+        File.WriteAllText(Path.Combine(root, "TiledFiles/doors_lever_chest_animation.tsx"), "<tileset />");
+        File.WriteAllText(Path.Combine(root, "TiledFiles/Level0.tmx"), """
+            <map>
+              <objectgroup name="InteractableObjectLayerObjects">
+                <object id="21" name="Shrine" width="32" height="32">
+                  <properties><property name="TypeOfObject" value="QuestObjective" /></properties>
+                </object>
+                <object id="22" name="Decor" width="32" height="32" />
+              </objectgroup>
+              <objectgroup name="QuestAreas">
+                <object id="31" name="Catacombs" width="32" height="32" />
+                <object id="32" name="Ellipse" width="32" height="32"><ellipse /></object>
+                <object id="33" name="Rotated" width="32" height="32" rotation="45" />
+              </objectgroup>
+            </map>
+            """);
+        var targets = ContentReferenceValidator.ReadQuestTargets(root);
+        Assert.Collection(targets,
+            target => Assert.Equal((QuestLocationAction.Interact, "Level0", 21), (target.Action, target.Map, target.ObjectId)),
+            target => Assert.Equal((QuestLocationAction.ReachArea, "Level0", 31), (target.Action, target.Map, target.ObjectId)));
+        var quest = new QuestData { Name = "Find the catacombs", BaseTasksData = targets.Select(target =>
+            (BaseTaskData)new LocationTaskData { Action = target.Action, MapName = target.Map, ObjectId = target.ObjectId }).ToList() };
+        string path = Path.Combine(root, "Quests/Catacombs.xml");
+        XnaSerializer.Serialize(path, quest);
+        ContentReferenceValidator.Validate(root);
+
+        ((LocationTaskData)quest.BaseTasksData[1]).ObjectId = 21;
+        XnaSerializer.Serialize(path, quest);
+        var error = Assert.Throws<InvalidDataException>(() => ContentReferenceValidator.Validate(root));
+        Assert.Contains("Invalid ReachArea target in 'Level0', object 21", error.Message);
+    }
+
+    [Fact]
     public void RenamingAssetsPropagatesQuestRewardsPrerequisitesSlayTargetsAndGuaranteedDrops()
     {
         using var directory = new TestDirectory();

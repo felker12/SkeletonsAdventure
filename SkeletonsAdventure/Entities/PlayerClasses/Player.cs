@@ -2,6 +2,7 @@
 using MonoGame.Extended;
 using RpgLibrary.EntityClasses;
 using RpgLibrary.ItemClasses;
+using RpgLibrary.QuestClasses;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Engines;
@@ -397,6 +398,27 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                 SetDisplayQuestName();
                 World.AddMessage($"Quest {quest.Name} started: {quest.Description}");
             }
+        }
+
+        internal bool HasLocationTask(QuestLocationAction action, string map, int objectId) =>
+            !IsDead && Health > 0 && ActiveQuests.Any(quest => quest.ActiveTask is LocationTask task &&
+                task.Action == action && task.MapName == map && task.ObjectId == objectId);
+
+        internal bool ProgressLocationTasks(QuestLocationAction action, string map, Func<int, bool> matchesObject)
+        {
+            if (IsDead || Health <= 0)
+                return false;
+
+            bool progressed = false;
+            foreach (var quest in ActiveQuests)
+            {
+                if (quest.ActiveTask is LocationTask task && task.Action == action && task.MapName == map && matchesObject(task.ObjectId))
+                {
+                    quest.ProgressTask();
+                    progressed = true;
+                }
+            }
+            return progressed;
         }
 
         public bool TryStartQuest(Quest template)

@@ -145,7 +145,10 @@ namespace SkeletonsAdventure.GameWorld
         public static void SetCurrentLevel(Level level, Vector2 playerPosition = new())
         {
             if (CurrentLevel is not null && CurrentLevel != level && CurrentLevel.Player == Player)
+            {
+                CurrentLevel.QuestAreas.Reset();
                 Player.LeaveLevel();
+            }
 
             Player.Position = playerPosition;
             Player.RespawnPosition = level.PlayerRespawnPosition;

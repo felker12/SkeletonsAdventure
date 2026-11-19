@@ -47,7 +47,7 @@ namespace SkeletonsAdventure.GameObjects
 
         public override void Update(GameTime gameTime, Player player)
         {
-            if (!Visible || !Active || player.IsDead)
+            if (!Visible || !Active || player.IsDead || player.Health <= 0)
             {
                 Info.Visible = false;
                 return;
@@ -58,7 +58,7 @@ namespace SkeletonsAdventure.GameObjects
                 Info.Text = LevelRequirements.MissingRequirementsText(player);
             else if (KillRequirements is not null && !KillRequirements.CheckRequirements(player))
                 Info.Text = KillRequirements.MissingRequirementsText(player);
-            else if (CheckAvailableQuestsToStart(player) > 0)
+            else if (HasInteractionTask(player) || CheckAvailableQuestsToStart(player) > 0)
                 HandleInput(gameTime, player);
         }
 
@@ -83,10 +83,10 @@ namespace SkeletonsAdventure.GameObjects
                     $"\nCompleted Quests: {GetTotalCompletedQuests(player)}" +
                     $"\nAll Quests Completed: {CheckAllCompleted(player)}";
 
-                if (CheckAvailableQuestsToStart(player) == 0)
+                if (!HasInteractionTask(player) && CheckAvailableQuestsToStart(player) == 0)
                     Info.Text = "No Available Quests to Start";
 
-                if (CheckAllCompleted(player))
+                if (!HasInteractionTask(player) && CheckAllCompleted(player))
                 {
                     Info.Text = "All Quests Completed";
                 }
@@ -102,16 +102,13 @@ namespace SkeletonsAdventure.GameObjects
 
         public override void Interact(GameTime gameTime, Player player)
         {
-            if (!Active || !Visible || player.IsDead || !CheckPlayerNear(player) ||
-                (LevelRequirements is not null && !LevelRequirements.CheckRequirements(player)) ||
-                (KillRequirements is not null && !KillRequirements.CheckRequirements(player)) ||
-                (CooldownTime > 0 && LastInteractedTime + TimeSpan.FromMilliseconds(CooldownTime) > gameTime.TotalGameTime))
+            if (!CanInteract(gameTime, player))
                 return;
 
-            bool started = false;
+            bool interacted = ProgressInteractionTasks(player);
             foreach (var quest in Quests)
-                started |= player.TryStartQuest(quest);
-            if (started)
+                interacted |= player.TryStartQuest(quest);
+            if (interacted)
                 LastInteractedTime = gameTime.TotalGameTime;
         }
 
