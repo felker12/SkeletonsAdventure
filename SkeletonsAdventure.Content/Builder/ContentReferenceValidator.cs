@@ -41,18 +41,32 @@ internal static class ContentReferenceValidator
         var items = ValidateItems(root);
         var enemies = ValidateEnemies(root, items);
         var quests = ValidateQuests(root, items, enemies);
+        var spawnerNames = enemies.Select(type => type[(type.LastIndexOf('.') + 1)..]).ToHashSet(StringComparer.Ordinal);
 
         HashSet<string> checkedTilesets = new(StringComparer.Ordinal);
         foreach (string name in MapCatalog.LevelNames)
         {
             string path = Path.Combine(root, MapCatalog.AssetName(name) + ".tmx");
             var map = ReadRoot(path, "map");
+            foreach (var layer in map.Descendants("objectgroup").Where(e => (string?)e.Attribute("name") == "SpawnerLayer"))
+            {
+                foreach (var obj in layer.Elements("object"))
+                {
+                    string? spawner = (string?)obj.Attribute("name");
+                    if (!string.IsNullOrWhiteSpace(spawner) && !spawnerNames.Contains(spawner))
+                        throw Error(path, $"Spawner object {obj.Attribute("id")?.Value} references unknown enemy '{spawner}'.");
+                }
+            }
             foreach (var property in map.Descendants("property").Where(e => (string?)e.Attribute("name") == "Quests"))
             {
                 string names = (string?)property.Attribute("value") ?? property.Value;
                 foreach (string questName in names.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
                     if (!quests.Contains(questName))
-                        throw Error(path, $"Unknown quest '{questName}' in a Tiled Quests property.");
+                    {
+                        string? id = (string?)property.Ancestors("object").FirstOrDefault()?.Attribute("id");
+                        string location = id is null ? "a Tiled Quests property" : $"the Quests property on object {id}";
+                        throw Error(path, $"Unknown quest '{questName}' in {location}.");
+                    }
             }
             foreach (var tileset in map.Elements("tileset"))
             {

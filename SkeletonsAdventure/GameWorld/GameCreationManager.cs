@@ -99,15 +99,8 @@ namespace SkeletonsAdventure.GameWorld
         {
             Dictionary<string, DropTable> dropTables = [];
 
-            List<DropTableItem> basicTable = [
-                new ("Coins", 20, 1, 12),
-                new ("Robes", 5, 1, 1),
-                new ("Bones", 20, 1, 2),
-                new ("Sword", 5, 1, 1),
-                new("Shoes", 5, 1, 1),
-                new("Hood", 5),
-                new("Round Shield", 5),
-            ];
+            var basicTable = DataAssetCatalog.BasicDrops.Select(entry =>
+                new DropTableItem(entry.Name, entry.Weight, entry.Minimum, entry.Maximum)).ToList();
 
             dropTables.Add(DataAssetCatalog.BasicDropTable, new(basicTable, noDropWeight: 35));
 
@@ -180,7 +173,7 @@ namespace SkeletonsAdventure.GameWorld
             {
                 RequiredAmount = 10,
                 TaskToComplete = "Slay Entity: Skeleton",
-                MonsterToSlay = typeof(Skeleton).FullName,
+                MonsterToSlay = DataAssetCatalog.SkeletonType,
             };
 
             List<BaseTask> Tasks = [task.Clone(), task2.Clone(), task3.Clone(), slayTask.Clone()];

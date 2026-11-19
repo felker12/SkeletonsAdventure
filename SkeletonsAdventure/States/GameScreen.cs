@@ -1,5 +1,6 @@
 ﻿using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.GameWorld;
+using SkeletonsAdventure.Content;
 using Microsoft.Xna.Framework.Input;
 using SkeletonsAdventure.ItemClasses;
 using RpgLibrary.WorldClasses;
@@ -56,7 +57,7 @@ namespace SkeletonsAdventure.States
             QuestToDisplay = new(Assets.FontsLibrary.Arial12, "No Quest");
             MessageBox = new(Assets.FontsLibrary.Arial12);
             var player = new Player(Assets.DefaultEntityAssets, Assets.TexturesLibrary.ArmoredSkeletonTexture,
-                Assets.AttackTemplates, GameManager.GetItemByName("Coins"));
+                Assets.AttackTemplates, GameManager.GetItemByName(DataAssetCatalog.Coins));
             World = new(Game.GameContent, GraphicsDevice, player, Assets.FontsLibrary.Arial12,
                 Assets.FontsLibrary.Arial14, Assets.LeverAnimation);
             Camera = World.CurrentLevel.Camera;

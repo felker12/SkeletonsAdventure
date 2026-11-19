@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using RpgLibrary.WorldClasses;
+using SkeletonsAdventure.Content;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities.PlayerClasses;
@@ -178,7 +179,7 @@ namespace SkeletonsAdventure.GameWorld
                 }
             }
 
-            GameItem Coins = GameManager.ItemsClone["Coins"];
+            GameItem Coins = GameManager.ItemsClone[DataAssetCatalog.Coins];
             Coins.SetQuantity(20);
 
             Player.Backpack.Add(Coins);

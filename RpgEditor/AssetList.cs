@@ -9,6 +9,12 @@ internal static class AssetList
         EditorProject Project() => Main().Project!;
 
         list.DisplayMember = nameof(EditorAsset.Name);
+        var whereUsed = new Button { Name = "whereUsed", Text = "Where Used…", Width = Math.Max(96, delete.Width),
+            Height = delete.Height, Anchor = delete.Anchor, Enabled = false };
+        whereUsed.Location = delete.Right + whereUsed.Width + 12 <= owner.ClientSize.Width
+            ? new Point(delete.Right + 8, delete.Top)
+            : new Point(Math.Min(delete.Left, owner.ClientSize.Width - whereUsed.Width - 8), delete.Bottom + 6);
+        owner.Controls.Add(whereUsed);
         edit.Enabled = delete.Enabled = false;
         void Refresh(string? selectedPath = null)
         {
@@ -25,7 +31,15 @@ internal static class AssetList
                 return;
             try
             {
-                Project().Change(original, replacement);
+                bool propagate = false;
+                if (original is not null)
+                {
+                    string newName = new EditorAsset(original.RelativePath, replacement).Name;
+                    if (original.Name != newName &&
+                        !WhereUsedDialog.ConfirmRename(owner, original, newName, Project().FindUsages(original), out propagate))
+                        return;
+                }
+                Project().Change(original, replacement, propagate);
                 Main().RefreshProjectStatus();
                 Refresh(original?.RelativePath);
             }
@@ -36,7 +50,12 @@ internal static class AssetList
         }
 
         owner.Activated += (_, _) => Refresh();
-        list.SelectedIndexChanged += (_, _) => edit.Enabled = delete.Enabled = list.SelectedItem is EditorAsset;
+        list.SelectedIndexChanged += (_, _) => whereUsed.Enabled = edit.Enabled = delete.Enabled = list.SelectedItem is EditorAsset;
+        whereUsed.Click += (_, _) =>
+        {
+            if (list.SelectedItem is EditorAsset entry)
+                WhereUsedDialog.Inspect(owner, entry, Project().FindUsages(entry));
+        };
         add.Click += (_, _) => Change(null);
         edit.Click += (_, _) =>
         {
@@ -47,12 +66,18 @@ internal static class AssetList
         delete.Click += (_, _) =>
         {
             if (list.SelectedItem is EditorAsset entry &&
-                MessageBox.Show(owner, $"Remove '{entry.Name}' on the next save?", "Remove Asset",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                WhereUsedDialog.ConfirmRemove(owner, Project(), entry, Project().FindUsages(entry), out var replacement))
             {
-                Project().Remove(entry);
-                Main().RefreshProjectStatus();
-                Refresh();
+                try
+                {
+                    Project().Remove(entry, replacement);
+                    Main().RefreshProjectStatus();
+                    Refresh();
+                }
+                catch (InvalidDataException ex)
+                {
+                    MessageBox.Show(owner, ex.Message, "Invalid Asset", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
         };
     }

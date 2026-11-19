@@ -4,6 +4,7 @@ using MonoGame.Extended.Tilemaps;
 using MonoGame.Extended.Tilemaps.Rendering;
 using RpgLibrary.DataClasses;
 using RpgLibrary.WorldClasses;
+using SkeletonsAdventure.Content;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
@@ -306,7 +307,7 @@ namespace SkeletonsAdventure.GameWorld
             {
                 if(lever.Position == new Vector2(7152,4608))
                 {
-                    var enemy = GameManager.GetEnemyByName("EliteSkeleton");
+                    var enemy = GameManager.GetEnemyByName(DataAssetCatalog.EliteSkeletonName);
 
                     lever.KillRequirements = new();
                     lever.KillRequirements.AddKillRequirement(enemy);

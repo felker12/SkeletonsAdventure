@@ -92,7 +92,7 @@ namespace SkeletonsAdventure.GameWorld
 
             DropTables = GameCreationManager.CreateDropTables();
             Enemies = GameCreationManager.CreateEnemies(Content, DefaultEntityAssets, TexturesLibrary,
-                GetItemByName("Bones"), GameItemLoadingManager, AssetsIn("EntityData"));
+                GetItemByName(DataAssetCatalog.Bones), GameItemLoadingManager, AssetsIn("EntityData"));
             Chests = GameCreationManager.CreateChests(TexturesLibrary.ButtonBoxTexture, TexturesLibrary.DefaultButtonTexture,
                 FontsLibrary.Arial10, FontsLibrary.Arial12);
             Quests = GameCreationManager.CreateQuests(Content, ItemsClone, AssetsIn("Quests"));

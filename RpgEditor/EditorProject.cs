@@ -91,7 +91,9 @@ internal sealed class EditorProject
         }
     }
 
-    public void Change(EditorAsset? original, object replacement)
+    public IReadOnlyList<AssetUsage> FindUsages(EditorAsset asset) => AssetReferences.Find(this, asset);
+
+    public void Change(EditorAsset? original, object replacement, bool propagateRename = false)
     {
         var entry = new EditorAsset(original?.RelativePath ?? string.Empty, replacement);
         CheckName(replacement, entry.Name, original);
@@ -115,10 +117,60 @@ internal sealed class EditorProject
             entry = entry with { RelativePath = path };
         }
 
+        if (propagateRename && original is not null && original.Name != entry.Name)
+        {
+            entry = AssetReferences.Rewrite(entry, original, entry.Name);
+            PropagateReferences(original, entry.Name);
+        }
         assets[entry.RelativePath] = entry;
     }
 
-    public void Remove(EditorAsset entry) => assets.Remove(entry.RelativePath);
+    public void Remove(EditorAsset entry, EditorAsset? replacement = null)
+    {
+        if (replacement is not null)
+        {
+            if (!assets.TryGetValue(replacement.RelativePath, out var current) || !ReferenceEquals(current, replacement) ||
+                !CanReplaceReferences(entry, replacement))
+                throw new InvalidDataException("Choose a compatible replacement asset.");
+            PropagateReferences(entry, replacement.Name);
+        }
+        assets.Remove(entry.RelativePath);
+    }
+
+    public bool CanReplaceReferences(EditorAsset target, EditorAsset candidate)
+    {
+        if (!AssetReferences.CanReplace(target, candidate))
+            return false;
+        if (candidate.Data is not QuestData)
+            return true;
+
+        var quests = assets.Values.Select(asset => asset.Data).OfType<QuestData>().ToDictionary(quest => quest.Name);
+        var visited = new HashSet<string>(StringComparer.Ordinal);
+        return !RequiresTarget(candidate.Name);
+
+        bool RequiresTarget(string name)
+        {
+            if (name == target.Name)
+                return true;
+            if (!visited.Add(name))
+                return false;
+            if (quests.TryGetValue(name, out var quest))
+                return quest.RequiredQuestNameData.Any(RequiresTarget);
+
+            return IsGameContent && name == SkeletonsAdventure.Content.BuiltInQuests.Test2 &&
+                RequiresTarget(SkeletonsAdventure.Content.BuiltInQuests.TestQuest);
+        }
+    }
+
+    private void PropagateReferences(EditorAsset target, string replacementName)
+    {
+        var rewrites = assets.Values.Where(source => source.RelativePath != target.RelativePath)
+            .Select(source => AssetReferences.Rewrite(source, target, replacementName))
+            .Where(source => !ReferenceEquals(assets[source.RelativePath], source))
+            .ToArray();
+        foreach (var source in rewrites)
+            assets[source.RelativePath] = source;
+    }
 
     private void CheckName(object data, string name, EditorAsset? original)
     {
