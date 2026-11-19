@@ -3,6 +3,7 @@ using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.Quests;
 using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.Entities.PlayerClasses;
+using System.Linq;
 
 namespace SkeletonsAdventure.GameMenu
 {
@@ -57,13 +58,7 @@ namespace SkeletonsAdventure.GameMenu
             UpdateWithPlayer(World.Player); 
             SetPositions(); 
 
-            if(QuestSelectionControlBox.ControlsCount == 0)
-            {
-                QuestSelectionControlBox.Clear(); //clear the ControlBox to be safe
-                LoadQuests();
-            }
-            else
-                QuestSelectionControlBox_ActiveSelectionChanged(this, null); //this updates the text box with any changes that may have happened to the active quest
+            LoadQuests();
         }
 
         private void CreateControls(Texture2D buttonTexture, Texture2D textBoxTexture, SpriteFont headingFont)
@@ -152,8 +147,11 @@ namespace SkeletonsAdventure.GameMenu
 
         private void LoadQuests()
         {
-            Quests = [.. GameManager.QuestsClone.Values];
-            List<string> questStrings = Quests.ConvertAll(q => $"{q.Name}");
+            var selectedName = QuestSelectionControlBox.ActiveSelectionControl?.Text;
+            QuestSelectionControlBox.Clear();
+            SelectedQuestTextBox.Text = string.Empty;
+            Quests = GameManager.QuestsClone.Values.Concat(Player.ActiveQuests).Concat(Player.CompletedQuests)
+                .DistinctBy(quest => quest.Name).ToList();
 
             foreach (Quest quest in Quests)
             {
@@ -170,6 +168,13 @@ namespace SkeletonsAdventure.GameMenu
 
                 QuestSelectionControlBox.AddSelectionControl(new(_font, quest.Name) { TextColor = MenuStyle.Ivory, HoverColor = MenuStyle.Brass, HasFocusColor = MenuStyle.Brass });
             }
+            var selected = QuestSelectionControlBox.SelectionControls.FirstOrDefault(control => control.Text == selectedName);
+            if (selected is not null)
+            {
+                QuestSelectionControlBox.ActiveSelectionControl = selected;
+                QuestSelectionControlBox.ChangeFocus(selected);
+            }
+            QuestSelectionControlBox_ActiveSelectionChanged(this, EventArgs.Empty);
         }
 
         private Quest GetQuestByName(string name)

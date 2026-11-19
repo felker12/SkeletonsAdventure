@@ -12,7 +12,7 @@ namespace SkeletonsAdventure.ItemClasses
         public EquipableItem(EquipableItem item) : base(item)
         {
             Equipped = item.Equipped;
-            LevelRequirements = item.LevelRequirements;
+            LevelRequirements = item.LevelRequirements?.Clone();
         }
 
         public EquipableItem(EquipableItemData data, Texture2D texture, SpriteFont tooltipFont) : base(data, texture, tooltipFont)

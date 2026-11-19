@@ -60,7 +60,8 @@ namespace SkeletonsAdventure.Quests
             {
                 Level = Level,
                 Defence = Defence,
-                Attack = Attack
+                Attack = Attack,
+                Mana = Mana
             };
         }
 

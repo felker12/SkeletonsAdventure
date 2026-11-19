@@ -20,7 +20,7 @@ namespace SkeletonsAdventure.Quests
         {
             XP = questReward.XP;
             Coins = questReward.Coins;
-            Items = [.. questReward.Items.Select(i => new GameItem(i))];
+            Items = [.. questReward.Items.Select(i => i.Clone())];
         }
 
         public QuestReward(QuestRewardData data)

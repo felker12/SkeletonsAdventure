@@ -9,6 +9,7 @@ using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
 using SkeletonsAdventure.Quests;
+using System.Linq;
 
 namespace SkeletonsAdventure.Entities.PlayerClasses
 {
@@ -221,9 +222,16 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             bonusManaFromAttributePoints = playerData.bonusManaFromAttributePoints;
 
             //TODO update active quests and completed quests
-            ActiveQuests = playerData.activeQuests.ConvertAll(q => new Quest(q));
-            CompletedQuests = playerData.completedQuests.ConvertAll(q => new Quest(q));
+            CompletedQuests = playerData.completedQuests.GroupBy(q => q.Name)
+                .Select(group => new Quest(group.First()) { Active = false, IsCompleted = true }).ToList();
+            ActiveQuests = playerData.activeQuests.Where(q => GetCompletedQuestByName(q.Name) is null)
+                .GroupBy(q => q.Name)
+                .Select(group => new Quest(group.OrderByDescending(q => q.IsCompleted)
+                    .ThenByDescending(q => q.BaseTasksData.Sum(task => task.CompletedAmount)).First())
+                    { Active = !group.Any(q => q.IsCompleted) }).ToList();
             DisplayQuestName = playerData.displayQuestName;
+            if (GetActiveQuestByName(DisplayQuestName) is null)
+                SetDisplayQuestName();
 
             KillCounter = new KillCounter(playerData.killCounter);
 
@@ -328,6 +336,7 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             {
                 foreach (Quest quest in ActiveQuests)
                 {
+                    quest.CheckTasksCompleted();
                     if (quest.IsCompleted)
                         completed.Add(quest);
                 }
@@ -340,8 +349,12 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                 foreach (Quest quest in completed)
                 {
                     ActiveQuests.Remove(quest);
-                    CompletedQuests.Add(quest);
-                    GiveQuestReward(quest.Reward);
+                    if (GetCompletedQuestByName(quest.Name) is null)
+                    {
+                        CompletedQuests.Add(quest);
+                        GiveQuestReward(quest.Reward);
+                        World.AddMessage($"Rewards gained: {quest.Reward}");
+                    }
                 }
             }
 
@@ -359,29 +372,42 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
         public void GiveQuestReward(QuestReward reward)
         {
             GainXp(reward.XP);
-            //TODO give gold and items
-
-            GameItem coins = new(_coinTemplate);
-            coins.SetQuantity(reward.Coins);
-
-            //if the items wont fit in the backpack, drop them on the ground
-            if (Backpack.Add(coins) is false)
-                World.CurrentLevel.EntityManager.DroppedLootManager.Add(coins, Position);
+            if (reward.Coins > 0)
+            {
+                var coins = _coinTemplate.Clone();
+                coins.SetQuantity(reward.Coins);
+                if (!Backpack.Add(coins))
+                    World.CurrentLevel.EntityManager.DroppedLootManager.Add(coins, Position);
+            }
 
             foreach (GameItem item in reward.Items)
             {
-                if (Backpack.Add(item.Clone()) is false)
-                    World.CurrentLevel.EntityManager.DroppedLootManager.Add(item.Clone(), Position);
+                var granted = item.Clone();
+                if (granted is EquipableItem equipment)
+                    equipment.SetEquipped(false);
+                if (!Backpack.Add(granted))
+                    World.CurrentLevel.EntityManager.DroppedLootManager.Add(granted, Position);
             }
         }
 
         public void AddActiveQuest(Quest quest)
         {
-            if (quest != null && ActiveQuests.Contains(quest) is false)
+            if (quest is not null && quest.CanStart(this))
             {
+                quest.StartQuest();
                 ActiveQuests.Add(quest);
+                SetDisplayQuestName();
                 World.AddMessage($"Quest {quest.Name} started: {quest.Description}");
             }
+        }
+
+        public bool TryStartQuest(Quest template)
+        {
+            if (template is null || !template.CanStart(this))
+                return false;
+            var quest = template.Clone();
+            AddActiveQuest(quest);
+            return ActiveQuests.Contains(quest);
         }
 
         public Quest GetActiveQuestByName(string name)

@@ -1,6 +1,7 @@
 ﻿using RpgLibrary.QuestClasses;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.GameWorld;
+using System.Linq;
 
 namespace SkeletonsAdventure.Quests
 {
@@ -56,7 +57,10 @@ namespace SkeletonsAdventure.Quests
         {
             if (string.IsNullOrEmpty(MonsterToSlay) is false)
             {
-                EntityToSlay = GameManager.EnemiesClone[MonsterToSlay];
+                var enemies = GameManager.EnemiesClone;
+                EntityToSlay = enemies.TryGetValue(MonsterToSlay, out var enemy) ? enemy :
+                    enemies.Values.FirstOrDefault(candidate => candidate.GetType().Name == MonsterToSlay)
+                    ?? throw new System.IO.InvalidDataException($"Unknown quest target: {MonsterToSlay}");
             }
             else
             {

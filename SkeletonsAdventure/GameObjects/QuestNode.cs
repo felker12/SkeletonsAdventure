@@ -37,7 +37,7 @@ namespace SkeletonsAdventure.GameObjects
 
         public QuestNode(QuestNode node) : base(node)
         {
-
+            Quests = node.Quests.Select(quest => quest.Clone()).ToList();
         }
 
         public QuestNode(QuestNodeData data, SpriteFont font) : base(data, font)
@@ -47,7 +47,18 @@ namespace SkeletonsAdventure.GameObjects
 
         public override void Update(GameTime gameTime, Player player)
         {
-            if (CheckPlayerNear(player) && Active && CheckAvailableQuestsToStart(player) > 0)
+            if (!Visible || !Active || player.IsDead)
+            {
+                Info.Visible = false;
+                return;
+            }
+            if (!CheckPlayerNear(player))
+                return;
+            if (LevelRequirements is not null && !LevelRequirements.CheckRequirements(player))
+                Info.Text = LevelRequirements.MissingRequirementsText(player);
+            else if (KillRequirements is not null && !KillRequirements.CheckRequirements(player))
+                Info.Text = KillRequirements.MissingRequirementsText(player);
+            else if (CheckAvailableQuestsToStart(player) > 0)
                 HandleInput(gameTime, player);
         }
 
@@ -78,7 +89,6 @@ namespace SkeletonsAdventure.GameObjects
                 if (CheckAllCompleted(player))
                 {
                     Info.Text = "All Quests Completed";
-                    Active = false;
                 }
             }
             else
@@ -92,24 +102,17 @@ namespace SkeletonsAdventure.GameObjects
 
         public override void Interact(GameTime gameTime, Player player)
         {
-            base.Interact(gameTime, player);
+            if (!Active || !Visible || player.IsDead || !CheckPlayerNear(player) ||
+                (LevelRequirements is not null && !LevelRequirements.CheckRequirements(player)) ||
+                (KillRequirements is not null && !KillRequirements.CheckRequirements(player)) ||
+                (CooldownTime > 0 && LastInteractedTime + TimeSpan.FromMilliseconds(CooldownTime) > gameTime.TotalGameTime))
+                return;
 
+            bool started = false;
             foreach (var quest in Quests)
-            {
-                if (quest.PlayerRequirementsMet(player) is false)
-                    continue; // Skip to the nexrt quest if the requirements aren't met
-
-                if (quest.CheckCompletedQuest(player))
-                    continue; // Skip to the next quest if this one is already completed
-
-                if (quest.CheckActiveQuest(player))
-                    continue; // Skip to the next quest if this one is already active
-
-                //add the quest to the player's active quests if all the requirements are met
-                Quest q = quest.Clone();
-                q.StartQuest();
-                player.AddActiveQuest(q);
-            }
+                started |= player.TryStartQuest(quest);
+            if (started)
+                LastInteractedTime = gameTime.TotalGameTime;
         }
 
         public int GetTotalActiveQuests(Player player)
@@ -138,12 +141,12 @@ namespace SkeletonsAdventure.GameObjects
 
         public bool CheckAllCompleted(Player player)
         {
-            return Quests.Count == GetTotalCompletedQuests(player);
+            return Quests.Count > 0 && Quests.All(quest => quest.CheckCompletedQuest(player));
         }
 
         public int CheckAvailableQuestsToStart(Player player)
         {
-            return Quests.Count - GetTotalCompletedQuests(player) - GetTotalActiveQuests(player);
+            return Quests.Count(quest => quest.CanStart(player));
         }
     }
 }

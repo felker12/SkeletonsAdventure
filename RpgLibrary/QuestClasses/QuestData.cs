@@ -20,10 +20,11 @@ namespace RpgLibrary.QuestClasses
             Name = data.Name;
             Description = data.Description;
             IsCompleted = data.IsCompleted;
-            RequirementData = data.RequirementData;
-            RewardData = data.RewardData;
-            RequiredQuestNameData = data.RequiredQuestNameData;
-            BaseTasksData = data.BaseTasksData;
+            Active = data.Active;
+            RequirementData = new(data.RequirementData);
+            RewardData = data.RewardData.Clone();
+            RequiredQuestNameData = [.. data.RequiredQuestNameData];
+            BaseTasksData = data.BaseTasksData.Select(task => task.Clone()).ToList();
         }
 
         public QuestData Clone()

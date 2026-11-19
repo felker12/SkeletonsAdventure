@@ -150,11 +150,12 @@ public partial class UnitTest1
         var assets = new GameManager(game);
         _ = new GameScreen(game, assets);
         var weapon = GameManager.ItemsClone.Values.OfType<Weapon>().First();
-        weapon.LevelRequirements.Level = 0;
-        weapon.LevelRequirements.Attack = 0;
-        weapon.LevelRequirements.Defence = 0;
-        weapon.LevelRequirements.Mana = 0;
         var saved = World.ToData();
+        // Qualify the player without mutating the shared item template through a clone.
+        saved.PlayerData.EntityLevel = weapon.LevelRequirements.Level;
+        saved.PlayerData.BaseAttack = Math.Max(saved.PlayerData.BaseAttack, weapon.LevelRequirements.Attack);
+        saved.PlayerData.BaseDefence = Math.Max(saved.PlayerData.BaseDefence, weapon.LevelRequirements.Defence);
+        saved.PlayerData.baseMana = Math.Max(saved.PlayerData.baseMana, weapon.LevelRequirements.Mana);
         var equipped = weapon.ToData();
         equipped.Equipped = true;
         saved.PlayerData.backpack = [equipped, new ItemData { Name = "Coins", Quantity = 13 }, new ItemData { Name = "Coins", Quantity = 9 }];

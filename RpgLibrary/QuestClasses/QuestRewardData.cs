@@ -14,7 +14,7 @@ namespace RpgLibrary.QuestClasses
         {
             XP = data.XP;
             Coins = data.Coins;
-            Items = data.Items;
+            Items = data.Items.Select(item => item.Clone()).ToList();
         }
 
         public QuestRewardData Clone()

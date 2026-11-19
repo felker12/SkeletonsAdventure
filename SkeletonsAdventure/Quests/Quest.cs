@@ -65,6 +65,8 @@ namespace SkeletonsAdventure.Quests
 
         public void CheckTasksCompleted()
         {
+            if (!Active || IsCompleted || Tasks.Count == 0)
+                return;
             foreach (var task in Tasks)
             {
                 if (!task.IsCompleted)
@@ -77,6 +79,8 @@ namespace SkeletonsAdventure.Quests
         public void ProgressTask()//Can only progress the active task
         {
             BaseTask task = ActiveTask;
+            if (task is null)
+                return;
             task.ProgressTask();
             World.AddMessage(task.Progress);
 
@@ -91,24 +95,29 @@ namespace SkeletonsAdventure.Quests
 
         public bool PlayerRequirementsMet(Player player)
         {
-            if (Requirements != null)
-                return Requirements.CheckRequirements(player);
-            else
-                return true; // No requirements means the quest is available
+            return player is not null && (Requirements?.CheckRequirements(player) ?? true) &&
+                RequiredQuestNames.All(name => player.GetCompletedQuestByName(name) is not null);
         }
+
+        public bool CanStart(Player player) => !IsCompleted && Tasks.Count > 0 &&
+            !string.IsNullOrWhiteSpace(Name) && PlayerRequirementsMet(player) &&
+            !CheckActiveQuest(player) && !CheckCompletedQuest(player);
 
         public void StartQuest()
         {
+            if (IsCompleted || Tasks.Count == 0)
+                return;
             Active = true;
         }
 
         public void CompleteQuest()
         {
+            if (!Active || IsCompleted || Tasks.Count == 0 || Tasks.Any(task => !task.IsCompleted))
+                return;
             IsCompleted = true;
             Active = false;
 
             World.AddMessage($"Quest {Name} Completed!");
-            World.AddMessage($"Rewards gained: {Reward}");
         }
 
         public bool CheckCompletedQuest(Player player)
@@ -139,16 +148,16 @@ namespace SkeletonsAdventure.Quests
                 Description = Description,
                 IsCompleted = IsCompleted,
                 Active = Active,
-                RequirementData = Requirements.ToData(),
+                RequirementData = Requirements?.ToData() ?? new(),
                 RewardData = Reward.GetQuestRewardData(),
-                RequiredQuestNameData = RequiredQuestNames,
+                RequiredQuestNameData = [.. RequiredQuestNames],
                 BaseTasksData = GetBaseTaskDatas(),
             };
         }
 
         public BaseTask GetActiveTask()
         {
-            if (Active == false)
+            if (!Active || IsCompleted)
                 return null; //only have an active task if the quest is active
 
             return Tasks.FirstOrDefault(t => !t.IsCompleted);
