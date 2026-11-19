@@ -7,7 +7,7 @@
     <AttackOffset>0 0</AttackOffset>
     <LastAttackTime>PT0S</LastAttackTime>
     <AttackCoolDownLength>2800</AttackCoolDownLength>
-    <Speed>3.2</Speed>
+    <Speed>10.24</Speed>
     <DamageModifier>1.5</DamageModifier>
     <ManaCost>1</ManaCost>
     <AttackDelay>300</AttackDelay>
