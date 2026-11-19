@@ -40,7 +40,8 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
                     seeds.Add(candidate);
             }
             int version = collisionVersion();
-            if (_version == version && _width == actor.Width && _height == actor.Height && seeds.Any(_reachable.Contains))
+            if (_version == version && _width == actor.Width && _height == actor.Height &&
+                (seeds.Count == 0 ? _reachable.Count == 0 : seeds.Any(_reachable.Contains)))
                 return;
             _version = version;
             _width = actor.Width;
@@ -72,14 +73,14 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
             {
                 var position = ItemPosition(cell);
                 float distance = Vector2.DistanceSquared(position, origin);
-                if (distance < nearestDistance && Clear(position, GameItem.Width, GameItem.Height))
+                if ((!nearest.HasValue || distance < nearestDistance) && Clear(position, GameItem.Width, GameItem.Height))
                 {
                     nearest = cell;
                     nearestDistance = distance;
                 }
             }
             if (!nearest.HasValue)
-                throw new InvalidOperationException("No player-reachable ground is available for loot.");
+                return [];
 
             // Spread within a small connected neighborhood, never through a nearby dividing wall.
             float radius = Math.Max(64, MathF.Sqrt(count) * GameItem.Width);

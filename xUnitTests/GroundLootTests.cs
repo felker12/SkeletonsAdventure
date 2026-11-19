@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
@@ -120,7 +121,7 @@ public partial class UnitTest1
         Assert.Equal(position, coins.Position);
         var invalid = coins.Clone();
         invalid.Position = new(-200, -200);
-        manager.Items.Add(invalid);
+        manager.RestoreDrops([.. manager.Items, invalid]);
         manager.RepairPlacement();
         Assert.Equal(4, manager.Items.Count);
         Assert.True(manager.Placement.IsSafe(invalid.Position));
@@ -150,9 +151,50 @@ public partial class UnitTest1
         Assert.True(manager.Placement.IsSafe(drop.Position));
         var oldDrop = coins.Clone();
         oldDrop.Position = new(level.Width + 100, level.Height + 100);
-        manager.Items.Add(oldDrop);
+        manager.RestoreDrops([drop, oldDrop]);
         World.SetCurrentLevel(level, World.Player.Position);
         Assert.Equal(2, manager.Items.Count);
         Assert.True(manager.Placement.IsSafe(oldDrop.Position));
+    }
+
+    [Fact]
+    public void UnplaceableEnemyLootSurvivesSaveAndLevelEntryAndRecoversWhenGroundOpens()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        _ = new GameScreen(game, assets);
+        var level = World.CurrentLevel;
+        var manager = level.EntityManager.DroppedLootManager;
+        bool blocked = true;
+        manager.Placement = new GroundLootPlacement(level.Width, level.Height, 16, 16,
+            (_, _) => blocked, () => (new Vector2(32, 32), 32, 32), () => blocked ? 1 : 0);
+        var enemy = GameManager.GetEnemyByName("Skeleton");
+        enemy.DropTableName = "";
+        enemy.GuaranteedDrops.Clear();
+        var coins = GameManager.GetItemByName("Coins");
+        coins.SetQuantity(7);
+        enemy.GuaranteedDrops.Add(coins);
+        level.EntityManager.Add(enemy);
+
+        enemy.EntityDied(new());
+        Assert.True(enemy.IsDead);
+        Assert.Empty(manager.Items);
+        var saved = level.ToData();
+        Assert.Equal(7, Assert.Single(saved.DroppedItemDatas).Quantity);
+
+        SaveManager.LoadLevelDataFromLevelData(level, saved);
+        World.SetCurrentLevel(level);
+        manager.Update();
+        Assert.Empty(manager.Items);
+        Assert.Equal(7, Assert.Single(manager.GetDroppedItemData()).Quantity);
+
+        blocked = false;
+        manager.Update();
+        manager.Update();
+        var drop = Assert.Single(manager.Items);
+        Assert.Equal(7, drop.Quantity);
+        Assert.True(manager.Placement.IsSafe(drop.Position));
+        Assert.True(manager.TryPickUp(drop, World.Player));
+        Assert.Empty(manager.GetDroppedItemData());
     }
 }

@@ -1,19 +1,19 @@
 ﻿using RpgLibrary.ItemClasses;
+using SkeletonsAdventure.Entities.PlayerClasses;
 using System.Linq;
 
 namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
     internal class DroppedLootManager
     {
-        public List<GameItem> Items { get; set; } = [];
+        private readonly List<GameItem> _items = [];
+        private readonly List<GameItem> _pending = [];
+        public IReadOnlyList<GameItem> Items => _items;
         public GroundLootPlacement Placement { get; set; }
-        private List<GameItem> ItemsToRemove { get; set; } = [];
 
         public void Update()
         {
-            foreach (GameItem item in ItemsToRemove)
-                Items.Remove(item);
-            ItemsToRemove.Clear();
+            PlacePendingDrops();
 
             foreach (GameItem item in Items)
                 item.Update();
@@ -37,27 +37,59 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
             var drops = items.Where(item => item is not null).Select(item => item.Clone()).ToList();
             if (drops.Count == 0)
                 return;
-            var positions = Placement?.Place(pos, drops.Count, Items.Select(item => item.Position));
-            for (int i = 0; i < drops.Count; i++)
+            var positions = Placement?.Place(pos, drops.Count, _items.Select(item => item.Position));
+            if (positions is { Count: 0 })
             {
-                var drop = drops[i];
-                drop.Position = positions is null ? pos : positions[i];
-                drop.Update();
-                Items.Add(drop);
+                // Keep the origin for retries and save files until the drop can be reached.
+                foreach (var drop in drops)
+                {
+                    drop.Position = pos;
+                    _pending.Add(drop);
+                }
+                return;
             }
+
+            for (int i = 0; i < drops.Count; i++)
+                PlaceDrop(drops[i], positions is null ? pos : positions[i]);
         }
 
         public void RepairPlacement()
         {
-            if (Placement is null || Items.Count == 0)
-                return;
-            foreach (var item in Items)
+            for (int i = _items.Count - 1; i >= 0; i--)
             {
-                if (!Placement.IsSafe(item.Position))
-                    item.Position = Placement.Place(item.Position, 1,
-                        Items.Where(other => other != item).Select(other => other.Position))[0];
+                var item = _items[i];
+                if (Placement is not null && !Placement.IsSafe(item.Position))
+                {
+                    _items.RemoveAt(i);
+                    _pending.Add(item);
+                    continue;
+                }
+
                 item.Update();
             }
+
+            PlacePendingDrops();
+        }
+
+        private void PlacePendingDrops()
+        {
+            for (int i = _pending.Count - 1; i >= 0; i--)
+            {
+                var item = _pending[i];
+                var positions = Placement?.Place(item.Position, 1, _items.Select(drop => drop.Position));
+                if (positions is { Count: 0 })
+                    return;
+
+                PlaceDrop(item, positions is null ? item.Position : positions[0]);
+                _pending.RemoveAt(i);
+            }
+        }
+
+        private void PlaceDrop(GameItem item, Vector2 position)
+        {
+            item.Position = position;
+            item.Update();
+            _items.Add(item);
         }
 
         public void Add(ItemList lootList, Vector2 pos)
@@ -65,30 +97,27 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
             Add(lootList.Items, pos);
         }
 
-        public void Clear()
+        public void RestoreDrops(IEnumerable<GameItem> drops)
         {
-            Items.Clear();
-            ItemsToRemove.Clear();
+            _items.Clear();
+            _pending.Clear();
+            _items.AddRange(drops);
         }
 
-        public void AddToRemoveList(GameItem item)
+        public bool TryPickUp(GameItem item, Player player)
         {
-            ItemsToRemove.Add(item);
+            if (item is null || player is null || player.IsDead || player.Health <= 0)
+                return false;
+
+            int index = _items.IndexOf(item);
+            if (index < 0 || !player.Backpack.Add(item))
+                return false;
+
+            _items.RemoveAt(index);
+            return true;
         }
 
-        public List<ItemData> GetDroppedItemData()
-        {
-            List<ItemData> droppedItemData = [];
-
-            foreach (var gameItem in Items)
-                droppedItemData.Add(gameItem.ToData());
-
-            return droppedItemData;
-        }
-
-        public void Remove(GameItem item)
-        {
-            ItemsToRemove.Add(item);
-        }
+        public List<ItemData> GetDroppedItemData() =>
+            _items.Concat(_pending).Select(item => item.ToData()).ToList();
     }
 }

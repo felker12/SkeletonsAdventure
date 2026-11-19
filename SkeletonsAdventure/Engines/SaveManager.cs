@@ -166,7 +166,8 @@ namespace SkeletonsAdventure.Engines
             //Clear out the current entities and load in the saved ones
             level.EntityManager.Clear();
             level.EntityManager.Add(level.Player);
-            level.EntityManager.DroppedLootManager.Items = GameManager.GameItemLoadingManager.LoadGameItemsFromItemData(levelData.DroppedItemDatas);
+            level.EntityManager.DroppedLootManager.RestoreDrops(
+                GameManager.GameItemLoadingManager.LoadGameItemsFromItemData(levelData.DroppedItemDatas));
             LoadEnemies(level, levelData.EntityManagerData);
 
             //Load the chests and their contents

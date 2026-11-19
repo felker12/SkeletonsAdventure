@@ -199,10 +199,7 @@ namespace SkeletonsAdventure.States
 
             if (_mouseState.LeftButton == ButtonState.Released && _lastMouseState.LeftButton == ButtonState.Pressed)
             {
-                // Only try to pick up items if they're in the game world (not in backpack)
-                if (itemUnderMouse != null &&
-                    !BackpackMenu.Items.Contains(itemUnderMouse) && // Check if item is NOT in backpack
-                    TransformedMouseRectangle.Intersects(itemUnderMouse.ItemRectangle))
+                if (itemUnderMouse != null && TransformedMouseRectangle.Intersects(itemUnderMouse.ItemRectangle))
                 {
                     PickUp_Click(null, new EventArgs());
                 }
@@ -439,7 +436,7 @@ namespace SkeletonsAdventure.States
 
         private void Drop_Click(object sender, EventArgs e)
         {
-            if (itemUnderMouse != null)
+            if (itemUnderMouse != null && Player.Backpack.Items.Contains(itemUnderMouse))
             {
                 Player.EquippedItems.TryUnequipItem(itemUnderMouse);
                 World.CurrentLevel.EntityManager.DroppedLootManager.Add(itemUnderMouse, Player.Position - new Vector2(60, 40));
@@ -449,8 +446,11 @@ namespace SkeletonsAdventure.States
 
         private void PickUp_Click(object sender, EventArgs e)
         {
-            if (itemUnderMouse != null && Player.Backpack.Add(itemUnderMouse) == true)
-                World.CurrentLevel.EntityManager.DroppedLootManager.Remove(itemUnderMouse);
+            if (World.CurrentLevel.EntityManager.DroppedLootManager.TryPickUp(itemUnderMouse, Player))
+            {
+                itemUnderMouse = null;
+                GameItemPopUpBox.Visible = false;
+            }
         }
 
         private void Unequip_Click(object sender, EventArgs e)

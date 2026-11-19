@@ -110,12 +110,11 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
         {
             if (Player is null || Player.IsDead || Player.Health <= 0)
                 return;
-            // Consume pickups immediately, so repeated pickup requests cannot duplicate them.
             for (int i = DroppedLootManager.Items.Count - 1; i >= 0; i--)
             {
                 var item = DroppedLootManager.Items[i];
-                if (Player.Rectangle.Intersects(item.ItemRectangle) && Player.Backpack.Add(item) == true)
-                    DroppedLootManager.Items.RemoveAt(i);
+                if (Player.Rectangle.Intersects(item.ItemRectangle))
+                    DroppedLootManager.TryPickUp(item, Player);
             }
         }
 

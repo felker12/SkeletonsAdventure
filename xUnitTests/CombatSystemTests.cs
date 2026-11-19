@@ -149,17 +149,30 @@ public partial class UnitTest1
         var coins = GameManager.GetItemByName("Coins");
         coins.SetQuantity(7);
         entities.DroppedLootManager.Add(coins, World.Player.Position - new Vector2(20, 20));
+        var pickedUpAutomatically = Assert.Single(entities.DroppedLootManager.Items);
         entities.PickUpLoot();
         entities.PickUpLoot();
+        Assert.False(entities.DroppedLootManager.TryPickUp(pickedUpAutomatically, World.Player));
         Assert.Equal(7, Assert.Single(World.Player.Backpack.Items).Quantity);
         Assert.Empty(entities.DroppedLootManager.Items);
+
+        entities.DroppedLootManager.Add(coins, World.Player.Position - new Vector2(20, 20));
+        var pickedUpManually = Assert.Single(entities.DroppedLootManager.Items);
+        Assert.True(entities.DroppedLootManager.TryPickUp(pickedUpManually, World.Player));
+        Assert.False(entities.DroppedLootManager.TryPickUp(pickedUpManually, World.Player));
+        entities.PickUpLoot();
+        Assert.Equal(14, Assert.Single(World.Player.Backpack.Items).Quantity);
+        Assert.Empty(entities.DroppedLootManager.Items);
+
         World.Player.Backpack.Items.Clear();
         var equipment = GameManager.ItemsClone.Values.First(i => !i.Stackable);
         for (int i = 0; i < World.Player.Backpack.Capacity; i++)
             World.Player.Backpack.Items.Add(equipment.Clone());
         entities.DroppedLootManager.Add(equipment, World.Player.Position - new Vector2(20, 20));
+        var remaining = Assert.Single(entities.DroppedLootManager.Items);
+        Assert.False(entities.DroppedLootManager.TryPickUp(remaining, World.Player));
         entities.PickUpLoot();
-        Assert.Single(entities.DroppedLootManager.Items);
+        Assert.Same(remaining, Assert.Single(entities.DroppedLootManager.Items));
         Assert.Equal(World.Player.Backpack.Capacity, World.Player.Backpack.Count);
     }
 
