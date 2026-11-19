@@ -280,7 +280,6 @@ namespace SkeletonsAdventure.Entities
                 entityAttack.Motion = new(1, 0);
 
             entityAttack.Motion.Normalize();
-            entityAttack.Motion *= entityAttack.Speed;
         }
     }
 }

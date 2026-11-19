@@ -1,4 +1,4 @@
-﻿using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tiled;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities;
 
@@ -6,116 +6,120 @@ namespace SkeletonsAdventure.Engines
 {
     internal static class CollisionDetection
     {
-        public static void CheckEntityBoundaryCollisions(List<Entity> entities, TiledMapTileLayer[] mapCollisionLayers, int tileWidth, int tileHeight)
+        public static void CheckEntityBoundaryCollisions(List<Entity> entities, TiledMapTileLayer[] layers,
+            int tileWidth, int tileHeight, int mapWidth, int mapHeight, GameTime gameTime)
         {
-            foreach (Entity entity in entities)
+            bool Blocked(int x, int y)
             {
-                //Check entity collision with the map boundaries
+                if (layers is null)
+                    return false;
+                foreach (var layer in layers)
+                {
+                    if (layer is null || (layer.Name == "ConditionalLayer" && !layer.IsVisible))
+                        continue;
+                    if (layer.TryGetTile((ushort)x, (ushort)y, out TiledMapTile? tile) && tile.HasValue && !tile.Value.IsBlank)
+                        return true;
+                }
+                return false;
+            }
+
+            foreach (var entity in entities)
+            {
+                if (entity.IsDead)
+                    continue;
                 if (entity.CanMove)
-                    CheckCollision(entity, mapCollisionLayers, tileWidth, tileHeight);
-
-                //Check entity attacks collision with the map boundaries
-                foreach (BasicAttack entityAttack in entity.AttackManager.Attacks)
-                {
-                    if (entityAttack.CanMove)
-                        CheckCollision(entityAttack, mapCollisionLayers, tileWidth, tileHeight);
-                }
+                    MoveSprite(entity);
+                foreach (var attack in entity.AttackManager.Attacks)
+                    if (attack.CanMove && attack.AttackVisible)
+                    {
+                        MoveSprite(attack);
+                        attack.DamageHitBox = attack.Rectangle;
+                    }
             }
-        }
 
-        private static void CheckCollision(AnimatedSprite entity, TiledMapTileLayer[] mapCollisionLayers, int tileWidth, int tileHeight)
-        {
-            if (entity.Motion == Vector2.Zero)
-                return;
-
-            if (mapCollisionLayers == null)
+            void MoveSprite(AnimatedSprite sprite)
             {
-                entity.Position += entity.Motion * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier;
-                return;
-            }
-
-            Vector2 pos = entity.Position,
-                motion = entity.Motion;
-            Rectangle rec = entity.Rectangle;
-            bool xBlocked = false, yBlocked = false;
-
-            foreach (var layer in mapCollisionLayers)
-            {
-                if (layer is null)
-                    continue;
-
-                if (layer.Name == "ConditionalLayer" && layer.IsVisible is false)
-                    continue;
-
-                // --- Y axis ---
-                if (motion.Y != 0)
+                var direction = sprite.Motion;
+                if (direction.LengthSquared() > 1)
+                    direction.Normalize();
+                var displacement = direction * sprite.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds * Game1.BaseSpeedMultiplier;
+                var start = sprite.Position;
+                var end = Move(start, displacement, sprite.Width, sprite.Height,
+                    mapWidth, mapHeight, tileWidth, tileHeight, Blocked, sprite is BasicAttack);
+                sprite.Position = end;
+                // Actors can slide along walls. Projectiles stop on contact instead of rounding corners.
+                if (sprite is BasicAttack attack && Vector2.DistanceSquared(end, start + displacement) > 0.0001f)
                 {
-                    if (yBlocked is false)
-                        yBlocked = CheckYAxis(entity, layer, pos, motion, rec, tileWidth, tileHeight);
-
-                    if (yBlocked)
-                        motion.Y = 0;
+                    attack.Motion = Vector2.Zero;
+                    attack.InitialMotion = Vector2.Zero;
                 }
-
-                // --- X axis ---
-                if (motion.X != 0)
-                {
-                    if (xBlocked is false)
-                        xBlocked = CheckXAxis(entity, layer, pos, motion, rec, tileWidth, tileHeight);
-
-                    if (xBlocked)
-                        motion.X = 0;
-                }
-
-                // Break out of loop early if both axes are blocked or no motion left
-                if (motion == Vector2.Zero
-                    || (xBlocked && yBlocked))
-                    break;
             }
-
-            entity.Motion = motion;
-            entity.Position += entity.Motion * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier;
         }
 
-        //--- Axis Collision Checks ---
-        private static bool CheckXAxis(AnimatedSprite entity, TiledMapTileLayer mapCollisionLayer, Vector2 pos, Vector2 motion, Rectangle rec, int width, int height)
+        // The solver uses floating-point positions and checks every crossed tile edge.
+        // Small steps preserve diagonal sliding and corner collisions during long frames.
+        internal static Vector2 Move(Vector2 position, Vector2 displacement, int width, int height,
+            int mapWidth, int mapHeight, int tileWidth, int tileHeight, Func<int, int, bool> blocked, bool stopOnCollision = false)
         {
-            Vector2 newPosX = new(pos.X + motion.X * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier, pos.Y + motion.Y * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier);
-            Rectangle newRectX = new((int)newPosX.X, (int)newPosX.Y, rec.Width, rec.Height);
-            int checkX = motion.X > 0 ? (newRectX.Right - 1) / width : newRectX.Left / width;
-
-            for (int y = newRectX.Top / height; y <= (newRectX.Bottom - 1) / height; y++)
+            if (width <= 0 || height <= 0 || mapWidth <= 0 || mapHeight <= 0 || tileWidth <= 0 || tileHeight <= 0)
+                throw new ArgumentOutOfRangeException(nameof(width));
+            if (!float.IsFinite(position.X) || !float.IsFinite(position.Y) ||
+                !float.IsFinite(displacement.X) || !float.IsFinite(displacement.Y))
+                throw new ArgumentOutOfRangeException(nameof(displacement));
+            float maxX = Math.Max(0, mapWidth - width), maxY = Math.Max(0, mapHeight - height);
+            position = Vector2.Clamp(position, Vector2.Zero, new(maxX, maxY));
+            displacement = Vector2.Clamp(displacement, new(-mapWidth, -mapHeight), new(mapWidth, mapHeight));
+            int steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Abs(displacement.X), Math.Abs(displacement.Y)) /
+                (Math.Min(tileWidth, tileHeight) * 0.5)));
+            var step = displacement / steps;
+            for (int i = 0; i < steps; i++)
             {
-                if (IsTileBlocked(checkX, y, mapCollisionLayer))
+                float nextX = Math.Clamp(position.X + step.X, 0, maxX);
+                int top = (int)Math.Floor(position.Y / tileHeight);
+                int bottom = LastTile(position.Y + height, tileHeight);
+                if (step.X > 0)
                 {
-                    return true;
+                    for (int x = LastTile(position.X + width, tileWidth); x <= LastTile(nextX + width, tileWidth); x++)
+                        for (int y = top; y <= bottom; y++)
+                            if (blocked(x, y))
+                                nextX = Math.Max(position.X, Math.Min(nextX, x * tileWidth - width));
                 }
-            }
-
-            return false;
-        }
-
-        private static bool CheckYAxis(AnimatedSprite entity, TiledMapTileLayer mapCollisionLayer, Vector2 pos, Vector2 motion, Rectangle rec, int width, int height)
-        {
-            Vector2 newPosY = new(pos.X, pos.Y + motion.Y * entity.Speed * Game1.DeltaTime * Game1.BaseSpeedMultiplier);
-            Rectangle newRectY = new((int)newPosY.X, (int)newPosY.Y, rec.Width, rec.Height);
-            int checkY = motion.Y > 0 ? (newRectY.Bottom - 1) / height : newRectY.Top / height;
-
-            for (int x = newRectY.Left / width; x <= (newRectY.Right - 1) / width; x++)
-            {
-                if (IsTileBlocked(x, checkY, mapCollisionLayer))
+                else if (step.X < 0)
                 {
-                    return true;
+                    for (int x = (int)Math.Floor(position.X / tileWidth); x >= (int)Math.Floor(nextX / tileWidth); x--)
+                        for (int y = top; y <= bottom; y++)
+                            if (blocked(x, y))
+                                nextX = Math.Min(position.X, Math.Max(nextX, (x + 1) * tileWidth));
                 }
+                bool hitX = Math.Abs(nextX - (position.X + step.X)) > 0.00001f;
+                position.X = nextX;
+                if (stopOnCollision && hitX)
+                    return position;
+                float nextY = Math.Clamp(position.Y + step.Y, 0, maxY);
+                int left = (int)Math.Floor(position.X / tileWidth);
+                int right = LastTile(position.X + width, tileWidth);
+                if (step.Y > 0)
+                {
+                    for (int y = LastTile(position.Y + height, tileHeight); y <= LastTile(nextY + height, tileHeight); y++)
+                        for (int x = left; x <= right; x++)
+                            if (blocked(x, y))
+                                nextY = Math.Max(position.Y, Math.Min(nextY, y * tileHeight - height));
+                }
+                else if (step.Y < 0)
+                {
+                    for (int y = (int)Math.Floor(position.Y / tileHeight); y >= (int)Math.Floor(nextY / tileHeight); y--)
+                        for (int x = left; x <= right; x++)
+                            if (blocked(x, y))
+                                nextY = Math.Min(position.Y, Math.Max(nextY, (y + 1) * tileHeight));
+                }
+                bool hitY = Math.Abs(nextY - (position.Y + step.Y)) > 0.00001f;
+                position.Y = nextY;
+                if (stopOnCollision && hitY)
+                    return position;
             }
-
-            return false;
+            return position;
         }
 
-        //--- Tile Check ---
-        private static bool IsTileBlocked(int x, int y, TiledMapTileLayer mapCollisionLayer)
-        {
-            return mapCollisionLayer.TryGetTile((ushort)x, (ushort)y, out TiledMapTile? tile) && tile.Value.IsBlank is false;
-        }
+        private static int LastTile(float edge, int tileSize) => (int)Math.Ceiling((double)edge / tileSize) - 1;
     }
 }

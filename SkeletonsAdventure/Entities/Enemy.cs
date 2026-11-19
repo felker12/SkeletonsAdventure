@@ -1,4 +1,4 @@
-﻿using RpgLibrary.DataClasses;
+using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities.PlayerClasses;
@@ -26,7 +26,9 @@ namespace SkeletonsAdventure.Entities
 
     public class Enemy : Entity, ICloneableGameClass<Enemy>
     {
-        private int x, y, x2, y2, walkDistance, detectionWidth, detectionHeight;
+        private int detectionWidth, detectionHeight;
+        private double patrolElapsedSeconds;
+        private const double PatrolSideSeconds = 200.0 / 60.0;
 
         public bool CheckedLastAtackArea { get; set; } = false;
         public Rectangle DetectionArea => new((int)Position.X - (detectionWidth - Width) / 2,
@@ -55,7 +57,7 @@ namespace SkeletonsAdventure.Entities
         private void Initialize()
         {
             ResetSquare();
-            walkDistance = 200;
+
             detectionWidth = 300;
             detectionHeight = 300;
 
@@ -233,56 +235,42 @@ namespace SkeletonsAdventure.Entities
 
         public virtual void IdleBehavior(GameTime gameTime)
         {
-            WalkInSquare();
+            WalkInSquare(gameTime);
         }
 
-        protected void WalkInSquare()
+        protected void WalkInSquare(GameTime gameTime)
         {
+            double remaining = gameTime.ElapsedGameTime.TotalSeconds;
+            if (remaining <= 0)
+            {
+                Motion = Vector2.Zero;
+                return;
+            }
             Vector2 movement = Vector2.Zero;
-
-            if (x < walkDistance)
+            // Whole square cycles have zero net movement; skip them during unusually long frames.
+            double duration = remaining;
+            remaining %= PatrolSideSeconds * 4;
+            while (remaining > 0.0000001)
             {
-                movement.Y = 0;
-                movement.X = 1;
-                x++;
-            }
-            else if (x == walkDistance)
-            {
-                if (y < walkDistance)
+                int side = (int)(patrolElapsedSeconds / PatrolSideSeconds);
+                double slice = Math.Min(remaining, (side + 1) * PatrolSideSeconds - patrolElapsedSeconds);
+                Vector2 direction = side switch
                 {
-                    movement.X = 0;
-                    movement.Y = 1;
-                    y++;
-                }
-                else
-                {
-                    if (x2 == walkDistance)
-                    {
-                        movement.X = 0;
-                        movement.Y = -1;
-                        y2++;
-
-                        if (y2 == walkDistance)
-                            ResetSquare();
-                    }
-                    else
-                    {
-                        movement.X = -1;
-                        movement.Y = 0;
-                        x2++;
-                    }
-                }
+                    0 => Vector2.UnitX,
+                    1 => Vector2.UnitY,
+                    2 => -Vector2.UnitX,
+                    _ => -Vector2.UnitY
+                };
+                movement += direction * (float)slice;
+                remaining -= slice;
+                patrolElapsedSeconds = (patrolElapsedSeconds + slice) % (PatrolSideSeconds * 4);
             }
-
-            Motion = movement;
+            Motion = movement / (float)duration;
         }
 
         public void ResetSquare()
         {
-            x = 0;
-            y = 0;
-            x2 = 0;
-            y2 = 0;
+            patrolElapsedSeconds = 0;
         }
     }
 }
