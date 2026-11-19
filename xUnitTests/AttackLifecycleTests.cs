@@ -142,7 +142,7 @@ public partial class UnitTest1
         var shot = Projectile(source, new(32, 64));
         source.AttackManager.AddAttack(shot, new());
         var time = new GameTime(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
-        manager.Update(time, time);
+        manager.Update(time);
         Assert.Equal(100, target.Health);
         Assert.Single(source.AttackManager.Attacks);
         CollisionDetection.CheckEntityBoundaryCollisions(manager.Entities, null, 16, 16, 2048, 2048, time);
@@ -239,7 +239,7 @@ public partial class UnitTest1
         for (int frame = 1; frame <= fps; frame++)
         {
             var time = new GameTime(TimeSpan.FromSeconds((double)frame / fps), TimeSpan.FromSeconds(1.0 / fps));
-            manager.Update(time, time);
+            manager.Update(time);
             CollisionDetection.CheckEntityBoundaryCollisions(manager.Entities, null, 16, 16, 2048, 2048, time);
             manager.ResolveAttackHits(time);
         }

@@ -9,13 +9,13 @@ namespace SkeletonsAdventure.GameWorld
     {
         public Dictionary<string, Level> Levels { get; private set; } = [];
 
-        public LevelCreator(ContentManager content, GraphicsDevice graphics,
+        public LevelCreator(GameContentManager content, GraphicsDevice graphics,
             SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         { 
             CreateLevels(content, graphics, exitFont, damageFont, leverAnimation);
         }
 
-        private void CreateLevels(ContentManager content, GraphicsDevice graphics,
+        private void CreateLevels(GameContentManager content, GraphicsDevice graphics,
             SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         {
             string contentPath = content.RootDirectory;
@@ -30,22 +30,16 @@ namespace SkeletonsAdventure.GameWorld
 
                 Debug.WriteLine($"Loading Tiled Map: {relativePath}");
 
-                //try catch in case the .xnb file is not actually a TiledMap (but an image/tileset .xnb)
-                try
-                {
-                    Tilemap tiledMap = content.Load<Tilemap>(relativePath);
-                    MinMaxPair pair = GetMinMaxPairFromTiledMap(tiledMap);
-                    string levelName = Path.ChangeExtension(Path.GetRelativePath(tiledFilesPath, filePath), null);
-                    Level level = new(graphics, tiledMap, levelName, GameManager.EnemiesClone, pair,
-                        exitFont, damageFont, leverAnimation);
+                var tiledMap = content.LoadSessionMap(relativePath);
+                if (tiledMap is null)
+                    continue;
 
-                    Levels.Add(level.Name, level);
-                }
-                catch (InvalidCastException)
-                {
-                    //This file was likely an image/tileset .xnb, not a TiledMap .xnb.
-                    //Debug.WriteLine($"Skipping non-map asset: {relativePath}");
-                }
+                MinMaxPair pair = GetMinMaxPairFromTiledMap(tiledMap);
+                string levelName = Path.ChangeExtension(Path.GetRelativePath(tiledFilesPath, filePath), null);
+                Level level = new(graphics, tiledMap, levelName, GameManager.EnemiesClone, pair,
+                    exitFont, damageFont, leverAnimation);
+
+                Levels.Add(level.Name, level);
             }
 
             //Initialize Levels: this should happen after all levels have been added

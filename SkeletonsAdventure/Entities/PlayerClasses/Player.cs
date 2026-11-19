@@ -579,10 +579,24 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             Motion = motion; //(motion is normalized in collision detection of EntityManager)
         }
 
-        public override void Respawn()
+        internal void LeaveLevel()
+        {
+            CancelAim();
+            AttackManager.ClearAttacks(preserveCooldown: true);
+            AttacksHitBy.Clear();
+            Motion = Vector2.Zero;
+            CanMove = CanAttack = !IsDead;
+        }
+
+        private void CancelAim()
         {
             AimVisible = false;
             AttackToAim = null;
+        }
+
+        public override void Respawn()
+        {
+            CancelAim();
             base.Respawn();
         }
 

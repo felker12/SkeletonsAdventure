@@ -15,7 +15,7 @@
 
         public virtual void Update(GameTime gameTime)
         {
-            ElapsedTime += gameTime.ElapsedGameTime.Milliseconds;
+            ElapsedTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)

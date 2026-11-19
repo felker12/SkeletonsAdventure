@@ -8,6 +8,7 @@ namespace SkeletonsAdventure
     internal class Game1 : Game
     {
         public GraphicsDeviceManager Graphics { get; set; }
+        internal GameContentManager GameContent { get; }
         public SpriteBatch SpriteBatch { get; private set; }
         public GameScreen GameScreen { get; set; }
         public ExitScreen ExitScreen { get; internal set; }
@@ -21,7 +22,9 @@ namespace SkeletonsAdventure
 
         public Game1()
         {
-            Content.RootDirectory = "Content";
+            GameContent = new(Services);
+            Content.Dispose();
+            Content = GameContent;
             Window.Title = "The Adventures of the Skeleton";
 
             Graphics = new GraphicsDeviceManager(this)

@@ -17,7 +17,7 @@ namespace SkeletonsAdventure.GameWorld
         public static GameTime TotalTimeInWorld { get; set; } = new();
         public static List<string> MessagesToAdd { get; private set; } = [];
 
-        public World(ContentManager content, GraphicsDevice graphics, Player player,
+        public World(GameContentManager content, GraphicsDevice graphics, Player player,
             SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         {
             Player = player ?? throw new ArgumentNullException(nameof(player));
@@ -44,7 +44,7 @@ namespace SkeletonsAdventure.GameWorld
             TotalTimeInWorld.ElapsedGameTime = gameTime.ElapsedGameTime;
             TotalTimeInWorld.TotalGameTime += gameTime.ElapsedGameTime;
 
-            CurrentLevel.Update(gameTime, TotalTimeInWorld); 
+            CurrentLevel.Update(TotalTimeInWorld);
 
             //TODO delete this after testing
             if (InputHandler.KeyReleased(Keys.NumPad0))
@@ -130,14 +130,6 @@ namespace SkeletonsAdventure.GameWorld
             var camera = Camera;
             var time = TotalTimeInWorld;
             var messages = MessagesToAdd;
-            var visibility = new List<Action>();
-            if (levels is not null)
-                foreach (var level in levels.Values)
-                    foreach (var layer in level.TiledMap.Layers)
-                    {
-                        bool visible = layer.IsVisible;
-                        visibility.Add(() => layer.IsVisible = visible);
-                    }
             return () =>
             {
                 Levels = levels;
@@ -146,18 +138,20 @@ namespace SkeletonsAdventure.GameWorld
                 Camera = camera;
                 TotalTimeInWorld = time;
                 MessagesToAdd = messages;
-                foreach (var restore in visibility)
-                    restore();
             };
         }
 
         public static void SetCurrentLevel(Level level, Vector2 playerPosition = new())
         {
+            if (CurrentLevel is not null && CurrentLevel != level && CurrentLevel.Player == Player)
+                Player.LeaveLevel();
+
             Player.Position = playerPosition;
             Player.RespawnPosition = level.PlayerRespawnPosition;
 
             CurrentLevel = level;
             Camera.SetBounds(CurrentLevel.Width, CurrentLevel.Height);
+            Camera.Update(playerPosition);
             CurrentLevel.Player = Player;
             CurrentLevel.Camera = Camera;
             CurrentLevel.EntityManager.Player = Player;

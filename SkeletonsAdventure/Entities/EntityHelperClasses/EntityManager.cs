@@ -45,21 +45,21 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
                 entity.AttackManager.Draw(spriteBatch);
         }
 
-        public void Update(GameTime gameTime, GameTime totalTimeInWorld, EnemyNavigation navigation = null)
+        public void Update(GameTime gameTime, EnemyNavigation navigation = null)
         {
-            UpdateEntities(gameTime, totalTimeInWorld);
+            UpdateEntities(gameTime);
             EnemyAI.CheckIfEnemyDetectPlayer(gameTime, Entities, Player, navigation);
 
             DroppedLootManager.Update();
         }
 
-        private void UpdateEntities(GameTime gameTime, GameTime totalTimeInWorld)
+        private void UpdateEntities(GameTime gameTime)
         {
             foreach (var entity in Entities)
             {
                 if (entity.IsDead == false) //Ensure dead enemies cannot be hit
                 {
-                    CheckEntityHealth(totalTimeInWorld, entity);
+                    CheckEntityHealth(gameTime, entity);
                     if (entity.IsDead)
                         continue;
 
@@ -68,7 +68,7 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
                     if (entity == Player)
                         PickUpLoot(); //If the player walks over loot pick it up
                 }
-                else if (totalTimeInWorld.TotalGameTime - entity.LastDeathTime >= TimeSpan.FromSeconds(entity.RespawnTime))
+                else if (gameTime.TotalGameTime - entity.LastDeathTime >= TimeSpan.FromSeconds(entity.RespawnTime))
                 {
                     entity.Respawn();
                 }
@@ -84,11 +84,11 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
             }
         }
 
-        private void CheckEntityHealth(GameTime totalTimeInWorld, Entity entity)
+        private void CheckEntityHealth(GameTime gameTime, Entity entity)
         {
             if (entity.Health < 1)
             {
-                entity.EntityDied(totalTimeInWorld);
+                entity.EntityDied(gameTime);
 
             }
         }

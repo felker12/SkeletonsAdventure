@@ -154,10 +154,10 @@ namespace SkeletonsAdventure.GameWorld
             spriteBatch.End();
         }
 
-        public void Update(GameTime gameTime, GameTime totalTimeInWorld) 
+        public void Update(GameTime gameTime)
         {
             GameEventManager.Update(gameTime);
-            EntityManager.Update(gameTime, totalTimeInWorld, Navigation);
+            EntityManager.Update(gameTime, Navigation);
 
             CollisionDetection.CheckEntityBoundaryCollisions(EntityManager.Entities, collisionLayers,
                 TileWidth, TileHeight, Width, Height, gameTime);
@@ -170,14 +170,14 @@ namespace SkeletonsAdventure.GameWorld
             ChestManager.Update(gameTime);
             CheckIfPlayerNearChest();
 
-            InteractableObjectManager.Update(totalTimeInWorld, Player);
+            InteractableObjectManager.Update(gameTime, Player);
             TeleporterManager.Update(Player);
             DamagePopUpManager.Update(gameTime);
 
             if (LevelExit != null)
                 CheckIfPlayerIsNearExit(LevelExit, LevelExit.NextLevel.PlayerStartPosition);
 
-            if (LevelEntrance != null)
+            if (World.CurrentLevel == this && LevelEntrance != null)
                 CheckIfPlayerIsNearExit(LevelEntrance, LevelEntrance.NextLevel.PlayerEndPosition);
         }
 

@@ -50,37 +50,32 @@ namespace SkeletonsAdventure.Animations
 
         public void Update(GameTime gameTime)
         {
-            // Implementation for playing the animation
             if (animate is false)
                 return;
 
             elapsedTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            TileAnimationFrame currentFrame = Animation.GetCurrentFrame();
-
-            if (currentFrame is not null)
-                if(currentFrame.Duration < elapsedTime)
-                {
-                    elapsedTime = 0f;
-                    Animation.CurrentFrameIndex++;
-
-                    if (Animation.CurrentFrameIndex >= Animation.Frames.Count)
-                        Animation.CurrentFrameIndex = 0;
-                }
-
-            if (elapsedTime >= Animation.TotalDuration)
+            while (Animation.CurrentFrameIndex < Animation.Frames.Count)
             {
-                elapsedTime = 0f;
-                animate = false;
+                TileAnimationFrame currentFrame = Animation.GetCurrentFrame();
+                if (elapsedTime < currentFrame.Duration)
+                    return;
+
+                elapsedTime -= currentFrame.Duration;
+                if (Animation.CurrentFrameIndex + 1 == Animation.Frames.Count)
+                    break;
+
+                Animation.CurrentFrameIndex++;
             }
+
+            animate = false;
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
-            if (animate is false)
-                return;
-
-            spriteBatch.Draw(Texture, position, Frame, Color.White);
+            Rectangle frame = Frame;
+            if (!frame.IsEmpty)
+                spriteBatch.Draw(Texture, position, frame, Color.White);
         }
 
         public override string ToString()

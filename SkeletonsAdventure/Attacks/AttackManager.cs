@@ -7,6 +7,7 @@ namespace SkeletonsAdventure.Attacks
     public class AttackManager(Entity entity)
     {
         private readonly List<BasicAttack> _queuedAttack = [];
+        private bool _hasCast;
 
         public Entity SourceEntity { get; private set; } = entity;
         public List<BasicAttack> Attacks { get; private set; } = [];
@@ -18,7 +19,7 @@ namespace SkeletonsAdventure.Attacks
         /// </summary>
         /// <param name="gameTime">The current game time.</param>
         /// <returns>True if the entity is on attack cooldown, false otherwise.</returns>
-        public bool AttackingIsOnCoolDown(GameTime gameTime) => LastAttack is not null && (gameTime.TotalGameTime - LastAttackTime).TotalMilliseconds < SourceEntity.AttackCoolDownLength;
+        public bool AttackingIsOnCoolDown(GameTime gameTime) => _hasCast && (gameTime.TotalGameTime - LastAttackTime).TotalMilliseconds < SourceEntity.AttackCoolDownLength;
 
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -89,16 +90,19 @@ namespace SkeletonsAdventure.Attacks
 
             if (registerCast)
             {
+                _hasCast = true;
                 LastAttackTime = gameTime.TotalGameTime;
                 LastAttack = atk;
             }
         }
 
-        public void ClearAttacks()
+        public void ClearAttacks(bool preserveCooldown = false)
         {
             Attacks.Clear();
             _queuedAttack.Clear();
             LastAttack = null;
+            if (!preserveCooldown)
+                _hasCast = false;
         }
 
         public void ClearExpiredAttacks()

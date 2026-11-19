@@ -57,7 +57,7 @@ namespace SkeletonsAdventure.States
             MessageBox = new(Assets.FontsLibrary.Arial12);
             var player = new Player(Assets.DefaultEntityAssets, Assets.TexturesLibrary.ArmoredSkeletonTexture,
                 Assets.AttackTemplates, GameManager.GetItemByName("Coins"));
-            World = new(Game.Content, GraphicsDevice, player, Assets.FontsLibrary.Arial12,
+            World = new(Game.GameContent, GraphicsDevice, player, Assets.FontsLibrary.Arial12,
                 Assets.FontsLibrary.Arial14, Assets.LeverAnimation);
             Camera = World.CurrentLevel.Camera;
             Player = World.CurrentLevel.Player;

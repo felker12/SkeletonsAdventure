@@ -167,7 +167,7 @@ namespace SkeletonsAdventure.Entities
 
             if (Health < 1)
             {
-                EntityDied(World.TotalTimeInWorld);
+                EntityDied(gameTime);
                 EntityDiedByAttack(attack);
             }
         }
