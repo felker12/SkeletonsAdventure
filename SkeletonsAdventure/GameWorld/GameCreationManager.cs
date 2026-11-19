@@ -82,22 +82,22 @@ namespace SkeletonsAdventure.GameWorld
 
             foreach (string filePath in fileNames)
             {
+                string contentPath = Path.ChangeExtension(Path.GetRelativePath(rootDirectory, filePath), null);
+                string texturePath = null;
                 try
                 {
-                    //Get the path relative to the content root, e.g., "Items/Weapons/Sword.xnb" (trims content from the start of the path)
-                    string relativePath = Path.GetRelativePath(content.RootDirectory, filePath);
-                    //Remove the file extension to get the content path, e.g., "Items/Weapons/Sword"
-                    string contentPath = Path.ChangeExtension(relativePath, null); 
-
                     ItemData itemData = content.Load<ItemData>(contentPath);
-                    Texture2D itemTexture = content.Load<Texture2D>(itemData.TexturePath);
+                    texturePath = itemData.TexturePath;
+                    Texture2D itemTexture = content.Load<Texture2D>(texturePath);
                     GameItem gameItem = CreateGameItemFromData(itemData, itemTexture, tooltipFont);
 
-                    items.TryAdd(gameItem.Name, gameItem);
+                    if (!items.TryAdd(gameItem.Name, gameItem))
+                        throw new InvalidDataException($"Duplicate item name '{gameItem.Name}'.");
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Error loading item from {filePath}: {ex.Message}");
+                    string texture = texturePath is null ? "" : $" with texture '{texturePath}'";
+                    throw new ContentLoadException($"Could not load item '{contentPath}'{texture}. {ex.Message}", ex);
                 }
             }
 

@@ -1,7 +1,7 @@
 ﻿using MonoGame.Extended.Tilemaps;
 using RpgLibrary.DataClasses;
-using System.IO;
 using SkeletonsAdventure.Animations;
+using SkeletonsAdventure.Content;
 
 namespace SkeletonsAdventure.GameWorld
 {
@@ -18,24 +18,10 @@ namespace SkeletonsAdventure.GameWorld
         private void CreateLevels(GameContentManager content, GraphicsDevice graphics,
             SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         {
-            string contentPath = content.RootDirectory;
-            string tiledFilesPath = Path.Combine(contentPath, "TiledFiles");
-            string[] tiledMapFiles = Directory.GetFiles(tiledFilesPath, "*.xnb", SearchOption.AllDirectories); //Note: this will include files that are not just map files (but also images)
-
-            foreach (string filePath in tiledMapFiles)
+            foreach (string levelName in MapCatalog.LevelNames)
             {
-                //get the relative path for Content.Load (remove GamePath\Content\ and extension)
-                string relativePath = Path.GetRelativePath(contentPath, filePath);
-                relativePath = Path.ChangeExtension(relativePath, null); // Remove extension
-
-                Debug.WriteLine($"Loading Tiled Map: {relativePath}");
-
-                var tiledMap = content.LoadSessionMap(relativePath);
-                if (tiledMap is null)
-                    continue;
-
+                var tiledMap = content.LoadSessionMap(MapCatalog.AssetName(levelName));
                 MinMaxPair pair = GetMinMaxPairFromTiledMap(tiledMap);
-                string levelName = Path.ChangeExtension(Path.GetRelativePath(tiledFilesPath, filePath), null);
                 Level level = new(graphics, tiledMap, levelName, GameManager.EnemiesClone, pair,
                     exitFont, damageFont, leverAnimation);
 

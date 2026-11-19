@@ -12,6 +12,7 @@ namespace SkeletonsAdventure
         public SpriteBatch SpriteBatch { get; private set; }
         public GameScreen GameScreen { get; set; }
         public ExitScreen ExitScreen { get; internal set; }
+        internal bool PreserveSaveBackup { get; set; }
         public StateManager StateManager { get; private set; } = new();
         public static int ScreenWidth { get; set; } = 1280;
         public static int ScreenHeight { get; set; } = 720;

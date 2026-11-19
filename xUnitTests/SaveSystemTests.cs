@@ -208,6 +208,73 @@ public partial class UnitTest1
         Assert.Equal(TimeSpan.FromMinutes(8), World.TotalTimeInWorld.TotalGameTime);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void LoadRecoversFromReadablePrimaryWithMissingContentAndPreservesBackup(bool missingMap)
+    {
+        using var directory = new SaveDirectory();
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        game.GameScreen = new GameScreen(game, assets);
+        game.ExitScreen = new ExitScreen(game, assets);
+
+        World.Player.Health = 3;
+        SaveStorage.Write(directory.Path, SaveManager.CaptureGame(game, game.ExitScreen.ExitScreenMenu));
+        World.Player.Health = 1;
+        var primary = SaveManager.CaptureGame(game, game.ExitScreen.ExitScreenMenu);
+        if (missingMap)
+        {
+            primary.World.Levels["RemovedMap"] = new();
+            primary.World.CurrentLevel = "RemovedMap";
+        }
+        else
+            primary.World.PlayerData.backpack = [new ItemData { Name = "Removed item", Quantity = 1 }];
+        SaveStorage.Write(directory.Path, primary);
+        Assert.Equal(1, SaveStorage.Read(directory.Path).World.PlayerData.CurrentHealth);
+
+        SaveManager.LoadSavedGame(game, assets, directory.Path);
+        Assert.Equal(3, World.Player.Health);
+        Assert.Equal("Level0", World.CurrentLevel.Name);
+        Assert.Contains("Loaded the backup save.", game.GameScreen.MessageBox.Messages);
+        Assert.True(game.PreserveSaveBackup);
+
+        World.Player.Health = 2;
+        Assert.True(SaveManager.SaveGame(game, game.ExitScreen.ExitScreenMenu, directory.Path));
+        Assert.False(game.PreserveSaveBackup);
+        Assert.Equal(2, SaveStorage.Read(directory.Path).World.PlayerData.CurrentHealth);
+        string backupPath = System.IO.Path.Combine(directory.Path, SaveStorage.FileName + ".bak");
+        Assert.Equal(3, XnaSerializer.Deserialize<SaveGameData>(backupPath).World.PlayerData.CurrentHealth);
+    }
+
+    [Fact]
+    public void FailedPrimaryAndBackupReportBothRestoreErrorsAndKeepTheActiveSession()
+    {
+        using var directory = new SaveDirectory();
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        var screen = game.GameScreen = new GameScreen(game, assets);
+        game.ExitScreen = new ExitScreen(game, assets);
+        var player = World.Player;
+        var levels = World.Levels;
+        var backup = SaveManager.CaptureGame(game, game.ExitScreen.ExitScreenMenu);
+        backup.World.PlayerData.backpack = [new ItemData { Name = "Removed item", Quantity = 1 }];
+        SaveStorage.Write(directory.Path, backup);
+        var primary = SaveManager.CaptureGame(game, game.ExitScreen.ExitScreenMenu);
+        primary.World.Levels["RemovedMap"] = new();
+        primary.World.CurrentLevel = "RemovedMap";
+        SaveStorage.Write(directory.Path, primary);
+
+        var failure = Assert.Throws<InvalidDataException>(() => SaveManager.LoadSavedGame(game, assets, directory.Path));
+        var causes = Assert.IsType<AggregateException>(failure.InnerException).InnerExceptions;
+        Assert.Collection(causes,
+            cause => Assert.Contains("Unknown saved level: RemovedMap", cause.Message),
+            cause => Assert.Contains("Unknown saved item: Removed item", cause.Message));
+        Assert.Same(screen, game.GameScreen);
+        Assert.Same(player, World.Player);
+        Assert.Same(levels, World.Levels);
+    }
+
     [Fact]
     public void CompleteSnapshotRoundTripPreservesWorldAndRebuildsPauseMenu()
     {

@@ -32,12 +32,17 @@ namespace SkeletonsAdventure.States
             _loadStatus = string.Empty;
             try
             {
-                var data = SaveStorage.Read(GameManager.PathsLibrary.SavePath);
-                SaveManager.RestoreGame(Game, Assets, data);
+                SaveManager.LoadSavedGame(Game, Assets, GameManager.PathsLibrary.SavePath);
             }
-            catch (FileNotFoundException)
+            catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException)
             {
                 _loadStatus = "No complete save was found.";
+                return;
+            }
+            catch (InvalidDataException ex)
+            {
+                Debug.WriteLine(ex);
+                _loadStatus = "The saved game is incomplete or incompatible.";
                 return;
             }
             catch (Exception ex)

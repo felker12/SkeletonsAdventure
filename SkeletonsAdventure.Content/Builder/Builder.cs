@@ -4,9 +4,24 @@ using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using MonoGame.Extended.Content.Pipeline.Tilemaps;
 using MonoGame.Extended.Content.Pipeline.Tilemaps.Tiled;
 using MonoGame.Framework.Content.Pipeline.Builder;
+using SkeletonsAdventure.Content;
 
 // The XML importer resolves the RPG data types from loaded assemblies.
 _ = typeof(RpgLibrary.AttackData.AttackData).Assembly;
+
+if (args is ["validate", var sourceDirectory])
+{
+    try
+    {
+        ContentReferenceValidator.Validate(sourceDirectory);
+        return 0;
+    }
+    catch (InvalidDataException ex)
+    {
+        Console.Error.WriteLine(ex.Message);
+        return 1;
+    }
+}
 
 var builder = new GameContentBuilder();
 builder.Run(args);
@@ -14,6 +29,21 @@ return builder.FailedToBuild > 0 ? 1 : 0;
 
 internal sealed class GameContentBuilder : ContentBuilder
 {
+    internal static IReadOnlyList<string> ExcludedTextures { get; } =
+    [
+        "AttackSprites/FireBallSpriteSheet_OG.png",
+        "Player/SkeletonSpriteSheet_LeftHalf.png",
+        "Player/SkeletonSpriteSheet_Stylized.png",
+        // TSX assets build their own textures and would collide with these output paths.
+        "TiledFiles/CrossedOffBlock.png",
+        "TiledFiles/doors_lever_chest_animation.png",
+        "TiledFiles/fire_animation.png",
+        "TiledFiles/Objects.png",
+        "TiledFiles/ProjectUtumno_full.png",
+        "TiledFiles/walls_floor.png"
+    ];
+    internal const string LeverTileset = "TiledFiles/doors_lever_chest_animation.tsx";
+
     public override IContentCollection GetContentCollection()
     {
         var content = new ContentCollection();
@@ -31,18 +61,8 @@ internal sealed class GameContentBuilder : ContentBuilder
         };
         content.Include<WildcardRule>("**/*.png", textureImporter, textureProcessor);
         content.Include<WildcardRule>("**/*.PNG", textureImporter, textureProcessor);
-        content.Exclude<WildcardRule>("AttackSprites/FireBallSpriteSheet_OG.png");
-        content.Exclude<WildcardRule>("Player/SkeletonSpriteSheet_LeftHalf.png");
-        content.Exclude<WildcardRule>("Player/SkeletonSpriteSheet_Stylized.png");
-
-        // Tilesets build their own texture dependencies. A PNG and TSX with the same stem
-        // would otherwise both write to the same XNB path.
-        content.Exclude<WildcardRule>("TiledFiles/CrossedOffBlock.png");
-        content.Exclude<WildcardRule>("TiledFiles/doors_lever_chest_animation.png");
-        content.Exclude<WildcardRule>("TiledFiles/fire_animation.png");
-        content.Exclude<WildcardRule>("TiledFiles/Objects.png");
-        content.Exclude<WildcardRule>("TiledFiles/ProjectUtumno_full.png");
-        content.Exclude<WildcardRule>("TiledFiles/walls_floor.png");
+        foreach (string excluded in ExcludedTextures)
+            content.Exclude<WildcardRule>(excluded);
 
         content.Include<WildcardRule>("Fonts/*.spritefont", new FontDescriptionImporter(), new FontDescriptionProcessor
         {
@@ -57,8 +77,9 @@ internal sealed class GameContentBuilder : ContentBuilder
         content.Include<WildcardRule>("EntityData/*.xml", xmlImporter, xmlProcessor);
         content.Include<WildcardRule>("Items/**/*.xml", xmlImporter, xmlProcessor);
 
-        content.Include<WildcardRule>("TiledFiles/*.tmx", new TiledTilemapImporter(), new TilemapProcessor());
-        content.Include<WildcardRule>("TiledFiles/doors_lever_chest_animation.tsx", new TilemapTilesetImporter(), new TilemapTilesetProcessor());
+        foreach (string levelName in MapCatalog.LevelNames)
+            content.Include<WildcardRule>(MapCatalog.AssetName(levelName) + ".tmx", new TiledTilemapImporter(), new TilemapProcessor());
+        content.Include<WildcardRule>(LeverTileset, new TilemapTilesetImporter(), new TilemapTilesetProcessor());
 
         return content;
     }

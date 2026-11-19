@@ -12,7 +12,7 @@ namespace SkeletonsAdventure.Engines
         private static readonly object Gate = new();
         internal const string FileName = "SaveGame.xml";
 
-        public static void Write(string directory, SaveGameData data)
+        public static void Write(string directory, SaveGameData data, bool preserveBackup = false)
         {
             lock (Gate)
             {
@@ -31,9 +31,12 @@ namespace SkeletonsAdventure.Engines
                     if (File.Exists(target))
                     {
                         // Do not replace a good backup with a damaged primary after recovery.
-                        bool validPrimary;
-                        try { ReadSnapshot(target); validPrimary = true; }
-                        catch (Exception) { validPrimary = false; }
+                        bool validPrimary = false;
+                        if (!preserveBackup)
+                        {
+                            try { ReadSnapshot(target); validPrimary = true; }
+                            catch (Exception) { }
+                        }
                         File.Replace(temporary, target, validPrimary ? target + ".bak" : null);
                     }
                     else
@@ -47,17 +50,27 @@ namespace SkeletonsAdventure.Engines
             }
         }
 
-        public static SaveGameData Read(string directory)
+        public static SaveGameData Read(string directory) => Read(directory, null, out _);
+
+        public static SaveGameData Read(string directory, Action<SaveGameData> restore, out Exception primaryFailure)
         {
             lock (Gate)
             {
+                primaryFailure = null;
                 string target = Path.Combine(directory, FileName);
-                if (File.Exists(target) || File.Exists(target + ".bak"))
+                string backup = target + ".bak";
+                if (File.Exists(target) || File.Exists(backup))
                 {
-                    try { return ReadSnapshot(target); }
-                    catch (Exception) when (File.Exists(target + ".bak"))
+                    try { return ReadAndRestore(target); }
+                    catch (Exception ex) when (File.Exists(backup))
                     {
-                        return ReadSnapshot(target + ".bak");
+                        primaryFailure = ex;
+                        try { return ReadAndRestore(backup); }
+                        catch (Exception backupFailure)
+                        {
+                            throw new InvalidDataException($"Could not load either '{target}' or '{backup}'.",
+                                new AggregateException(ex, backupFailure));
+                        }
                     }
                 }
 
@@ -76,7 +89,15 @@ namespace SkeletonsAdventure.Engines
                     if (!string.IsNullOrEmpty(name) && !legacy.LearnedAttacks.LearnedAttackNames.Contains(name))
                         legacy.LearnedAttacks.LearnedAttackNames.Add(name);
                 Validate(legacy);
+                restore?.Invoke(legacy);
                 return legacy;
+            }
+
+            SaveGameData ReadAndRestore(string path)
+            {
+                var data = ReadSnapshot(path);
+                restore?.Invoke(data);
+                return data;
             }
         }
 

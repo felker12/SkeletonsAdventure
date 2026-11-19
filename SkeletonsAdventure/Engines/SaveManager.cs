@@ -47,11 +47,25 @@ namespace SkeletonsAdventure.Engines
             }
         }
 
-        public static bool SaveGame(Game1 game, ExitScreenMenu exitScreen)
+        internal static void LoadSavedGame(Game1 game, GameManager assets, string directory)
+        {
+            SaveStorage.Read(directory, data => RestoreGame(game, assets, data), out var primaryFailure);
+            game.PreserveSaveBackup = primaryFailure is not null;
+            if (primaryFailure is not null)
+            {
+                Debug.WriteLine($"Recovered '{Path.Combine(directory, SaveStorage.FileName)}' from backup. Primary failure: {primaryFailure}");
+                game.GameScreen.MessageBox.AddMessage("Loaded the backup save.");
+                game.GameScreen.MessageBox.Visible = true;
+            }
+        }
+
+        public static bool SaveGame(Game1 game, ExitScreenMenu exitScreen, string directory = null)
         {
             try
             {
-                SaveStorage.Write(GameManager.PathsLibrary.SavePath, CaptureGame(game, exitScreen));
+                SaveStorage.Write(directory ?? GameManager.PathsLibrary.SavePath,
+                    CaptureGame(game, exitScreen), game.PreserveSaveBackup);
+                game.PreserveSaveBackup = false;
                 return true;
             }
             catch (Exception ex)
