@@ -6,22 +6,23 @@ namespace SkeletonsAdventure.Engines
 {
     internal static class CollisionDetection
     {
+        internal static bool IsTileBlocked(TiledMapTileLayer[] layers, int x, int y)
+        {
+            if (layers is null)
+                return false;
+            foreach (var layer in layers)
+            {
+                if (layer is null || (layer.Name == "ConditionalLayer" && !layer.IsVisible))
+                    continue;
+                if (layer.TryGetTile((ushort)x, (ushort)y, out TiledMapTile? tile) && tile.HasValue && !tile.Value.IsBlank)
+                    return true;
+            }
+            return false;
+        }
         public static void CheckEntityBoundaryCollisions(List<Entity> entities, TiledMapTileLayer[] layers,
             int tileWidth, int tileHeight, int mapWidth, int mapHeight, GameTime gameTime)
         {
-            bool Blocked(int x, int y)
-            {
-                if (layers is null)
-                    return false;
-                foreach (var layer in layers)
-                {
-                    if (layer is null || (layer.Name == "ConditionalLayer" && !layer.IsVisible))
-                        continue;
-                    if (layer.TryGetTile((ushort)x, (ushort)y, out TiledMapTile? tile) && tile.HasValue && !tile.Value.IsBlank)
-                        return true;
-                }
-                return false;
-            }
+            bool Blocked(int x, int y) => IsTileBlocked(layers, x, y);
 
             foreach (var entity in entities)
             {

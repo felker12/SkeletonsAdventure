@@ -19,14 +19,7 @@ namespace SkeletonsAdventure.Entities
 
         public override SkeletalBruiser Clone()
         {
-            SkeletalBruiser skeletalBruiser = new(ToData(), Assets)
-            {
-                Position = Position,
-                GuaranteedDrops = GuaranteedDrops,
-                SpriteColor = this.SpriteColor,
-                DefaultColor = this.DefaultColor,
-            };
-            return skeletalBruiser;
+            return CopyEnemyTo(new SkeletalBruiser(ToData(), Assets));
         }
     }
 }

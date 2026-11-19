@@ -23,14 +23,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Goblin Clone()
         {
-            Goblin goblin = new(ToData(), Assets)
-            {
-                Position = Position,
-                GuaranteedDrops = GuaranteedDrops,
-                SpriteColor = SpriteColor,
-                DefaultColor = DefaultColor,
-            };
-            return goblin;
+            return CopyEnemyTo(new Goblin(ToData(), Assets));
         }
     }
 }

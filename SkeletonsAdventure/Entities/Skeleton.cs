@@ -11,13 +11,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Skeleton Clone()
         {
-            return new(ToData(), Assets)
-            {
-                Position = Position,
-                GuaranteedDrops = GuaranteedDrops,
-                SpriteColor = SpriteColor,
-                DefaultColor = DefaultColor,
-           };
+            return CopyEnemyTo(new Skeleton(ToData(), Assets));
         }
     }
 }

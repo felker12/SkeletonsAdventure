@@ -1,4 +1,3 @@
-﻿using Assimp;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities.PlayerClasses;
 
@@ -6,138 +5,83 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
 {
     internal static class EnemyAI
     {
-        // Checks if any enemy in the list detects the player and handles their behavior accordingly
-        public static void CheckIfEnemyDetectPlayer(GameTime gameTime, List<Entity> entities, Player player)
+        public static void CheckIfEnemyDetectPlayer(GameTime time, List<Entity> entities, Player player, EnemyNavigation navigation = null)
         {
-            if (player is null || player.IsDead || player.Health <= 0)
+            foreach (var entity in entities)
             {
-                foreach (var entity in entities)
-                    if (entity is Enemy)
-                        entity.Motion = Vector2.Zero;
-                return;
-            }
-            foreach (Entity entity in entities)
-            {
-                if (entity is not Enemy enemy || enemy.IsDead)
+                if (entity is not Enemy enemy)
                     continue;
-
-                HandleEnemyDetection(gameTime, enemy, player);
-            }
-        }
-
-        // Checks if the enemy detects the player and moves towards them if so
-        private static bool CheckForPlayer(Enemy enemy, Player player)
-        {
-            bool playerInRange = false;
-
-            if (enemy.DetectionArea.Intersects(player.Rectangle))
-                playerInRange = true;
-
-            enemy.Motion = Vector2.Zero; //Stops any motion caused by another method
-
-            //if the enemy detects the player then move towerds the player
-            if (playerInRange && !enemy.Rectangle.Intersects(player.Rectangle))
-                PathToPoint(enemy, player.Position);
-            else if (playerInRange)
-                FaceTarget(enemy, player);
-
-            return playerInRange;
-        }
-
-        // Handles the enemy's behavior based on player detection and recent attacks
-        private static void HandleEnemyDetection(GameTime gameTime, Enemy enemy, Player player)
-        {
-            //if the player is close then go to the player
-            if (CheckForPlayer(enemy, player))
-                enemy.AutoAttack(player, gameTime);
-
-            //if the enemy has attacked by an out of sight enemy then move to the point the enemy was at  
-            else if (enemy.LastTimeAttacked.TotalMilliseconds != 0
-                && gameTime.TotalGameTime.TotalMilliseconds - enemy.LastTimeAttacked.TotalMilliseconds < 6000
-                && enemy.CheckedLastAtackArea == false)
-            {
-                InvestigateLastAttackLocation(gameTime, enemy, player);
-            }
-            else //if no player in sight do something
-                enemy.IdleBehavior(gameTime);
-        }
-
-        // Investigates the last known attack location of the enemy
-        private static void InvestigateLastAttackLocation(GameTime gameTime, Enemy enemy, Player player)
-        {
-            //if the enemy detects player on way then mark area checked so the enemy doesn't keep moving towards that point
-            if (CheckForPlayer(enemy, player))
-                enemy.CheckedLastAtackArea = true;
-
-            //move to the point the enemy was attacked from
-            if (enemy.Rectangle.Intersects(new((int)enemy.PositionLastAttackedFrom.X, (int)enemy.PositionLastAttackedFrom.Y, 1, 1)))
-            {
-                enemy.CheckedLastAtackArea = true;
-                if (CheckForPlayer(enemy, player))
-                    enemy.AutoAttack(player, gameTime);
+                if (enemy.IsDead || enemy.Health <= 0 || player is null || player.IsDead || player.Health <= 0)
+                {
+                    enemy.Motion = Vector2.Zero;
+                    continue;
+                }
+                bool seesPlayer = enemy.DetectionArea.Intersects(player.Rectangle) &&
+                    (navigation?.HasLineOfSight(enemy.Center, player.Center) ?? true);
+                if (seesPlayer)
+                {
+                    enemy.LastKnownPlayerPosition = player.Position;
+                    enemy.LastSawPlayerAt = time.TotalGameTime;
+                    enemy.Behavior = EnemyBehavior.Pursuing;
+                    FaceTarget(enemy, player.Center);
+                    enemy.BasicAttack.Offset();
+                    var attackPosition = enemy.Position + enemy.BasicAttack.AttackOffset;
+                    var reach = new Rectangle((int)attackPosition.X, (int)attackPosition.Y,
+                        enemy.BasicAttack.Width, enemy.BasicAttack.Height);
+                    bool inReach = enemy.Rectangle.Intersects(player.Rectangle) || reach.Intersects(player.Rectangle);
+                    enemy.Motion = inReach || !enemy.CanMove ? Vector2.Zero : MoveTo(player.Position);
+                    if (inReach)
+                        enemy.AutoAttack(player, time);
+                    continue;
+                }
+                bool recentHit = enemy.LastTimeAttacked != TimeSpan.Zero &&
+                    time.TotalGameTime - enemy.LastTimeAttacked <= TimeSpan.FromSeconds(6);
+                Vector2? investigation = recentHit && !enemy.CheckedLastAtackArea
+                    ? enemy.PositionLastAttackedFrom - new Vector2(enemy.Width, enemy.Height) / 2
+                    : enemy.LastKnownPlayerPosition.HasValue && time.TotalGameTime - enemy.LastSawPlayerAt <= TimeSpan.FromSeconds(6)
+                        ? enemy.LastKnownPlayerPosition : null;
+                if (investigation is Vector2 target)
+                {
+                    enemy.Behavior = EnemyBehavior.Investigating;
+                    if (Vector2.DistanceSquared(enemy.Position, target) <= 1)
+                    {
+                        enemy.CheckedLastAtackArea = true;
+                        enemy.LastKnownPlayerPosition = null;
+                        Patrol();
+                    }
+                    else
+                    {
+                        FaceTarget(enemy, target + new Vector2(enemy.Width, enemy.Height) / 2);
+                        enemy.Motion = enemy.CanMove ? MoveTo(target) : Vector2.Zero;
+                    }
+                }
                 else
-                    enemy.IdleBehavior(gameTime); //investigation over
+                {
+                    enemy.LastKnownPlayerPosition = null;
+                    Patrol();
+                }
+
+                Vector2 MoveTo(Vector2 target) => navigation?.DirectionTo(enemy, target, time)
+                    ?? EnemyNavigation.Direction(enemy, target, time);
+                void Patrol()
+                {
+                    enemy.Behavior = EnemyBehavior.Patrolling;
+                    if (enemy.CanMove)
+                        enemy.IdleBehavior(time);
+                    else
+                        enemy.Motion = Vector2.Zero;
+                }
             }
-            else
-                PathToPoint(enemy, enemy.PositionLastAttackedFrom);
         }
 
-        private static void PathToPoint(Entity source, Vector2 target)
+        private static void FaceTarget(Enemy source, Vector2 target)
         {
-            Vector2 movement = new(0, 0);
-            Vector2 position = source.Position;
-
-            if ((int)target.Y > (int)position.Y)
-                movement.Y = 1;
-            else if ((int)target.Y < (int)position.Y)
-                movement.Y = -1;
-            else if ((int)target.Y == (int)position.Y)
-                movement.Y = 0;
-            if ((int)target.X > (int)position.X)
-                movement.X = 1;
-            else if ((int)target.X < (int)position.X)
-                movement.X = -1;
-            else if ((int)target.X == (int)position.X)
-                movement.X = 0;
-
-            if (movement != Vector2.Zero)
-                movement.Normalize();
-
-            source.Motion = movement;
-        }
-
-        private static void FaceTarget(Entity source, Entity target)
-        {
-            //find the distance to the center of the target
-            Vector2 distance = source.Position - target.Center;
-            //convert the distance to an int so it can be used for the animation
-            distance.X = (int)distance.X;
-            distance.Y = (int)distance.Y;
-
-            if (distance.X > - source.Width / 2 && distance.Y >= 0) //TODO update if adding diagonal animations
-            {
-                source.CurrentAnimation = AnimationKey.Left;
-                if (distance.Y > source.Width * .75)
-                    source.CurrentAnimation = AnimationKey.Up;
-            }
-            else if (distance.X <= -source.Width / 2 && distance.Y >= 0)
-            {
-                source.CurrentAnimation = AnimationKey.Right;
-                if (distance.Y > source.Width * .75)
-                    source.CurrentAnimation = AnimationKey.Up;
-            }
-            else if (distance.X >= -source.Width / 4 && distance.Y < 0)
-            {
-                source.CurrentAnimation = AnimationKey.Left;
-                if (distance.Y < -source.Height - source.Height / 4)
-                    source.CurrentAnimation = AnimationKey.Down;
-            }
-            else if (distance.X <= -source.Width / 2 && distance.Y < 0)
-            {
-                source.CurrentAnimation = AnimationKey.Right;
-                if (distance.Y < -source.Height - source.Height / 4)
-                    source.CurrentAnimation = AnimationKey.Down;
-            }
+            var delta = target - source.Center;
+            if (delta == Vector2.Zero)
+                return;
+            source.CurrentAnimation = Math.Abs(delta.X) >= Math.Abs(delta.Y)
+                ? delta.X > 0 ? AnimationKey.Right : AnimationKey.Left
+                : delta.Y > 0 ? AnimationKey.Down : AnimationKey.Up;
         }
     }
 }

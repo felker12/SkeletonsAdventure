@@ -24,14 +24,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Minotaur Clone()
         {
-            Minotaur minotaur = new(ToData(), Assets)
-            {
-                Position = Position,
-                GuaranteedDrops = GuaranteedDrops,
-                SpriteColor = SpriteColor,
-                DefaultColor = DefaultColor,
-            };
-            return minotaur;
+            return CopyEnemyTo(new Minotaur(ToData(), Assets));
         }
     }
 }

@@ -45,10 +45,10 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
                 entity.AttackManager.Draw(spriteBatch);
         }
 
-        public void Update(GameTime gameTime, GameTime totalTimeInWorld)
+        public void Update(GameTime gameTime, GameTime totalTimeInWorld, EnemyNavigation navigation = null)
         {
             UpdateEntities(gameTime, totalTimeInWorld);
-            EnemyAI.CheckIfEnemyDetectPlayer(gameTime, Entities, Player);
+            EnemyAI.CheckIfEnemyDetectPlayer(gameTime, Entities, Player, navigation);
 
             DroppedLootManager.Update();
         }

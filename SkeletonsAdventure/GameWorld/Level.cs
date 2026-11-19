@@ -51,6 +51,7 @@ namespace SkeletonsAdventure.GameWorld
         private TiledMapTileLayer _mapCollisionLayer;
         private TiledMapObjectLayer _mapSpawnerLayer;
         private TiledMapTileLayer[] collisionLayers = [];
+        internal EnemyNavigation Navigation { get; private set; }
 
         public List<Rectangle> EnterExitLayerObjectRectangles { get; private set; } = []; //TODO used to temporarily see where hitboxes are for exits
 
@@ -98,6 +99,8 @@ namespace SkeletonsAdventure.GameWorld
                 collisionLayers = [_mapCollisionLayer, ConditionalLayer];
             else
                 collisionLayers = [_mapCollisionLayer];
+            Navigation = new(Width, Height, TileWidth, TileHeight,
+                (x, y) => CollisionDetection.IsTileBlocked(collisionLayers, x, y));
         }
 
         private void CreateEntityManager()
@@ -145,7 +148,7 @@ namespace SkeletonsAdventure.GameWorld
         public void Update(GameTime gameTime, GameTime totalTimeInWorld) 
         {
             GameEventManager.Update(gameTime);
-            EntityManager.Update(gameTime, totalTimeInWorld);
+            EntityManager.Update(gameTime, totalTimeInWorld, Navigation);
 
             CollisionDetection.CheckEntityBoundaryCollisions(EntityManager.Entities, collisionLayers,
                 TileWidth, TileHeight, Width, Height, gameTime);

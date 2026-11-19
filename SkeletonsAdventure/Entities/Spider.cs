@@ -23,14 +23,7 @@ namespace SkeletonsAdventure.Entities
 
         public override Spider Clone()
         {
-            Spider spider = new(ToData(), Assets)
-            {
-                Position = Position,
-                GuaranteedDrops = GuaranteedDrops,
-                SpriteColor = SpriteColor,
-                DefaultColor = DefaultColor,
-            };
-            return spider;
+            return CopyEnemyTo(new Spider(ToData(), Assets));
         }
     }
 }

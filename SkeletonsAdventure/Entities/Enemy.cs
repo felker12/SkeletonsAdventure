@@ -24,11 +24,16 @@ namespace SkeletonsAdventure.Entities
         Regular, Elite, Boss
     }
 
+    public enum EnemyBehavior { Patrolling, Pursuing, Investigating }
+
     public class Enemy : Entity, ICloneableGameClass<Enemy>
     {
         private int detectionWidth, detectionHeight;
         private double patrolElapsedSeconds;
         private const double PatrolSideSeconds = 200.0 / 60.0;
+        public EnemyBehavior Behavior { get; internal set; } = EnemyBehavior.Patrolling;
+        internal Vector2? LastKnownPlayerPosition { get; set; }
+        internal TimeSpan LastSawPlayerAt { get; set; }
 
         public bool CheckedLastAtackArea { get; set; } = false;
         public Rectangle DetectionArea => new((int)Position.X - (detectionWidth - Width) / 2,
@@ -38,7 +43,8 @@ namespace SkeletonsAdventure.Entities
         public EnemyType EnemyType { get; set; }
         public EnemyClass EnemyClass { get; set; } = EnemyClass.Regular;
         public string DropTableName { get; set; } = string.Empty;
-        public int NumberOfItemsToDrop { get; set; } = 2; //Number of items to drop from the drop table
+        public int NumberOfItemsToDrop { get; set; } = 2; // Base random rolls; elites receive one additional roll.
+        public int RandomLootRollCount => NumberOfItemsToDrop + (EnemyClass == EnemyClass.Elite ? 1 : 0);
         public ItemList GuaranteedDrops { get; set; } = new();
         public string Name { get; set; }
         public List<BasicAttack> SpecialAttacks { get; set; } = [];
@@ -66,16 +72,20 @@ namespace SkeletonsAdventure.Entities
 
         public void SetEnemyLevel(MinMaxPair levels)
         {
+            ArgumentNullException.ThrowIfNull(levels);
+            if (levels.Min < 0 || levels.Max < levels.Min)
+                throw new ArgumentOutOfRangeException(nameof(levels));
             if (EnemyClass != EnemyClass.Regular) //If the enemy is elite or a boss, set the level to the max of the range
                 Level = levels.Max;
             else //Otherwise, set the level to a random number in the range
-                Level = levels.GetRandomNumberInRange();
+                Level = (int)Random.Shared.NextInt64(levels.Min, (long)levels.Max + 1);
 
             EnemyStatAdjustmentForLevel(); // Adjust the enemy's stats based on the level
         }
 
         public void SetEnemyLevel(int level)
         {
+            ArgumentOutOfRangeException.ThrowIfNegative(level);
             Level = level;
             EnemyStatAdjustmentForLevel();
         }
@@ -99,7 +109,6 @@ namespace SkeletonsAdventure.Entities
                 Defence += Bonus;
                 Attack += Bonus;
                 XP *= 2;
-                NumberOfItemsToDrop += 1; //Elite enemies drop more items
             }
             else if(EnemyClass is EnemyClass.Boss)
             {
@@ -129,15 +138,33 @@ namespace SkeletonsAdventure.Entities
 
         public override Enemy Clone()
         {
-            return new(ToData(), Assets)
+            return CopyEnemyTo(new Enemy(ToData(), Assets));
+        }
+
+        protected T CopyEnemyTo<T>(T clone) where T : Enemy
+        {
+            clone.EnemyClass = EnemyClass;
+            clone.EnemyType = EnemyType;
+            clone.Name = Name;
+            clone.NumberOfItemsToDrop = NumberOfItemsToDrop;
+            clone.Speed = Speed;
+            clone.RespawnTime = RespawnTime;
+            clone.Width = Width;
+            clone.Height = Height;
+            clone.DefaultColor = DefaultColor;
+            clone.SpriteColor = SpriteColor;
+            clone.GuaranteedDrops = GuaranteedDrops.Clone();
+            clone.SetEnemyLevel(Level);
+            clone.UpdateEntityWithData(ToData());
+            clone.BasicAttack = BasicAttack.Clone();
+            clone.BasicAttack.Source = clone;
+            clone.SpecialAttacks = SpecialAttacks.ConvertAll(attack =>
             {
-                Position = Position,
-                GuaranteedDrops = GuaranteedDrops,
-                Level = Level,
-                SpriteColor = SpriteColor,
-                DefaultColor = DefaultColor,
-                DropTableName = DropTableName,
-            };
+                var copy = attack.Clone();
+                copy.Source = clone;
+                return copy;
+            });
+            return clone;
         }
 
         public override EnemyData ToData()
@@ -181,7 +208,7 @@ namespace SkeletonsAdventure.Entities
         public virtual List<GameItem> GetDrops()
         {
             List<GameItem> items = string.IsNullOrEmpty(DropTableName)
-                ? [] : GetDropTable().GetDropsList(NumberOfItemsToDrop);
+                ? [] : GetDropTable().GetDropsList(RandomLootRollCount);
 
             //Add guaranteed drops to the list
             foreach (GameItem item in GuaranteedDrops.Items)
@@ -200,8 +227,8 @@ namespace SkeletonsAdventure.Entities
             if (gameTime.TotalGameTime.TotalMilliseconds - LastTimeAttacked.TotalMilliseconds > 6000)
             {
                 ResetSquare();
-                CheckedLastAtackArea = false;
             }
+            CheckedLastAtackArea = false;
 
             base.GetHitByAttack(attack, gameTime);
         }
@@ -210,6 +237,9 @@ namespace SkeletonsAdventure.Entities
         {
             ResetSquare();
             CheckedLastAtackArea = false;
+            LastKnownPlayerPosition = null;
+            LastSawPlayerAt = TimeSpan.Zero;
+            Behavior = EnemyBehavior.Patrolling;
             base.Respawn();
         }
 
@@ -218,7 +248,7 @@ namespace SkeletonsAdventure.Entities
             ResetSquare();
             Motion = Vector2.Zero;
             SetEnemyLevel(levelRange);
-            base.Respawn();
+            Respawn();
         }
 
         public virtual void AutoAttack(Player player, GameTime gameTime)
