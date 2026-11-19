@@ -1,10 +1,73 @@
 using RpgLibrary.ItemClasses;
 using RpgLibrary.DataClasses;
+using RpgLibrary.EntityClasses;
 
 namespace RpgEditor.Tests;
 
 public sealed class ItemDialogTests
 {
+    [Fact]
+    public async Task EnemyTemplateShowsEffectiveDropsAndTiledPlacementsWithRegisteredChoices()
+    {
+        string root = Directory.CreateTempSubdirectory("EnemyTemplateTests-").FullName;
+        try
+        {
+            Directory.CreateDirectory(Path.Combine(root, "EntityData"));
+            Directory.CreateDirectory(Path.Combine(root, "Items"));
+            Directory.CreateDirectory(Path.Combine(root, "TiledFiles"));
+            const string skeleton = "SkeletonsAdventure.Entities.Skeleton";
+            XnaSerializer.Serialize(Path.Combine(root, "EntityData/Skeleton.xml"), new EnemyData
+            {
+                Type = skeleton, BaseHealth = 20, IsDead = true, CurrentHealth = 0,
+                GuaranteedItems = [new("Coins", 2)]
+            });
+            XnaSerializer.Serialize(Path.Combine(root, "EntityData/Spider.xml"),
+                new EnemyData { Type = "SkeletonsAdventure.Entities.Spider", BaseHealth = 5 });
+            XnaSerializer.Serialize(Path.Combine(root, "Items/Bones.xml"), new ItemData { Name = "Bones" });
+            foreach (string file in new[] { "Level0", "Level0_Test", "Level1", "TestLevel" })
+                File.WriteAllText(Path.Combine(root, $"TiledFiles/{file}.tmx"), "<map />");
+            File.WriteAllText(Path.Combine(root, "TiledFiles/Level0.tmx"), """
+                <map><objectgroup name="SpawnerLayer">
+                  <object id="15" name="Skeleton" x="32.5" y="12">
+                    <properties><property name="lvl" value="3" /></properties>
+                  </object>
+                  <object id="16" name="Skeleton" x="64" y="96" />
+                  <object id="17" name="Spider" x="5" y="7" />
+                </objectgroup></map>
+                """);
+            var project = EditorProject.Open(root);
+            var asset = Assert.IsType<EnemyData>(project.Assets.Single(entry => entry.Name == skeleton).Data);
+            await OnUiThread(() =>
+            {
+                using var dialog = new EnemyTemplateDialog(project, asset);
+                Submit(dialog, () =>
+                {
+                    var classes = Field<ComboBox>(dialog, "enemyClass");
+                    Assert.Equal(ComboBoxStyle.DropDownList, classes.DropDownStyle);
+                    Assert.Equal("Skeleton", classes.GetItemText(classes.SelectedItem));
+                    Assert.DoesNotContain(classes.Items.Cast<object>(), choice => classes.GetItemText(choice) == "Spider");
+                    var listedDrops = Field<ListView>(dialog, "guaranteedDrops");
+                    Assert.Equal("Coins", listedDrops.Items[0].Text);
+                    Assert.Equal("Game default", listedDrops.Items[1].SubItems[2].Text);
+                    var spawns = Field<ListView>(dialog, "enemySpawns");
+                    Assert.Equal(2, spawns.Items.Count);
+                    Assert.Equal("15", spawns.Items[0].SubItems[1].Text);
+                    Assert.Equal("32.5, 12", spawns.Items[0].SubItems[2].Text);
+                    Assert.Equal("3", spawns.Items[0].SubItems[3].Text);
+                    Assert.Equal("Map default", spawns.Items[1].SubItems[3].Text);
+                    Field<NumericUpDown>(dialog, "baseEnemyHealth").Value = 25;
+                    Field<Button>(dialog, "acceptEnemyTemplate").PerformClick();
+                });
+                var result = dialog.ReadTemplate();
+                Assert.False(result.IsDead);
+                Assert.Equal(25, result.BaseHealth);
+                Assert.Equal(25, result.CurrentHealth);
+                Assert.Single(result.GuaranteedItems);
+            });
+        }
+        finally { Directory.Delete(root, recursive: true); }
+    }
+
     [Fact]
     public async Task SpritePickerKeepsAnExistingRectangleAndCanChooseAStandaloneTexture()
     {

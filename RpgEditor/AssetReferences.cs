@@ -115,7 +115,15 @@ internal static class AssetReferences
     {
         if (kind == Kind.Item)
             return;
-        string enemyName = target.Name[(target.Name.LastIndexOf('.') + 1)..];
+        if (kind == Kind.Enemy)
+        {
+            var enemySpawns = TiledEnemySpawns.Read(root);
+            foreach (var spawn in enemySpawns.ForClass(target.Name))
+                uses.Add(new(spawn.File, $"SpawnerLayer / Object {spawn.ObjectId} '{spawn.Enemy}' / ({spawn.Position}), level {spawn.Level}", false));
+            foreach (var issue in enemySpawns.UnreadableMaps)
+                uses.Add(new(issue.File, $"Could not inspect map. {issue.Error}", false));
+            return;
+        }
         foreach (string level in MapCatalog.LevelNames)
         {
             string relative = MapCatalog.AssetName(level) + ".tmx";
@@ -126,16 +134,13 @@ internal static class AssetReferences
                 {
                     string? name = (string?)obj.Attribute("name");
                     string? layer = (string?)obj.Parent?.Attribute("name");
-                    bool referencesAsset = kind == Kind.Enemy
-                        ? layer == "SpawnerLayer" && name == enemyName
-                        : obj.Element("properties")?.Elements("property").Any(property =>
-                            (string?)property.Attribute("name") == "Quests" &&
-                            ((string?)property.Attribute("value") ?? property.Value)
-                                .Split(',', StringSplitOptions.TrimEntries).Contains(target.Name, StringComparer.Ordinal)) == true;
+                    bool referencesAsset = obj.Element("properties")?.Elements("property").Any(property =>
+                        (string?)property.Attribute("name") == "Quests" &&
+                        ((string?)property.Attribute("value") ?? property.Value)
+                            .Split(',', StringSplitOptions.TrimEntries).Contains(target.Name, StringComparer.Ordinal)) == true;
                     if (referencesAsset)
                     {
-                        string property = kind == Kind.Enemy ? "Spawner name" : "Quests property";
-                        uses.Add(new(relative, $"{layer} / Object {obj.Attribute("id")?.Value} '{name}' / {property}", false));
+                        uses.Add(new(relative, $"{layer} / Object {obj.Attribute("id")?.Value} '{name}' / Quests property", false));
                     }
                 }
             }

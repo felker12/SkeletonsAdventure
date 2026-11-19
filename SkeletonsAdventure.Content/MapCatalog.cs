@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace SkeletonsAdventure.Content;
 
 internal static class MapCatalog
@@ -32,4 +34,24 @@ internal static class DataAssetCatalog
         (Coins, 20, 1, 12), ("Robes", 5, 1, 1), (Bones, 20, 1, 2), ("Sword", 5, 1, 1),
         ("Shoes", 5, 1, 1), ("Hood", 5, 1, 1), ("Round Shield", 5, 1, 1)
     ];
+}
+
+internal static class EnemyClassCatalog
+{
+    public const string NamespacePrefix = "SkeletonsAdventure.Entities.";
+
+    public static IReadOnlyList<(string Type, bool DefaultBones)> Entries { get; } =
+    [
+        (NamespacePrefix + "Goblin", false),
+        (NamespacePrefix + "Minotaur", false),
+        (NamespacePrefix + "Spider", false),
+        (DataAssetCatalog.SkeletonType, true),
+        (DataAssetCatalog.EliteSkeletonType, true),
+        (NamespacePrefix + "SkeletalBruiser", true),
+        (NamespacePrefix + "SkeletonMage", true),
+        (NamespacePrefix + "SkeletonWarrior", true)
+    ];
+
+    public static bool Contains(string type) => Entries.Any(entry => entry.Type == type);
+    public static string SpawnName(string type) => type[(type.LastIndexOf('.') + 1)..];
 }

@@ -84,7 +84,7 @@ public sealed class EditorProjectTests
         Directory.CreateDirectory(Path.Combine(root, "EntityData"));
         Directory.CreateDirectory(Path.Combine(root, "Quests"));
         Directory.CreateDirectory(Path.Combine(root, "TiledFiles"));
-        XnaSerializer.Serialize(Path.Combine(root, "EntityData/Spider.xml"), new EnemyData { Type = "Game.Spider" });
+        XnaSerializer.Serialize(Path.Combine(root, "EntityData/Spider.xml"), new EnemyData { Type = "SkeletonsAdventure.Entities.Spider" });
         XnaSerializer.Serialize(Path.Combine(root, "Quests/Hunt.xml"), new QuestData { Name = "Hunt" });
         XnaSerializer.Serialize(Path.Combine(root, "Quests/Another Quest.xml"), new QuestData { Name = "Another Quest" });
         XnaSerializer.Serialize(Path.Combine(root, "Quests/Hunt Again.xml"), new QuestData { Name = "Hunt Again" });
@@ -111,7 +111,7 @@ public sealed class EditorProjectTests
         Assert.False(questUse.CanPropagate);
         Assert.Equal("TiledFiles/Level0.tmx", questUse.File);
         Assert.Contains("Object 31", questUse.Location);
-        var spider = project.Assets.Single(asset => asset.Name == "Game.Spider");
+        var spider = project.Assets.Single(asset => asset.Name == "SkeletonsAdventure.Entities.Spider");
         Assert.Contains("Object 42", Assert.Single(project.FindUsages(spider)).Location);
         Assert.Contains(project.FindUsages(project.Assets.Single(asset => asset.Name == "Sword")),
             use => !use.CanPropagate && use.Location == "Basic drop table");
@@ -121,10 +121,10 @@ public sealed class EditorProjectTests
         Assert.Equal(Map, File.ReadAllText(mapPath));
         File.WriteAllText(mapPath, Map.Replace("Hunt, Another Quest", "New Hunt, Another Quest", StringComparison.Ordinal));
 
-        project.Change(spider, new EnemyData { Type = "Game.NewSpider" }, propagateRename: true);
+        project.Change(spider, new EnemyData { Type = "SkeletonsAdventure.Entities.Goblin" }, propagateRename: true);
         var enemyError = Assert.Throws<InvalidDataException>(() => project.Save());
         Assert.Contains("Spawner object 42", enemyError.Message);
-        File.WriteAllText(mapPath, File.ReadAllText(mapPath).Replace("name=\"Spider\"", "name=\"NewSpider\"", StringComparison.Ordinal));
+        File.WriteAllText(mapPath, File.ReadAllText(mapPath).Replace("name=\"Spider\"", "name=\"Goblin\"", StringComparison.Ordinal));
         project.Save();
         Assert.False(project.IsDirty);
     }
@@ -249,14 +249,16 @@ public sealed class EditorProjectTests
         foreach (string map in new[] { "Level0", "Level0_Test", "Level1", "TestLevel" })
             File.WriteAllText(Write($"TiledFiles/{map}.tmx"), "<map />");
         File.WriteAllText(Write("TiledFiles/doors_lever_chest_animation.tsx"), "<tileset />");
-        XnaSerializer.Serialize(Write("EntityData/SpiderData.xml"), new EnemyData { Type = "Spider", BaseHealth = 5 });
+        string enemyPath = Write("EntityData/SpiderData.xml");
+        const string spiderClass = "SkeletonsAdventure.Entities.Spider";
+        XnaSerializer.Serialize(enemyPath, new EnemyData { Type = spiderClass, BaseHealth = 5 });
 
         var project = EditorProject.Open(directory.Path);
         Assert.True(project.IsGameContent);
         project.Change(null, new ShieldData { Name = "Shield", Quantity = 1, TexturePath = "Sword" });
         project.Change(null, new ConsumableData { Name = "Potion", Quantity = 1, TexturePath = "Sword" });
         project.Change(null, new QuestData { Name = "Clear the Road", RequiredQuestNameData = ["SlaySkeletons"],
-            BaseTasksData = [new SlayTaskData { MonsterToSlay = "Spider" }],
+            BaseTasksData = [new SlayTaskData { MonsterToSlay = spiderClass }],
             RewardData = new() { Items = [new() { Name = "Potion", Quantity = 1 }] } });
         project.Save();
         var opened = EditorProject.Open(root);
@@ -265,6 +267,11 @@ public sealed class EditorProjectTests
         var quest = Assert.IsType<QuestData>(opened.Assets.Single(asset => asset.Data is QuestData).Data);
         Assert.Equal("Potion", Assert.Single(quest.RewardData.Items).Name);
         Assert.IsType<SlayTaskData>(Assert.Single(quest.BaseTasksData));
+        Assert.Throws<InvalidDataException>(() => opened.Change(null, new EnemyData { Type = "SkeletonsAdventure.Entities.Spiyder" }));
+        XnaSerializer.Serialize(enemyPath, new EnemyData { Type = "SkeletonsAdventure.Entities.Spiyder" });
+        var enemyError = Assert.Throws<InvalidDataException>(() => ContentReferenceValidator.Validate(root));
+        Assert.Contains("Unknown enemy class", enemyError.Message);
+        XnaSerializer.Serialize(enemyPath, new EnemyData { Type = spiderClass, BaseHealth = 5 });
 
         var sword = opened.Assets.Single(asset => asset.Data is WeaponData);
         var broken = ((WeaponData)sword.Data).Clone();

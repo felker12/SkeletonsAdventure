@@ -2,6 +2,7 @@ using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
 using RpgLibrary.ItemClasses;
 using RpgLibrary.QuestClasses;
+using SkeletonsAdventure.Content;
 
 namespace RpgEditor;
 
@@ -95,6 +96,8 @@ internal sealed class EditorProject
 
     public void Change(EditorAsset? original, object replacement, bool propagateRename = false)
     {
+        if (IsGameContent && replacement is EnemyData enemy && !EnemyClassCatalog.Contains(enemy.Type))
+            throw new InvalidDataException($"Unknown enemy class '{enemy.Type}'. Choose a registered enemy class.");
         var entry = new EditorAsset(original?.RelativePath ?? string.Empty, replacement);
         CheckName(replacement, entry.Name, original);
 

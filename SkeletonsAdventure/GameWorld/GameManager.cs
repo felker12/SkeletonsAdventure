@@ -123,7 +123,7 @@ namespace SkeletonsAdventure.GameWorld
         }
 
         //Get an item from the items dictionary by its name
-        public static Enemy GetEnemyByName(string name) => GetClonedValue(Enemies, "SkeletonsAdventure.Entities." + name);
+        public static Enemy GetEnemyByName(string name) => GetClonedValue(Enemies, EnemyClassCatalog.NamespacePrefix + name);
         public static GameItem GetItemByName(string name) => GetClonedValue(Items, name);
         public static DropTable GetDropTableByName(string name) => GetClonedValue(DropTables, name);
         public static Quest GetQuestByName(string name) => GetClonedValue(Quests, name);

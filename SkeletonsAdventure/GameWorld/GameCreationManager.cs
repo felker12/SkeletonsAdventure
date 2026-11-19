@@ -21,13 +21,8 @@ namespace SkeletonsAdventure.GameWorld
         internal static Dictionary<string, Enemy> CreateEnemies(ContentManager content, EntityAssets defaultAssets, TexturesLibrary textures,
             GameItem skeletonDrop, GameItemLoadingManager itemLoader, IEnumerable<string> assetPaths)
         {
-            //Use reflection to build a lookup table of all concrete Enemy subclasses in the current assembly.
-            //This maps full type names (e.g., "SkeletonsAdventure.Entities.Skeleton") to Type objects,
-            //allowing us to dynamically instantiate the correct enemy class based on the type name 
-            //stored in each EnemyData XML file. Only non-abstract Enemy subclasses are included.
-            var enemyTypes = typeof(Enemy).Assembly.GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(Enemy)) && t.IsAbstract is false)
-                .ToDictionary(t => t.FullName, t => t);
+            var enemyTypes = EnemyClassCatalog.Entries.ToDictionary(entry => entry.Type, entry =>
+                (Type: typeof(Enemy).Assembly.GetType(entry.Type, throwOnError: true), entry.DefaultBones));
 
             Dictionary<string, Enemy> enemies = [];
 
@@ -37,8 +32,9 @@ namespace SkeletonsAdventure.GameWorld
                 EnemyData data = content.Load<EnemyData>(contentPath);
 
                 //Attempt to find the enemy type in our lookup table using the type name from the data file
-                if (enemyTypes.TryGetValue(data.Type, out Type enemyType))
+                if (enemyTypes.TryGetValue(data.Type, out var registration))
                 {
+                    Type enemyType = registration.Type;
                     //Dynamically create the specific enemy subclass and add to dictionary
                     Texture2D texture = enemyType.Name switch
                     {
@@ -52,7 +48,7 @@ namespace SkeletonsAdventure.GameWorld
                     };
                     Enemy en = (Enemy)Activator.CreateInstance(enemyType, data, defaultAssets with { Texture = texture });
                     en.GuaranteedDrops.Add(itemLoader.LoadGameItemsFromItemBaseData(data.GuaranteedItems));
-                    if (en is Skeleton && skeletonDrop is not null && !data.GuaranteedItems.Any(item => item.Name == skeletonDrop.Name))
+                    if (registration.DefaultBones && skeletonDrop is not null && !data.GuaranteedItems.Any(item => item.Name == skeletonDrop.Name))
                         en.GuaranteedDrops.Add(skeletonDrop);
 
                     enemies.Add(en.GetType().FullName, en);

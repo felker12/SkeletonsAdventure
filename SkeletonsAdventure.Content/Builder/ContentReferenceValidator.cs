@@ -41,7 +41,7 @@ internal static class ContentReferenceValidator
         var items = ValidateItems(root);
         var enemies = ValidateEnemies(root, items);
         var quests = ValidateQuests(root, items, enemies);
-        var spawnerNames = enemies.Select(type => type[(type.LastIndexOf('.') + 1)..]).ToHashSet(StringComparer.Ordinal);
+        var spawnerNames = enemies.Select(EnemyClassCatalog.SpawnName).ToHashSet(StringComparer.Ordinal);
 
         HashSet<string> checkedTilesets = new(StringComparer.Ordinal);
         foreach (string name in MapCatalog.LevelNames)
@@ -132,6 +132,8 @@ internal static class ContentReferenceValidator
         foreach (string path in Files(root, "EntityData"))
         {
             var enemy = ReadAsset<EnemyData>(path);
+            if (!EnemyClassCatalog.Contains(enemy.Type))
+                throw Error(path, $"Unknown enemy class '{enemy.Type}'. Choose a registered enemy class.");
             if (string.IsNullOrWhiteSpace(enemy.Type) || !enemies.Add(enemy.Type))
                 throw Error(path, $"Missing or duplicate enemy type '{enemy.Type}'.");
             if (enemy.DropTableName.Length > 0 && enemy.DropTableName != DataAssetCatalog.BasicDropTable)

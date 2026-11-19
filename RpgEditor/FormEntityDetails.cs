@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using RpgLibrary.EntityClasses;
 using RpgLibrary.ItemClasses;
-using SkeletonsAdventure.Content;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace RpgEditor;
@@ -14,7 +13,6 @@ public partial class FormEntityDetails : Form
     private readonly ErrorProvider errors;
     private readonly TextBox dropTable = new();
     private List<ItemBaseData> guaranteed = [];
-    private bool creatingEnemy;
 
     public FormEntityDetails()
     {
@@ -31,20 +29,13 @@ public partial class FormEntityDetails : Form
 
     internal void ConfigureProject(EditorProject project)
     {
-        creatingEnemy = Entity is null && project.IsGameContent;
-        if (Entity is not EnemyData && !creatingEnemy)
+        if (Entity is not EnemyData)
             return;
 
         var label = new Label { Text = "Drop table", Location = lblId.Location, AutoSize = true };
         dropTable.Location = tbId.Location;
         dropTable.Width = tbId.Width;
         dropTable.AccessibleName = "Drop table";
-        if (project.IsGameContent)
-        {
-            dropTable.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-            dropTable.AutoCompleteSource = AutoCompleteSource.CustomSource;
-            dropTable.AutoCompleteCustomSource.Add(DataAssetCatalog.BasicDropTable);
-        }
         var loot = new Button { Text = "Guaranteed Drops…", AutoSize = true, Location = new Point(70, btnOK.Bottom + 4) };
         loot.Click += (_, _) =>
         {
@@ -71,7 +62,7 @@ public partial class FormEntityDetails : Form
             return;
 
         EntityData entity = Entity is EnemyData existingEnemy ? new EnemyData(existingEnemy) :
-            Entity?.Clone() ?? (creatingEnemy ? new EnemyData() : new EntityData());
+            Entity?.Clone() ?? new EntityData();
         entity.Type = tbType.Text.Trim();
         entity.BaseHealth = baseHealth;
         entity.BaseDefence = baseDefence;
