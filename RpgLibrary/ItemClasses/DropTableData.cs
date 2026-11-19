@@ -3,6 +3,8 @@ namespace RpgLibrary.ItemClasses
 {
     public class DropTableData
     {
+        [Microsoft.Xna.Framework.Content.ContentSerializer(Optional = true)]
+        public int? NoDropWeight { get; set; }
         public List<DropTableItemData> DropTableList { get; set; } = new List<DropTableItemData>();
 
         public DropTableData() { }

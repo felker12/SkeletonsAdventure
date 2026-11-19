@@ -5,10 +5,11 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
     public class DropTableItem
     {
-        public string ItemName { get; set; } = string.Empty;
-        public int DropChance { get; set; } = 1; // Represents the chance of the item dropping, e.g., 10 for 10%
-        public int MinQuantity { get; set; } = 1;
-        public int MaxQuantity { get; set; } = 1;
+        public string ItemName { get; init; } = string.Empty;
+        // Keep the serialized name for compatibility; runtime selection treats it as a weight.
+        public int DropChance { get; init; } = 1;
+        public int MinQuantity { get; init; } = 1;
+        public int MaxQuantity { get; init; } = 1;
 
         public DropTableItem() { }
 
@@ -46,7 +47,7 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
 
         public override string ToString()
         {
-            return $"{ItemName} (Chance: {DropChance}%, Quantity: {MinQuantity}-{MaxQuantity})";
+            return $"{ItemName} (Weight: {DropChance}, Quantity: {MinQuantity}-{MaxQuantity})";
         }
     }
 }

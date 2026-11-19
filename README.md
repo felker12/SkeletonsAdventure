@@ -107,6 +107,14 @@ The pause menu saves a versioned snapshot to `SaveFiles/SaveGame.xml` in a devel
 
 Saving writes and validates a temporary file before atomically replacing the current snapshot. `SaveGame.xml.bak` retains the previous snapshot and is loaded automatically if the main file is damaged. The original six-file XML saves are still readable and are left untouched; the next save writes the new format. Loading failures leave the current game session intact. Lever animations reload in their completed state.
 
+**Loot behavior**
+
+Enemies make a fixed number of independent weighted rolls, each of which may return nothing. Guaranteed enemy drops are added separately. The basic table retains its original weights and has an explicit no-drop weight of 35 out of 100.
+
+Chests choose their configured item count and select distinct item types without replacement, ignoring the no-drop weight. Counts are capped at the number of positive-weight entries. Quantities include both configured endpoints. Generated and emptied chest contents persist across saves and never reroll on opening or pickup.
+
+New table data records `NoDropWeight` explicitly. Older tables without that field retain percentage semantics, with the unused portion of 100 becoming the no-drop weight. Invalid names, duplicate entries, negative weights, and invalid quantities are rejected when a table is created.
+
 🎮 **Using the Editor**
 The project includes a custom-built editor to support rapid development and data creation.
 

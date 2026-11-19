@@ -161,21 +161,19 @@ namespace SkeletonsAdventure.Entities
         {
             DropTable table = Level switch
             {
-                >= 100 => GameManager.GetDropTableByName(DropTableName).Clone(),
-                >= 90 => GameManager.GetDropTableByName(DropTableName).Clone(),
-                >= 80 => GameManager.GetDropTableByName(DropTableName).Clone(),
-                >= 70 => GameManager.GetDropTableByName(DropTableName).Clone(),
-                >= 60 => GameManager.GetDropTableByName(DropTableName).Clone(),
-                >= 50 => GameManager.GetDropTableByName(DropTableName).Clone(),
-                >= 40 => GameManager.GetDropTableByName(DropTableName).Clone(),
-                >= 30 => GameManager.GetDropTableByName(DropTableName).Clone(),
-                >= 20 => GameManager.GetDropTableByName(DropTableName).Clone(),
-                >= 10 => GameManager.GetDropTableByName(DropTableName).Clone(),
-                _ => GameManager.GetDropTableByName(DropTableName).Clone()
+                >= 100 => GameManager.GetDropTableByName(DropTableName),
+                >= 90 => GameManager.GetDropTableByName(DropTableName),
+                >= 80 => GameManager.GetDropTableByName(DropTableName),
+                >= 70 => GameManager.GetDropTableByName(DropTableName),
+                >= 60 => GameManager.GetDropTableByName(DropTableName),
+                >= 50 => GameManager.GetDropTableByName(DropTableName),
+                >= 40 => GameManager.GetDropTableByName(DropTableName),
+                >= 30 => GameManager.GetDropTableByName(DropTableName),
+                >= 20 => GameManager.GetDropTableByName(DropTableName),
+                >= 10 => GameManager.GetDropTableByName(DropTableName),
+                _ => GameManager.GetDropTableByName(DropTableName)
             };
-
-            //TODO add logic to return different drop tables based on the entity's level
-            return table;
+            return table ?? throw new System.IO.InvalidDataException($"Unknown enemy loot table: {DropTableName}");
         }
 
         //Returns a list of items that the enemy drops when killed

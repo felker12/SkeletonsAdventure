@@ -10,7 +10,7 @@ namespace RpgLibrary.ItemClasses
 
         public EquipableItemData(EquipableItemData data) : base(data) 
         { 
-            LevelRequirementData = data.LevelRequirementData.Clone();
+            LevelRequirementData = data.LevelRequirementData?.Clone() ?? new();
         }
 
         public EquipableItemData(ItemData data) : base(data) 

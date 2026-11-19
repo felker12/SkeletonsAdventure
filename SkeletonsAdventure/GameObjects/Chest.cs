@@ -7,6 +7,7 @@ using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.HelperClasses;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
+using System.IO;
 
 namespace SkeletonsAdventure.GameObjects
 {
@@ -23,7 +24,7 @@ namespace SkeletonsAdventure.GameObjects
         private readonly Texture2D _buttonTexture;
         private readonly SpriteFont _buttonFont;
         public List<GameItem> Items { get; set; } = null;
-        public int LootCount => Items.Count;
+        public int LootCount => Items?.Count ?? 0;
         public bool ChestEmptied { get; set; } = false;
         public MinMaxPair LootAmountRange { get; set; } = new(2, 4);
 
@@ -45,7 +46,8 @@ namespace SkeletonsAdventure.GameObjects
             DropTable = GameManager.GetDropTableByName(chest.DropTableName);
             Info.Position = chest.Position;
             LootAmountRange = new MinMaxPair(chest.LootAmountRange.Min, chest.LootAmountRange.Max);
-            Items = chest.Items is not null ? [.. chest.Items] : null;
+            Items = chest.Items is not null ? chest.Items.ConvertAll(item => item.Clone()) : null;
+            ChestEmptied = chest.ChestEmptied;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -64,7 +66,7 @@ namespace SkeletonsAdventure.GameObjects
             if(DropTable is null && DropTableName != string.Empty)
                 DropTable = GameManager.GetDropTableByName(DropTableName); 
 
-            Items ??= DropTable.GetRandomAmountOfUniqueDrops(LootAmountRange);
+            EnsureContents();
 
             if (Info.Visible)
                 Info.Text = Items.Count > 0 ? "Press R to Open" : "Chest Empty";
@@ -128,6 +130,31 @@ namespace SkeletonsAdventure.GameObjects
                 ChestMenu.Visible = false;
         }
 
+        internal void EnsureContents()
+        {
+            if (Items is not null)
+                return;
+            if (ChestEmptied)
+            {
+                Items = [];
+                return;
+            }
+            if (LootAmountRange.Min < 1 || LootAmountRange.Max < LootAmountRange.Min)
+                throw new InvalidDataException("Chest loot counts must be a positive, ordered range.");
+            DropTable ??= GameManager.GetDropTableByName(DropTableName)
+                ?? throw new InvalidDataException($"Unknown chest loot table: {DropTableName}");
+            Items = DropTable.GetRandomAmountOfUniqueDrops(LootAmountRange);
+        }
+
+        internal bool TryTakeItem(GameItem item)
+        {
+            if (Items is null || !Items.Contains(item) || !World.CurrentLevel.Player.Backpack.Add(item))
+                return false;
+            Items.Remove(item);
+            ChestEmptied = Items.Count == 0;
+            return true;
+        }
+
         private GameButton CreateGameButton(GameItem item)
         {
             GameButton btn = new(_buttonTexture, _buttonFont)
@@ -137,16 +164,9 @@ namespace SkeletonsAdventure.GameObjects
 
             btn.Click += (sender, e) =>
             {
-                if (World.CurrentLevel.Player.Backpack.Add(item))
+                if (TryTakeItem(item))
                 {
                     btn.Visible = false;
-                    DropTable.DropTableDictionary.Remove(item.Name);
-                    Items.Remove(item);
-
-                    if (Items.Count == 0)
-                    {
-                        ChestEmptied = true;
-                    }
                 }
             };
 

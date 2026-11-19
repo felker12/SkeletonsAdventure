@@ -119,7 +119,7 @@ namespace SkeletonsAdventure.GameWorld
                 new("Round Shield", 5),
             ];
 
-            dropTables.Add("BasicDropTable", new(basicTable)); //Add the basic drop table to the dictionary
+            dropTables.Add("BasicDropTable", new(basicTable, noDropWeight: 35));
 
             //TODO : Create more drop tables as needed
             return dropTables;

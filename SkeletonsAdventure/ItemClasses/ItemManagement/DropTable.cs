@@ -1,275 +1,143 @@
-﻿using RpgLibrary.DataClasses;
+using RpgLibrary.DataClasses;
 using RpgLibrary.ItemClasses;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.HelperClasses;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 
 namespace SkeletonsAdventure.ItemClasses.ItemManagement
 {
     public class DropTable : ICloneableGameClass<DropTable>
     {
-        public Dictionary<string, DropTableItem> DropTableDictionary { get; private set; } = [];
-        private static Random Random { get; set; } = new Random(); // Random number generator
-        private int RandomIndex { get; set; } // Index for random item selection
+        public IReadOnlyDictionary<string, DropTableItem> DropTableDictionary { get; }
+        public int Count => DropTableDictionary.Count;
+        public int NoDropWeight { get; }
+        private readonly long _itemWeight;
+        private readonly Random _random;
 
-        private readonly int _maxDropChance = 100; // Represents the total drop chance, default is 100%
-        public string[] ItemNames; // Array to hold item names based on drop chance
-        public int Count => DropTableDictionary.Count; // Number of items in the drop table
+        public DropTable() : this([], null, Random.Shared) { }
+        public DropTable(DropTable table) : this(table.DropTableDictionary.Values, table.NoDropWeight, table._random) { }
+        public DropTable(List<DropTableItem> items) : this(items, null, Random.Shared) { }
+        public DropTable(Dictionary<string, DropTableItem> items) : this(items.Values, null, Random.Shared) { }
+        public DropTable(DropTableData data) : this(data.DropTableList.Select(item => new DropTableItem(item)), data.NoDropWeight, Random.Shared) { }
+        public DropTable(IEnumerable<DropTableItem> items, int noDropWeight) : this(items, noDropWeight, Random.Shared) { }
 
-        public DropTable()
+        // Missing no-drop weights retain the original percentage-based data format.
+        internal DropTable(IEnumerable<DropTableItem> items, int? noDropWeight, Random random)
         {
-            ItemNames = new string[_maxDropChance]; // Initialize the ItemNames array with the size of max drop chance
-        }
-
-        public DropTable(DropTable dropTable)
-        {
-            DropTableDictionary = [];
-
-            foreach (var item in dropTable.DropTableDictionary.Values)
-                AddItem(item);
-
-            ItemNames = new string[_maxDropChance]; // Initialize the ItemNames array with the size of max drop chance
-            PopulateItemNames();
-
-        }
-
-        public DropTable(List<DropTableItem> items)
-        {
-            DropTableDictionary = [];
-
-            foreach (var item in items)
-                AddItem(item);
-
-            ItemNames = new string[_maxDropChance]; // Initialize the ItemNames array with the size of max drop chance
-            PopulateItemNames();
-        }
-
-        public DropTable(Dictionary<string, DropTableItem> dictionary)
-        {
-            foreach (var item in dictionary.Values)
-                AddItem(item);
-
-            ItemNames = new string[_maxDropChance]; // Initialize the ItemNames array with the size of max drop chance
-            PopulateItemNames();
-        }
-
-        public DropTable(DropTableData dropTableData)
-        {
-            DropTableDictionary = [];
-            foreach (var itemData in dropTableData.DropTableList)
+            _random = random ?? throw new ArgumentNullException(nameof(random));
+            Dictionary<string, DropTableItem> entries = [];
+            foreach (var entry in items)
             {
-                AddItem(new(itemData));
+                if (entry is null || string.IsNullOrWhiteSpace(entry.ItemName) || entry.DropChance < 0 ||
+                    entry.MinQuantity < 1 || entry.MaxQuantity < entry.MinQuantity)
+                    throw new InvalidDataException("Invalid loot entry or quantity range.");
+                var template = GameManager.GetItemByName(entry.ItemName)
+                    ?? throw new InvalidDataException($"Unknown loot item: {entry.ItemName}");
+                if (!template.Stackable && (entry.MinQuantity != 1 || entry.MaxQuantity != 1))
+                    throw new InvalidDataException($"Non-stackable loot must have quantity one: {entry.ItemName}");
+                if (!entries.TryAdd(entry.ItemName, entry.Clone()))
+                    throw new InvalidDataException($"Duplicate loot item: {entry.ItemName}");
+                _itemWeight += entry.DropChance;
             }
-
-            ItemNames = new string[_maxDropChance]; // Initialize the ItemNames array with the size of max drop chance
-            PopulateItemNames();
+            if (noDropWeight is null && _itemWeight > 100)
+                throw new InvalidDataException("Legacy loot percentages exceed 100. Specify an explicit no-drop weight for weighted tables.");
+            NoDropWeight = noDropWeight ?? 100 - (int)_itemWeight;
+            if (NoDropWeight < 0)
+                throw new InvalidDataException("The no-drop weight cannot be negative.");
+            DropTableDictionary = new ReadOnlyDictionary<string, DropTableItem>(entries);
         }
 
-        public DropTableData ToData()
+        public DropTableData ToData() => new()
         {
-            return new()
+            NoDropWeight = NoDropWeight,
+            DropTableList = DropTableDictionary.Values.Select(entry => entry.ToData()).ToList()
+        };
+        public DropTable Clone() => new(this);
+
+        // Each enemy roll makes one selection, including the explicit no-drop outcome.
+        public GameItem GetDrop()
+        {
+            long total = _itemWeight + NoDropWeight;
+            if (total == 0)
+                return null;
+            long roll = _random.NextInt64(total);
+            foreach (var entry in DropTableDictionary.Values)
             {
-                DropTableList = [.. DropTableDictionary.Values.Select(item => item.ToData())] // Convert each DropTableItem to DropTableItemData
-            };
-        }
-
-        public DropTable Clone()
-        {
-            return new(this);
-        }
-
-        public GameItem[] GetDrops(int amount)
-        {
-            GameItem[] items = new GameItem[amount];
-
-            for(int i = 0; i < amount; i++)
-                items[i] = GetDrop();
-
-            return items;
+                if (roll < entry.DropChance)
+                    return CreateItem(entry);
+                roll -= entry.DropChance;
+            }
+            return null;
         }
 
         public List<GameItem> GetDropsList(int amount)
         {
+            ArgumentOutOfRangeException.ThrowIfNegative(amount);
             List<GameItem> items = [];
-
             for (int i = 0; i < amount; i++)
             {
-                var drop = GetDrop();
-                if (drop is not null)
-                    items.Add(drop);
+                var item = GetDrop();
+                if (item is not null)
+                    items.Add(item);
             }
-
             return items;
         }
+        public GameItem[] GetDrops(int amount) => GetDropsList(amount).ToArray();
 
+        // Chests ignore the no-drop outcome and sample without replacement.
         public List<GameItem> GetUniqueDropsList(int amount)
         {
+            ArgumentOutOfRangeException.ThrowIfNegative(amount);
+            var available = DropTableDictionary.Values.Where(entry => entry.DropChance > 0).ToList();
+            if (amount > 0 && available.Count == 0)
+                throw new InvalidOperationException("A guaranteed loot table needs at least one positive-weight item.");
+            int count = Math.Min(amount, available.Count);
             List<GameItem> items = [];
-            HashSet<string> selectedItemNames = [];
-            int attempts = 0; // To prevent infinite loops
-            int maxAttempts = amount * 10; // Arbitrary limit to attempts
-
-            while (items.Count < amount && attempts < maxAttempts)
+            long remainingWeight = _itemWeight;
+            for (int i = 0; i < count; i++)
             {
-                GameItem drop = GetDrop();
-                if (drop is not null && !selectedItemNames.Contains(drop.Name))
+                long roll = _random.NextInt64(remainingWeight);
+                for (int index = 0; index < available.Count; index++)
                 {
-                    items.Add(drop);
-                    selectedItemNames.Add(drop.Name);
+                    var entry = available[index];
+                    if (roll < entry.DropChance)
+                    {
+                        items.Add(CreateItem(entry));
+                        remainingWeight -= entry.DropChance;
+                        available.RemoveAt(index);
+                        break;
+                    }
+                    roll -= entry.DropChance;
                 }
-                attempts++;
             }
-
             return items;
         }
 
-        public List<GameItem> GetRandomAmountOfDrops(int min, int max)
+        private GameItem CreateItem(DropTableItem entry)
         {
-            return GetDropsList(Random.Next(min, max + 1)); // Get a random number of drops between min and max (inclusive)
-        }
-
-        public List<GameItem> GetRandomAmountOfUniqueDrops(int min, int max)
-        {
-            return GetUniqueDropsList(Random.Next(min, max + 1)); // Get a random number of unique drops between min and max (inclusive)
-        }
-
-        public List<GameItem> GetRandomAmountOfDrops(MinMaxPair minMaxPair)
-        {
-            return GetDropsList(Random.Next(minMaxPair.Min, minMaxPair.Max + 1)); // Get a random number of drops between min and max (inclusive)
-        }
-
-        public List<GameItem> GetRandomAmountOfUniqueDrops(MinMaxPair minMaxPair)
-        {
-            return GetUniqueDropsList(Random.Next(minMaxPair.Min, minMaxPair.Max + 1)); // Get a random number of unique drops between min and max (inclusive)
-        }
-
-        public GameItem GetDrop()
-        {
-            GameItem gameItem = null;
-
-            if (ValidateAndPopulateItemNames() is false)
-                return null; // If item names are not populated, return null
-
-            for (int i = 0; i < _maxDropChance; i++)
-            {
-                gameItem = GetRandomItem(); // Get a random item from the drop table
-
-                if (gameItem is not null)
-                    break; // If a valid item is found, exit the loop
-            }
-
-            return gameItem; // Return the game item if found, otherwise return null
-        }
-
-        private bool ValidateAndPopulateItemNames()
-        {
-            if (IsItemNamesPopulated() is false) // Check if ItemNames array is populated with item names
-            {
-                PopulateItemNames(); // Populate the ItemNames array if not already done
-
-                if (IsItemNamesPopulated() is false) // Check if ItemNames array is populated with item names after populating
-                {
-                    return false; // If still not populated, return false
-                }
-            }
-
-            return true;
-        }
-
-        private GameItem GetRandomItem()
-        {
-            if (DropTableDictionary.Count == 0)
-                return null; // Return null if there are no items in the drop table
-
-            RandomIndex = Random.Next(0, _maxDropChance); // Get a random index based on the length of ItemNames array
-
-            string itemName = ItemNames[RandomIndex]; // Get the item name from the ItemNames array
-
-            if (itemName == string.Empty)
-                return null; // If the item name is empty, return null
-
-            GameItem item = GameManager.GetItemByName(itemName); // Retrieve the item by name
-
-            if(item.Stackable)
-            {
-                DropTableItem dropTableItem = DropTableDictionary[itemName];
-
-                int numb = Random.Next(dropTableItem.MinQuantity, dropTableItem.MaxQuantity + 1);
-                item.SetQuantity(numb);
-            }
-
+            var item = GameManager.GetItemByName(entry.ItemName)
+                ?? throw new InvalidDataException($"Unknown loot item: {entry.ItemName}");
+            if (item.Stackable)
+                item.SetQuantity(RandomInclusive(entry.MinQuantity, entry.MaxQuantity));
+            if (item is EquipableItem equipment)
+                equipment.SetEquipped(false);
             return item;
         }
 
-        private bool IsItemNamesPopulated()
+        private int RandomInclusive(int min, int max)
         {
-            // Check if ItemNames array is populated with at least one non-empty item name
-            return ItemNames.Any(name => !string.IsNullOrEmpty(name));
+            if (min < 0 || max < min)
+                throw new ArgumentOutOfRangeException(nameof(min));
+            if (min == max)
+                return min;
+            return (int)(min + _random.NextInt64((long)max - min + 1));
         }
-
-        //fills the ItemNames array with item names based on their drop chances
-        public void PopulateItemNames()
-        {
-            for (int i = 0; i < _maxDropChance; i++)
-            {
-                ItemNames[i] = string.Empty; // Initialize all item names to empty
-            }
-
-            int index = 0; // Index to track the position in ItemNames array
-            foreach (var item in DropTableDictionary.Values)
-            {
-                if (RemainingSpace() < item.DropChance)
-                    return; // If remaining drop chance is less than the item's drop chance, exit the method
-
-                for (int i = 0; i < item.DropChance; i++)
-                {
-                    ItemNames[index] = item.ItemName; // Assign the item name to the ItemNames array
-                    index++; // Move to the next index in the ItemNames array
-                }
-            }
-        }
-
-        public int RemainingSpace()
-        {
-            return _maxDropChance - TotalDropChance(); // Returns the remaining chance. Used to check if more items can be added.
-        }
-
-        public int TotalDropChance()
-        {
-            int totalChance = 0;
-            foreach (var item in DropTableDictionary.Values)
-            {
-                totalChance += item.DropChance;
-            }
-
-            return totalChance;
-        }
-
-        public bool AddItem(DropTableItem item)
-        {
-            if (TotalDropChance() >= 100)
-            {
-                return false; // Cannot add item if total drop chance is already 100% or more
-            }
-
-            DropTableDictionary.Add(item.ItemName, item);
-            return true; // Item added successfully
-        }
-
-        public void RemoveItem(DropTableItem item)
-        {
-            DropTableDictionary.Remove(item.ItemName);
-        }
-
-        public void Clear()
-        {
-            DropTableDictionary.Clear(); // Clears the drop table list
-            ItemNames = new string[_maxDropChance]; // Reinitialize the ItemNames array
-        }
-
-        public override string ToString()
-        {
-            return string.Join(", ", DropTableDictionary.Values.Select(item => item.ToString())); // Returns a string representation of the drop table items
-        }
+        public List<GameItem> GetRandomAmountOfDrops(int min, int max) => GetDropsList(RandomInclusive(min, max));
+        public List<GameItem> GetRandomAmountOfUniqueDrops(int min, int max) => GetUniqueDropsList(RandomInclusive(min, max));
+        public List<GameItem> GetRandomAmountOfDrops(MinMaxPair range) => GetRandomAmountOfDrops(range.Min, range.Max);
+        public List<GameItem> GetRandomAmountOfUniqueDrops(MinMaxPair range) => GetRandomAmountOfUniqueDrops(range.Min, range.Max);
+        public override string ToString() => $"{string.Join(", ", DropTableDictionary.Values)}; No drop weight: {NoDropWeight}";
     }
 }

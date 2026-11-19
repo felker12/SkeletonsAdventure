@@ -203,6 +203,7 @@ namespace SkeletonsAdventure.Engines
                     {
                         chest.DropTable = GameManager.GetDropTableByName(chest.DropTableName);
                         chest.ChestEmptied = data.ChestEmptied;
+                        chest.LootAmountRange = new(data.LootAmountRange.Min, data.LootAmountRange.Max);
                         bool generated = data.ContentsGenerated ?? (data.ChestEmptied || data.ItemDatas.Count > 0);
                         chest.Items = generated ? GameManager.GameItemLoadingManager.LoadGameItemsFromItemData(data.ItemDatas) : null;
                     }
