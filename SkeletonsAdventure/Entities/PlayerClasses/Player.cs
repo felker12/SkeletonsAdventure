@@ -554,9 +554,16 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             Motion = motion; //(motion is normalized in collision detection of EntityManager)
         }
 
+        public override void Respawn()
+        {
+            AimVisible = false;
+            AttackToAim = null;
+            base.Respawn();
+        }
+
         public override void PerformAttack(GameTime gameTime, BasicAttack entityAttack)
         {
-            if (CanAttack is false)
+            if (IsDead || Health <= 0 || !CanAttack)
                 return;
 
             switch (entityAttack)
@@ -585,6 +592,8 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
         public virtual void PerformAimedAttack(GameTime gameTime, ShootingAttack entityAttack, Vector2 targetPosition)
         {
+            if (IsDead || Health <= 0 || !CanAttack || entityAttack is null)
+                return;
             if (AttackManager.AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
             {
                 if (AimVisible == true)
@@ -612,6 +621,8 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
         public virtual void PerformPopUpAttack(GameTime gameTime, PopUpAttack entityAttack, Vector2 targetPosition)
         {
+            if (IsDead || Health <= 0 || !CanAttack || entityAttack is null)
+                return;
             if (AttackManager.AttackingIsOnCoolDown(gameTime) is false && entityAttack.IsOnCooldown(gameTime) is false)
             {
                 if (AimVisible == true)

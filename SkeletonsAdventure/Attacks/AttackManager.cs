@@ -114,6 +114,8 @@ namespace SkeletonsAdventure.Attacks
 
         public void CheckAttackHit(List<Entity> entities, GameTime gameTime)
         {
+            if (SourceEntity.IsDead || SourceEntity.Health <= 0)
+                return;
             //check to see if the attack hit an entity
             foreach (var attack in Attacks)
             {

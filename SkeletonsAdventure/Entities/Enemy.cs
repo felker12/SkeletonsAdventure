@@ -180,7 +180,8 @@ namespace SkeletonsAdventure.Entities
         //this includes the items from the drop table and the guaranteed drops
         public virtual List<GameItem> GetDrops()
         {
-            List<GameItem> items = GetDropTable().GetDropsList(NumberOfItemsToDrop);
+            List<GameItem> items = string.IsNullOrEmpty(DropTableName)
+                ? [] : GetDropTable().GetDropsList(NumberOfItemsToDrop);
 
             //Add guaranteed drops to the list
             foreach (GameItem item in GuaranteedDrops.Items)
@@ -191,7 +192,9 @@ namespace SkeletonsAdventure.Entities
 
         public override void GetHitByAttack(BasicAttack attack, GameTime gameTime)
         {
-            base.GetHitByAttack(attack, gameTime);
+            if (IsDead || Health <= 0 || IsInvincible || attack?.Source is null ||
+                attack.Source.IsDead || AttacksHitBy.Contains(attack))
+                return;
 
             //TODO: move out of this method and into the update method, but for now this is fine
             if (gameTime.TotalGameTime.TotalMilliseconds - LastTimeAttacked.TotalMilliseconds > 6000)
@@ -200,11 +203,14 @@ namespace SkeletonsAdventure.Entities
                 CheckedLastAtackArea = false;
             }
 
-            if (Health < 1 && attack.Source is Player player) //If the entity dies give xp to the player that killed it
-            {
-                player.GainXp(XP);
-                player.KillCounter.RecordKill(this.GetType().Name);
-            }
+            base.GetHitByAttack(attack, gameTime);
+        }
+
+        public override void Respawn()
+        {
+            ResetSquare();
+            CheckedLastAtackArea = false;
+            base.Respawn();
         }
 
         public virtual void Respawn(MinMaxPair levelRange)

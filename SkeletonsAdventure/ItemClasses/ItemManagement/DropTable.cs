@@ -82,7 +82,7 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
         {
             GameItem[] items = new GameItem[amount];
 
-            for(int i = 0; i < amount + 1; i++)
+            for(int i = 0; i < amount; i++)
                 items[i] = GetDrop();
 
             return items;
@@ -93,7 +93,11 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
             List<GameItem> items = [];
 
             for (int i = 0; i < amount; i++)
-                items.Add(GetDrop()); // Add each drop to the list
+            {
+                var drop = GetDrop();
+                if (drop is not null)
+                    items.Add(drop);
+            }
 
             return items;
         }

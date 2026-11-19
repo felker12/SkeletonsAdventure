@@ -9,6 +9,13 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
         // Checks if any enemy in the list detects the player and handles their behavior accordingly
         public static void CheckIfEnemyDetectPlayer(GameTime gameTime, List<Entity> entities, Player player)
         {
+            if (player is null || player.IsDead || player.Health <= 0)
+            {
+                foreach (var entity in entities)
+                    if (entity is Enemy)
+                        entity.Motion = Vector2.Zero;
+                return;
+            }
             foreach (Entity entity in entities)
             {
                 if (entity is not Enemy enemy || enemy.IsDead)
@@ -29,9 +36,9 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
             enemy.Motion = Vector2.Zero; //Stops any motion caused by another method
 
             //if the enemy detects the player then move towerds the player
-            if (!enemy.Rectangle.Intersects(player.Rectangle))
+            if (playerInRange && !enemy.Rectangle.Intersects(player.Rectangle))
                 PathToPoint(enemy, player.Position);
-            else
+            else if (playerInRange)
                 FaceTarget(enemy, player);
 
             return playerInRange;

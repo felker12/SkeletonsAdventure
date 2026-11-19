@@ -1,4 +1,4 @@
-﻿using SkeletonsAdventure.Attacks;
+using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameUI;
@@ -34,26 +34,7 @@ namespace SkeletonsAdventure.Engines
 
         public static void GetHitByAttack(Entity target, BasicAttack attack, GameTime gameTime)
         {
-            target.AttacksHitBy.Add(attack);
-            target.LastTimeAttacked = gameTime.TotalGameTime;
-            target.PositionLastAttackedFrom = attack.Source.Center;
-
-            int dmg = (int)(CalculateDamage(attack.Source, target) * attack.DamageModifier);
-            World.CurrentLevel.DamagePopUpManager.Add(dmg.ToString(), target.Center, target is Enemy ? Color.Cyan : Color.White);
-            //TODO add logic for critical hits and color the attack orange if it is a critical
-
-            target.Health -= dmg;
-
-            if (target.Health < 1)
-            {
-                target.EntityDiedByAttack(attack);
-
-                if(attack.Source is Player player)
-                {
-                    player.GainXp(target.XP);
-                    player.KillCounter.RecordKill(target.GetType().Name);
-                }
-            }
+            target.GetHitByAttack(attack, gameTime);
         }
     }
 }

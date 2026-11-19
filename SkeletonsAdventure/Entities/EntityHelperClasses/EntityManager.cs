@@ -14,7 +14,11 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
 
         public void Add(Entity entity)
         {
+            ArgumentNullException.ThrowIfNull(entity);
+            if (Entities.Contains(entity))
+                return;
             Entities.Add(entity);
+            entity.Died += OnEntityDied;
 
             if (entity is Player player)
                 Player = player;
@@ -22,7 +26,8 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
 
         public void Remove(Entity entity)
         {
-            Entities.Remove(entity);
+            if (Entities.Remove(entity))
+                entity.Died -= OnEntityDied;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -54,16 +59,18 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
             {
                 if (entity.IsDead == false) //Ensure dead enemies cannot be hit
                 {
-                    entity.AttackManager.CheckAttackHit(Entities, gameTime); //TODO: this might have to be changed to totalTimeInWorld instead later
-
                     CheckEntityHealth(totalTimeInWorld, entity);
+                    if (entity.IsDead)
+                        continue;
+
+                    entity.AttackManager.CheckAttackHit(Entities, gameTime);
 
                     entity.Update(gameTime);
 
                     if (entity == Player)
                         PickUpLoot(); //If the player walks over loot pick it up
                 }
-                else if (entity.IsDead && totalTimeInWorld.TotalGameTime - entity.LastDeathTime > new TimeSpan(0, 0, entity.RespawnTime))
+                else if (totalTimeInWorld.TotalGameTime - entity.LastDeathTime >= TimeSpan.FromSeconds(entity.RespawnTime))
                 {
                     entity.Respawn();
                 }
@@ -76,25 +83,32 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
             {
                 entity.EntityDied(totalTimeInWorld);
 
-                if (entity is Enemy enemy && enemy.DropTableName != string.Empty && enemy.GetDrops().Count > 0)
-                {
-                    //if the enemy has a drop table then drop the loot
-                    DroppedLootManager.Add(enemy.GetDrops(), entity.Position);
-                }
             }
+        }
+
+        private void OnEntityDied(Entity entity)
+        {
+            if (entity is Enemy enemy)
+                DroppedLootManager.Add(enemy.GetDrops(), entity.Position);
         }
 
         public void Clear()
         {
-            Entities?.Clear();
+            foreach (var entity in Entities)
+                entity.Died -= OnEntityDied;
+            Entities.Clear();
         }
 
         public void PickUpLoot()
         {
-            foreach (GameItem item in DroppedLootManager.Items)
+            if (Player is null || Player.IsDead || Player.Health <= 0)
+                return;
+            // Consume pickups immediately, so repeated pickup requests cannot duplicate them.
+            for (int i = DroppedLootManager.Items.Count - 1; i >= 0; i--)
             {
+                var item = DroppedLootManager.Items[i];
                 if (Player.Rectangle.Intersects(item.ItemRectangle) && Player.Backpack.Add(item) == true)
-                    DroppedLootManager.Remove(item);
+                    DroppedLootManager.Items.RemoveAt(i);
             }
         }
 

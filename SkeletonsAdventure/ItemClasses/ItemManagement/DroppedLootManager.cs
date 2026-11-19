@@ -26,8 +26,12 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
 
         public void Add(GameItem item, Vector2 pos)
         {
-            item.Position = pos + new Vector2(20,20);
-            Items.Add(item.Clone());
+            if (item is null)
+                return;
+            var drop = item.Clone();
+            drop.Position = pos + new Vector2(20,20);
+            drop.Update();
+            Items.Add(drop);
         }
 
         public void Add(List<GameItem> items, Vector2 pos)
@@ -48,6 +52,7 @@ namespace SkeletonsAdventure.ItemClasses.ItemManagement
         public void Clear()
         {
             Items.Clear();
+            ItemsToRemove.Clear();
         }
 
         public void AddToRemoveList(GameItem item)
