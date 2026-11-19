@@ -1,10 +1,10 @@
-﻿using MonoGame.Extended.Tiled;
+﻿using MonoGame.Extended.Tilemaps;
 
 namespace SkeletonsAdventure.GameObjects
 {
     internal class ResourceNode : InteractableObject
     {
-        public ResourceNode(TiledMapObject obj, SpriteFont font) : base(obj, font)
+        public ResourceNode(TilemapObject obj, SpriteFont font) : base(obj, font)
         {
 
         }

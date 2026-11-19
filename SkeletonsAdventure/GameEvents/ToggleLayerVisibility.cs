@@ -1,15 +1,15 @@
-﻿using MonoGame.Extended.Tiled;
+﻿using MonoGame.Extended.Tilemaps;
 
 namespace SkeletonsAdventure.GameEvents
 {
     internal class ToggleLayerVisibility : GameEvent
     {
-        public TiledMapTileLayer Layer { get; set; } = null;
+        public TilemapTileLayer Layer { get; set; } = null;
         public new bool IsComplete = false;
 
         public ToggleLayerVisibility() { }
 
-        public ToggleLayerVisibility(TiledMapTileLayer layer)
+        public ToggleLayerVisibility(TilemapTileLayer layer)
         {
             Layer = layer ?? throw new ArgumentNullException(nameof(layer));
             Duration = 0; // Instantaneous effect

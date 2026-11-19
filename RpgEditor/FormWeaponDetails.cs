@@ -13,6 +13,7 @@ namespace RpgEditor
 {
     public partial class FormWeaponDetails : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WeaponData? Weapon { get; set; }
 
         public FormWeaponDetails()

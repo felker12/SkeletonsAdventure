@@ -1,4 +1,4 @@
-﻿using MonoGame.Extended.Tiled;
+﻿using MonoGame.Extended.Tilemaps;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameEvents;
@@ -14,13 +14,13 @@ namespace SkeletonsAdventure.GameObjects
 
         private readonly TiledAnimation _animation;
 
-        public Lever(TiledMapObject obj, SpriteFont font, TiledAnimation animation) : base(obj, font)
+        public Lever(TilemapObject obj, SpriteFont font, TiledAnimation animation) : base(obj, font)
         {
             _animation = animation ?? throw new ArgumentNullException(nameof(animation));
             Initialize(obj);
         }
 
-        private void Initialize(TiledMapObject obj)
+        private void Initialize(TilemapObject obj)
         {
             LeverPosition = obj.Position;
         }

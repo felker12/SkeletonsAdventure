@@ -83,7 +83,7 @@ Prerequisites
 
 Windows 10 or later
 
-.NET 11 SDK and .NET 8 Desktop Runtime (for the RPG editor)
+.NET 11 SDK and .NET 11 Desktop Runtime (for the RPG editor)
 
 Visual Studio (recommended)
 

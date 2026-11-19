@@ -15,6 +15,7 @@ namespace RpgEditor
 {
     public partial class FormQuestDetails : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public QuestData? Quest { get; set; }
 
         public FormQuestDetails()

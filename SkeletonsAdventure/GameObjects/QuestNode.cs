@@ -1,4 +1,4 @@
-﻿using MonoGame.Extended.Tiled;
+﻿using MonoGame.Extended.Tilemaps;
 using RpgLibrary.GameObjectClasses;
 using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.Quests;
@@ -30,7 +30,7 @@ namespace SkeletonsAdventure.GameObjects
             }
         }
 
-        public QuestNode(TiledMapObject obj, SpriteFont font) : base(obj, font)
+        public QuestNode(TilemapObject obj, SpriteFont font) : base(obj, font)
         {
 
         }

@@ -12,6 +12,7 @@ namespace RpgEditor
 {
     public partial class FormArmorDetails : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArmorData? Armor { get; set; } = null;
         public FormArmorDetails()
         {

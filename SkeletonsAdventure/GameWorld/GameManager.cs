@@ -5,7 +5,7 @@ global using System;
 global using System.Collections.Generic;
 global using System.Diagnostics; //this is just for debugging purposes
 
-using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tilemaps;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities;
@@ -73,7 +73,7 @@ namespace SkeletonsAdventure.GameWorld
 
             AttackTemplates = attackLibrary.EntityAttacks;
 
-            var tileset = content.Load<TiledMapTileset>("TiledFiles/doors_lever_chest_animation");
+            var tileset = content.Load<TilemapTileset>("TiledFiles/doors_lever_chest_animation");
             LeverAnimation = TiledHelperClasses.CreateTiledAnimation(tileset, 30);
 
             //The order of these is important because some of the data relies on other data to be created first.

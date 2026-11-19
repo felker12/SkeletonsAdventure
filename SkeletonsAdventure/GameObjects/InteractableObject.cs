@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tilemaps;
 using RpgLibrary.GameObjectClasses;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Controls;
@@ -27,15 +27,15 @@ namespace SkeletonsAdventure.GameObjects
         public KillRequirements KillRequirements { get; set; } = null;
         public string InfoText { get; set; } = "Press R to Interact";
 
-        public InteractableObject(TiledMapObject obj, SpriteFont font)
+        public InteractableObject(TilemapObject obj, SpriteFont font)
         {
             Info = new(font);
             Position = new Vector2(obj.Position.X, obj.Position.Y);
-            Width = (int)obj.Size.Width;
-            Height = (int)obj.Size.Height;
+            Width = (int)obj.Bounds.Width;
+            Height = (int)obj.Bounds.Height;
 
-            if (obj.Properties.TryGetValue("TypeOfObject", out TiledMapPropertyValue value))
-                TypeOfObject = value.ToString();
+            if (obj.Properties.TryGetValue("TypeOfObject", out TilemapPropertyValue value))
+                TypeOfObject = value.AsString();
 
             Initialize();
         }

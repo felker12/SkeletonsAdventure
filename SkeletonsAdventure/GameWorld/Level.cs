@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Renderers;
+using MonoGame.Extended.Tilemaps;
+using MonoGame.Extended.Tilemaps.Rendering;
 using RpgLibrary.DataClasses;
 using RpgLibrary.WorldClasses;
 using SkeletonsAdventure.Engines;
@@ -27,18 +27,18 @@ namespace SkeletonsAdventure.GameWorld
         public Player Player { get; set; } = World.Player; 
         public Camera Camera { get; set; } = World.Camera; 
         public EntityManager EntityManager { get; private set; }
-        public TiledMap TiledMap { get; private set; }
+        public Tilemap TiledMap { get; private set; }
         public MinMaxPair EnemyLevels { get; private set; }
         private GraphicsDevice GraphicsDevice { get; }
         public Vector2 PlayerStartPosition { get; set; } = new(80, 80);
         public Vector2 PlayerEndPosition { get; set; } = new(80, 80);//location of the exit so if the player comes back to the level this is where they will be placed
         public Vector2 PlayerRespawnPosition { get; set; } = new(80, 80);
         public ChestManager ChestManager { get; private set; }
-        public TiledMapObjectLayer EnterExitLayer { get; private set; } = null;
-        public TiledMapObjectLayer InteractableObjectLayerObjects { get; private set; } = null;
-        public TiledMapTileLayer InteractableObjectLayerTiles { get; private set; } = null;
-        public TiledMapObjectLayer TeleporterLayer { get; private set; } = null;
-        public TiledMapTileLayer ConditionalLayer { get; private set; } = null;
+        public TilemapObjectLayer EnterExitLayer { get; private set; } = null;
+        public TilemapObjectLayer InteractableObjectLayerObjects { get; private set; } = null;
+        public TilemapTileLayer InteractableObjectLayerTiles { get; private set; } = null;
+        public TilemapObjectLayer TeleporterLayer { get; private set; } = null;
+        public TilemapTileLayer ConditionalLayer { get; private set; } = null;
         public LevelExit LevelExit { get; set; } = null;
         public LevelExit LevelEntrance { get; set; } = null;
         internal InteractableObjectManager InteractableObjectManager { get; }
@@ -48,15 +48,16 @@ namespace SkeletonsAdventure.GameWorld
         public GameEventManager GameEventManager { get; } = new(); //used to manage timed game events
         public Dictionary<string, Enemy> Enemies { get; private set; } = [];
 
-        private TiledMapRenderer _tiledMapRenderer;
-        private TiledMapTileLayer _mapCollisionLayer;
-        private TiledMapObjectLayer _mapSpawnerLayer;
-        private TiledMapTileLayer[] collisionLayers = [];
+        private TilemapSpriteBatchRenderer _tiledMapRenderer;
+        private OrthographicCamera _mapCamera;
+        private TilemapTileLayer _mapCollisionLayer;
+        private TilemapObjectLayer _mapSpawnerLayer;
+        private TilemapTileLayer[] collisionLayers = [];
         internal EnemyNavigation Navigation { get; private set; }
 
         public List<Rectangle> EnterExitLayerObjectRectangles { get; private set; } = []; //TODO used to temporarily see where hitboxes are for exits
 
-        public Level(GraphicsDevice graphics, TiledMap tiledMap, Dictionary<string, Enemy> enemies, MinMaxPair enemyLevels,
+        public Level(GraphicsDevice graphics, Tilemap tiledMap, string name, Dictionary<string, Enemy> enemies, MinMaxPair enemyLevels,
             SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         {
             GraphicsDevice = graphics;
@@ -64,10 +65,10 @@ namespace SkeletonsAdventure.GameWorld
             DamagePopUpManager = new(damageFont);
             InteractableObjectManager = new(_exitFont);
             Enemies = enemies;
-            CreateMap(tiledMap ?? throw new ArgumentNullException(nameof(tiledMap)));
+            CreateMap(tiledMap ?? throw new ArgumentNullException(nameof(tiledMap)), name);
 
             //Load the chests from the tiled map and add them to the chest manager
-            ChestManager.Add(TiledHelperClasses.LoadChestsFromTiledMap(ChestManager.TiledMapTileLayer, GameManager.ChestsClone)); 
+            ChestManager.Add(TiledHelperClasses.LoadChestsFromTiledMap(ChestManager.TilemapTileLayer, GameManager.ChestsClone));
 
             EnemyLevels = enemyLevels;
 
@@ -76,25 +77,26 @@ namespace SkeletonsAdventure.GameWorld
             LoadTeleporters();
         }
 
-        private void CreateMap(TiledMap tiledMap)
+        private void CreateMap(Tilemap tiledMap, string name)
         {
             TiledMap = tiledMap;
-            _tiledMapRenderer = new(GraphicsDevice);
-            _tiledMapRenderer.LoadMap(TiledMap);
-            _mapCollisionLayer = TiledMap.GetLayer<TiledMapTileLayer>("CollisionLayer");
-            _mapSpawnerLayer = tiledMap.GetLayer<TiledMapObjectLayer>("SpawnerLayer");
-            ChestManager = new(tiledMap.GetLayer<TiledMapTileLayer>("ChestLayer"));
-            EnterExitLayer = TiledMap.GetLayer<TiledMapObjectLayer>("EnterExitLayer");
-            InteractableObjectLayerObjects = TiledMap.GetLayer<TiledMapObjectLayer>("InteractableObjectLayerObjects");
-            InteractableObjectLayerTiles = TiledMap.GetLayer<TiledMapTileLayer>("InteractableObjectLayer");
-            TeleporterLayer = TiledMap.GetLayer<TiledMapObjectLayer>("TeleporterLayer");
-            ConditionalLayer = TiledMap.GetLayer<TiledMapTileLayer>("ConditionalLayer");
+            _mapCamera = new(GraphicsDevice);
+            _tiledMapRenderer = new() { BlendState = BlendState.AlphaBlend, SamplerState = SamplerState.PointClamp };
+            _tiledMapRenderer.LoadTilemap(TiledMap);
+            _mapCollisionLayer = TiledMap.Layers.GetLayer<TilemapTileLayer>("CollisionLayer");
+            _mapSpawnerLayer = tiledMap.Layers.GetLayer<TilemapObjectLayer>("SpawnerLayer");
+            ChestManager = new(tiledMap.Layers.GetLayer<TilemapTileLayer>("ChestLayer"));
+            EnterExitLayer = TiledMap.Layers.GetLayer<TilemapObjectLayer>("EnterExitLayer");
+            InteractableObjectLayerObjects = TiledMap.Layers.GetLayer<TilemapObjectLayer>("InteractableObjectLayerObjects");
+            InteractableObjectLayerTiles = TiledMap.Layers.GetLayer<TilemapTileLayer>("InteractableObjectLayer");
+            TeleporterLayer = TiledMap.Layers.GetLayer<TilemapObjectLayer>("TeleporterLayer");
+            ConditionalLayer = TiledMap.Layers.GetLayer<TilemapTileLayer>("ConditionalLayer");
 
-            Width = tiledMap.WidthInPixels;
-            Height = tiledMap.HeightInPixels;
+            Width = tiledMap.Width * tiledMap.TileWidth;
+            Height = tiledMap.Height * tiledMap.TileHeight;
             TileWidth = tiledMap.TileWidth;
             TileHeight = tiledMap.TileHeight;
-            Name = tiledMap.Name[11..]; //trim "TiledFiles/" from the tiledmap name to use as the level name
+            Name = name;
 
             if(ConditionalLayer is not null)
                 collisionLayers = [_mapCollisionLayer, ConditionalLayer];
@@ -118,8 +120,10 @@ namespace SkeletonsAdventure.GameWorld
 
         public void Draw(SpriteBatch spriteBatch)  
         {
-            GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp; //prevents wierd yellow lines between tiles
-            _tiledMapRenderer.Draw(Camera.Transformation);
+            // Use the same pixel-aligned position for the map and the game sprites.
+            var view = Camera.Transformation;
+            _mapCamera.Position = new Vector2(-view.M41, -view.M42);
+            _tiledMapRenderer.Draw(spriteBatch, _mapCamera);
 
             spriteBatch.Begin(
                        SpriteSortMode.Immediate,
@@ -128,7 +132,7 @@ namespace SkeletonsAdventure.GameWorld
                        null,
                        null,
                        null,
-                       Camera.Transformation);
+                       view);
 
             EntityManager.Draw(spriteBatch);
             ChestManager.Draw(spriteBatch);
@@ -192,7 +196,7 @@ namespace SkeletonsAdventure.GameWorld
             //Get the visibility of all of the layers in the tiled map
             List<(string, bool)> layerVisibility = [];
 
-            foreach (TiledMapLayer layer in TiledMap.Layers)
+            foreach (TilemapLayer layer in TiledMap.Layers)
             {
                 bool visible = layer.IsVisible;
                 // Animations are transient; load their completed door/lever state.
@@ -221,16 +225,16 @@ namespace SkeletonsAdventure.GameWorld
         {
             if (InteractableObjectLayerObjects is not null)
             {
-                foreach (TiledMapObject obj in InteractableObjectLayerObjects.Objects)
+                foreach (TilemapObject obj in InteractableObjectLayerObjects.Objects)
                 {
-                    if (obj.Properties.TryGetValue("TypeOfObject", out TiledMapPropertyValue value))
+                    if (obj.Properties.TryGetValue("TypeOfObject", out TilemapPropertyValue value))
                     {
-                        if (value == "Quest")
+                        if (value.AsString() == "Quest")
                         {
-                            if (obj.Properties.TryGetValue("Quests", out TiledMapPropertyValue quests))
+                            if (obj.Properties.TryGetValue("Quests", out TilemapPropertyValue quests))
                             {
                                 QuestNode questNode = new(obj, _exitFont);
-                                string[] Quests = quests.ToString().Split(',', StringSplitOptions.TrimEntries);
+                                string[] Quests = quests.AsString().Split(',', StringSplitOptions.TrimEntries);
 
                                 foreach (string questName in Quests)
                                 {
@@ -241,11 +245,11 @@ namespace SkeletonsAdventure.GameWorld
                                 InteractableObjectManager.Add(questNode);
                             }
                         }
-                        else if (value == "Resource")
+                        else if (value.AsString() == "Resource")
                         {
                             InteractableObjectManager.Add(new ResourceNode(obj, _exitFont)); //TODO resource logic still needs added
                         }
-                        else if (value == "Lever")
+                        else if (value.AsString() == "Lever")
                         {
                             Lever lever = new(obj, _exitFont, leverAnimation);
                             SetLeverProperties(obj, lever);
@@ -261,17 +265,17 @@ namespace SkeletonsAdventure.GameWorld
             }
         }
 
-        private void SetLeverProperties(TiledMapObject obj, Lever lever)
+        private void SetLeverProperties(TilemapObject obj, Lever lever)
         {
-            if (obj.Properties.TryGetValue("LeverPurpose", out TiledMapPropertyValue purpose))
-                lever.LeverPurpose = purpose;
+            if (obj.Properties.TryGetValue("LeverPurpose", out TilemapPropertyValue purpose))
+                lever.LeverPurpose = purpose.AsString();
 
-            if (obj.Properties.TryGetValue("GameEventName", out TiledMapPropertyValue eventName))
-                lever.GameEventName = eventName;
+            if (obj.Properties.TryGetValue("GameEventName", out TilemapPropertyValue eventName))
+                lever.GameEventName = eventName.AsString();
 
-            if (obj.Properties.TryGetValue("LevelRequired", out TiledMapPropertyValue levelRequired))
+            if (obj.Properties.TryGetValue("LevelRequired", out TilemapPropertyValue levelRequired))
             {
-                if (int.TryParse(levelRequired, out int lvl))
+                if (TiledHelperClasses.TryReadInt(levelRequired, out int lvl))
                 {
                     lever.LevelRequirements = new()
                     {
@@ -281,13 +285,13 @@ namespace SkeletonsAdventure.GameWorld
             }
 
             //get all of the tiles from the layer that the interactable objects area contains
-            List<TiledMapTile> tiledMapTiles = TiledHelperClasses.GetTiledMapTiles(InteractableObjectLayerTiles, lever.Rectangle);
+            List<Point> tiledMapTiles = TiledHelperClasses.GetTiledMapTiles(InteractableObjectLayerTiles, lever.Rectangle);
 
             if (tiledMapTiles.Count == 1)
             {
                 //position where the lever should be displayed.
                 //(not the location of the interactable object which could be offset from the actual lever)
-                lever.LeverPosition = new(tiledMapTiles[0].X * 16, tiledMapTiles[0].Y * 16);
+                lever.LeverPosition = new(tiledMapTiles[0].X * TileWidth, tiledMapTiles[0].Y * TileHeight);
             }
             else
             {
@@ -317,21 +321,21 @@ namespace SkeletonsAdventure.GameWorld
 
             string name; 
             Teleporter teleporter;
-            foreach (TiledMapObject obj in TeleporterLayer.Objects)
+            foreach (TilemapObject obj in TeleporterLayer.Objects)
             {
                 name = obj.Name ?? string.Empty;
                 teleporter = new(_exitFont)
                 {
                     Name = name,
                     Position = obj.Position,
-                    Width = (int)obj.Size.Width,
-                    Height = (int)obj.Size.Height,
+                    Width = (int)obj.Bounds.Width,
+                    Height = (int)obj.Bounds.Height,
                 };
                 teleporter.Info.Position = teleporter.Position;
 
-                if (obj.Properties.TryGetValue("ToName", out TiledMapPropertyValue value))
+                if (obj.Properties.TryGetValue("ToName", out TilemapPropertyValue value))
                 {
-                    teleporter.DestinationName = value;
+                    teleporter.DestinationName = value.AsString();
                 }
 
                 TeleporterManager.AddTeleporter(teleporter);

@@ -168,7 +168,7 @@ public partial class UnitTest1
         for (int y = 0; y < level.Height / level.TileHeight && wall is null; y++)
             for (int x = 4; x < level.Width / level.TileWidth - 1; x++)
             {
-                bool Solid(int column) => layer.TryGetTile((ushort)column, (ushort)y, out var tile) && tile.HasValue && !tile.Value.IsBlank;
+                bool Solid(int column) => layer.GetTile(column, y).HasValue;
                 if (Solid(x) && !Solid(x - 1) && !Solid(x - 2) && !Solid(x - 3))
                 { wall = (x, y); break; }
             }

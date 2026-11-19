@@ -1,6 +1,5 @@
-﻿using MonoGame.Extended.Tiled;
+﻿using MonoGame.Extended.Tilemaps;
 using RpgLibrary.DataClasses;
-using System.Linq;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.GameObjects;
@@ -9,21 +8,9 @@ namespace SkeletonsAdventure.GameWorld
 {
     internal static class TiledHelperClasses
     {
-        public static List<TiledMapTile> TileLocations(int id, TiledMapTile[] tiles)
+        public static List<TilemapObject> ObjectLocations(string name, IEnumerable<TilemapObject> objects)
         {
-            List<TiledMapTile> mapTiles = [];
-
-            foreach (var tile in tiles)
-            {
-                if (tile.GlobalIdentifier == id)
-                    mapTiles.Add(tile);
-            }
-            return mapTiles;
-        }
-
-        public static List<TiledMapObject> ObjectLocations(string name, TiledMapObject[] objects)
-        {
-            List<TiledMapObject> mapObjects = [];
+            List<TilemapObject> mapObjects = [];
 
             foreach (var obj in objects)
             {
@@ -33,35 +20,46 @@ namespace SkeletonsAdventure.GameWorld
             return mapObjects;
         }
 
-        public static TiledAnimation CreateTiledAnimation(TiledMapTileset tileset, int tileId)
+        public static TiledAnimation CreateTiledAnimation(TilemapTileset tileset, int tileId)
         {
-            var tile = tileset.Tiles.OfType<TiledMapTilesetAnimatedTile>()
-                .First(tile => tile.LocalTileIdentifier == tileId);
-            return new TiledAnimation(tileset, tile);
+            var animation = tileset.GetTileData(tileId)?.Animation ?? throw new InvalidOperationException($"Missing animation for tile {tileId}.");
+            return new TiledAnimation(tileset, animation);
         }
 
-        public static int GetLevelFromTiledMap(TiledMapObject obj)
+        public static bool TryReadInt(TilemapPropertyValue value, out int number)
         {
-            obj.Properties.TryGetValue("level", out string level);
-
-            if (level is null)
-                obj.Properties.TryGetValue("lvl", out level);
-
-            if (level is not null)
+            if (value.Type == TilemapPropertyType.Int)
             {
-                if (int.TryParse(level, out int lvl))//parse the level to an int to be used for the enemy level
+                number = value.AsInt();
+                return true;
+            }
+
+            number = 0;
+            return value.Type == TilemapPropertyType.String && int.TryParse(value.AsString(), out number);
+        }
+
+        public static int GetLevelFromTiledMap(TilemapObject obj)
+        {
+            bool hasLevel = obj.Properties.TryGetValue("level", out var level);
+
+            if (!hasLevel)
+                hasLevel = obj.Properties.TryGetValue("lvl", out level);
+
+            if (hasLevel)
+            {
+                if (TryReadInt(level, out int lvl))
                     return lvl;
             }
 
             return 0; //level not found or could not be parsed
         }
 
-        public static List<TiledMapTile> GetTiledMapTiles(TiledMapTileLayer layer, Rectangle rec)
+        public static List<Point> GetTiledMapTiles(TilemapTileLayer layer, Rectangle rec)
         {
             if (layer == null)
-                return null;
+                return [];
 
-            List<TiledMapTile> tiles = [];
+            List<Point> tiles = [];
 
             int startX = Math.Max(rec.Left / layer.TileWidth, 0);
             int endX = Math.Min((rec.Right - 1) / layer.TileWidth, layer.Width - 1);
@@ -72,22 +70,22 @@ namespace SkeletonsAdventure.GameWorld
             {
                 for (int x = startX; x <= endX; x++)
                 {
-                    if (layer.TryGetTile((ushort)x, (ushort)y, out TiledMapTile? tile) && tile.Value.GlobalIdentifier != 0)
-                        tiles.Add(tile.Value);
+                    if (layer.GetTile(x, y).HasValue)
+                        tiles.Add(new(x, y));
                 }
             }
 
             return tiles;
         }
 
-        public static List<Enemy> LoadEnemyFromTiledMap(Enemy enemy, TiledMapObjectLayer mapSpawnerLayer, MinMaxPair enemyLevels)
+        public static List<Enemy> LoadEnemyFromTiledMap(Enemy enemy, TilemapObjectLayer mapSpawnerLayer, MinMaxPair enemyLevels)
         {
             if (mapSpawnerLayer is null)
                 return null;
 
             List<Enemy> enemies = [];
 
-            foreach (TiledMapObject obj in ObjectLocations(enemy.Name, mapSpawnerLayer.Objects))
+            foreach (TilemapObject obj in ObjectLocations(enemy.Name, mapSpawnerLayer.Objects))
             {
                 Enemy enemyClone = enemy.Clone();
                 enemyClone.Position = obj.Position;
@@ -110,15 +108,17 @@ namespace SkeletonsAdventure.GameWorld
             return enemies;
         }
 
-        private static List<Chest> GetChestsFromTiledMapTileLayer(TiledMapTileLayer layer, Chest chest)
+        private static List<Chest> GetChestsFromTiledMapTileLayer(TilemapTileLayer layer, Chest chest)
         {
             List<Chest> chests = [];
             int width = layer.TileWidth;
             int height = layer.TileHeight;
 
-            foreach (TiledMapTile tile in TileLocations(chest.ID, layer.Tiles))
+            foreach (var (x, y, tile) in layer.GetTiles())
             {
-                chest.Position = new(tile.X * width, tile.Y * height);
+                if (tile.GlobalId != chest.ID)
+                    continue;
+                chest.Position = new(x * width, y * height);
                 chest.DetectionArea = new Rectangle((int)chest.Position.X - 25, (int)chest.Position.Y - 25,
                     layer.TileWidth + 50, layer.TileHeight + 50);
 
@@ -128,7 +128,7 @@ namespace SkeletonsAdventure.GameWorld
             return chests;
         }
 
-        public static List<Chest> LoadChestsFromTiledMap(TiledMapTileLayer layer, Dictionary<string, Chest> possibleChests)
+        public static List<Chest> LoadChestsFromTiledMap(TilemapTileLayer layer, Dictionary<string, Chest> possibleChests)
         {
             List<Chest> chests = [];    
 

@@ -1,5 +1,5 @@
 ﻿
-using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tilemaps;
 
 namespace SkeletonsAdventure.Animations
 {
@@ -15,10 +15,10 @@ namespace SkeletonsAdventure.Animations
 
         public TileAnimationFrame() { }
 
-        public TileAnimationFrame(TiledMapTilesetTileAnimationFrame animationFrame)
+        public TileAnimationFrame(TilemapTileAnimationFrame animationFrame)
         {
-            LocalTileId = animationFrame.LocalTileIdentifier;
-            Duration = (float)animationFrame.Duration.TotalMilliseconds;
+            LocalTileId = animationFrame.TileId;
+            Duration = animationFrame.Duration * 1000f;
         }
 
         public TileAnimationFrame(TileAnimationFrame frame)

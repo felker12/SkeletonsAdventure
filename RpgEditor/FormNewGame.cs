@@ -13,6 +13,7 @@ namespace RpgEditor
 {
     public partial class FormNewGame : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public RPG RPG { get; set; } = new();
 
         public FormNewGame()

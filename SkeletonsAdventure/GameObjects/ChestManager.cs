@@ -1,12 +1,12 @@
-﻿using MonoGame.Extended.Tiled;
+﻿using MonoGame.Extended.Tilemaps;
 using RpgLibrary.GameObjectClasses;
 
 namespace SkeletonsAdventure.GameObjects
 {
-    internal class ChestManager(TiledMapTileLayer mapChestLayer)
+    internal class ChestManager(TilemapTileLayer mapChestLayer)
     {
         public List<Chest> Chests { get; set; } = [];
-        public TiledMapTileLayer TiledMapTileLayer { get; set; } = mapChestLayer;
+        public TilemapTileLayer TilemapTileLayer { get; set; } = mapChestLayer;
 
         public void Add(List<Chest> chests)
         {

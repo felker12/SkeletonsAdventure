@@ -157,7 +157,7 @@ namespace SkeletonsAdventure.GameWorld
             Player.RespawnPosition = level.PlayerRespawnPosition;
 
             CurrentLevel = level;
-            Camera.SetBounds(CurrentLevel.TiledMap.WidthInPixels, CurrentLevel.TiledMap.HeightInPixels);
+            Camera.SetBounds(CurrentLevel.Width, CurrentLevel.Height);
             CurrentLevel.Player = Player;
             CurrentLevel.Camera = Camera;
             CurrentLevel.EntityManager.Player = Player;

@@ -115,7 +115,7 @@ public partial class UnitTest1
         (int X, int Y)? wall = null;
         for (int y = 0; y < level.Height / level.TileHeight && wall is null; y++)
             for (int x = 1; x < level.Width / level.TileWidth; x++)
-                if (layer.TryGetTile((ushort)x, (ushort)y, out var tile) && tile.HasValue && !tile.Value.IsBlank)
+                if (layer.GetTile(x, y).HasValue)
                 {
                     wall = (x, y);
                     break;

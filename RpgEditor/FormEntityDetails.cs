@@ -14,6 +14,7 @@ namespace RpgEditor
 {
     public partial class FormEntityDetails : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public EntityData? Entity { get; set; }
 
         public FormEntityDetails()

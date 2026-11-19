@@ -1,4 +1,4 @@
-using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tilemaps;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Entities;
 
@@ -6,7 +6,7 @@ namespace SkeletonsAdventure.Engines
 {
     internal static class CollisionDetection
     {
-        internal static bool IsTileBlocked(TiledMapTileLayer[] layers, int x, int y)
+        internal static bool IsTileBlocked(TilemapTileLayer[] layers, int x, int y)
         {
             if (layers is null)
                 return false;
@@ -14,12 +14,12 @@ namespace SkeletonsAdventure.Engines
             {
                 if (layer is null || (layer.Name == "ConditionalLayer" && !layer.IsVisible))
                     continue;
-                if (layer.TryGetTile((ushort)x, (ushort)y, out TiledMapTile? tile) && tile.HasValue && !tile.Value.IsBlank)
+                if (layer.GetTile(x, y).HasValue)
                     return true;
             }
             return false;
         }
-        public static void CheckEntityBoundaryCollisions(List<Entity> entities, TiledMapTileLayer[] layers,
+        public static void CheckEntityBoundaryCollisions(List<Entity> entities, TilemapTileLayer[] layers,
             int tileWidth, int tileHeight, int mapWidth, int mapHeight, GameTime gameTime)
         {
             bool Blocked(int x, int y) => IsTileBlocked(layers, x, y);

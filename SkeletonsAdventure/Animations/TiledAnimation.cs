@@ -1,4 +1,4 @@
-﻿using MonoGame.Extended.Tiled;
+﻿using MonoGame.Extended.Tilemaps;
 using SkeletonsAdventure.HelperClasses;
 
 namespace SkeletonsAdventure.Animations
@@ -42,8 +42,8 @@ namespace SkeletonsAdventure.Animations
             TileHeight = tileHeight;
         }
 
-        public TiledAnimation(TiledMapTileset tiledMapTileset, TiledMapTilesetAnimatedTile animatedTile)
-            : this(tiledMapTileset.Name, tiledMapTileset.Texture, new TileAnimation(animatedTile),
+        public TiledAnimation(TilemapTileset tiledMapTileset, TilemapTileAnimation animation)
+            : this(tiledMapTileset.Name, tiledMapTileset.Texture, new TileAnimation(animation),
                   tiledMapTileset.TileWidth, tiledMapTileset.TileHeight)
         {
         }

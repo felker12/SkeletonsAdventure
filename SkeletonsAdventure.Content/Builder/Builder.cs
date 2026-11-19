@@ -1,7 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
-using MonoGame.Extended.Content.Pipeline.Tiled;
+using MonoGame.Extended.Content.Pipeline.Tilemaps;
+using MonoGame.Extended.Content.Pipeline.Tilemaps.Tiled;
 using MonoGame.Framework.Content.Pipeline.Builder;
 
 // The XML importer resolves the RPG data types from loaded assemblies.
@@ -56,8 +57,8 @@ internal sealed class GameContentBuilder : ContentBuilder
         content.Include<WildcardRule>("EntityData/*.xml", xmlImporter, xmlProcessor);
         content.Include<WildcardRule>("Items/**/*.xml", xmlImporter, xmlProcessor);
 
-        content.Include<WildcardRule>("TiledFiles/*.tmx", new TiledMapImporter(), new TiledMapContentProcessor());
-        content.Include<WildcardRule>("TiledFiles/*.tsx", new TiledMapTilesetImporter(), new TiledTilesetContentProcessor());
+        content.Include<WildcardRule>("TiledFiles/*.tmx", new TiledTilemapImporter(), new TilemapProcessor());
+        content.Include<WildcardRule>("TiledFiles/doors_lever_chest_animation.tsx", new TilemapTilesetImporter(), new TilemapTilesetProcessor());
 
         return content;
     }

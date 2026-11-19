@@ -1,4 +1,4 @@
-﻿using MonoGame.Extended.Tiled;
+﻿using MonoGame.Extended.Tilemaps;
 using RpgLibrary.DataClasses;
 using System.IO;
 using SkeletonsAdventure.Animations;
@@ -33,9 +33,10 @@ namespace SkeletonsAdventure.GameWorld
                 //try catch in case the .xnb file is not actually a TiledMap (but an image/tileset .xnb)
                 try
                 {
-                    TiledMap tiledMap = content.Load<TiledMap>(relativePath);
+                    Tilemap tiledMap = content.Load<Tilemap>(relativePath);
                     MinMaxPair pair = GetMinMaxPairFromTiledMap(tiledMap);
-                    Level level = new(graphics, tiledMap, GameManager.EnemiesClone, pair,
+                    string levelName = Path.ChangeExtension(Path.GetRelativePath(tiledFilesPath, filePath), null);
+                    Level level = new(graphics, tiledMap, levelName, GameManager.EnemiesClone, pair,
                         exitFont, damageFont, leverAnimation);
 
                     Levels.Add(level.Name, level);
@@ -53,13 +54,13 @@ namespace SkeletonsAdventure.GameWorld
                 InitializeLevel(lvl);
         }
 
-        private static MinMaxPair GetMinMaxPairFromTiledMap(TiledMap tiledMap)
+        private static MinMaxPair GetMinMaxPairFromTiledMap(Tilemap tiledMap)
         {
             MinMaxPair pair = new();
-            if (tiledMap.Properties.TryGetValue("MinLevel", out TiledMapPropertyValue value))
-                pair.Min = int.Parse(value.ToString());
-            if (tiledMap.Properties.TryGetValue("MaxLevel", out value))
-                pair.Max = int.Parse(value.ToString());
+            if (tiledMap.Properties.TryGetValue("MinLevel", out var value) && TiledHelperClasses.TryReadInt(value, out int min))
+                pair.Min = min;
+            if (tiledMap.Properties.TryGetValue("MaxLevel", out value) && TiledHelperClasses.TryReadInt(value, out int max))
+                pair.Max = max;
             else
                 pair.Max = pair.Min; //the max level is the same as the min level if not specified
             return pair;
@@ -73,23 +74,23 @@ namespace SkeletonsAdventure.GameWorld
             //TODO just used to temporarily provide a way to see where the hitboxes are for the exits
             Rectangle rec;
 
-            foreach (TiledMapObject obj in level.EnterExitLayer.Objects)
+            foreach (TilemapObject obj in level.EnterExitLayer.Objects)
             {
                 if (obj.Name == "Entrance" || obj.Name == "Enter")
                 {
-                    if (obj.Properties.TryGetValue("ToLocation", out TiledMapPropertyValue value))
-                        level.LevelEntrance = new(obj, Levels[value]);
+                    if (obj.Properties.TryGetValue("ToLocation", out TilemapPropertyValue value))
+                        level.LevelEntrance = new(obj, Levels[value.AsString()]);
 
                     level.PlayerStartPosition = new((int)obj.Position.X, (int)obj.Position.Y);
                     level.PlayerRespawnPosition = level.PlayerStartPosition;
                 }
                 else if (obj.Name == "Exit")
                 {
-                    level.LevelExit = new(obj, Levels[obj.Properties["ToLocation"]]);
+                    level.LevelExit = new(obj, Levels[obj.Properties["ToLocation"].AsString()]);
                     level.PlayerEndPosition = new((int)obj.Position.X, (int)obj.Position.Y);
                 }
 
-                rec = new((int)obj.Position.X, (int)obj.Position.Y, (int)obj.Size.Width, (int)obj.Size.Height);
+                rec = new((int)obj.Position.X, (int)obj.Position.Y, (int)obj.Bounds.Width, (int)obj.Bounds.Height);
                 level.EnterExitLayerObjectRectangles.Add(rec);
             }
 
