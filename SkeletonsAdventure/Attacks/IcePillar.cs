@@ -60,9 +60,10 @@ namespace SkeletonsAdventure.Attacks
 
         private void AnimatePillar()
         {
-            int timePerFrame = (AttackLength - AttackDelay) / animations.Count;
-            int currentFrame = (int)(Duration.TotalMilliseconds - AttackDelay) / timePerFrame;
-            double progressPercent = (currentFrame * (100 / (animations.Count + 2))) / 100.0; //the +2 is to make it shrink less per tick
+            int frameCount = animations[CurrentAnimation].Frames.Length;
+            int timePerFrame = Math.Max(1, (AttackLength - AttackDelay) / frameCount);
+            int currentFrame = Math.Clamp((int)(Duration.TotalMilliseconds - AttackDelay) / timePerFrame, 0, frameCount - 1);
+            double progressPercent = (currentFrame * (100 / (frameCount + 2))) / 100.0;
 
             Frame = new Rectangle(0 + (currentFrame * Width), 0, Width, Height);
             DamageHitBox = new((int)Position.X + Width / 4, (int)(Position.Y + Height * progressPercent), Width / 2, (int)(Height * (1.0 - progressPercent)));

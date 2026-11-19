@@ -8,6 +8,24 @@ namespace SkeletonsAdventure.Attacks
     internal class TriangleAttack : BasicAttack
     {
         public List<Triangle> Triangles { get; private set; } = [];
+        public override Rectangle HitBounds
+        {
+            get
+            {
+                var bounds = Rectangle.Empty;
+                foreach (var triangle in Triangles)
+                {
+                    float minX = Math.Min(triangle.Point1.X, Math.Min(triangle.Point2.X, triangle.Point3.X));
+                    float minY = Math.Min(triangle.Point1.Y, Math.Min(triangle.Point2.Y, triangle.Point3.Y));
+                    float maxX = Math.Max(triangle.Point1.X, Math.Max(triangle.Point2.X, triangle.Point3.X));
+                    float maxY = Math.Max(triangle.Point1.Y, Math.Max(triangle.Point2.Y, triangle.Point3.Y));
+                    var rectangle = new Rectangle((int)MathF.Floor(minX), (int)MathF.Floor(minY),
+                        (int)MathF.Ceiling(maxX) - (int)MathF.Floor(minX), (int)MathF.Ceiling(maxY) - (int)MathF.Floor(minY));
+                    bounds = bounds.IsEmpty ? rectangle : Rectangle.Union(bounds, rectangle);
+                }
+                return bounds;
+            }
+        }
 
         protected float spreadAngle = 0f;
         protected int count = 4;
@@ -40,7 +58,10 @@ namespace SkeletonsAdventure.Attacks
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            UpdateTriangles(gameTime);
+            if (HasStarted && AttackVisible)
+                UpdateTriangles(new GameTime(gameTime.TotalGameTime, TimeSpan.FromSeconds(MovementSecondsThisFrame)));
+            else
+                Triangles.Clear();
         }
 
         public override bool Hits(Entity entity)

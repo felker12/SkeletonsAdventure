@@ -1,5 +1,6 @@
 ﻿using CppNet;
 using SkeletonsAdventure.Entities;
+using System.Linq;
 
 namespace SkeletonsAdventure.Attacks
 {
@@ -17,7 +18,7 @@ namespace SkeletonsAdventure.Attacks
         /// </summary>
         /// <param name="gameTime">The current game time.</param>
         /// <returns>True if the entity is on attack cooldown, false otherwise.</returns>
-        public bool AttackingIsOnCoolDown(GameTime gameTime) => (gameTime.TotalGameTime - LastAttackTime).TotalMilliseconds < SourceEntity.AttackCoolDownLength;
+        public bool AttackingIsOnCoolDown(GameTime gameTime) => LastAttack is not null && (gameTime.TotalGameTime - LastAttackTime).TotalMilliseconds < SourceEntity.AttackCoolDownLength;
 
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -52,13 +53,15 @@ namespace SkeletonsAdventure.Attacks
             }
 
             foreach (var attack in _queuedAttack)
-                AddAttack(attack, gameTime);
+            {
+                AddAttack(attack, gameTime, registerCast: false);
+                attack.Update(gameTime);
+            }
 
             SourceEntity.CanMove = canMove;
             SourceEntity.CanAttack = canMove;
 
-            //remove any attacks that have expired. Clear the attacks after the attack.Update()
-            ClearExpiredAttacks();
+            // Expiry cleanup runs after movement and hit resolution, preserving final active travel.
         }
 
         private static bool GetSourceCanMove(BasicAttack attack)
@@ -73,16 +76,18 @@ namespace SkeletonsAdventure.Attacks
                 return false;
         }
 
-        public void AddAttack(BasicAttack atk, GameTime gameTime)
+        public void AddAttack(BasicAttack atk, GameTime gameTime, bool registerCast = true)
         {
+            ArgumentNullException.ThrowIfNull(atk);
+            if (!atk.HasStarted)
+                throw new InvalidOperationException("Initialize the fired attack before adding it.");
+            atk.Source = SourceEntity;
             if (atk is ShootingAttack shootingAtk)
                 shootingAtk.PathPoints.Clear();
 
-            atk.InitialMotion = atk.Motion;
-
             Attacks.Add(atk);
 
-            if(atk is not MultiShotAttack)
+            if (registerCast)
             {
                 LastAttackTime = gameTime.TotalGameTime;
                 LastAttack = atk;
@@ -92,6 +97,7 @@ namespace SkeletonsAdventure.Attacks
         public void ClearAttacks()
         {
             Attacks.Clear();
+            _queuedAttack.Clear();
             LastAttack = null;
         }
 
@@ -104,7 +110,6 @@ namespace SkeletonsAdventure.Attacks
                 if (attack.AttackTimedOut() || attack.Source.IsDead)
                 {
                     attack.AttackVisible = false;
-                    attack.Position = Vector2.Zero;
 
                     //remove by index
                     Attacks.RemoveAt(i);
@@ -117,37 +122,35 @@ namespace SkeletonsAdventure.Attacks
             if (SourceEntity.IsDead || SourceEntity.Health <= 0)
                 return;
             //check to see if the attack hit an entity
-            foreach (var attack in Attacks)
+            foreach (var attack in Attacks.ToArray())
             {
-                //if the attack isn't visible it can't hit anything so skip it
-                if (attack.AttackVisible is false)
+                if (!attack.HasStarted || !attack.AttackVisible || attack is MultiShotAttack)
                     continue;
 
+                var bounds = attack.HitBounds;
                 foreach (var entity in entities)
                 {
                     if (ValidTarget(attack, entity) is false)
                         continue;
 
-                    if(IsWithinRange(attack, entity) is false)
+                    if (!bounds.Intersects(entity.Rectangle))
                         continue;
 
-                    if (attack.Hits(entity))
+                    if (attack.HitsDuringFrame(entity))
+                    {
                         entity.GetHitByAttack(attack, gameTime);
+                        attack.HitTargets.Add(entity);
+                    }
                 }
             }
-        }
-
-        private static bool IsWithinRange(BasicAttack attack, Entity target, float threshold = 10000f)
-        {
-            //only do the math if they are reasonably close.
-            //10,000 is 100 pixels squared.
-            return Vector2.DistanceSquared(attack.Position, target.Position) < threshold;
         }
 
         private bool ValidTarget(BasicAttack attack, Entity target)
         {
             if (target.IsDead)
                 return false;//prevents attacking dead enemies
+            if (target.Health <= 0 || target.IsInvincible || attack.HitTargets.Contains(target))
+                return false;
             if (SourceEntity == target) //makes sure the entity cannot attack itself
                 return false;
             if (target is Enemy && SourceEntity is Enemy) //This line prevents enemies from attacking other enemies

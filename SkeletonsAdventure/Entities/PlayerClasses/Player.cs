@@ -631,10 +631,14 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                     else
                         Mana -= entityAttack.ManaCost;
 
-                    entityAttack.SetUpAttack(gameTime, BasicAttackColor, Position);
-                    entityAttack.MoveInDirectionOfPosition(targetPosition);
-
-                    AttackManager.AddAttack(entityAttack.Clone(), gameTime); //TODO
+                    var fired = entityAttack.Clone();
+                    fired.Source = this;
+                    fired.SetUpAttack(gameTime, BasicAttackColor, Position);
+                    fired.MoveInDirectionOfPosition(targetPosition);
+                    if (!fired.AttackVisible)
+                        fired.Motion = Vector2.Zero;
+                    entityAttack.LastAttackTime = gameTime.TotalGameTime;
+                    AttackManager.AddAttack(fired, gameTime);
                 }
                 else
                 {
@@ -660,9 +664,11 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                     else
                         Mana -= entityAttack.ManaCost;
 
-                    entityAttack.SetUpAttack(gameTime, BasicAttackColor, targetPosition);
-
-                    AttackManager.AddAttack(entityAttack.Clone(), gameTime);
+                    var fired = entityAttack.Clone();
+                    fired.Source = this;
+                    fired.SetUpAttack(gameTime, BasicAttackColor, targetPosition);
+                    entityAttack.LastAttackTime = gameTime.TotalGameTime;
+                    AttackManager.AddAttack(fired, gameTime);
                 }
                 else
                 {

@@ -259,12 +259,13 @@ namespace SkeletonsAdventure.Entities
                         player.Mana -= entityAttack.ManaCost;
                 }
 
-                //if the attack has speed it will move. If not it will  be stationary
-                if (entityAttack.Speed > 0)
-                    SetEntityAttackMotion(entityAttack);
-
-                entityAttack.SetUpAttack(gameTime, BasicAttackColor, Position); 
-                AttackManager.AddAttack(entityAttack.Clone(), gameTime);
+                var fired = entityAttack.Clone();
+                fired.Source = this;
+                if (fired.Speed > 0)
+                    SetEntityAttackMotion(fired);
+                fired.SetUpAttack(gameTime, BasicAttackColor, Position);
+                entityAttack.LastAttackTime = gameTime.TotalGameTime;
+                AttackManager.AddAttack(fired, gameTime);
             }
         }
 

@@ -31,10 +31,9 @@ namespace SkeletonsAdventure.Engines
                 if (entity.CanMove)
                     MoveSprite(entity);
                 foreach (var attack in entity.AttackManager.Attacks)
-                    if (attack.CanMove && attack.AttackVisible)
+                    if (attack.CanMove && attack.AttackVisible && attack.Motion != Vector2.Zero && attack.MovementSecondsThisFrame > 0)
                     {
                         MoveSprite(attack);
-                        attack.DamageHitBox = attack.Rectangle;
                     }
             }
 
@@ -43,11 +42,19 @@ namespace SkeletonsAdventure.Engines
                 var direction = sprite.Motion;
                 if (direction.LengthSquared() > 1)
                     direction.Normalize();
-                var displacement = direction * sprite.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds * Game1.BaseSpeedMultiplier;
+                double seconds = sprite is BasicAttack movingAttack ? movingAttack.MovementSecondsThisFrame : gameTime.ElapsedGameTime.TotalSeconds;
+                var displacement = direction * sprite.Speed * (float)seconds * Game1.BaseSpeedMultiplier;
                 var start = sprite.Position;
                 var end = Move(start, displacement, sprite.Width, sprite.Height,
-                    mapWidth, mapHeight, tileWidth, tileHeight, Blocked, sprite is BasicAttack);
+                    mapWidth, mapHeight, tileWidth, tileHeight, Blocked, sprite is BasicAttack,
+                    sprite is BasicAttack projectile ? (from, to) => projectile.MovementSegments.Add((from, to)) : null);
                 sprite.Position = end;
+                if (sprite is BasicAttack movedAttack)
+                {
+                    var hitBox = movedAttack.DamageHitBox;
+                    movedAttack.DamageHitBox = new(hitBox.X + (int)end.X - (int)start.X,
+                        hitBox.Y + (int)end.Y - (int)start.Y, hitBox.Width, hitBox.Height);
+                }
                 // Actors can slide along walls. Projectiles stop on contact instead of rounding corners.
                 if (sprite is BasicAttack attack && Vector2.DistanceSquared(end, start + displacement) > 0.0001f)
                 {
@@ -60,7 +67,8 @@ namespace SkeletonsAdventure.Engines
         // The solver uses floating-point positions and checks every crossed tile edge.
         // Small steps preserve diagonal sliding and corner collisions during long frames.
         internal static Vector2 Move(Vector2 position, Vector2 displacement, int width, int height,
-            int mapWidth, int mapHeight, int tileWidth, int tileHeight, Func<int, int, bool> blocked, bool stopOnCollision = false)
+            int mapWidth, int mapHeight, int tileWidth, int tileHeight, Func<int, int, bool> blocked, bool stopOnCollision = false,
+            Action<Vector2, Vector2> moved = null)
         {
             if (width <= 0 || height <= 0 || mapWidth <= 0 || mapHeight <= 0 || tileWidth <= 0 || tileHeight <= 0)
                 throw new ArgumentOutOfRangeException(nameof(width));
@@ -93,7 +101,10 @@ namespace SkeletonsAdventure.Engines
                                 nextX = Math.Min(position.X, Math.Max(nextX, (x + 1) * tileWidth));
                 }
                 bool hitX = Math.Abs(nextX - (position.X + step.X)) > 0.00001f;
+                var previous = position;
                 position.X = nextX;
+                if (position != previous)
+                    moved?.Invoke(previous, position);
                 if (stopOnCollision && hitX)
                     return position;
                 float nextY = Math.Clamp(position.Y + step.Y, 0, maxY);
@@ -114,7 +125,10 @@ namespace SkeletonsAdventure.Engines
                                 nextY = Math.Min(position.Y, Math.Max(nextY, (y + 1) * tileHeight));
                 }
                 bool hitY = Math.Abs(nextY - (position.Y + step.Y)) > 0.00001f;
+                previous = position;
                 position.Y = nextY;
+                if (position != previous)
+                    moved?.Invoke(previous, position);
                 if (stopOnCollision && hitY)
                     return position;
             }

@@ -31,7 +31,7 @@
                 return; // Stop updating if the duration has elapsed
             }
 
-            Position += Motion * Speed * Game1.DeltaTime;
+            Position += Motion * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
         
         public void Draw(SpriteBatch spriteBatch)

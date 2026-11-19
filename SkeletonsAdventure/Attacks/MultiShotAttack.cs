@@ -34,18 +34,28 @@ namespace SkeletonsAdventure.Attacks
         {
             Shot.DamageModifier = DamageModifier;
             Shot.ManaCost = 0; // Only the multi-shot attack consumes mana
-            Shot.Source = Source;
-            Shot.AttackLength = Shot.AttackLengthMinusDelay; //The length of the shot attack is the time it takes for the shot to be fired and disappear, so we set the multi-shot attack length to be that plus the delay between shots
-            //Shot.AttackDelay = 0;
 
             //multi shot attacks will just have the 1 frame to be used as an icon for them
             SetFrames(1, 32, 32, order: [AnimationKey.Right]);
 
-            //the length of the multi-shot attack is the time it takes to fire all the shots
-            //plus the initial delay before the first shot, plus the delay of the last shot
-            AttackLength = (int)(ShotCount * ShotInterval.TotalMilliseconds + AttackDelay + Shot.AttackDelay);
+            AttackLength = CalculateLifetime();
 
             CanMoveDuringAttack = false;
+        }
+
+        private int CalculateLifetime()
+        {
+            if (ShotCount < 1 || ShotInterval < TimeSpan.Zero)
+                throw new ArgumentOutOfRangeException(nameof(ShotCount));
+            return checked((int)((ShotCount - 1) * ShotInterval.TotalMilliseconds + AttackDelay + Shot.AttackLength));
+        }
+
+        public override void SetUpAttack(GameTime gameTime, Color attackColor, Vector2 originPosition)
+        {
+            AttackLength = CalculateLifetime();
+            ShotsFired = 0;
+            Shots.Clear();
+            base.SetUpAttack(gameTime, attackColor, originPosition);
         }
 
         public override MultiShotAttack Clone()
@@ -55,10 +65,11 @@ namespace SkeletonsAdventure.Attacks
 
         public override void Update(GameTime gameTime)
         {
-            if (StartTime > TimeSpan.Zero)
-                Duration = gameTime.TotalGameTime - StartTime;
-
-            UpdateCooldown(gameTime);
+            base.Update(gameTime);
+            AttackVisible = false;
+            Motion = Vector2.Zero;
+            if (!HasStarted)
+                return;
 
             //check if it's time to fire the next shot
             if(Duration.TotalMilliseconds < AttackDelay)
@@ -67,9 +78,12 @@ namespace SkeletonsAdventure.Attacks
             while (ShotsFired < ShotCount && Duration.TotalMilliseconds >= ShotsFired * ShotInterval.TotalMilliseconds + AttackDelay)
             {
                 ShootingAttack newShot = Shot.Clone();
-                newShot.Position = StartPosition;
+                newShot.Source = Source;
+                newShot.DamageModifier = DamageModifier;
+                newShot.ManaCost = 0;
                 newShot.Motion = InitialMotion;
-                newShot.SetUpAttack(gameTime, DefaultColor, StartPosition);
+                var scheduledAt = StartTime + TimeSpan.FromMilliseconds(AttackDelay + ShotsFired * ShotInterval.TotalMilliseconds);
+                newShot.SetUpAttack(new GameTime(scheduledAt, TimeSpan.Zero), DefaultColor, CastOriginPosition);
 
                 Shots.Add(newShot);
                 ShotsFired++;

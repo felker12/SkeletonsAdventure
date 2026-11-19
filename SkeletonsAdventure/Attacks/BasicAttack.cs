@@ -15,6 +15,12 @@ namespace SkeletonsAdventure.Attacks
         public TimeSpan LastAttackTime { get; set; } //The time when the last attack was started, and is used to determine if the attack is on cooldown
         public Vector2 AttackOffset { get; set; } //The offset of the attack from the source entity's position
         public Entity Source { get; set; }
+        public bool HasStarted { get; private set; }
+        public Vector2 CastOriginPosition { get; private set; }
+        internal double MovementSecondsThisFrame { get; private set; }
+        internal List<(Vector2 From, Vector2 To)> MovementSegments { get; } = [];
+        internal HashSet<Entity> HitTargets { get; } = [];
+        public virtual Rectangle HitBounds => DamageHitBox;
         public int CoolDownLength { get; set; } //length of the delay between attacks in milliseconds
         public float DamageModifier { get; set; }
         public int ManaCost { get; set; }
@@ -60,25 +66,21 @@ namespace SkeletonsAdventure.Attacks
             Width = attack.Width;
             Height = attack.Height;
             AttackLength = attack.AttackLength;
-            StartTime = attack.StartTime;
             AttackOffset = attack.AttackOffset;
             Frame = attack.Frame;
             Source = attack.Source;
-            Position = attack.Position;
             SpriteColor = attack.SpriteColor;
             Info.TextColor = attack.Info.TextColor;
-            LastAttackTime = attack.LastAttackTime;
             CoolDownLength = attack.CoolDownLength;
-            Motion = attack.Motion;
             Speed = attack.Speed;
             DamageModifier = attack.DamageModifier;
             ManaCost = attack.ManaCost;
             AttackDelay = attack.AttackDelay;
             AnimatedAttack = attack.AnimatedAttack;
-            StartPosition = attack.StartPosition;
-            DamageHitBox = attack.DamageHitBox;
-            LevelRequirements = attack.LevelRequirements;
-            SkillRequirementsNames = attack.SkillRequirementsNames;
+            DefaultColor = attack.DefaultColor;
+            CanMoveDuringAttack = attack.CanMoveDuringAttack;
+            LevelRequirements = attack.LevelRequirements.Clone();
+            SkillRequirementsNames = [.. attack.SkillRequirementsNames];
 
             Initialize();
         }
@@ -115,27 +117,36 @@ namespace SkeletonsAdventure.Attacks
         {
             DamageHitBox = new((int)Position.X, (int)Position.Y, Width, Height);
 
-            if (StartTime > TimeSpan.Zero)
-                Duration = gameTime.TotalGameTime - StartTime;
-
-            if (AttackVisible is false && Duration.TotalMilliseconds > AttackDelay)
+            MovementSegments.Clear();
+            MovementSecondsThisFrame = 0;
+            if (!HasStarted)
+                return;
+            Duration = gameTime.TotalGameTime - StartTime;
+            double now = Duration.TotalSeconds;
+            double previous = now - gameTime.ElapsedGameTime.TotalSeconds;
+            double activeStart = AttackDelay / 1000.0;
+            double end = AttackLength / 1000.0;
+            MovementSecondsThisFrame = Math.Max(0, Math.Min(now, end) - Math.Max(previous, activeStart));
+            AttackVisible = MovementSecondsThisFrame > 0 || (now >= activeStart && now <= end) ||
+                (end == activeStart && previous <= end && now >= end);
+            if (AttackVisible && previous <= activeStart && now >= activeStart)
             {
-                AttackVisible = true;
                 Motion = InitialMotion;
             }
 
             if(AttackVisible is false)
                 Motion = Vector2.Zero;
             else if (AttackVisible && AnimatedAttack)
-                base.Update(gameTime);
+                base.Update(new GameTime(gameTime.TotalGameTime, TimeSpan.FromSeconds(MovementSecondsThisFrame)));
 
+            DamageHitBox = Rectangle;
             UpdateCooldown(gameTime);
         }
 
         public void UpdateCooldown(GameTime gameTime)
         {
             CooldownRemaining = GetRemainingCooldown(gameTime);
-            CooldownRemainingRatio = (float)Math.Clamp(CooldownRemaining / CoolDownLength, 0f, 1f);
+            CooldownRemainingRatio = CoolDownLength <= 0 ? 0 : (float)Math.Clamp(CooldownRemaining / CoolDownLength, 0f, 1f);
         }
 
         public virtual bool Hits(Entity entity)
@@ -143,8 +154,23 @@ namespace SkeletonsAdventure.Attacks
             return DamageHitBox.Intersects(entity.Rectangle);
         }
 
+        public virtual bool HitsDuringFrame(Entity entity) => Hits(entity);
+
         public virtual void SetUpAttack(GameTime gameTime, Color attackColor, Vector2 originPosition)
         {
+            ArgumentNullException.ThrowIfNull(Source);
+            if (AttackDelay < 0 || AttackLength < AttackDelay)
+                throw new ArgumentOutOfRangeException(nameof(AttackLength), "Attack length must include its nonnegative delay.");
+            HasStarted = true;
+            Duration = TimeSpan.Zero;
+            MovementSecondsThisFrame = 0;
+            MovementSegments.Clear();
+            CastOriginPosition = originPosition;
+            HitTargets.Clear();
+            InitialMotion = Motion;
+            AttackVisible = AttackDelay == 0;
+            if (!AttackVisible)
+                Motion = Vector2.Zero;
             StartTime = gameTime.TotalGameTime;
             Offset();
             Position = originPosition + AttackOffset;
@@ -223,13 +249,13 @@ namespace SkeletonsAdventure.Attacks
 
         public bool AttackTimedOut()
         {
-            return Duration.TotalMilliseconds > AttackLength;
+            return HasStarted && Duration.TotalMilliseconds >= AttackLength;
         }
 
         public bool AttackPassedDelay()
         {
             //return true if the source can move during the attack and the attack has passed the delay time, or if the attack doesn't allow movement during the attack and the attack has timed out
-            return CanMoveDuringAttack && Duration.TotalMilliseconds > AttackDelay;
+            return CanMoveDuringAttack && HasStarted && Duration.TotalMilliseconds >= AttackDelay;
         }
 
         public override string ToString()

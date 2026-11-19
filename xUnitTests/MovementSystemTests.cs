@@ -87,11 +87,14 @@ public partial class UnitTest1
         };
         var shot = (ShootingAttack)assets.AttackTemplates["FireBall"].Clone();
         shot.Source = entity;
+        shot.AttackDelay = 0;
+        shot.SetUpAttack(new(), Color.White, new(80, 80));
         shot.Position = new(80, 80);
         shot.Speed = 2;
         shot.AttackVisible = true;
         shot.MoveInDirectionOfPosition(shot.Center + new Vector2(100, 0));
         entity.AttackManager.AddAttack(shot, new());
+        shot.Update(new GameTime(TimeSpan.FromSeconds(0.1), TimeSpan.FromSeconds(0.1)));
         CollisionDetection.CheckEntityBoundaryCollisions([entity], null, 16, 16, 512, 512,
             new GameTime(TimeSpan.Zero, TimeSpan.FromSeconds(0.1)));
         Assert.InRange(Vector2.Distance(entity.Position, new(40, 40)), 9.999f, 10.001f);

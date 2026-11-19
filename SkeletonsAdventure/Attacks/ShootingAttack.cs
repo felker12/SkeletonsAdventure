@@ -6,6 +6,49 @@ namespace SkeletonsAdventure.Attacks
 {
     public class ShootingAttack : BasicAttack
     {
+        public override Rectangle HitBounds
+        {
+            get
+            {
+                var bounds = DamageHitBox;
+                foreach (var segment in MovementSegments)
+                {
+                    int x = (int)MathF.Floor(Math.Min(segment.From.X, segment.To.X));
+                    int y = (int)MathF.Floor(Math.Min(segment.From.Y, segment.To.Y));
+                    bounds = Rectangle.Union(bounds, new Rectangle(x, y,
+                        (int)MathF.Ceiling(Math.Max(segment.From.X, segment.To.X) + Width) - x,
+                        (int)MathF.Ceiling(Math.Max(segment.From.Y, segment.To.Y) + Height) - y));
+                }
+                return bounds;
+            }
+        }
+
+        public override bool HitsDuringFrame(Entity entity)
+        {
+            if (Hits(entity))
+                return true;
+            foreach (var segment in MovementSegments)
+                if (SweptHit(segment.From, segment.To, Width, Height, entity.Rectangle))
+                    return true;
+            return false;
+        }
+
+        internal static bool SweptHit(Vector2 from, Vector2 to, int width, int height, Rectangle target)
+        {
+            float enter = 0, exit = 1;
+            var delta = to - from;
+            bool Axis(float start, float motion, float min, float max)
+            {
+                if (motion == 0)
+                    return start > min && start < max;
+                float a = (min - start) / motion, b = (max - start) / motion;
+                enter = Math.Max(enter, Math.Min(a, b));
+                exit = Math.Min(exit, Math.Max(a, b));
+                return enter < exit;
+            }
+            return Axis(from.X, delta.X, target.Left - width, target.Right) &&
+                Axis(from.Y, delta.Y, target.Top - height, target.Bottom) && enter < 1 && exit > 0;
+        }
         public List<Vector2> PathPoints { get; set; } = [];
 
         public ShootingAttack(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)

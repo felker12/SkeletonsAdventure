@@ -157,6 +157,7 @@ namespace SkeletonsAdventure.GameWorld
 
             CollisionDetection.CheckEntityBoundaryCollisions(EntityManager.Entities, collisionLayers,
                 TileWidth, TileHeight, Width, Height, gameTime);
+            EntityManager.ResolveAttackHits(gameTime);
 
             Camera.Update(Player.Position);
 

@@ -63,8 +63,6 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
                     if (entity.IsDead)
                         continue;
 
-                    entity.AttackManager.CheckAttackHit(Entities, gameTime);
-
                     entity.Update(gameTime);
 
                     if (entity == Player)
@@ -74,6 +72,15 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
                 {
                     entity.Respawn();
                 }
+            }
+        }
+
+        public void ResolveAttackHits(GameTime gameTime)
+        {
+            foreach (var entity in Entities)
+            {
+                entity.AttackManager.CheckAttackHit(Entities, gameTime);
+                entity.AttackManager.ClearExpiredAttacks();
             }
         }
 
