@@ -89,7 +89,7 @@ namespace SkeletonsAdventure.Entities.EntityHelperClasses
         private void OnEntityDied(Entity entity)
         {
             if (entity is Enemy enemy)
-                DroppedLootManager.Add(enemy.GetDrops(), entity.Position);
+                DroppedLootManager.Add(enemy.GetDrops(), enemy.Center - new Vector2(GameItem.Width, GameItem.Height) / 2);
         }
 
         public void Clear()

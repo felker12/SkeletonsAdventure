@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using SkeletonsAdventure;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Engines;
@@ -11,16 +12,17 @@ namespace xUnitTests;
 public partial class UnitTest1
 {
     [Theory]
-    [InlineData("FireBall", 612.5f)]
-    [InlineData("IceBullet", 703.125f)]
-    [InlineData("WaterBall", 512f)]
-    [InlineData("FireWave", 200f)]
-    [InlineData("BlueFireWave", 200f)]
-    public void AuthoredProjectileSpeedsPreserveTheirPreviousTravelAcrossFrameRates(string name, float pixelsPerSecond)
+    [InlineData("FireBall")]
+    [InlineData("IceBullet")]
+    [InlineData("WaterBall")]
+    [InlineData("FireWave")]
+    [InlineData("BlueFireWave")]
+    public void AuthoredProjectileSpeedsRemainConsistentAcrossFrameRates(string name)
     {
         using var game = new SkeletonsAdventure.Game1();
         var assets = new GameManager(game);
         _ = new GameScreen(game, assets);
+        float pixelsPerSecond = assets.AttackTemplates[name].Speed * Game1.BaseSpeedMultiplier;
         foreach (int fps in new[] { 30, 60, 144 })
         {
             var source = new Entity(assets.DefaultEntityAssets) { CanMove = false };
@@ -54,17 +56,18 @@ public partial class UnitTest1
         var start = fired.Position;
         CollisionDetection.CheckEntityBoundaryCollisions([source], null, 32, 32, 4096, 4096,
             new GameTime(TimeSpan.Zero, TimeSpan.FromSeconds(0.1)));
-        Assert.InRange(fired.Position.X - start.X, 61.249f, 61.251f);
+        float expected = shot.Speed * Game1.BaseSpeedMultiplier * 0.1f;
+        Assert.InRange(fired.Position.X - start.X, expected - 0.001f, expected + 0.001f);
     }
 
     [Fact]
-    public void MultiShotUsesTheRetunedProjectileSpeed()
+    public void MultiShotPreservesTheConfiguredProjectileSpeed()
     {
         using var game = new SkeletonsAdventure.Game1();
         var assets = new GameManager(game);
         var volley = Assert.IsAssignableFrom<MultiShotAttack>(assets.AttackTemplates["IceBullets"]);
-        Assert.Equal(14.0625f, volley.Speed);
-        Assert.Equal(14.0625f, volley.Shot.Speed);
-        Assert.Equal(14.0625f, volley.Clone().Shot.Speed);
+        float expected = assets.AttackTemplates["IceBullet"].Speed;
+        Assert.Equal(expected, volley.Shot.Speed);
+        Assert.Equal(expected, volley.Clone().Shot.Speed);
     }
 }

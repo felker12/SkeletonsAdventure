@@ -13,6 +13,7 @@ using SkeletonsAdventure.GameEvents;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.GameUI;
 using SkeletonsAdventure.Quests;
+using SkeletonsAdventure.ItemClasses.ItemManagement;
 
 namespace SkeletonsAdventure.GameWorld
 {
@@ -106,6 +107,10 @@ namespace SkeletonsAdventure.GameWorld
         private void CreateEntityManager()
         {
             EntityManager = new();
+            EntityManager.DroppedLootManager.Placement = new(Width, Height, TileWidth, TileHeight,
+                (x, y) => CollisionDetection.IsTileBlocked(collisionLayers, x, y),
+                () => (Player.Position, Player.Width, Player.Height),
+                () => ConditionalLayer?.IsVisible == true ? 1 : 0);
             EntityManager.Add(Player);
 
             AddEnemies();

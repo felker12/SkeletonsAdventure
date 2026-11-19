@@ -161,6 +161,7 @@ namespace SkeletonsAdventure.GameWorld
             CurrentLevel.Player = Player;
             CurrentLevel.Camera = Camera;
             CurrentLevel.EntityManager.Player = Player;
+            CurrentLevel.EntityManager.DroppedLootManager.RepairPlacement();
         }
 
         public static void SetCurrentLevel(Level level)
