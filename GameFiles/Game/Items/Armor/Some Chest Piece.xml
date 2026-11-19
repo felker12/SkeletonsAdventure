@@ -5,7 +5,6 @@
     <Type>plate</Type>
     <Description></Description>
     <Price>1</Price>
-    <Weight>1</Weight>
     <Equipped>false</Equipped>
     <Stackable>false</Stackable>
     <Consumable>false</Consumable>

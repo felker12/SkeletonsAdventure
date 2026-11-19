@@ -38,7 +38,6 @@ namespace SkeletonsAdventure.ItemClasses
                 Type = Type,
                 Description = Description,
                 Price = Price,
-                Weight = Weight,
                 Stackable = Stackable,
                 Consumable = IsConsumable,
                 Position = Position,

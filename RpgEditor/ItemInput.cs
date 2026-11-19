@@ -28,8 +28,8 @@ internal static class ItemInput
     {
         if (string.IsNullOrWhiteSpace(item.Name))
             return "Enter an item name.";
-        if (item.Price < 0 || !float.IsFinite(item.Weight) || item.Weight < 0)
-            return "Price and weight must be nonnegative.";
+        if (item.Price < 0)
+            return "Price must be nonnegative.";
         if (item is ShieldData { DefenceValue: < 0 })
             return "Defence value must be nonnegative.";
         if (item.Quantity < 1 || (!item.Stackable && item.Quantity != 1))

@@ -5,7 +5,6 @@
     <Type>Slashing</Type>
     <Description>An Iron Sword</Description>
     <Price>40</Price>
-    <Weight>3</Weight>
     <Equipped>false</Equipped>
     <Stackable>false</Stackable>
     <Consumable>false</Consumable>

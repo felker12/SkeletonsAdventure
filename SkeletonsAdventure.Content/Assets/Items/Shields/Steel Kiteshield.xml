@@ -5,7 +5,6 @@
     <Type>Shield</Type>
     <Description>A Steel Kiteshield</Description>
     <Price>0</Price>
-    <Weight>5</Weight>
     <Equipped>false</Equipped>
     <Stackable>false</Stackable>
     <Consumable>false</Consumable>

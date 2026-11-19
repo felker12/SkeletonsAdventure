@@ -5,7 +5,6 @@
     <Type>Shield</Type>
     <Description>A basic round shield</Description>
     <Price>40</Price>
-    <Weight>10</Weight>
     <Equipped>false</Equipped>
     <Stackable>false</Stackable>
     <Consumable>false</Consumable>

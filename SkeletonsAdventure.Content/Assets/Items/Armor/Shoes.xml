@@ -5,7 +5,6 @@
     <Type>Shoe</Type>
 	  <Description>A Simple Shoe</Description>
     <Price>4</Price>
-    <Weight>1</Weight>
     <Equipped>false</Equipped>
     <Stackable>false</Stackable>
     <Consumable>false</Consumable>

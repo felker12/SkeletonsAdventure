@@ -47,9 +47,6 @@ public partial class FormArmorDetails : Form
         requirements = item.LevelRequirementData?.Clone() ?? new();
         tbDescription.Text = item.Description;
         mtbPrice.Text = item.Price.ToString();
-        nudWeight.Minimum = Math.Min(nudWeight.Minimum, (decimal)item.Weight);
-        nudWeight.Maximum = Math.Max(nudWeight.Maximum, (decimal)item.Weight);
-        nudWeight.Value = (decimal)item.Weight;
         mtbPositionX.Text = item.Position.X.ToString();
         mtbPositionY.Text = item.Position.Y.ToString();
         mtbX.Text = item.SourceRectangle.X.ToString();
@@ -98,7 +95,6 @@ public partial class FormArmorDetails : Form
         item.Name = tbName.Text.Trim();
         item.Description = tbDescription.Text;
         item.Price = price;
-        item.Weight = (float)nudWeight.Value;
         item.Position = new(positionX, positionY);
         item.LevelRequirementData = requirements.Clone();
         item.SourceRectangle = new(sourceX, sourceY, width, height);

@@ -5,7 +5,6 @@
     <Type>Currency</Type>
     <Description>Money</Description>
     <Price>1</Price>
-    <Weight>0</Weight>
     <Equipped>false</Equipped>
     <Stackable>true</Stackable>
     <Consumable>false</Consumable>

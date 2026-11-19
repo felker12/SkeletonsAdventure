@@ -32,6 +32,34 @@ public partial class UnitTest1
     };
 
     [Fact]
+    public void LegacyItemWeightIsDiscardedAndOmittedWhenResaving()
+    {
+        using var directory = new SaveDirectory();
+        var snapshot = Snapshot();
+        snapshot.World.PlayerData.backpack =
+        [
+            new WeaponData { Name = "Sword", Quantity = 1, AttackValue = 7 },
+            new ConsumableData { Name = "Bones", Quantity = 3, Stackable = true }
+        ];
+        SaveStorage.Write(directory.Path, snapshot);
+        string path = Path.Combine(directory.Path, SaveStorage.FileName);
+        var document = System.Xml.Linq.XDocument.Load(path);
+        Assert.Empty(document.Descendants("Weight"));
+        var prices = document.Descendants("Price").ToArray();
+        Assert.Equal(2, prices.Length);
+        foreach (var price in prices)
+            price.AddAfterSelf(new System.Xml.Linq.XElement("Weight", "4.5"));
+        document.Save(path);
+
+        var restored = SaveStorage.Read(directory.Path);
+        Assert.Collection(restored.World.PlayerData.backpack,
+            item => Assert.Equal(7, Assert.IsType<WeaponData>(item).AttackValue),
+            item => Assert.Equal(3, Assert.IsType<ConsumableData>(item).Quantity));
+        SaveStorage.Write(directory.Path, restored);
+        Assert.Empty(System.Xml.Linq.XDocument.Load(path).Descendants("Weight"));
+    }
+
+    [Fact]
     public void SnapshotReplacementAndBackupRecoveryKeepWholeGenerations()
     {
         using var directory = new SaveDirectory();

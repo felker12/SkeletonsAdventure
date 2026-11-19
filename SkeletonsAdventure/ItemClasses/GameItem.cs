@@ -16,7 +16,6 @@ namespace SkeletonsAdventure.ItemClasses
         public static int Height { get; } = 32;
         public int Quantity { get; private set; } = 1;
         public int Price { get; set; } = 0;
-        public float Weight { get; set;} = 0f;
         public bool Stackable { get; set; } = false;
         public Label ToolTip { get; }
         public string Name { get; set; } = string.Empty;
@@ -35,7 +34,6 @@ namespace SkeletonsAdventure.ItemClasses
             Description = item.Description;
             TexturePath = item.TexturePath;
             Price = item.Price;
-            Weight = item.Weight;
 
             if (Stackable)
                 ToolTip.Text = Quantity + " " + Name;
@@ -53,7 +51,6 @@ namespace SkeletonsAdventure.ItemClasses
             Description = gameItem.Description;
             TexturePath = gameItem.TexturePath;
             Price = gameItem.Price;
-            Weight = gameItem.Weight;
 
             ToolTip = new(gameItem.ToolTip.SpriteFont)
             {
@@ -126,7 +123,6 @@ namespace SkeletonsAdventure.ItemClasses
                 Type = Type,
                 Description = Description,
                 Price = Price,
-                Weight = Weight,
                 Stackable = Stackable,
                 Position = Position,
                 Quantity = Quantity,

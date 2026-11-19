@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 
+using Microsoft.Xna.Framework.Content;
+
 namespace RpgLibrary.ItemClasses
 {
     public enum Hands { Main, Off, Both }
@@ -12,7 +14,9 @@ namespace RpgLibrary.ItemClasses
         public string Type { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int Price { get; set; }
-        public float Weight { get; set; }
+        // Old item XML and saves can contain this field. Read and discard it.
+        [ContentSerializer(Optional = true, ElementName = "Weight")]
+        private float? LegacyWeight { get => null; set { } }
         public bool Equipped { get; set; }
         public bool Stackable { get; set; }
         public bool Consumable { get; set; }
@@ -31,7 +35,6 @@ namespace RpgLibrary.ItemClasses
             Type = itemData.Type;
             Description = itemData.Description;
             Price = itemData.Price;
-            Weight = itemData.Weight;
             Equipped = itemData.Equipped;
             Stackable = itemData.Stackable;
             Consumable = itemData.Consumable;
@@ -52,7 +55,6 @@ namespace RpgLibrary.ItemClasses
             toString += Type + ", ";
             toString += Description + ", ";
             toString += Price + ", ";
-            toString += Weight + ", ";
             toString += Equipped + ", ";
             toString += Stackable + ", ";
             toString += Consumable + ", ";

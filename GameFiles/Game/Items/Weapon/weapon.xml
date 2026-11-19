@@ -5,7 +5,6 @@
     <Type>stab</Type>
     <Description>12312312</Description>
     <Price>1</Price>
-    <Weight>2</Weight>
     <Equipped>false</Equipped>
     <Stackable>false</Stackable>
     <Consumable>false</Consumable>

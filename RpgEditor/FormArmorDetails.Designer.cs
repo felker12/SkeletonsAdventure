@@ -32,8 +32,6 @@ namespace RpgEditor
         {
             btnCancel = new Button();
             btnOK = new Button();
-            nudWeight = new NumericUpDown();
-            label4 = new Label();
             mtbPrice = new MaskedTextBox();
             label3 = new Label();
             tbType = new TextBox();
@@ -56,12 +54,11 @@ namespace RpgEditor
             mtbHeight = new MaskedTextBox();
             tbPath = new TextBox();
             label14 = new Label();
-            ((System.ComponentModel.ISupportInitialize)nudWeight).BeginInit();
             SuspendLayout();
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(206, 378);
+            btnCancel.Location = new Point(206, 349);
             btnCancel.Margin = new Padding(4, 3, 4, 3);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(88, 27);
@@ -71,32 +68,13 @@ namespace RpgEditor
             // 
             // btnOK
             // 
-            btnOK.Location = new Point(72, 378);
+            btnOK.Location = new Point(72, 349);
             btnOK.Margin = new Padding(4, 3, 4, 3);
             btnOK.Name = "btnOK";
             btnOK.Size = new Size(88, 27);
             btnOK.TabIndex = 31;
             btnOK.Text = "OK";
             btnOK.UseVisualStyleBackColor = true;
-            // 
-            // nudWeight
-            // 
-            nudWeight.DecimalPlaces = 2;
-            nudWeight.Location = new Point(126, 123);
-            nudWeight.Margin = new Padding(4, 3, 4, 3);
-            nudWeight.Name = "nudWeight";
-            nudWeight.Size = new Size(117, 23);
-            nudWeight.TabIndex = 23;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(68, 125);
-            label4.Margin = new Padding(4, 0, 4, 0);
-            label4.Name = "label4";
-            label4.Size = new Size(48, 15);
-            label4.TabIndex = 22;
-            label4.Text = "Weight:";
             // 
             // mtbPrice
             // 
@@ -158,7 +136,7 @@ namespace RpgEditor
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(23, 269);
+            label5.Location = new Point(23, 240);
             label5.Margin = new Padding(4, 0, 4, 0);
             label5.Name = "label5";
             label5.Size = new Size(93, 15);
@@ -169,7 +147,7 @@ namespace RpgEditor
             // 
             cboArmorLocation.DropDownStyle = ComboBoxStyle.DropDownList;
             cboArmorLocation.FormattingEnabled = true;
-            cboArmorLocation.Location = new Point(126, 266);
+            cboArmorLocation.Location = new Point(126, 237);
             cboArmorLocation.Margin = new Padding(4, 3, 4, 3);
             cboArmorLocation.Name = "cboArmorLocation";
             cboArmorLocation.Size = new Size(115, 23);
@@ -178,7 +156,7 @@ namespace RpgEditor
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(25, 300);
+            label6.Location = new Point(25, 271);
             label6.Margin = new Padding(4, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new Size(83, 15);
@@ -187,7 +165,7 @@ namespace RpgEditor
             // 
             // mtbDefenseValue
             // 
-            mtbDefenseValue.Location = new Point(126, 297);
+            mtbDefenseValue.Location = new Point(126, 268);
             mtbDefenseValue.Margin = new Padding(4, 3, 4, 3);
             mtbDefenseValue.Mask = "000";
             mtbDefenseValue.Name = "mtbDefenseValue";
@@ -214,7 +192,7 @@ namespace RpgEditor
             // 
             // mtbPositionX
             // 
-            mtbPositionX.Location = new Point(125, 153);
+            mtbPositionX.Location = new Point(125, 124);
             mtbPositionX.Margin = new Padding(4, 3, 4, 3);
             mtbPositionX.Mask = "00000";
             mtbPositionX.Name = "mtbPositionX";
@@ -225,7 +203,7 @@ namespace RpgEditor
             // lblLocation
             // 
             lblLocation.AutoSize = true;
-            lblLocation.Location = new Point(58, 156);
+            lblLocation.Location = new Point(58, 127);
             lblLocation.Margin = new Padding(4, 0, 4, 0);
             lblLocation.Name = "lblLocation";
             lblLocation.Size = new Size(56, 15);
@@ -234,7 +212,7 @@ namespace RpgEditor
             // 
             // mtbPositionY
             // 
-            mtbPositionY.Location = new Point(188, 153);
+            mtbPositionY.Location = new Point(188, 124);
             mtbPositionY.Margin = new Padding(4, 3, 4, 3);
             mtbPositionY.Mask = "000000";
             mtbPositionY.Name = "mtbPositionY";
@@ -244,7 +222,7 @@ namespace RpgEditor
             // 
             // mtbX
             // 
-            mtbX.Location = new Point(123, 191);
+            mtbX.Location = new Point(123, 162);
             mtbX.Margin = new Padding(4, 3, 4, 3);
             mtbX.Mask = "00000";
             mtbX.Name = "mtbX";
@@ -255,7 +233,7 @@ namespace RpgEditor
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new Point(1, 184);
+            label13.Location = new Point(1, 155);
             label13.Margin = new Padding(4, 0, 4, 0);
             label13.Name = "label13";
             label13.Size = new Size(115, 30);
@@ -265,7 +243,7 @@ namespace RpgEditor
             // 
             // mtbY
             // 
-            mtbY.Location = new Point(176, 191);
+            mtbY.Location = new Point(176, 162);
             mtbY.Margin = new Padding(4, 3, 4, 3);
             mtbY.Mask = "00000";
             mtbY.Name = "mtbY";
@@ -275,7 +253,7 @@ namespace RpgEditor
             // 
             // mtbWidth
             // 
-            mtbWidth.Location = new Point(229, 191);
+            mtbWidth.Location = new Point(229, 162);
             mtbWidth.Margin = new Padding(4, 3, 4, 3);
             mtbWidth.Mask = "00000";
             mtbWidth.Name = "mtbWidth";
@@ -285,7 +263,7 @@ namespace RpgEditor
             // 
             // mtbHeight
             // 
-            mtbHeight.Location = new Point(282, 191);
+            mtbHeight.Location = new Point(282, 162);
             mtbHeight.Margin = new Padding(4, 3, 4, 3);
             mtbHeight.Mask = "00000";
             mtbHeight.Name = "mtbHeight";
@@ -295,7 +273,7 @@ namespace RpgEditor
             // 
             // tbPath
             // 
-            tbPath.Location = new Point(126, 224);
+            tbPath.Location = new Point(126, 195);
             tbPath.Margin = new Padding(4, 3, 4, 3);
             tbPath.Name = "tbPath";
             tbPath.Size = new Size(201, 23);
@@ -305,7 +283,7 @@ namespace RpgEditor
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new Point(44, 227);
+            label14.Location = new Point(44, 198);
             label14.Margin = new Padding(4, 0, 4, 0);
             label14.Name = "label14";
             label14.Size = new Size(70, 15);
@@ -316,7 +294,7 @@ namespace RpgEditor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(380, 425);
+            ClientSize = new Size(380, 396);
             Controls.Add(tbPath);
             Controls.Add(label14);
             Controls.Add(mtbHeight);
@@ -335,8 +313,6 @@ namespace RpgEditor
             Controls.Add(label5);
             Controls.Add(btnCancel);
             Controls.Add(btnOK);
-            Controls.Add(nudWeight);
-            Controls.Add(label4);
             Controls.Add(mtbPrice);
             Controls.Add(label3);
             Controls.Add(tbType);
@@ -348,7 +324,6 @@ namespace RpgEditor
             Name = "FormArmorDetails";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Armor Details";
-            ((System.ComponentModel.ISupportInitialize)nudWeight).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -357,8 +332,6 @@ namespace RpgEditor
 
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.NumericUpDown nudWeight;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.MaskedTextBox mtbPrice;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox tbType;

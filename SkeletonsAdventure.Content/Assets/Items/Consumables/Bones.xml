@@ -5,7 +5,6 @@
     <Type>Consumable</Type>
     <Description>Bones of a creature</Description>
     <Price>1</Price>
-    <Weight>1</Weight>
     <Equipped>false</Equipped>
     <Stackable>true</Stackable>
     <Consumable>true</Consumable>
