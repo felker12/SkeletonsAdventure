@@ -1,243 +1,147 @@
-﻿using RpgEditor;
-using RpgLibrary.DataClasses;
-using RpgLibrary.GameObjectClasses;
-using RpgLibrary.ItemClasses;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+namespace RpgEditor;
 
-namespace RpgEditor
+public partial class FormMain : Form
 {
-    public partial class FormMain : Form
+    private readonly Dictionary<string, Form> assetWindows = [];
+    private readonly ToolStripMenuItem validateContent = new("Validate Content");
+    internal EditorProject? Project { get; private set; }
+
+    public FormMain()
     {
-        RPG RPG { get; set; } = new();
-        FormArmor? frmArmor;
-        FormWeapon? frmWeapon;
-        FormQuest? frmQuest;
-        FormEntity? frmEntity;
+        InitializeComponent();
+        FormClosing += (_, e) => e.Cancel = !CanSwitchProject();
+        saveGameToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
+        openGameToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.O;
+        validateContent.Click += (_, _) => ValidateContent();
+        gameToolStripMenuItem.DropDownItems.Insert(gameToolStripMenuItem.DropDownItems.IndexOf(exitGameToolStripMenuItem), validateContent);
+        itemsToolStripMenuItem.DropDownItems.Add("Shields", null, (_, _) =>
+            ShowAssets("Shields", () => new FormOtherItems<RpgLibrary.ItemClasses.ShieldData>("Shields")));
+        itemsToolStripMenuItem.DropDownItems.Add("Consumables", null, (_, _) =>
+            ShowAssets("Consumables", () => new FormOtherItems<RpgLibrary.ItemClasses.ConsumableData>("Consumables")));
+        itemsToolStripMenuItem.DropDownItems.Add("Other Items", null, (_, _) =>
+            ShowAssets("Other Items", () => new FormOtherItems<RpgLibrary.ItemClasses.ItemData>("Other Items")));
+        RefreshProjectStatus();
+    }
 
-        public static string ItemPath { get; set; } = string.Empty;
-        public static string GamePath { get; set; } = string.Empty;
-        public static string QuestPath { get; set; } = string.Empty;
-        public static string EntityPath { get; set; } = string.Empty;
+    internal void RefreshProjectStatus()
+    {
+        Text = Project is null ? "RPG Editor" : $"{Project.Title}{(Project.IsDirty ? " *" : "")} - RPG Editor";
+        itemsToolStripMenuItem.Enabled = questsToolStripMenuItem.Enabled = entitiesToolStripMenuItem.Enabled = Project is not null;
+        saveGameToolStripMenuItem.Enabled = Project?.IsDirty == true;
+        validateContent.Enabled = Project?.IsGameContent == true;
+    }
 
-        public FormMain()
+    private bool CanSwitchProject()
+    {
+        if (Project?.IsDirty != true)
+            return true;
+
+        return MessageBox.Show(this, "Save changes to the current project?", "Unsaved Changes",
+            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) switch
         {
-            InitializeComponent();
+            DialogResult.Yes => SaveProject(),
+            DialogResult.No => true,
+            _ => false
+        };
+    }
 
-            this.FormClosing += FormMain_FormClosing;
+    private void NewGameToolStripMenuItem_Click(object? sender, EventArgs e)
+    {
+        using var dialog = new FormNewGame();
+        if (dialog.ShowDialog(this) != DialogResult.OK)
+            return;
 
-            // Add this if you have a menu strip or toolbar for entities
-            // Example for a menu item:
-            // entityToolStripMenuItem.Click += EntityToolStripMenuItem_Click;
+        using var folders = new FolderBrowserDialog { Description = "Select the parent folder for the new Game project." };
+        if (folders.ShowDialog(this) != DialogResult.OK || !CanSwitchProject())
+            return;
+        try { ActivateProject(EditorProject.Create(folders.SelectedPath, dialog.RPG)); }
+        catch (Exception ex) { MessageBox.Show(this, ex.Message, "Could Not Create Project", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+    }
+
+    private void OpenGameToolStripMenuItem_Click(object? sender, EventArgs e)
+    {
+        using var dialog = new FolderBrowserDialog
+        {
+            Description = "Select the game content project, its Assets folder, or a legacy Game project.",
+            SelectedPath = Project?.Root ?? string.Empty,
+            ShowNewFolderButton = false
+        };
+        if (dialog.ShowDialog(this) != DialogResult.OK || !CanSwitchProject())
+            return;
+
+        try { ActivateProject(EditorProject.Open(dialog.SelectedPath)); }
+        catch (Exception ex) { MessageBox.Show(this, ex.Message, "Could Not Open Project", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+    }
+
+    private void ActivateProject(EditorProject project)
+    {
+        foreach (var window in assetWindows.Values)
+            window.Dispose();
+        assetWindows.Clear();
+        Project = project;
+        RefreshProjectStatus();
+    }
+
+    private bool SaveProject()
+    {
+        if (Project is null)
+            return false;
+        try
+        {
+            Project.Save();
+            RefreshProjectStatus();
+            return true;
         }
-
-        void FormMain_FormClosing(object? sender, FormClosingEventArgs e)
+        catch (Exception ex)
         {
-            DialogResult result = MessageBox.Show(
-            "Unsaved changes will be lost. Are you sure you want to exit?",
-            "Exit?",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Warning);
-            if (result == DialogResult.No)
-                e.Cancel = true;
+            MessageBox.Show(this, ex.Message, "Could Not Save Project", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return false;
         }
+    }
 
-        private void NewGameToolStripMenuItem_Click(object? sender, EventArgs e)
+    private void ValidateContent()
+    {
+        if (Project?.IsGameContent != true)
+            return;
+        if (Project.IsDirty &&
+            MessageBox.Show(this, "Save pending edits and validate the content?", "Validate Content",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+            return;
+
+        try
         {
-            using (FormNewGame frmNewGame = new())
+            if (Project.IsDirty)
             {
-                DialogResult result = frmNewGame.ShowDialog();
-                if (result == DialogResult.OK && frmNewGame.RPG != null)
-                {
-                    FolderBrowserDialog folderDialog = new FolderBrowserDialog();
-                    folderDialog.Description = "Select folder to create game in.";
-                    folderDialog.SelectedPath = Application.StartupPath;
-                    DialogResult folderResult = folderDialog.ShowDialog();
-                    if (folderResult == DialogResult.OK)
-                    {
-                        try
-                        {
-                            GamePath = Path.Combine(folderDialog.SelectedPath, "Game");
-                            ItemPath = Path.Combine(GamePath, "Items");
-                            QuestPath = Path.Combine(GamePath, "Quests");
-                            EntityPath = Path.Combine(GamePath, "Entities");
-
-                            if (Directory.Exists(GamePath))
-                                throw new Exception("Selected directory already exists.");
-
-                            Directory.CreateDirectory(GamePath);
-                            Directory.CreateDirectory(ItemPath + @"\Armor");
-                            Directory.CreateDirectory(ItemPath + @"\Weapon");
-                            Directory.CreateDirectory(QuestPath);
-                            Directory.CreateDirectory(EntityPath);
-                            RPG = frmNewGame.RPG;
-                            XnaSerializer.Serialize<RPG>(GamePath + @"\Game.xml", RPG);
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.ToString());
-                            return;
-                        }
-                        itemsToolStripMenuItem.Enabled = true;
-                        questsToolStripMenuItem.Enabled = true;
-                    }
-                }
+                if (!SaveProject())
+                    return;
             }
+            else
+                ContentReferenceValidator.Validate(Project.Root);
+            MessageBox.Show(this, "Content validation passed.", "Validate Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
-        private void OpenGameToolStripMenuItem_Click(object? sender, EventArgs e)
+        catch (Exception ex)
         {
-            FolderBrowserDialog folderDialog = new()
-            {
-                Description = "Select Game folder",
-                SelectedPath = Application.StartupPath
-            };
-            bool tryAgain = false;
-            do
-            {
-                DialogResult folderResult = folderDialog.ShowDialog();
-                DialogResult msgBoxResult;
-                if (folderResult == DialogResult.OK)
-                {
-                    if (File.Exists(folderDialog.SelectedPath + @"\Game\Game.xml"))
-                    {
-                        try
-                        {
-                            OpenGame(folderDialog.SelectedPath);
-                            tryAgain = false;
-                        }
-                        catch (Exception ex)
-                        {
-                            msgBoxResult = MessageBox.Show(
-                            ex.ToString(),
-                            "Error opening game.",
-                            MessageBoxButtons.RetryCancel);
-                            if (msgBoxResult == DialogResult.Cancel)
-                                tryAgain = false;
-                            else if (msgBoxResult == DialogResult.Retry)
-                                tryAgain = true;
-                        }
-                    }
-
-                    else
-                    {
-                        msgBoxResult = MessageBox.Show(
-                        "Game not found, try again?",
-                        "Game does not exist",
-                        MessageBoxButtons.RetryCancel);
-                        if (msgBoxResult == DialogResult.Cancel)
-                            tryAgain = false;
-                        else if (msgBoxResult == DialogResult.Retry)
-                            tryAgain = true;
-                    }
-                }
-            } while (tryAgain);
+            MessageBox.Show(this, ex.Message, "Content Validation Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+    }
 
-        private void SaveGameToolStripMenuItem_Click(object? sender, EventArgs e)
+    private void SaveGameToolStripMenuItem_Click(object? sender, EventArgs e) => SaveProject();
+    private void ExitGameToolStripMenuItem_Click(object? sender, EventArgs e) => Close();
+    private void WeaponsToolStripMenuItem_Click(object? sender, EventArgs e) => ShowAssets("Weapons", () => new FormWeapon());
+    private void ArmorToolStripMenuItem_Click(object? sender, EventArgs e) => ShowAssets("Armor", () => new FormArmor());
+    private void QuestToolStripMenuItem_Click(object? sender, EventArgs e) => ShowAssets("Quests", () => new FormQuest());
+    private void EntityToolStripMenuItem_Click(object? sender, EventArgs e) => ShowAssets("Entities", () => new FormEntity());
+
+    private void ShowAssets(string name, Func<Form> create)
+    {
+        if (!assetWindows.TryGetValue(name, out var window) || window.IsDisposed)
         {
-            if (RPG != null)
-            {
-                try
-                {
-                    XnaSerializer.Serialize<RPG>(GamePath + @"\Game.xml", RPG);
-                    FormDetails.WriteItemData();
-                    FormDetails.WriteQuestData();
-                    FormDetails.WriteEntityData();
-                }
-                catch (Exception ex)
-                {
-
-                    MessageBox.Show(ex.ToString(), "Error saving game.");
-                }
-            }
+            window = create();
+            window.MdiParent = this;
+            window.Text = name;
+            assetWindows[name] = window;
         }
-
-        private void OpenGame(string path)
-        {
-            GamePath = Path.Combine(path, "Game");
-            ItemPath = Path.Combine(GamePath, "Items");
-            QuestPath = Path.Combine(GamePath, "Quests");
-            EntityPath = Path.Combine(GamePath, "Entities");
-
-            System.Diagnostics.Debug.WriteLine("GamePath: " + GamePath);
-            System.Diagnostics.Debug.WriteLine("ItemPath: " + ItemPath);
-            System.Diagnostics.Debug.WriteLine("QuestPath: " + QuestPath);
-            System.Diagnostics.Debug.WriteLine("EntityPath: " + EntityPath);
-
-
-            RPG = XnaSerializer.Deserialize<RPG>(GamePath + @"\Game.xml");
-
-            FormDetails.ReadItemData();
-            FormDetails.ReadQuestData();
-            FormDetails.ReadEntityData();
-
-            PrepareForms();
-        }
-
-        private void PrepareForms()
-        {
-            itemsToolStripMenuItem.Enabled = true;
-            questsToolStripMenuItem.Enabled = true;
-            entitiesToolStripMenuItem.Enabled = true;
-        }
-
-        private void ExitGameToolStripMenuItem_Click(object? sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void WeaponsToolStripMenuItem_Click(object? sender, EventArgs e)
-        {
-            frmWeapon ??= new()
-            {
-                MdiParent = this
-            };
-            frmWeapon.FillListBox();
-            frmWeapon.Show();
-            frmWeapon.BringToFront();
-        }
-
-        private void ArmorToolStripMenuItem_Click(object? sender, EventArgs e)
-        {
-            frmArmor ??= new()
-            {
-                MdiParent = this
-            };
-            frmArmor.FillListBox();
-            frmArmor.Show();
-            frmArmor.BringToFront();
-        }
-
-        private void QuestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            frmQuest ??= new()
-            {
-                MdiParent = this
-            };
-            frmQuest.FillListBox();
-            frmQuest.Show();
-            frmQuest.BringToFront();
-        }
-
-        private void EntityToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            frmEntity ??= new FormEntity
-            {
-                MdiParent = this
-            };
-            frmEntity.FillListBox();
-            frmEntity.Show();
-            frmEntity.BringToFront();
-        }
+        window.Show();
+        window.BringToFront();
     }
 }

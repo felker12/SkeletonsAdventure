@@ -8,12 +8,14 @@ global using System.Diagnostics; //this is just for debugging purposes
 using MonoGame.Extended.Tilemaps;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
+using SkeletonsAdventure.Content;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.Entities.NPCs;
 using SkeletonsAdventure.GameObjects;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.ItemClasses.ItemManagement;
 using SkeletonsAdventure.Quests;
+using System.IO;
 using System.Linq;
 using SkeletonsAdventure.LibraryClasses;
 using SkeletonsAdventure.HelperClasses;
@@ -78,15 +80,22 @@ namespace SkeletonsAdventure.GameWorld
 
             //The order of these is important because some of the data relies on other data to be created first.
             XPTable = new(PathsLibrary.SavePath);
-            Items = GameCreationManager.CreateItems(Content, FontsLibrary.Arial10);
+            var assetPaths = new List<string>();
+            using (var reader = new StreamReader(TitleContainer.OpenStream(Path.Combine(Content.RootDirectory, DataAssetCatalog.FileName))))
+                while (reader.ReadLine() is { } path)
+                    assetPaths.Add(path);
+            IEnumerable<string> AssetsIn(string directory) =>
+                assetPaths.Where(asset => asset.StartsWith(directory + "/", StringComparison.Ordinal));
+            Items = GameCreationManager.CreateItems(Content, FontsLibrary.Arial10, AssetsIn("Items"));
 
             GameItemLoadingManager = new GameItemLoadingManager(Items);
 
             DropTables = GameCreationManager.CreateDropTables();
-            Enemies = GameCreationManager.CreateEnemies(Content, DefaultEntityAssets, TexturesLibrary, GetItemByName("Bones"));
+            Enemies = GameCreationManager.CreateEnemies(Content, DefaultEntityAssets, TexturesLibrary,
+                GetItemByName("Bones"), GameItemLoadingManager, AssetsIn("EntityData"));
             Chests = GameCreationManager.CreateChests(TexturesLibrary.ButtonBoxTexture, TexturesLibrary.DefaultButtonTexture,
                 FontsLibrary.Arial10, FontsLibrary.Arial12);
-            Quests = GameCreationManager.CreateQuests(ItemsClone);
+            Quests = GameCreationManager.CreateQuests(Content, ItemsClone, AssetsIn("Quests"));
             NPCs = GameCreationManager.CreateNPCs(Content, QuestsClone);
         }
 

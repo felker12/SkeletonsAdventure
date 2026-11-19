@@ -78,7 +78,6 @@
             tbBaseHealth.Name = "tbBaseHealth";
             tbBaseHealth.Size = new Size(114, 27);
             tbBaseHealth.TabIndex = 2;
-            tbBaseHealth.TextChanged += tbBaseHealth_TextChanged;
             // 
             // tbBaseDefence
             // 

@@ -1,6 +1,8 @@
 ﻿using RpgLibrary.EntityClasses;
 using RpgLibrary.GameObjectClasses;
 using RpgLibrary.ItemClasses;
+using RpgLibrary.QuestClasses;
+using SkeletonsAdventure.Content;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.Entities.NPCs;
 using SkeletonsAdventure.GameObjects;
@@ -17,7 +19,7 @@ namespace SkeletonsAdventure.GameWorld
     {
         //Create the enemies from the content folder
         internal static Dictionary<string, Enemy> CreateEnemies(ContentManager content, EntityAssets defaultAssets, TexturesLibrary textures,
-            GameItem skeletonDrop)
+            GameItem skeletonDrop, GameItemLoadingManager itemLoader, IEnumerable<string> assetPaths)
         {
             //Use reflection to build a lookup table of all concrete Enemy subclasses in the current assembly.
             //This maps full type names (e.g., "SkeletonsAdventure.Entities.Skeleton") to Type objects,
@@ -27,19 +29,11 @@ namespace SkeletonsAdventure.GameWorld
                 .Where(t => t.IsSubclassOf(typeof(Enemy)) && t.IsAbstract is false)
                 .ToDictionary(t => t.FullName, t => t);
 
-            string EnemiesPath = Path.Combine(content.RootDirectory, "EntityData");
-            string[] fileNames = Directory.GetFiles(EnemiesPath, "*.xnb", SearchOption.AllDirectories);
-
             Dictionary<string, Enemy> enemies = [];
 
             //Iterate through each enemy data file and create the corresponding enemy instance
-            foreach (string filePath in fileNames)
+            foreach (string contentPath in assetPaths)
             {
-                //Get the path relative to the content root (trims content from the start of the path)
-                string relativePath = Path.GetRelativePath(content.RootDirectory, filePath);
-                //Remove the file extension to get the content path
-                string contentPath = Path.ChangeExtension(relativePath, null); 
-
                 EnemyData data = content.Load<EnemyData>(contentPath);
 
                 //Attempt to find the enemy type in our lookup table using the type name from the data file
@@ -57,14 +51,15 @@ namespace SkeletonsAdventure.GameWorld
                         _ => defaultAssets.Texture
                     };
                     Enemy en = (Enemy)Activator.CreateInstance(enemyType, data, defaultAssets with { Texture = texture });
-                    if (en is Skeleton)
+                    en.GuaranteedDrops.Add(itemLoader.LoadGameItemsFromItemBaseData(data.GuaranteedItems));
+                    if (en is Skeleton && skeletonDrop is not null && !data.GuaranteedItems.Any(item => item.Name == skeletonDrop.Name))
                         en.GuaranteedDrops.Add(skeletonDrop);
 
                     enemies.Add(en.GetType().FullName, en);
                 }
                 else
                 {
-                    Debug.WriteLine($"Warning: Type '{data.Type}' not found in {contentPath}");
+                    throw new ContentLoadException($"Unknown enemy type '{data.Type}' in '{contentPath}'.");
                 }
             }
 
@@ -72,17 +67,12 @@ namespace SkeletonsAdventure.GameWorld
         }
 
         //Create the items from the content folder
-        internal static Dictionary<string, GameItem> CreateItems(ContentManager content, SpriteFont tooltipFont)
+        internal static Dictionary<string, GameItem> CreateItems(ContentManager content, SpriteFont tooltipFont, IEnumerable<string> assetPaths)
         {
             Dictionary<string, GameItem> items = [];
 
-            string rootDirectory = content.RootDirectory;
-            string itemsPath = Path.Combine(rootDirectory, "Items");
-            string[] fileNames = Directory.GetFiles(itemsPath, "*.xnb", SearchOption.AllDirectories);
-
-            foreach (string filePath in fileNames)
+            foreach (string contentPath in assetPaths)
             {
-                string contentPath = Path.ChangeExtension(Path.GetRelativePath(rootDirectory, filePath), null);
                 string texturePath = null;
                 try
                 {
@@ -119,7 +109,7 @@ namespace SkeletonsAdventure.GameWorld
                 new("Round Shield", 5),
             ];
 
-            dropTables.Add("BasicDropTable", new(basicTable, noDropWeight: 35));
+            dropTables.Add(DataAssetCatalog.BasicDropTable, new(basicTable, noDropWeight: 35));
 
             //TODO : Create more drop tables as needed
             return dropTables;
@@ -133,7 +123,7 @@ namespace SkeletonsAdventure.GameWorld
             {
                 ID = 8,
                 ChestType = ChestType.Basic,
-                DropTableName = "BasicDropTable",
+                DropTableName = DataAssetCatalog.BasicDropTable,
             };
 
             string name = nameof(BasicChest);
@@ -145,7 +135,7 @@ namespace SkeletonsAdventure.GameWorld
             {
                 ID = 784,
                 ChestType = ChestType.Basic,
-                DropTableName = "BasicDropTable",
+                DropTableName = DataAssetCatalog.BasicDropTable,
             };
 
             name = nameof(BasicChest2);
@@ -168,7 +158,8 @@ namespace SkeletonsAdventure.GameWorld
             };
         }
 
-        internal static Dictionary<string, Quest> CreateQuests(Dictionary<string, GameItem> ItemsClone) //TODO
+        internal static Dictionary<string, Quest> CreateQuests(ContentManager content, Dictionary<string, GameItem> ItemsClone,
+            IEnumerable<string> assetPaths)
         {
             BaseTask task = new()
             {
@@ -203,19 +194,19 @@ namespace SkeletonsAdventure.GameWorld
 
             Quest quest = new()
             {
-                Name = "Test Quest",
+                Name = BuiltInQuests.TestQuest,
                 Description = "This is a test quest to test the quest system.",
                 Requirements = requirements,
                 Tasks = Tasks,
             };
 
             Quest quest2 = quest.Clone();
-            quest2.Name = "Test2";
+            quest2.Name = BuiltInQuests.Test2;
             quest2.RequiredQuestNames.Add(quest.Name);
 
             Quest quest3 = new(quest.GetQuestData())
             {
-                Name = "Test3",
+                Name = BuiltInQuests.Test3,
             };
 
             QuestReward questReward = new()
@@ -227,7 +218,7 @@ namespace SkeletonsAdventure.GameWorld
 
             Quest SlaySkeletons = new()
             {
-                Name = "SlaySkeletons",
+                Name = BuiltInQuests.SlaySkeletons,
                 Description = "Kill 10 skeletons",
                 Requirements = requirements,
                 Reward = questReward,
@@ -242,6 +233,14 @@ namespace SkeletonsAdventure.GameWorld
                 Quests.Add(q.Name, q);
             }
 
+            var authored = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string asset in assetPaths)
+            {
+                QuestData data = content.Load<QuestData>(asset);
+                if (!authored.Add(data.Name))
+                    throw new ContentLoadException($"Duplicate quest name '{data.Name}' in '{asset}'.");
+                Quests[data.Name] = new Quest(data);
+            }
             return Quests;
         }
 

@@ -442,7 +442,6 @@ namespace RpgEditor
             Name = "FormArmorDetails";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Armor Details";
-            Load += FormArmorDetails_Load_1;
             ((System.ComponentModel.ISupportInitialize)nudWeight).EndInit();
             ResumeLayout(false);
             PerformLayout();

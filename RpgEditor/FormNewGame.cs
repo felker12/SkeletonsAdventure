@@ -19,18 +19,22 @@ namespace RpgEditor
         public FormNewGame()
         {
             InitializeComponent();
+            btnOK.DialogResult = DialogResult.None;
+            AcceptButton = btnOK;
+            CancelButton = btnCancel;
             btnOK.Click += new EventHandler(BtnOK_Click);
         }
 
         void BtnOK_Click(object? sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtName.Text) ||
-            string.IsNullOrEmpty(txtDescription.Text))
+            if (string.IsNullOrWhiteSpace(txtName.Text) ||
+            string.IsNullOrWhiteSpace(txtDescription.Text))
             {
                 MessageBox.Show("You must enter a name and a description.", "Error");
                 return;
             }
-            RPG = new RPG(txtName.Text, txtDescription.Text);
+            RPG = new RPG(txtName.Text.Trim(), txtDescription.Text.Trim());
+            DialogResult = DialogResult.OK;
             this.Close();
         }
     }

@@ -18,15 +18,21 @@
       <GameContentOutput>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'GameAssetsV6'))</GameContentOutput>
       <GameContentCache>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'ContentCacheV6'))</GameContentCache>
     </PropertyGroup>
-    <Exec Command="dotnet &quot;$(TargetPath)&quot; validate Assets" WorkingDirectory="$(MSBuildProjectDirectory)" />
+    <Exec Command="dotnet &quot;$(TargetPath)&quot; validate Assets &quot;$(GameContentOutput)/DataAssets.txt&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
     <Exec Command="dotnet &quot;$(TargetPath)&quot; build -p DesktopGL -g Reach -s Assets -o &quot;$(GameContentOutput)&quot; -i &quot;$(GameContentCache)&quot;"
           WorkingDirectory="$(MSBuildProjectDirectory)"
           CustomErrorRegularExpression="\[E\] .+" />
+    <ReadLinesFromFile File="$(GameContentOutput)/DataAssets.txt">
+      <Output TaskParameter="Lines" ItemName="_DeclaredDataAsset" />
+    </ReadLinesFromFile>
+    <Error Condition="!Exists('$(GameContentOutput)/Content/%(_DeclaredDataAsset.Identity).xnb')"
+           Text="The content build did not produce '%(_DeclaredDataAsset.Identity).xnb'." />
     <ItemGroup>
       <GeneratedAsset Include="$(GameContentOutput)/Content/**/*.xnb" />
       <CompiledAsset Include="@(GeneratedAsset)">
         <Link>Content/%(GeneratedAsset.RecursiveDir)%(GeneratedAsset.Filename)%(GeneratedAsset.Extension)</Link>
       </CompiledAsset>
+      <CompiledAsset Include="$(GameContentOutput)/DataAssets.txt" Link="Content/DataAssets.txt" />
     </ItemGroup>
   </Target>
 

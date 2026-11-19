@@ -9,7 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\SkeletonsAdventure.Content\MapCatalog.cs" Link="Content\MapCatalog.cs" />
+    <Compile Include="..\SkeletonsAdventure.Content\Builder\ContentReferenceValidator.cs" Link="Content\ContentReferenceValidator.cs" />
     <ProjectReference Include="..\RpgLibrary\RpgLibrary.csproj" />
+    <InternalsVisibleTo Include="RpgEditor.Tests" />
   </ItemGroup>
 
   <ItemGroup>

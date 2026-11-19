@@ -9,11 +9,13 @@ using SkeletonsAdventure.Content;
 // The XML importer resolves the RPG data types from loaded assemblies.
 _ = typeof(RpgLibrary.AttackData.AttackData).Assembly;
 
-if (args is ["validate", var sourceDirectory])
+if (args.Length is 2 or 3 && args[0] == "validate")
 {
     try
     {
-        ContentReferenceValidator.Validate(sourceDirectory);
+        ContentReferenceValidator.Validate(args[1]);
+        if (args.Length == 3)
+            ContentReferenceValidator.WriteAssetList(args[1], args[2]);
         return 0;
     }
     catch (InvalidDataException ex)
@@ -29,21 +31,6 @@ return builder.FailedToBuild > 0 ? 1 : 0;
 
 internal sealed class GameContentBuilder : ContentBuilder
 {
-    internal static IReadOnlyList<string> ExcludedTextures { get; } =
-    [
-        "AttackSprites/FireBallSpriteSheet_OG.png",
-        "Player/SkeletonSpriteSheet_LeftHalf.png",
-        "Player/SkeletonSpriteSheet_Stylized.png",
-        // TSX assets build their own textures and would collide with these output paths.
-        "TiledFiles/CrossedOffBlock.png",
-        "TiledFiles/doors_lever_chest_animation.png",
-        "TiledFiles/fire_animation.png",
-        "TiledFiles/Objects.png",
-        "TiledFiles/ProjectUtumno_full.png",
-        "TiledFiles/walls_floor.png"
-    ];
-    internal const string LeverTileset = "TiledFiles/doors_lever_chest_animation.tsx";
-
     public override IContentCollection GetContentCollection()
     {
         var content = new ContentCollection();
@@ -61,7 +48,7 @@ internal sealed class GameContentBuilder : ContentBuilder
         };
         content.Include<WildcardRule>("**/*.png", textureImporter, textureProcessor);
         content.Include<WildcardRule>("**/*.PNG", textureImporter, textureProcessor);
-        foreach (string excluded in ExcludedTextures)
+        foreach (string excluded in ContentReferenceValidator.ExcludedTextures)
             content.Exclude<WildcardRule>(excluded);
 
         content.Include<WildcardRule>("Fonts/*.spritefont", new FontDescriptionImporter(), new FontDescriptionProcessor
@@ -75,11 +62,15 @@ internal sealed class GameContentBuilder : ContentBuilder
         content.Include<WildcardRule>("AttackData/*.xml", xmlImporter, xmlProcessor);
         content.Include<WildcardRule>("AttackData/*.Xml", xmlImporter, xmlProcessor);
         content.Include<WildcardRule>("EntityData/*.xml", xmlImporter, xmlProcessor);
+        content.Include<WildcardRule>("EntityData/**/*.xml", xmlImporter, xmlProcessor);
+        content.Include<WildcardRule>("Items/*.xml", xmlImporter, xmlProcessor);
         content.Include<WildcardRule>("Items/**/*.xml", xmlImporter, xmlProcessor);
+        content.Include<WildcardRule>("Quests/*.xml", xmlImporter, xmlProcessor);
+        content.Include<WildcardRule>("Quests/**/*.xml", xmlImporter, xmlProcessor);
 
         foreach (string levelName in MapCatalog.LevelNames)
             content.Include<WildcardRule>(MapCatalog.AssetName(levelName) + ".tmx", new TiledTilemapImporter(), new TilemapProcessor());
-        content.Include<WildcardRule>(LeverTileset, new TilemapTilesetImporter(), new TilemapTilesetProcessor());
+        content.Include<WildcardRule>(ContentReferenceValidator.LeverTileset, new TilemapTilesetImporter(), new TilemapTilesetProcessor());
 
         return content;
     }
