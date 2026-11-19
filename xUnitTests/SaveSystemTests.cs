@@ -153,6 +153,7 @@ public partial class UnitTest1
         var saved = World.ToData();
         // Qualify the player without mutating the shared item template through a clone.
         saved.PlayerData.EntityLevel = weapon.LevelRequirements.Level;
+        saved.PlayerData.totalXP = GameManager.XPTable.GetLevelXPAtLevel(saved.PlayerData.EntityLevel);
         saved.PlayerData.BaseAttack = Math.Max(saved.PlayerData.BaseAttack, weapon.LevelRequirements.Attack);
         saved.PlayerData.BaseDefence = Math.Max(saved.PlayerData.BaseDefence, weapon.LevelRequirements.Defence);
         saved.PlayerData.baseMana = Math.Max(saved.PlayerData.baseMana, weapon.LevelRequirements.Mana);

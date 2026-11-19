@@ -21,19 +21,23 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             bonusHealthFromAttributePoints = 0, bonusManaFromAttributePoints = 0,
             bonusHealthFromEvolution = 0, bonusAttackFromEvolution = 0, 
             bonusDefenceFromEvolution = 0, bonusManaFromEvolution = 0;
-        private bool justLeveled = false;
 
         public PlayerEvolutionType EvolutionType { get; private set; } = PlayerEvolutionType.Skeleton;
         private readonly int _levelsPerEvolution = 25;
 
         public Backpack Backpack { get; set; }
         public EquippedItems EquippedItems { get; set; }
-        public int TotalXP { get; set; } = 0;
+        public int TotalXP { get; private set; } = 0;
         public int Mana { get; set; } = 0;
         public int BaseMana { get; set; } = 0;
         public int MaxMana { get; set; } = 0;
         public int AttributePoints { get; set; } = 0;
-        public float XPModifier { get; set; } = 1.0f; //TODO
+        public float XPModifier
+        {
+            get;
+            set => field = float.IsFinite(value) && value >= 0
+                ? value : throw new ArgumentOutOfRangeException(nameof(value));
+        } = 1.0f;
         private bool AimVisible { get; set; } = false;
         public List<Quest> ActiveQuests { get; set; } = [];
         public List<Quest> CompletedQuests { get; set; } = [];
@@ -208,14 +212,18 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
         {
             ArgumentNullException.ThrowIfNull(texture);
             EvolutionType = playerData.EvolutionType;
-            TotalXP = playerData.totalXP;
+            TotalXP = Math.Clamp(playerData.totalXP, 0, GameManager.XPTable.MaximumXP);
 
             UpdateEntityWithData(playerData);
+            Level = GameManager.XPTable.GetPlayerLevelAtXP(TotalXP);
 
             BaseMana = playerData.baseMana;
             Mana = playerData.mana;
             MaxMana = playerData.maxMana;
             AttributePoints = playerData.attributePoints;
+            // Repair levels missed by older builds at exact XP thresholds, without replaying level-up events.
+            int missedLevels = Math.Max(0, Level - Math.Clamp(playerData.EntityLevel, 0, GameManager.XPTable.MaximumLevel));
+            AttributePoints = (int)Math.Clamp((long)AttributePoints + missedLevels * 5, 0, int.MaxValue);
             bonusAttackFromAttributePoints = playerData.bonusAttackFromAttributePoints;
             bonusDefenceFromAttributePoints = playerData.bonusDefenceFromAttributePoints;
             bonusHealthFromAttributePoints = playerData.bonusHealthFromAttributePoints;
@@ -316,16 +324,6 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             Defence += bonusDefenceFromEvolution;
             MaxHealth += bonusHealthFromEvolution;
             MaxMana += bonusManaFromEvolution;
-        }
-
-        private void RefillStatsOnLevelUp()
-        {
-            if (justLeveled)
-            {
-                Health = MaxHealth;
-                Mana = MaxMana;
-                justLeveled = false;
-            }
         }
 
         public void CheckQuestCompleted()
@@ -434,33 +432,31 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
         public void GainXp(int XpGained)
         {
-            int currentLevel = GameManager.XPTable.GetPlayerLevelAtXP(TotalXP);
-
-            TotalXP += (int)(XpGained * XPModifier);
-            Level = GameManager.XPTable.GetPlayerLevelAtXP(TotalXP);
-
-            if (Level > currentLevel)
+            if (XpGained < 0)
+                throw new ArgumentOutOfRangeException(nameof(XpGained));
+            // Scale before converting to int, and saturate at the final level's threshold.
+            TotalXP = (int)Math.Min(GameManager.XPTable.MaximumXP,
+                TotalXP + Math.Truncate((double)XpGained * XPModifier));
+            int targetLevel = GameManager.XPTable.GetPlayerLevelAtXP(TotalXP);
+            while (Level < targetLevel)
             {
+                Level++;
                 PlayerStatAdjustmentForLevel();
-                while (currentLevel < Level) //perform the levelUp event for every level gained
-                {
-                    currentLevel++;
-                    LevelUP();
-                }
+                ApplyLevelUpRewards();
             }
         }
 
-        public void LevelUP() //TODO
+        private void ApplyLevelUpRewards()
         {
-            AttributePoints += 5;
-            justLeveled = true;
+            AttributePoints = (int)Math.Min(int.MaxValue, (long)AttributePoints + 5);
 
             World.AddMessage($"You leveled up! You are now level {Level}!");
-            World.AddMessage($"Tottal Attribute Points: {AttributePoints}");
+            World.AddMessage($"Total Attribute Points: {AttributePoints}");
 
             //check if the player can evolve
             CanEvolve = CheckCanEvolve();
-            RefillStatsOnLevelUp();
+            Health = MaxHealth;
+            Mana = MaxMana;
         }
 
         protected virtual bool CheckCanEvolve() //TODO add more evolution types
@@ -489,6 +485,9 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
         public void ApplyAttributePoints(int attackPoints, int defencePoints, int healthPoints, int manaPoints)
         {
+            if (attackPoints < 0 || defencePoints < 0 || healthPoints < 0 || manaPoints < 0 ||
+                (long)attackPoints + defencePoints + healthPoints + manaPoints > AttributePoints)
+                throw new ArgumentOutOfRangeException(nameof(attackPoints), "Allocate only available attribute points.");
             bonusAttackFromAttributePoints += attackPoints;
             bonusDefenceFromAttributePoints += defencePoints;
             bonusHealthFromAttributePoints += healthPoints;

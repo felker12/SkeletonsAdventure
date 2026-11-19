@@ -148,14 +148,7 @@ namespace SkeletonsAdventure.States
 
             World.Update(gameTime);
 
-            int lvlXP = GameManager.XPTable.GetLevelXPAtLevel(Player.Level);
-            int nextLvlXP = GameManager.XPTable.GetLevelXPAtLevel(Player.Level + 1);
-            int playerXPToLevel = nextLvlXP - lvlXP;
-            int playerXPSinceLastLevel = Player.TotalXP - lvlXP;
-
-            HealthBar.Update(Player.Health, Player.MaxHealth, HealthBar.Position);
-            ManaBar.Update(Player.Mana, Player.MaxMana, ManaBar.Position);
-            XPProgress.Update(playerXPSinceLastLevel, playerXPToLevel, XPProgress.Position);
+            UpdatePlayerStatusBars();
 
             UpdateQuestToDisplayLabel();
             ControlManager.Update(gameTime, PlayerIndexInControl);
@@ -168,6 +161,15 @@ namespace SkeletonsAdventure.States
             LoadMessagesFromWorld();
             MessageBox.Update();
             //FPS.Update(gameTime);
+        }
+
+        internal void UpdatePlayerStatusBars()
+        {
+            var (Current, Required, AtMaximumLevel) = GameManager.XPTable.GetProgress(Player.TotalXP);
+            HealthBar.Update(Player.Health, Player.MaxHealth, HealthBar.Position);
+            ManaBar.Update(Player.Mana, Player.MaxMana, ManaBar.Position);
+            XPProgress.Update(Current, Required, XPProgress.Position,
+                AtMaximumLevel ? "MAX LEVEL" : null);
         }
 
         public override void HandleInput(PlayerIndex playerIndex)

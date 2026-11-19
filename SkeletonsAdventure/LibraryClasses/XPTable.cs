@@ -1,72 +1,76 @@
-﻿using System.IO;
+using System.Globalization;
+using System.IO;
 
 namespace SkeletonsAdventure.LibraryClasses
 {
     internal class XPTable
     {
-        public List<int> PlayerLevelXPs { get; private set; } = [];
+        public IReadOnlyList<int> PlayerLevelXPs { get; }
+        public int MaximumLevel => PlayerLevelXPs.Count - 1;
+        public int MaximumXP => PlayerLevelXPs[MaximumLevel];
 
-        public XPTable(string savePath) 
+        public XPTable(string savePath)
         {
-            PlayerLevelXPs = CreatePlayerLevelXPs(savePath);
+            PlayerLevelXPs = CreatePlayerLevelXPs(savePath).AsReadOnly();
         }
 
-        //Get the level the player is at given the XP
-        public int GetPlayerLevelAtXP(int XP)
+        public int GetPlayerLevelAtXP(int xp)
         {
             int level = 0;
-
-            foreach (var levelXP in PlayerLevelXPs)
-                if (XP > levelXP)
-                    level = PlayerLevelXPs.IndexOf(levelXP);
-
+            while (level < MaximumLevel && xp >= PlayerLevelXPs[level + 1])
+                level++;
             return level;
         }
 
-        //Get the XP needed for the level
         public int GetLevelXPAtLevel(int level)
         {
+            if (level < 0 || level > MaximumLevel)
+                throw new ArgumentOutOfRangeException(nameof(level));
             return PlayerLevelXPs[level];
         }
 
-        public static List<int> CreatePlayerLevelXPs(string savePath) //TODO adjust the xp as needed
+        public (int Current, int Required, bool AtMaximumLevel) GetProgress(int xp)
+        {
+            int level = GetPlayerLevelAtXP(xp);
+            if (level == MaximumLevel)
+                return (1, 1, true);
+            int start = PlayerLevelXPs[level];
+            return (Math.Max(0, xp - start), PlayerLevelXPs[level + 1] - start, false);
+        }
+
+        public static List<int> CreatePlayerLevelXPs(string savePath)
         {
             Directory.CreateDirectory(savePath);
-            string levelsSavePath = Path.Combine(savePath, "PlayerLevels.txt");
-            List<int> playerLevelXPs = [];
-
-            if (File.Exists(levelsSavePath)) //If the file exists load the data
+            string path = Path.Combine(savePath, "PlayerLevels.txt");
+            List<int> thresholds = [];
+            if (File.Exists(path))
             {
-                List<string> lines = [.. File.ReadAllLines(levelsSavePath)];
-
-                foreach (var line in lines)
+                foreach (string line in File.ReadLines(path))
                 {
                     string[] parts = line.Split(',');
-                    if (int.TryParse(parts[1], out int xp))
-                    {
-                        playerLevelXPs.Add(xp);
-                    }
+                    if (parts.Length != 2 ||
+                        !int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out int level) ||
+                        !int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int xp) ||
+                        level != thresholds.Count || xp < 0 ||
+                        (level == 0 ? xp != 0 : xp <= thresholds[^1]))
+                        throw new InvalidDataException($"Invalid XP table at line {thresholds.Count + 1}: {path}");
+                    thresholds.Add(xp);
                 }
+                if (thresholds.Count == 0)
+                    throw new InvalidDataException($"The XP table is empty: {path}");
             }
             else
             {
-                //File.CreateText(levelsSavePath).Close(); //create the file if it doesn't exist
-                string levels = string.Empty;
-
-                for (int i = 0; i < 101; i++)
+                List<string> lines = [];
+                for (int level = 0; level <= 100; level++)
                 {
-                    if (i == 0)
-                        playerLevelXPs.Add(0);
-                    else
-                        playerLevelXPs.Add((int)Math.Pow(i + 1, 2) * 20);
-
-                    levels += $"{i},{playerLevelXPs[i]}" + Environment.NewLine;
+                    int xp = level == 0 ? 0 : (level + 1) * (level + 1) * 20;
+                    thresholds.Add(xp);
+                    lines.Add(FormattableString.Invariant($"{level},{xp}"));
                 }
-
-                File.WriteAllText(levelsSavePath, levels);
+                File.WriteAllLines(path, lines);
             }
-
-            return playerLevelXPs;
+            return thresholds;
         }
     }
 }

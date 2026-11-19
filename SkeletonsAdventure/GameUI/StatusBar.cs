@@ -20,7 +20,7 @@
         private string statusBarText = string.Empty;
         
 
-        public void Update(int value, int Max, Vector2 position)
+        public void Update(int value, int Max, Vector2 position, string text = null)
         {
             if(Visible)
             {
@@ -39,7 +39,7 @@
                 Position = position;
 
                 if(TextVisible)
-                    statusBarText = $"{Value} / {MaxValue}";
+                    statusBarText = text ?? $"{Value} / {MaxValue}";
             }
         }
 
