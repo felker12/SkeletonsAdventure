@@ -14,7 +14,7 @@ namespace SkeletonsAdventure
         public StateManager StateManager { get; private set; } = new();
         public static int ScreenWidth { get; set; } = 1280;
         public static int ScreenHeight { get; set; } = 720;
-        public static GameTime GameTime { get; private set; }
+        //public static GameTime GameTime { get; private set; }
         //public static float DeltaTime => (float)GameTime.ElapsedGameTime.TotalSeconds;
         public static int BaseSpeedMultiplier { get; set; } = 50;
         public static PlayerIndex PlayerIndexInControl { get; set; } = PlayerIndex.One;
@@ -56,7 +56,7 @@ namespace SkeletonsAdventure
 
         protected override void Update(GameTime gameTime)
         {
-            GameTime = gameTime;
+            //GameTime = gameTime;
 
             if (InputHandler.KeyReleased(Keys.Escape) ||
             InputHandler.ButtonDown(Buttons.Back, PlayerIndex.One))
