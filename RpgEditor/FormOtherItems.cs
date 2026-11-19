@@ -7,7 +7,7 @@ internal sealed class FormOtherItems<T> : FormDetails where T : ItemData, new()
     public FormOtherItems(string title)
     {
         Text = title;
-        ConfigureAssets(entry => entry.Data.GetType() == typeof(T), Edit);
+        ConfigureAssets(entry => entry.Data.GetType() == typeof(T), Edit, itemList: true);
     }
 
     private ItemData? Edit(EditorProject project, object? data)

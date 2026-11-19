@@ -7,7 +7,7 @@ public partial class FormArmor : FormDetails
     public FormArmor()
     {
         InitializeComponent();
-        ConfigureAssets(entry => entry.Data is ArmorData, EditAsset);
+        ConfigureAssets(entry => entry.Data is ArmorData, EditAsset, itemList: true);
     }
 
     private object? EditAsset(EditorProject project, object? data)

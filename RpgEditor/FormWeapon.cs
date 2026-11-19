@@ -7,7 +7,7 @@ public partial class FormWeapon : FormDetails
     public FormWeapon()
     {
         InitializeComponent();
-        ConfigureAssets(entry => entry.Data is WeaponData, EditAsset);
+        ConfigureAssets(entry => entry.Data is WeaponData, EditAsset, itemList: true);
     }
 
     private object? EditAsset(EditorProject project, object? data)

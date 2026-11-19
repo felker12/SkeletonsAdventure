@@ -18,6 +18,7 @@ internal static class ReferenceDialogs
         var templates = project.Assets.Select(entry => entry.Data).OfType<ItemData>().OrderBy(item => item.Name).ToArray();
         var select = new ComboBox { Width = 220, DropDownStyle = ComboBoxStyle.DropDownList, DisplayMember = nameof(ItemData.Name),
             DataSource = templates };
+        var search = new TextBox { Name = "itemSearch", PlaceholderText = "Search items", AccessibleName = "Search items", Width = 470 };
         var quantity = new NumericUpDown { Minimum = 1, Maximum = int.MaxValue, Width = 90 };
         var list = new ListBox { Width = 470, Height = 160 };
         foreach (var item in original)
@@ -27,19 +28,44 @@ internal static class ReferenceDialogs
         var apply = new Button { Text = "OK", DialogResult = DialogResult.OK };
         var row = new FlowLayoutPanel { AutoSize = true, WrapContents = false };
         row.Controls.AddRange([select, new Label { Text = "Quantity", AutoSize = true }, quantity, add]);
-        using var dialog = CreateDialog(title, apply, row, list, remove);
+        using var dialog = CreateDialog(title, apply, search, row, list, remove);
         void UpdateQuantity()
         {
             quantity.Enabled = select.SelectedItem is ItemData { Stackable: true };
+            add.Enabled = select.SelectedItem is ItemData;
             if (!quantity.Enabled)
                 quantity.Value = 1;
         }
         select.SelectedIndexChanged += (_, _) => UpdateQuantity();
+        search.TextChanged += (_, _) =>
+        {
+            var selected = select.SelectedItem as ItemData;
+            decimal previousQuantity = quantity.Value;
+            var filtered = templates.Where(item => EditorSearch.Matches(search.Text, item.Name)).ToArray();
+            select.DataSource = filtered;
+            if (selected is not null && filtered.Contains(selected))
+            {
+                select.SelectedItem = selected;
+                if (quantity.Enabled)
+                    quantity.Value = previousQuantity;
+            }
+            UpdateQuantity();
+        };
+        search.KeyDown += (_, e) =>
+        {
+            if (e.KeyCode != Keys.Enter)
+                return;
+            e.SuppressKeyPress = true;
+            if (add.Enabled)
+                add.PerformClick();
+        };
         UpdateQuantity();
         list.SelectedIndexChanged += (_, _) =>
         {
             if (list.SelectedItem is not ItemBaseData item)
                 return;
+            if (!EditorSearch.Matches(search.Text, item.Name))
+                search.Clear();
             select.SelectedItem = templates.FirstOrDefault(template => template.Name == item.Name);
             if (quantity.Enabled)
                 quantity.Value = Math.Max(1, item.Quantity);

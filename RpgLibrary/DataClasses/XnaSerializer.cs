@@ -22,14 +22,14 @@ namespace RpgLibrary.DataClasses
 
         public static T Deserialize<T>(string filename)
         {
-            T data;
-            using (FileStream stream = File.OpenRead(filename))
-            {
-                using XmlReader reader = XmlReader.Create(stream);
+            using FileStream stream = File.OpenRead(filename);
+            return Deserialize<T>(stream);
+        }
 
-                data = IntermediateSerializer.Deserialize<T>(reader, NoReferenceRelocation);
-            }
-            return data;
+        public static T Deserialize<T>(Stream stream)
+        {
+            using XmlReader reader = XmlReader.Create(stream);
+            return IntermediateSerializer.Deserialize<T>(reader, NoReferenceRelocation);
         }
     }
 }

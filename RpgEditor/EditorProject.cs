@@ -20,6 +20,7 @@ internal sealed record EditorAsset(string RelativePath, object Data)
 internal sealed class EditorProject
 {
     private readonly Dictionary<string, EditorAsset> assets = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string> revisions = new(StringComparer.OrdinalIgnoreCase);
     private Dictionary<string, EditorAsset> saved = new(StringComparer.OrdinalIgnoreCase);
     private bool newProject;
 
@@ -81,9 +82,12 @@ internal sealed class EditorProject
         {
             try
             {
-                var entry = new EditorAsset(Path.GetRelativePath(Root, file), XnaSerializer.Deserialize<T>(file));
+                byte[] bytes = File.ReadAllBytes(file);
+                using var stream = new MemoryStream(bytes);
+                var entry = new EditorAsset(Path.GetRelativePath(Root, file), XnaSerializer.Deserialize<T>(stream));
                 CheckName(entry.Data, entry.Name, null);
                 assets.Add(entry.RelativePath, entry);
+                revisions.Add(entry.RelativePath, ProjectFileRevision.Of(bytes)!);
             }
             catch (Exception ex)
             {
@@ -94,7 +98,7 @@ internal sealed class EditorProject
 
     public IReadOnlyList<AssetUsage> FindUsages(EditorAsset asset) => AssetReferences.Find(this, asset);
 
-    public void Change(EditorAsset? original, object replacement, bool propagateRename = false)
+    public EditorAsset Change(EditorAsset? original, object replacement, bool propagateRename = false)
     {
         if (IsGameContent && replacement is EnemyData enemy && !EnemyClassCatalog.Contains(enemy.Type))
             throw new InvalidDataException($"Unknown enemy class '{enemy.Type}'. Choose a registered enemy class.");
@@ -126,6 +130,7 @@ internal sealed class EditorProject
             PropagateReferences(original, entry.Name);
         }
         assets[entry.RelativePath] = entry;
+        return entry;
     }
 
     public void Remove(EditorAsset entry, EditorAsset? replacement = null)
@@ -185,29 +190,70 @@ internal sealed class EditorProject
             throw new InvalidDataException($"An asset named '{name}' already exists in this category.");
     }
 
-    public void Save()
+    public void ReloadAsset(string file)
     {
-        var changes = new List<ProjectFileChange>();
+        string relative = Path.GetRelativePath(Root, file);
+        var current = assets.GetValueOrDefault(relative) ?? saved.GetValueOrDefault(relative);
+        if (current is null)
+            throw new InvalidDataException($"'{relative}' is not an editor asset.");
+
+        byte[]? bytes = ProjectFileRevision.ReadBytes(file);
+        if (bytes is null)
+        {
+            assets.Remove(relative);
+            saved.Remove(relative);
+            revisions.Remove(relative);
+            return;
+        }
+
+        using var stream = new MemoryStream(bytes);
+        object data = current.Data switch
+        {
+            ItemData => XnaSerializer.Deserialize<ItemData>(stream),
+            EntityData => XnaSerializer.Deserialize<EntityData>(stream),
+            QuestData => XnaSerializer.Deserialize<QuestData>(stream),
+            _ => throw new InvalidDataException($"Unsupported asset '{relative}'.")
+        };
+        var reloaded = new EditorAsset(relative, data);
+        CheckName(data, reloaded.Name, current);
+        assets[relative] = saved[relative] = reloaded;
+        revisions[relative] = ProjectFileRevision.Of(bytes)!;
+    }
+
+    public void Save(IReadOnlyDictionary<string, string?>? approvedOverwrites = null)
+    {
+        var pending = new List<(string Path, object? Data)>();
+        if (newProject)
+            pending.Add(("Game.xml", Metadata));
+        foreach (var entry in assets.Values)
+            if (!saved.TryGetValue(entry.RelativePath, out var original) || !ReferenceEquals(original, entry))
+                pending.Add((entry.RelativePath, entry.Data));
+        foreach (var entry in saved.Values)
+            if (!assets.ContainsKey(entry.RelativePath))
+                pending.Add((entry.RelativePath, null));
+
+        var changes = new List<(string Path, ProjectFileChange Change, string? ExpectedRevision)>();
         try
         {
-            if (newProject)
-                changes.Add(ProjectFileChange.Stage(Path.Combine(Root, "Game.xml"), Metadata));
-            foreach (var entry in assets.Values)
-                if (!saved.TryGetValue(entry.RelativePath, out var original) || !ReferenceEquals(original, entry))
-                    changes.Add(ProjectFileChange.Stage(Path.Combine(Root, entry.RelativePath), entry.Data));
-            foreach (var entry in saved.Values)
-                if (!assets.ContainsKey(entry.RelativePath))
-                    changes.Add(ProjectFileChange.Stage(Path.Combine(Root, entry.RelativePath), null));
+            foreach (var (relative, data) in pending)
+            {
+                string file = Path.Combine(Root, relative);
+                string? actual = ProjectFileRevision.Read(file);
+                if (actual != revisions.GetValueOrDefault(relative) &&
+                    (approvedOverwrites is null || !approvedOverwrites.TryGetValue(file, out var approved) || actual != approved))
+                    throw new ProjectSaveConflictException(file, actual);
+                changes.Add((relative, ProjectFileChange.Stage(file, data), actual));
+            }
 
-            foreach (var change in changes)
-                change.Apply();
+            foreach (var (_, change, expected) in changes)
+                change.Apply(expected);
             if (IsGameContent)
                 ContentReferenceValidator.Validate(Root);
         }
         catch (Exception failure)
         {
             var errors = new List<Exception> { failure };
-            foreach (var change in changes.AsEnumerable().Reverse())
+            foreach (var (_, change, _) in changes.AsEnumerable().Reverse())
             {
                 try { change.RollBack(); }
                 catch (Exception error) { errors.Add(error); }
@@ -219,8 +265,14 @@ internal sealed class EditorProject
         }
 
         MarkSaved();
-        foreach (var change in changes)
+        foreach (var (relative, change, _) in changes)
+        {
+            if (change.Revision is { } revision)
+                revisions[relative] = revision;
+            else
+                revisions.Remove(relative);
             change.DiscardBackup();
+        }
     }
 
     private void MarkSaved()

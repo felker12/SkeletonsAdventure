@@ -8,6 +8,134 @@ namespace RpgEditor.Tests;
 public sealed class EditorProjectTests
 {
     [Fact]
+    public void ReloadingAConflictingAssetPreservesOtherPendingEdits()
+    {
+        using var directory = new TestDirectory();
+        var project = EditorProject.Create(directory.Path, new RPG("Conflicts", "Fixture"));
+        var first = project.Change(null, new QuestData { Name = "First", Description = "Original" });
+        var second = project.Change(null, new QuestData { Name = "Second", Description = "Original" });
+        project.Save();
+        project.Change(first, new QuestData { Name = "First", Description = "Editor first" });
+        project.Change(second, new QuestData { Name = "Second", Description = "Editor second" });
+
+        string firstPath = Path.Combine(project.Root, first.RelativePath);
+        string secondPath = Path.Combine(project.Root, second.RelativePath);
+        XnaSerializer.Serialize(secondPath, new QuestData { Name = "Second", Description = "External edit" });
+        var conflict = Assert.Throws<ProjectSaveConflictException>(() => project.Save());
+        Assert.Equal(secondPath, conflict.FilePath);
+        Assert.Equal("Original", XnaSerializer.Deserialize<QuestData>(firstPath).Description);
+        Assert.Equal("External edit", XnaSerializer.Deserialize<QuestData>(secondPath).Description);
+
+        project.ReloadAsset(conflict.FilePath);
+        Assert.True(project.IsDirty);
+        Assert.Equal("External edit", Assert.IsType<QuestData>(project.Assets.Single(asset => asset.Name == "Second").Data).Description);
+        project.Save();
+        Assert.False(project.IsDirty);
+        Assert.Equal("Editor first", XnaSerializer.Deserialize<QuestData>(firstPath).Description);
+        Assert.Equal("External edit", XnaSerializer.Deserialize<QuestData>(secondPath).Description);
+    }
+
+    [Fact]
+    public void OverwriteApprovalOnlyAppliesToTheVersionTheUserReviewed()
+    {
+        using var directory = new TestDirectory();
+        var project = EditorProject.Create(directory.Path, new RPG("Conflicts", "Fixture"));
+        var original = project.Change(null, new QuestData { Name = "Quest", Description = "Original" });
+        project.Save();
+        var pending = project.Change(original, new QuestData { Name = "Quest", Description = "Editor change" });
+        string path = Path.Combine(project.Root, pending.RelativePath);
+        XnaSerializer.Serialize(path, new QuestData { Name = "Quest", Description = "External first" });
+        var first = Assert.Throws<ProjectSaveConflictException>(() => project.Save());
+        var approvals = new Dictionary<string, string?> { [first.FilePath] = first.Revision };
+        XnaSerializer.Serialize(path, new QuestData { Name = "Quest", Description = "External second" });
+        var second = Assert.Throws<ProjectSaveConflictException>(() => project.Save(approvals));
+        Assert.NotEqual(first.Revision, second.Revision);
+        approvals[path] = second.Revision;
+        project.Save(approvals);
+        Assert.Equal("Editor change", XnaSerializer.Deserialize<QuestData>(path).Description);
+
+        project.Remove(pending);
+        XnaSerializer.Serialize(path, new QuestData { Name = "Quest", Description = "Edited before deletion" });
+        Assert.Throws<ProjectSaveConflictException>(() => project.Save());
+        project.ReloadAsset(path);
+        Assert.False(project.IsDirty);
+        Assert.Equal("Edited before deletion", Assert.IsType<QuestData>(Assert.Single(project.Assets).Data).Description);
+    }
+
+    [Fact]
+    public void ExternalCreationAndRemovalAreAlsoSaveConflicts()
+    {
+        using var directory = new TestDirectory();
+        var project = EditorProject.Create(directory.Path, new RPG("Conflicts", "Fixture"));
+        var pending = project.Change(null, new QuestData { Name = "New Quest", Description = "From editor" });
+        string path = Path.Combine(project.Root, pending.RelativePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        XnaSerializer.Serialize(path, new QuestData { Name = "New Quest", Description = "From disk" });
+        var creation = Assert.Throws<ProjectSaveConflictException>(() => project.Save());
+        Assert.Equal(path, creation.FilePath);
+        Assert.NotNull(creation.Revision);
+        project.ReloadAsset(path);
+        Assert.False(project.IsDirty);
+
+        var existing = Assert.Single(project.Assets);
+        project.Change(existing, new QuestData { Name = "New Quest", Description = "Pending edit" });
+        File.Delete(path);
+        var removal = Assert.Throws<ProjectSaveConflictException>(() => project.Save());
+        Assert.Equal(path, removal.FilePath);
+        Assert.Null(removal.Revision);
+        Assert.False(File.Exists(path));
+        project.ReloadAsset(path);
+        Assert.Empty(project.Assets);
+        Assert.False(project.IsDirty);
+    }
+
+    [Fact]
+    public void DuplicateItemDraftKeepsSpriteAndRequirementsAndUsesAnAvailableName()
+    {
+        using var directory = new TestDirectory();
+        var project = EditorProject.Create(directory.Path, new RPG("Library", "Fixture"));
+        var original = new WeaponData
+        {
+            Name = "Iron Sword", Quantity = 1, AttackValue = 14, TexturePath = "Textures/Weapons",
+            SourceRectangle = new(32, 64, 32, 32), LevelRequirementData = new() { Level = 7 }
+        };
+        project.Change(null, original);
+        project.Change(null, new WeaponData { Name = "Iron Sword Copy" });
+        var copy = Assert.IsType<WeaponData>(AssetList.CreateDraftCopy(project, original));
+        Assert.Equal("Iron Sword Copy 2", copy.Name);
+        Assert.Equal(original.TexturePath, copy.TexturePath);
+        Assert.Equal(original.SourceRectangle, copy.SourceRectangle);
+        Assert.Equal(14, copy.AttackValue);
+        Assert.Equal(7, copy.LevelRequirementData.Level);
+        copy.LevelRequirementData.Level = 12;
+        Assert.Equal(7, original.LevelRequirementData.Level);
+        Assert.DoesNotContain(project.Assets, asset => asset.Name == copy.Name);
+        Assert.True(EditorSearch.Matches(" SWORD  iron ", copy.Name));
+        Assert.False(EditorSearch.Matches("iron shield", copy.Name));
+    }
+
+    [Fact]
+    public void ItemThumbnailDrawsTheCroppedSpriteFromTheSheet()
+    {
+        using var directory = new TestDirectory();
+        string path = Path.Combine(directory.Path, "Atlas.png");
+        using (var image = new Bitmap(32, 16))
+        {
+            using var sheet = Graphics.FromImage(image);
+            sheet.Clear(Color.Red);
+            sheet.FillRectangle(Brushes.Lime, new Rectangle(16, 0, 16, 16));
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+        }
+        using var cache = new AssetThumbnails(() => directory.Path);
+        using var output = new Bitmap(160, 40);
+        using var graphics = Graphics.FromImage(output);
+        var draw = new DrawItemEventArgs(graphics, SystemFonts.DefaultFont, new Rectangle(0, 0, 160, 40),
+            0, DrawItemState.None, Color.Black, Color.White);
+        cache.Draw(draw, new ItemData { Name = "Example", TexturePath = "Atlas", SourceRectangle = new(16, 0, 16, 16) });
+        Assert.Equal(Color.Lime.ToArgb(), output.GetPixel(21, 20).ToArgb());
+    }
+
+    [Fact]
     public void LocationTargetsAreDiscoveredByLayerAndRejectBrokenReferences()
     {
         using var directory = new TestDirectory();

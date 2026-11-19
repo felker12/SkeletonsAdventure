@@ -9,6 +9,7 @@ public partial class FormMain : Form
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "RpgEditor", "RecentProjects.json"));
     internal EditorProject? Project { get; private set; }
+    internal event Action? ProjectAssetsReloaded;
 
     public FormMain()
     {
@@ -125,11 +126,34 @@ public partial class FormMain : Form
     {
         if (Project is null)
             return false;
+        var overwrites = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
         try
         {
-            Project.Save();
-            RefreshProjectStatus();
-            return true;
+            while (true)
+            {
+                try
+                {
+                    Project.Save(overwrites);
+                    RefreshProjectStatus();
+                    return true;
+                }
+                catch (ProjectSaveConflictException conflict)
+                {
+                    switch (ProjectConflictDialog.Show(this, conflict))
+                    {
+                        case ProjectConflictChoice.Overwrite:
+                            overwrites[conflict.FilePath] = conflict.Revision;
+                            continue;
+                        case ProjectConflictChoice.Reload:
+                            Project.ReloadAsset(conflict.FilePath);
+                            ProjectAssetsReloaded?.Invoke();
+                            RefreshProjectStatus();
+                            return !Project.IsDirty;
+                        default:
+                            return false;
+                    }
+                }
+            }
         }
         catch (Exception ex)
         {
