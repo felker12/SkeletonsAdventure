@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using RpgLibrary.DataClasses;
 using RpgLibrary.ItemClasses;
 
 namespace RpgEditor;
@@ -10,11 +11,12 @@ public partial class FormArmorDetails : Form
 
     private readonly ErrorProvider errors;
     private EditorProject? project;
+    private LevelRequirementData requirements = new();
 
     public FormArmorDetails()
     {
         InitializeComponent();
-        foreach (var input in new[] { mtbPrice, mtbPositionX, mtbPositionY, mtbQuantity, mtbX, mtbY, mtbWidth, mtbHeight, mtbDefenseValue })
+        foreach (var input in new[] { mtbPrice, mtbPositionX, mtbPositionY, mtbX, mtbY, mtbWidth, mtbHeight, mtbDefenseValue })
             input.Mask = "";
         errors = new ErrorProvider(this) { BlinkStyle = ErrorBlinkStyle.NeverBlink };
         Disposed += (_, _) => errors.Dispose();
@@ -27,6 +29,9 @@ public partial class FormArmorDetails : Form
         CancelButton = btnCancel;
         btnCancel.DialogResult = DialogResult.Cancel;
         btnOK.Click += BtnOK_Click;
+        var requirementSummary = EquipmentRequirementsDialog.CreateSummary(this, () => requirements, data => requirements = data);
+        requirementSummary.Location = new Point(14, mtbDefenseValue.Bottom + 10);
+        Controls.Add(requirementSummary);
     }
 
     internal void ConfigureTexturePicker(EditorProject current)
@@ -38,18 +43,15 @@ public partial class FormArmorDetails : Form
     private void LoadItem(ArmorData item)
     {
         tbName.Text = item.Name;
-        tbType.Text = item.Type;
+        tbType.Text = string.IsNullOrWhiteSpace(item.Type) ? ItemInput.DefaultEquipmentType(item) : item.Type;
+        requirements = item.LevelRequirementData?.Clone() ?? new();
         tbDescription.Text = item.Description;
         mtbPrice.Text = item.Price.ToString();
         nudWeight.Minimum = Math.Min(nudWeight.Minimum, (decimal)item.Weight);
         nudWeight.Maximum = Math.Max(nudWeight.Maximum, (decimal)item.Weight);
         nudWeight.Value = (decimal)item.Weight;
-        cbEquipped.Checked = item.Equipped;
-        cbStackable.Checked = item.Stackable;
-        cbConsumable.Checked = item.Consumable;
         mtbPositionX.Text = item.Position.X.ToString();
         mtbPositionY.Text = item.Position.Y.ToString();
-        mtbQuantity.Text = item.Quantity.ToString();
         mtbX.Text = item.SourceRectangle.X.ToString();
         mtbY.Text = item.SourceRectangle.Y.ToString();
         mtbWidth.Text = item.SourceRectangle.Width.ToString();
@@ -69,7 +71,6 @@ public partial class FormArmorDetails : Form
         }
 
         if (!ReadInteger(mtbPrice, 0, out int price) ||
-            !ReadInteger(mtbQuantity, 1, out int quantity) ||
             !ReadInteger(mtbX, 0, out int sourceX) ||
             !ReadInteger(mtbY, 0, out int sourceY) ||
             !ReadInteger(mtbWidth, 1, out int width) ||
@@ -92,23 +93,14 @@ public partial class FormArmorDetails : Form
             ShowError(cboArmorLocation, "Select a value.");
             return;
         }
-        if (!cbStackable.Checked && quantity != 1)
-        {
-            ShowError(mtbQuantity, "Non-stackable items have a quantity of one.");
-            return;
-        }
-
         var item = Armor?.Clone() ?? new ArmorData();
+        ItemInput.ApplyEquipmentTemplateDefaults(item);
         item.Name = tbName.Text.Trim();
-        item.Type = tbType.Text;
         item.Description = tbDescription.Text;
         item.Price = price;
         item.Weight = (float)nudWeight.Value;
-        item.Equipped = cbEquipped.Checked;
-        item.Stackable = cbStackable.Checked;
-        item.Consumable = cbConsumable.Checked;
         item.Position = new(positionX, positionY);
-        item.Quantity = quantity;
+        item.LevelRequirementData = requirements.Clone();
         item.SourceRectangle = new(sourceX, sourceY, width, height);
         item.TexturePath = tbPath.Text.Trim();
         item.ArmorLocation = selection;

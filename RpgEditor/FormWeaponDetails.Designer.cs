@@ -1,4 +1,4 @@
-﻿namespace RpgEditor
+namespace RpgEditor
 {
     partial class FormWeaponDetails
     {
@@ -35,17 +35,9 @@
             mtbY = new MaskedTextBox();
             mtbX = new MaskedTextBox();
             label13 = new Label();
-            mtbQuantity = new MaskedTextBox();
-            label11 = new Label();
             mtbPositionY = new MaskedTextBox();
             mtbPositionX = new MaskedTextBox();
             lblLocation = new Label();
-            cbConsumable = new CheckBox();
-            label12 = new Label();
-            cbStackable = new CheckBox();
-            label10 = new Label();
-            cbEquipped = new CheckBox();
-            label9 = new Label();
             tbDescription = new TextBox();
             label8 = new Label();
             nudWeight = new NumericUpDown();
@@ -67,7 +59,7 @@
             // 
             // tbPath
             // 
-            tbPath.Location = new Point(122, 336);
+            tbPath.Location = new Point(122, 231);
             tbPath.Margin = new Padding(4, 3, 4, 3);
             tbPath.Name = "tbPath";
             tbPath.Size = new Size(201, 23);
@@ -77,7 +69,7 @@
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new Point(40, 339);
+            label14.Location = new Point(40, 234);
             label14.Margin = new Padding(4, 0, 4, 0);
             label14.Name = "label14";
             label14.Size = new Size(70, 15);
@@ -86,7 +78,7 @@
             // 
             // mtbHeight
             // 
-            mtbHeight.Location = new Point(278, 303);
+            mtbHeight.Location = new Point(278, 198);
             mtbHeight.Margin = new Padding(4, 3, 4, 3);
             mtbHeight.Mask = "00000";
             mtbHeight.Name = "mtbHeight";
@@ -96,7 +88,7 @@
             // 
             // mtbWidth
             // 
-            mtbWidth.Location = new Point(225, 303);
+            mtbWidth.Location = new Point(225, 198);
             mtbWidth.Margin = new Padding(4, 3, 4, 3);
             mtbWidth.Mask = "00000";
             mtbWidth.Name = "mtbWidth";
@@ -106,7 +98,7 @@
             // 
             // mtbY
             // 
-            mtbY.Location = new Point(172, 303);
+            mtbY.Location = new Point(172, 198);
             mtbY.Margin = new Padding(4, 3, 4, 3);
             mtbY.Mask = "00000";
             mtbY.Name = "mtbY";
@@ -116,7 +108,7 @@
             // 
             // mtbX
             // 
-            mtbX.Location = new Point(119, 303);
+            mtbX.Location = new Point(119, 198);
             mtbX.Margin = new Padding(4, 3, 4, 3);
             mtbX.Mask = "00000";
             mtbX.Name = "mtbX";
@@ -127,7 +119,7 @@
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new Point(-3, 296);
+            label13.Location = new Point(-3, 191);
             label13.Margin = new Padding(4, 0, 4, 0);
             label13.Name = "label13";
             label13.Size = new Size(115, 30);
@@ -135,29 +127,9 @@
             label13.Text = "Source Position:\r\n(X, Y, Width, Height)\r\n";
             label13.TextAlign = ContentAlignment.TopRight;
             // 
-            // mtbQuantity
-            // 
-            mtbQuantity.Location = new Point(121, 264);
-            mtbQuantity.Margin = new Padding(4, 3, 4, 3);
-            mtbQuantity.Mask = "0000000";
-            mtbQuantity.Name = "mtbQuantity";
-            mtbQuantity.Size = new Size(116, 23);
-            mtbQuantity.TabIndex = 76;
-            mtbQuantity.Text = "1";
-            // 
-            // label11
-            // 
-            label11.AutoSize = true;
-            label11.Location = new Point(56, 267);
-            label11.Margin = new Padding(4, 0, 4, 0);
-            label11.Name = "label11";
-            label11.Size = new Size(56, 15);
-            label11.TabIndex = 75;
-            label11.Text = "Quantity:";
-            // 
             // mtbPositionY
             // 
-            mtbPositionY.Location = new Point(184, 235);
+            mtbPositionY.Location = new Point(184, 160);
             mtbPositionY.Margin = new Padding(4, 3, 4, 3);
             mtbPositionY.Mask = "000000";
             mtbPositionY.Name = "mtbPositionY";
@@ -167,7 +139,7 @@
             // 
             // mtbPositionX
             // 
-            mtbPositionX.Location = new Point(121, 235);
+            mtbPositionX.Location = new Point(121, 160);
             mtbPositionX.Margin = new Padding(4, 3, 4, 3);
             mtbPositionX.Mask = "00000";
             mtbPositionX.Name = "mtbPositionX";
@@ -178,72 +150,12 @@
             // lblLocation
             // 
             lblLocation.AutoSize = true;
-            lblLocation.Location = new Point(54, 238);
+            lblLocation.Location = new Point(54, 163);
             lblLocation.Margin = new Padding(4, 0, 4, 0);
             lblLocation.Name = "lblLocation";
             lblLocation.Size = new Size(56, 15);
             lblLocation.TabIndex = 72;
             lblLocation.Text = "Location:";
-            // 
-            // cbConsumable
-            // 
-            cbConsumable.AutoSize = true;
-            cbConsumable.Location = new Point(121, 210);
-            cbConsumable.Name = "cbConsumable";
-            cbConsumable.Size = new Size(47, 19);
-            cbConsumable.TabIndex = 71;
-            cbConsumable.Text = "true";
-            cbConsumable.UseVisualStyleBackColor = true;
-            // 
-            // label12
-            // 
-            label12.AutoSize = true;
-            label12.Location = new Point(35, 210);
-            label12.Margin = new Padding(4, 0, 4, 0);
-            label12.Name = "label12";
-            label12.Size = new Size(77, 15);
-            label12.TabIndex = 70;
-            label12.Text = "Consumable:";
-            // 
-            // cbStackable
-            // 
-            cbStackable.AutoSize = true;
-            cbStackable.Location = new Point(122, 186);
-            cbStackable.Name = "cbStackable";
-            cbStackable.Size = new Size(47, 19);
-            cbStackable.TabIndex = 69;
-            cbStackable.Text = "true";
-            cbStackable.UseVisualStyleBackColor = true;
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Location = new Point(53, 186);
-            label10.Margin = new Padding(4, 0, 4, 0);
-            label10.Name = "label10";
-            label10.Size = new Size(60, 15);
-            label10.TabIndex = 68;
-            label10.Text = "Stackable:";
-            // 
-            // cbEquipped
-            // 
-            cbEquipped.AutoSize = true;
-            cbEquipped.Location = new Point(122, 161);
-            cbEquipped.Name = "cbEquipped";
-            cbEquipped.Size = new Size(47, 19);
-            cbEquipped.TabIndex = 67;
-            cbEquipped.Text = "true";
-            cbEquipped.UseVisualStyleBackColor = true;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new Point(53, 161);
-            label9.Margin = new Padding(4, 0, 4, 0);
-            label9.Name = "label9";
-            label9.Size = new Size(60, 15);
-            label9.TabIndex = 66;
-            label9.Text = "Equipped:";
             // 
             // tbDescription
             // 
@@ -307,6 +219,8 @@
             tbType.Margin = new Padding(4, 3, 4, 3);
             tbType.Name = "tbType";
             tbType.Size = new Size(116, 23);
+            tbType.ReadOnly = true;
+            tbType.TabStop = false;
             tbType.TabIndex = 59;
             // 
             // label2
@@ -341,7 +255,7 @@
             // 
             cboHands.DropDownStyle = ComboBoxStyle.DropDownList;
             cboHands.FormattingEnabled = true;
-            cboHands.Location = new Point(121, 372);
+            cboHands.Location = new Point(121, 267);
             cboHands.Margin = new Padding(4, 3, 4, 3);
             cboHands.Name = "cboHands";
             cboHands.Size = new Size(115, 23);
@@ -350,7 +264,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(64, 375);
+            label5.Location = new Point(64, 270);
             label5.Margin = new Padding(4, 0, 4, 0);
             label5.Name = "label5";
             label5.Size = new Size(44, 15);
@@ -359,7 +273,7 @@
             // 
             // mtbAttackValue
             // 
-            mtbAttackValue.Location = new Point(118, 401);
+            mtbAttackValue.Location = new Point(118, 296);
             mtbAttackValue.Margin = new Padding(4, 3, 4, 3);
             mtbAttackValue.Mask = "0000000";
             mtbAttackValue.Name = "mtbAttackValue";
@@ -370,7 +284,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(39, 404);
+            label6.Location = new Point(39, 299);
             label6.Margin = new Padding(4, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new Size(72, 15);
@@ -379,7 +293,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(209, 447);
+            btnCancel.Location = new Point(209, 380);
             btnCancel.Margin = new Padding(4, 3, 4, 3);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(88, 27);
@@ -389,7 +303,7 @@
             // 
             // btnOK
             // 
-            btnOK.Location = new Point(75, 447);
+            btnOK.Location = new Point(75, 380);
             btnOK.Margin = new Padding(4, 3, 4, 3);
             btnOK.Name = "btnOK";
             btnOK.Size = new Size(88, 27);
@@ -401,7 +315,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(380, 506);
+            ClientSize = new Size(380, 425);
             Controls.Add(btnCancel);
             Controls.Add(btnOK);
             Controls.Add(mtbAttackValue);
@@ -415,17 +329,9 @@
             Controls.Add(mtbY);
             Controls.Add(mtbX);
             Controls.Add(label13);
-            Controls.Add(mtbQuantity);
-            Controls.Add(label11);
             Controls.Add(mtbPositionY);
             Controls.Add(mtbPositionX);
             Controls.Add(lblLocation);
-            Controls.Add(cbConsumable);
-            Controls.Add(label12);
-            Controls.Add(cbStackable);
-            Controls.Add(label10);
-            Controls.Add(cbEquipped);
-            Controls.Add(label9);
             Controls.Add(tbDescription);
             Controls.Add(label8);
             Controls.Add(nudWeight);
@@ -452,17 +358,9 @@
         private MaskedTextBox mtbY;
         private MaskedTextBox mtbX;
         private Label label13;
-        private MaskedTextBox mtbQuantity;
-        private Label label11;
         private MaskedTextBox mtbPositionY;
         private MaskedTextBox mtbPositionX;
         private Label lblLocation;
-        private CheckBox cbConsumable;
-        private Label label12;
-        private CheckBox cbStackable;
-        private Label label10;
-        private CheckBox cbEquipped;
-        private Label label9;
         private TextBox tbDescription;
         private Label label8;
         private NumericUpDown nudWeight;

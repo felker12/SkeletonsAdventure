@@ -8,6 +8,45 @@ namespace RpgEditor.Tests;
 public sealed class EditorProjectTests
 {
     [Fact]
+    public void RecentProjectsPersistInOrderAndReopeningDoesNotDuplicateThem()
+    {
+        using var directory = new TestDirectory();
+        string historyPath = Path.Combine(directory.Path, "preferences", "RecentProjects.json");
+        var history = new RecentProjects(historyPath);
+        Assert.Empty(history.Entries);
+
+        var projects = Enumerable.Range(0, 11)
+            .Select(i => EditorProject.Create(Path.Combine(directory.Path, i.ToString()), new RPG($"Project {i}", "Fixture")))
+            .ToArray();
+        foreach (var project in projects)
+            history.Remember(project);
+
+        var reopenedHistory = new RecentProjects(historyPath);
+        Assert.Equal(projects.Skip(1).Reverse().Select(project => project.Root), reopenedHistory.Entries.Select(entry => entry.Path));
+
+        var reopenedProject = EditorProject.Open(Path.GetDirectoryName(projects[4].Root)!);
+        reopenedHistory.Remember(reopenedProject);
+        var saved = new RecentProjects(historyPath).Entries;
+        Assert.Equal(new RecentProject(projects[4].Root, projects[4].Title), saved[0]);
+        Assert.Equal(10, saved.Count);
+        Assert.Single(saved, entry => entry.Path == projects[4].Root);
+    }
+
+    [Fact]
+    public void UnreadableRecentHistoryCanBeReplacedWhenAProjectOpens()
+    {
+        using var directory = new TestDirectory();
+        string historyPath = Path.Combine(directory.Path, "RecentProjects.json");
+        File.WriteAllText(historyPath, "{incomplete");
+        var history = new RecentProjects(historyPath);
+        Assert.Empty(history.Entries);
+
+        var project = EditorProject.Create(directory.Path, new RPG("Recovered history", "Fixture"));
+        history.Remember(project);
+        Assert.Equal(new RecentProject(project.Root, project.Title), Assert.Single(new RecentProjects(historyPath).Entries));
+    }
+
+    [Fact]
     public void StagedEditsRenamesAndDeletesPersistInTheSameFiles()
     {
         using var directory = new TestDirectory();

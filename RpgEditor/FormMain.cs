@@ -4,6 +4,10 @@ public partial class FormMain : Form
 {
     private readonly Dictionary<string, Form> assetWindows = [];
     private readonly ToolStripMenuItem validateContent = new("Validate Content");
+    private readonly ToolStripMenuItem recentProjectsMenu = new("Recent Projects");
+    private readonly RecentProjects recentProjects = new(Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "RpgEditor", "RecentProjects.json"));
     internal EditorProject? Project { get; private set; }
 
     public FormMain()
@@ -12,6 +16,8 @@ public partial class FormMain : Form
         FormClosing += (_, e) => e.Cancel = !CanSwitchProject();
         saveGameToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
         openGameToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.O;
+        gameToolStripMenuItem.DropDownItems.Insert(gameToolStripMenuItem.DropDownItems.IndexOf(openGameToolStripMenuItem) + 1, recentProjectsMenu);
+        RefreshRecentProjects();
         validateContent.Click += (_, _) => ValidateContent();
         gameToolStripMenuItem.DropDownItems.Insert(gameToolStripMenuItem.DropDownItems.IndexOf(exitGameToolStripMenuItem), validateContent);
         itemsToolStripMenuItem.DropDownItems.Add("Shields", null, (_, _) =>
@@ -63,14 +69,45 @@ public partial class FormMain : Form
         using var dialog = new FolderBrowserDialog
         {
             Description = "Select the game content project, its Assets folder, or a legacy Game project.",
-            SelectedPath = Project?.Root ?? string.Empty,
+            SelectedPath = Project?.Root ?? recentProjects.Entries.FirstOrDefault()?.Path ?? string.Empty,
             ShowNewFolderButton = false
         };
-        if (dialog.ShowDialog(this) != DialogResult.OK || !CanSwitchProject())
+        if (dialog.ShowDialog(this) == DialogResult.OK)
+            OpenProject(dialog.SelectedPath);
+    }
+
+    private void OpenProject(string path)
+    {
+        if (!CanSwitchProject())
             return;
 
-        try { ActivateProject(EditorProject.Open(dialog.SelectedPath)); }
+        try { ActivateProject(EditorProject.Open(path)); }
         catch (Exception ex) { MessageBox.Show(this, ex.Message, "Could Not Open Project", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+    }
+
+    private void RefreshRecentProjects()
+    {
+        while (recentProjectsMenu.DropDownItems.Count > 0)
+        {
+            var item = recentProjectsMenu.DropDownItems[0];
+            recentProjectsMenu.DropDownItems.RemoveAt(0);
+            item.Dispose();
+        }
+
+        if (recentProjects.Entries.Count == 0)
+        {
+            recentProjectsMenu.DropDownItems.Add(new ToolStripMenuItem("No recent projects") { Enabled = false });
+            return;
+        }
+
+        foreach (var entry in recentProjects.Entries)
+        {
+            var parent = Path.GetFileName(Path.GetDirectoryName(entry.Path));
+            var label = string.IsNullOrEmpty(parent) ? entry.Title : $"{entry.Title} ({parent})";
+            var item = new ToolStripMenuItem(label.Replace("&", "&&")) { ToolTipText = entry.Path };
+            item.Click += (_, _) => OpenProject(entry.Path);
+            recentProjectsMenu.DropDownItems.Add(item);
+        }
     }
 
     private void ActivateProject(EditorProject project)
@@ -79,6 +116,8 @@ public partial class FormMain : Form
             window.Dispose();
         assetWindows.Clear();
         Project = project;
+        recentProjects.Remember(project);
+        RefreshRecentProjects();
         RefreshProjectStatus();
     }
 

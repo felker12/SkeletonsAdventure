@@ -4,12 +4,34 @@ namespace RpgEditor;
 
 internal static class ItemInput
 {
+    public static void ApplyEquipmentTemplateDefaults(EquipableItemData item)
+    {
+        if (string.IsNullOrWhiteSpace(item.Type))
+            item.Type = DefaultEquipmentType(item);
+        item.Equipped = false;
+        item.Stackable = false;
+        item.Consumable = false;
+        item.Quantity = 1;
+        if (item is ShieldData shield)
+            shield.NumberHands = Hands.Off;
+    }
+
+    public static string DefaultEquipmentType(EquipableItemData item) => item switch
+    {
+        ArmorData => "Armor",
+        WeaponData => "Weapon",
+        ShieldData => "Shield",
+        _ => "Equipment"
+    };
+
     public static string? Validate(ItemData item, EditorProject? project)
     {
         if (string.IsNullOrWhiteSpace(item.Name))
             return "Enter an item name.";
         if (item.Price < 0 || !float.IsFinite(item.Weight) || item.Weight < 0)
             return "Price and weight must be nonnegative.";
+        if (item is ShieldData { DefenceValue: < 0 })
+            return "Defence value must be nonnegative.";
         if (item.Quantity < 1 || (!item.Stackable && item.Quantity != 1))
             return "Quantity must be positive. Non-stackable items have a quantity of one.";
         var source = item.SourceRectangle;
