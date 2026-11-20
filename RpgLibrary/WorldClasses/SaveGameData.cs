@@ -8,6 +8,8 @@ namespace RpgLibrary.WorldClasses
     public class SaveGameData
     {
         public int FormatVersion { get; set; } = 1;
+        [Microsoft.Xna.Framework.Content.ContentSerializer(Optional = true)]
+        public bool IsTestGame { get; set; }
         public WorldData World { get; set; } = new();
         public MenuManagerData Menus { get; set; } = new();
         public TabbedMenuData PauseMenu { get; set; } = new();

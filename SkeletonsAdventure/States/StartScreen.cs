@@ -14,7 +14,6 @@ namespace SkeletonsAdventure.States
         {
             DrawTitle(batch, 82, 216, 1f);
             DrawRule(batch, 84, 341, 445);
-            DrawText(batch, Assets.FontsLibrary.Arial12, "Enter or A", 86, 476, MutedText);
         }
     }
 }

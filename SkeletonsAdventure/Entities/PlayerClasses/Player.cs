@@ -72,22 +72,9 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             SetBonussesFromEvolution();
             UpdateStatsWithBonusses();
 
-            //GainXp(53400); //TODO delete this
-
-            //TODO
-            FireBall fireBall = (FireBall)GetAttackByName("FireBall");
+            var fireBall = GetAttackByName(nameof(FireBall));
             LearnAttack(fireBall);
-
-            IceBullet iceBullet = (IceBullet)GetAttackByName("IceBullet");
-            LearnAttack(iceBullet);
-
-            IceBullets iceBullets = (IceBullets)GetAttackByName("IceBullets");
-            LearnAttack(iceBullets);
-
-            //Debug.WriteLine(LearnedAttackManager.ToString());
-
-            //TODO
-            InitializeAttacks(); //this is for testing
+            SetKeyBinding(Keys.D1, fireBall);
         }
 
         private BasicAttack GetAttackByName(string name) =>
@@ -95,10 +82,10 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
 
         private void InitializeBaseStats()
         {
-            BaseAttack = 300; //TODO correct the values
+            BaseAttack = 12;
             BaseDefence = 6;
-            BaseHealth = 3000;
-            BaseMana = 1000; 
+            BaseHealth = 80;
+            BaseMana = 20;
         }
 
         private void Initialize()
@@ -122,24 +109,29 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
             HealthBarVisible = false;
         }
 
-        private void InitializeAttacks()
+        internal void EnableTestLoadout()
         {
-            Dictionary<Keys, BasicAttack> KeyBindings = new()
-            {
-                { Keys.D1, (FireBall)GetAttackByName("FireBall") },
-                { Keys.D2, (IcePillar)GetAttackByName("IcePillar") },
-                { Keys.D3, (IceBullet)GetAttackByName("IceBullet") },
-                { Keys.D4, (WaterBall)GetAttackByName("WaterBall") },
-                { Keys.D5, (FireWave)GetAttackByName("FireWave") },
-                { Keys.D6, (BlueFireWave)GetAttackByName("BlueFireWave") },
-                //{ Keys.D7, null },
-                //{ Keys.D8, null },
-                { Keys.D9, (IceBullets)GetAttackByName("IceBullets") },
-                //{ Keys.D0, (TriangleAttack)GetAttackByName("TriangleAttack") },
-                { Keys.D0, (SpinningTriangleAttack)GetAttackByName("SpinningTriangleAttack") },
-            };
+            BaseAttack = 300;
+            BaseHealth = 3000;
+            BaseMana = 1000;
+            UpdateStatsWithBonusses();
+            Health = MaxHealth;
+            Mana = MaxMana;
 
-            KeybindingsManager.SetKeybinding(KeyBindings);
+            Dictionary<Keys, string> bindings = new()
+            {
+                [Keys.D1] = nameof(FireBall),
+                [Keys.D2] = nameof(IcePillar),
+                [Keys.D3] = nameof(IceBullet),
+                [Keys.D4] = nameof(WaterBall),
+                [Keys.D5] = nameof(FireWave),
+                [Keys.D6] = nameof(BlueFireWave),
+                [Keys.D7] = nameof(TriangleAttack),
+                [Keys.D9] = nameof(IceBullets),
+                [Keys.D0] = nameof(SpinningTriangleAttack)
+            };
+            LearnedAttackManager.UpdateWithData(new() { LearnedAttackNames = [.. bindings.Values] });
+            SetKeybinding(bindings);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

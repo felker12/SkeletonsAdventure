@@ -21,6 +21,12 @@ namespace SkeletonsAdventure
         public static int BaseSpeedMultiplier { get; set; } = 50;
         public static PlayerIndex PlayerIndexInControl { get; set; } = PlayerIndex.One;
 
+        #if IFDEV
+        internal static bool IfDev => true;
+        #else
+        internal static bool IfDev => false;
+        #endif
+
         public Game1()
         {
             GameContent = new(Services);

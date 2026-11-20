@@ -31,58 +31,27 @@ namespace SkeletonsAdventure.GameWorld
             LevelCreator levelCreator = new(content, graphics, exitFont, damageFont, leverAnimation);
             Levels = levelCreator.Levels;
 
-            //TODO
-            //SetCurrentLevel(Levels["Level0"], Levels["Level0"].PlayerStartPosition);
-            //SetCurrentLevel(Levels["TestLevel"], Levels["TestLevel"].PlayerStartPosition);
-            //SetCurrentLevel(Levels["Dungeon\Dungeon"], new(100,100));
-            //SetCurrentLevel(Levels["Catacombs"], new(100, 100));
-            //SetCurrentLevel(Levels["Catacombs1"], new(100, 100));
             SetCurrentLevel(Levels["Level0"]);
         }
 
-        public static void Update(GameTime gameTime)
+        public static void Update(GameTime gameTime, bool testGame = false)
         {
             TotalTimeInWorld.ElapsedGameTime = gameTime.ElapsedGameTime;
             TotalTimeInWorld.TotalGameTime += gameTime.ElapsedGameTime;
 
             CurrentLevel.Update(TotalTimeInWorld);
 
-            //TODO delete this after testing
+            if (!Game1.IfDev || !testGame)
+                return;
+
             if (InputHandler.KeyReleased(Keys.NumPad0))
-            {
                 SetCurrentLevel(Levels["Level0"]);
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad1))
-            {
+            else if (InputHandler.KeyReleased(Keys.NumPad1))
                 SetCurrentLevel(Levels["Level1"]);
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad2))
-            {
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad3))
-            {
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad4))
-            {
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad5))
-            {
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad6))
-            {
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad7))
-            {
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad8))
-            {
+            else if (InputHandler.KeyReleased(Keys.NumPad8))
                 SetCurrentLevel(Levels["Level0_Test"]);
-            }
-            if (InputHandler.KeyReleased(Keys.NumPad9))
-            {
-                SetCurrentLevel(Levels["TestLevel"], Levels["TestLevel"].PlayerStartPosition);
-            }
-            //=======================================================================
+            else if (InputHandler.KeyReleased(Keys.NumPad9))
+                SetCurrentLevel(Levels["TestLevel"]);
         }
 
         public static void HandleInput(PlayerIndex playerIndex)
@@ -172,23 +141,31 @@ namespace SkeletonsAdventure.GameWorld
             MessagesToAdd.Add(message);
         }
 
-        public static void FillPlayerBackback() //TODO this is for testing
+        internal static void GiveStarterInventory()
         {
+            if (Player.Backpack.Add(GameManager.GetItemByName("Sword")))
+                Player.EquippedItems.TryEquipItem(Player.Backpack.Items[^1]);
+            var bones = GameManager.GetItemByName(DataAssetCatalog.Bones);
+            bones?.SetQuantity(3);
+            Player.Backpack.Add(bones);
+            Player.RefreshEquipmentStats();
+        }
+
+        internal static void GiveTestInventory()
+        {
+            var items = GameManager.ItemsClone;
             for (int i = 0; i < 3; i++)
             {
-                foreach (GameItem item in GameManager.ItemsClone.Values)
-                {
+                foreach (GameItem item in items.Values)
                     Player.Backpack.Add(item);
-                }
             }
 
-            GameItem Coins = GameManager.ItemsClone[DataAssetCatalog.Coins];
-            Coins.SetQuantity(20);
-
-            Player.Backpack.Add(Coins);
-
-            Player.EquippedItems.TryEquipItem(Player.Backpack.Items[0]);
-            Player.EquippedItems.TryEquipItem(Player.Backpack.Items[3]);
+            var coins = items[DataAssetCatalog.Coins];
+            coins.SetQuantity(20);
+            Player.Backpack.Add(coins);
+            Player.EquippedItems.TryEquipItem(Player.Backpack.Items.Find(item => item.Name == "Sword"));
+            Player.EquippedItems.TryEquipItem(Player.Backpack.Items.Find(item => item.Name == "Round Shield"));
+            Player.RefreshEquipmentStats();
         }
     }
 }

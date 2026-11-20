@@ -27,6 +27,7 @@ namespace SkeletonsAdventure.States
         private BoxSource CurrentSource { get; set; }
         public Camera Camera { get; set; }
         public World World { get; private set; }
+        internal bool IsTestGame { get; }
         public Player Player { get; set; }
         public List<BaseMenu> Menus { get; set; } = [];
         public GameButtonBox GameItemPopUpBox { get; private set; }
@@ -40,24 +41,31 @@ namespace SkeletonsAdventure.States
 
         //private FPSCounter FPS { get; set; } = new();
 
-        public GameScreen(Game1 game, GameManager assets) : base(game, assets)
+        public GameScreen(Game1 game, GameManager assets, bool testGame = false) : base(game, assets)
         {
-            Initialize();
+            if (testGame && !Game1.IfDev)
+                throw new InvalidOperationException("Test games require a development build.");
+            IsTestGame = testGame;
+            Initialize(useTestLoadout: testGame);
             MessageBox.AddMessage("Welcome!");
         }
 
-        public GameScreen(Game1 game, GameManager assets, WorldData worldData, Texture2D playerTexture) : base(game, assets)
+        public GameScreen(Game1 game, GameManager assets, WorldData worldData, Texture2D playerTexture, bool testGame = false)
+            : base(game, assets)
         {
+            IsTestGame = testGame;
             Initialize();
             SaveManager.LoadGame(worldData, playerTexture);
         }
 
-        private void Initialize()
+        private void Initialize(bool useTestLoadout = false)
         {
             QuestToDisplay = new(Assets.FontsLibrary.Arial12, "No Quest");
             MessageBox = new(Assets.FontsLibrary.Arial12);
             var player = new Player(Assets.DefaultEntityAssets, Assets.TexturesLibrary.ArmoredSkeletonTexture,
                 Assets.AttackTemplates, GameManager.GetItemByName(DataAssetCatalog.Coins));
+            if (useTestLoadout)
+                player.EnableTestLoadout();
             World = new(Game.GameContent, GraphicsDevice, player, Assets.FontsLibrary.Arial12,
                 Assets.FontsLibrary.Arial14, Assets.LeverAnimation);
             Camera = World.CurrentLevel.Camera;
@@ -147,7 +155,7 @@ namespace SkeletonsAdventure.States
         {
             CheckUnderMouse(gameTime);
 
-            World.Update(gameTime);
+            World.Update(gameTime, IsTestGame);
 
             UpdatePlayerStatusBars();
 

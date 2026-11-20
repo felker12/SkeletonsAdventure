@@ -22,7 +22,7 @@ namespace SkeletonsAdventure.Engines
             try
             {
                 var texture = game.Content.Load<Texture2D>(data.World.PlayerData.TextureName);
-                var screen = new States.GameScreen(game, assets, data.World, texture);
+                var screen = new States.GameScreen(game, assets, data.World, texture, data.IsTestGame);
                 World.Player.LearnedAttackManager.UpdateWithData(data.LearnedAttacks);
                 World.Player.SetKeybinding(data.Bindings.Keybindings);
                 screen.MessageBox.AddMessages(data.Messages);
@@ -93,6 +93,7 @@ namespace SkeletonsAdventure.Engines
                     learned.LearnedAttackNames.Add(attack.Name);
             return new SaveGameData
             {
+                IsTestGame = game.GameScreen.IsTestGame,
                 World = World.ToData(),
                 Menus = GameScreenMenuData,
                 PauseMenu = exitScreen.GetTabbedMenuData(),

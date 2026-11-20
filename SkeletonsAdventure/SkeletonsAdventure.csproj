@@ -10,6 +10,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <IfDev Condition="'$(IfDev)' == '' and '$(Configuration)' == 'Debug'">true</IfDev>
+    <DefineConstants Condition="'$(IfDev)' == 'true'">$(DefineConstants);IFDEV</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />

@@ -10,21 +10,29 @@ namespace SkeletonsAdventure.States
 
         public MenuScreen(Game1 game, GameManager assets) : base(game, assets)
         {
-            AddButton(new(98, 291, 336, 48), "New Game", NewGame, primary: true);
-            AddButton(new(98, 349, 336, 48), "Load Game", LoadGame);
-            AddButton(new(98, 407, 336, 48), "Quit Game", Game.Exit);
+            int row = 0;
+            AddMenuButton("New Game", () => StartNewGame(), primary: true);
+            if (Game1.IfDev)
+                AddMenuButton("New Game (Test)", () => StartNewGame(testGame: true));
+            AddMenuButton("Load Game", LoadGame);
+            AddMenuButton("Quit Game", Game.Exit);
+
+            void AddMenuButton(string text, Action activate, bool primary = false) =>
+                AddButton(new(98, 291 + 58 * row++, 336, 48), text, activate, primary);
         }
+
+        internal Rectangle ButtonPanelBounds => GetButtonPanelBounds(18, 19);
 
         protected override void DrawForeground(SpriteBatch batch)
         {
             DrawTitle(batch, 82, 134, 0.76f);
             DrawRule(batch, 84, 231, 365);
-            Fill(batch, new(80, 272, 372, 205), new Color(75, 98, 87));
-            Fill(batch, new(81, 273, 370, 203), new Color(10, 28, 27));
-            DrawText(batch, Assets.FontsLibrary.Arial12, "Up / Down to select    |    Enter or A to confirm",
-                84, 499, MutedText);
+            var panel = ButtonPanelBounds;
+            Fill(batch, panel, new Color(75, 98, 87));
+            panel.Inflate(-1, -1);
+            Fill(batch, panel, new Color(10, 28, 27));
             if (_loadStatus.Length > 0)
-                DrawText(batch, Assets.FontsLibrary.Arial12, _loadStatus, 84, 533, Ivory);
+                DrawText(batch, Assets.FontsLibrary.Arial12, _loadStatus, panel.Left + 3, panel.Bottom + 18, Ivory);
         }
 
         private void LoadGame()
@@ -55,10 +63,13 @@ namespace SkeletonsAdventure.States
             StateManager.ChangeState(Game.GameScreen);
         }
 
-        private void NewGame()
+        internal void StartNewGame(bool testGame = false)
         {
-            Game.GameScreen = new(Game, Assets);
-            World.FillPlayerBackback(); //TODO
+            Game.GameScreen = new(Game, Assets, testGame);
+            if (testGame)
+                World.GiveTestInventory();
+            else
+                World.GiveStarterInventory();
             Game.ExitScreen = new(Game, Assets);
 
             StateManager.ChangeState(Game.GameScreen);

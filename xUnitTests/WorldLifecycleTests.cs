@@ -1,16 +1,75 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Tilemaps;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.GameEvents;
 using SkeletonsAdventure.GameWorld;
+using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.States;
 
 namespace xUnitTests;
 
 public partial class UnitTest1
 {
+    [Fact]
+    public void NewGameMenuFitsAvailableOptionsAndKeepsTestLoadoutSeparate()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        var menu = new MenuScreen(game, assets);
+        bool isDev = SkeletonsAdventure.Game1.IfDev;
+        Assert.Equal(new Rectangle(80, 272, 372, isDev ? 260 : 202), menu.ButtonPanelBounds);
+
+        if (isDev)
+        {
+            using var directory = new SaveDirectory();
+            menu.StartNewGame(testGame: true);
+            var testPlayer = World.Player;
+            Assert.True(game.GameScreen.IsTestGame);
+            Assert.Equal(300, testPlayer.BaseAttack);
+            Assert.Equal(3000, testPlayer.Health);
+            Assert.Equal(1000, testPlayer.Mana);
+            Assert.Equal(3, testPlayer.Backpack.Items.Count(item => item.Name == "Sword"));
+            Assert.Equal(nameof(IceBullet), testPlayer.KeybindingsManager.Keybindings[Keys.D3].Name);
+            var pauseMenu = game.ExitScreen.ExitScreenMenu;
+            Assert.Contains(pauseMenu.TabBar.ActiveMenu.ControlManager, control => control.Text == "Save Game" && control.Enabled);
+            testPlayer.Health = 2345;
+            Assert.True(SaveManager.SaveGame(game, pauseMenu, directory.Path));
+            menu.StartNewGame();
+            SaveManager.LoadSavedGame(game, assets, directory.Path);
+            Assert.True(game.GameScreen.IsTestGame);
+            Assert.Equal(2345, World.Player.Health);
+            Assert.Equal(3, World.Player.Backpack.Items.Count(item => item.Name == "Sword"));
+            Assert.Equal(nameof(IceBullet), World.Player.KeybindingsManager.Keybindings[Keys.D3].Name);
+        }
+        else
+        {
+            Assert.Throws<InvalidOperationException>(() => menu.StartNewGame(testGame: true));
+        }
+
+        menu.StartNewGame();
+        var player = World.Player;
+        Assert.False(game.GameScreen.IsTestGame);
+        Assert.Equal(12, player.BaseAttack);
+        Assert.Equal(80, player.Health);
+        Assert.Equal(20, player.Mana);
+        Assert.Collection(player.Backpack.Items,
+            item =>
+            {
+                Assert.Equal("Sword", item.Name);
+                Assert.True(Assert.IsType<Weapon>(item).Equipped);
+            },
+            item =>
+            {
+                Assert.Equal("Bones", item.Name);
+                Assert.Equal(3, item.Quantity);
+            });
+        Assert.Equal(nameof(FireBall), Assert.Single(player.LearnedAttackManager.LearnedAttacks).Key);
+        Assert.Equal(nameof(FireBall), player.KeybindingsManager.Keybindings[Keys.D1].Name);
+    }
+
     [Fact]
     public void PausingFreezesVolleyCooldownAndTileAnimationUntilPlayResumes()
     {

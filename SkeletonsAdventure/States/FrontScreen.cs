@@ -9,7 +9,6 @@ namespace SkeletonsAdventure.States
         private const int LayoutHeight = 720;
         protected static readonly Color Brass = MenuStyle.Brass;
         protected static readonly Color Ivory = MenuStyle.Ivory;
-        protected static readonly Color MutedText = MenuStyle.MutedText;
 
         private readonly Texture2D _backdrop;
         private readonly Texture2D _pixel;
@@ -58,6 +57,18 @@ namespace SkeletonsAdventure.States
         }
 
         protected abstract void DrawForeground(SpriteBatch spriteBatch);
+
+        protected Rectangle GetButtonPanelBounds(int horizontalPadding, int verticalPadding)
+        {
+            Rectangle bounds = Rectangle.Empty;
+            foreach (var (button, rectangle) in _buttons)
+                if (button.Visible)
+                    bounds = bounds.IsEmpty ? rectangle : Rectangle.Union(bounds, rectangle);
+
+            if (!bounds.IsEmpty)
+                bounds.Inflate(horizontalPadding, verticalPadding);
+            return bounds;
+        }
 
         protected void DrawTitle(SpriteBatch batch, int x, int y, float scale)
         {
