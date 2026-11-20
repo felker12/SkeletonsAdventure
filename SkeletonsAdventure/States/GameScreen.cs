@@ -16,6 +16,7 @@ namespace SkeletonsAdventure.States
     enum BoxSource { Game, Panel }
     internal class GameScreen : State
     {
+        private const float ManualPickupReach = 48f;
         private MouseState _mouseState, _lastMouseState;
         private GameButton equip, unequip, pickUp, drop, consume;
         private GameItem itemUnderMouse = null;
@@ -289,7 +290,6 @@ namespace SkeletonsAdventure.States
                     equip.SetText($"Equip {itemUnderMouse.Name}");
 
                 unequip.SetText($"Unequip {itemUnderMouse.Name}");
-                pickUp.SetText($"Pick Up {itemUnderMouse.Name}");
             }
         }
 
@@ -335,6 +335,9 @@ namespace SkeletonsAdventure.States
         private void CheckMouseIntersectsInGame(GameTime gameTime, Rectangle transformedMouseRectangle)
         {
             pickUp.Visible = true;
+            pickUp.SetText(IsWithinPickupReach(itemUnderMouse)
+                ? $"Pick Up {itemUnderMouse.Name}"
+                : "Move closer to pick up");
 
             GameItemPopUpBox.Update(gameTime, true, Camera.Transformation);
 
@@ -455,11 +458,21 @@ namespace SkeletonsAdventure.States
 
         private void PickUp_Click(object sender, EventArgs e)
         {
-            if (World.CurrentLevel.EntityManager.DroppedLootManager.TryPickUp(itemUnderMouse, Player))
+            if (TryPickUpGroundItem(itemUnderMouse))
             {
                 itemUnderMouse = null;
                 GameItemPopUpBox.Visible = false;
             }
+        }
+
+        internal bool TryPickUpGroundItem(GameItem item) =>
+            item is not null && IsWithinPickupReach(item) &&
+            World.CurrentLevel.EntityManager.DroppedLootManager.TryPickUp(item, Player);
+
+        private bool IsWithinPickupReach(GameItem item)
+        {
+            var itemCenter = item.Position + new Vector2(GameItem.Width, GameItem.Height) / 2;
+            return IsTestGame || Vector2.DistanceSquared(Player.Center, itemCenter) <= ManualPickupReach * ManualPickupReach;
         }
 
         private void Unequip_Click(object sender, EventArgs e)

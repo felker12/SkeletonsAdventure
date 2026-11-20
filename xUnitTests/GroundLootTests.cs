@@ -11,6 +11,34 @@ public partial class UnitTest1
 {
     private static Rectangle LootRectangle(Vector2 point) => new((int)point.X, (int)point.Y, GameItem.Width, GameItem.Height);
 
+    [Fact]
+    public void ManualPickupChecksCurrentReachExceptInTestGames()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        var screen = new GameScreen(game, assets);
+        var loot = World.CurrentLevel.EntityManager.DroppedLootManager;
+        var drop = GameManager.GetItemByName("Sword");
+        drop.Position = screen.Player.Center - new Vector2(GameItem.Width, GameItem.Height) / 2 + new Vector2(49, 0);
+        loot.RestoreDrops([drop]);
+
+        Assert.False(screen.TryPickUpGroundItem(drop));
+        Assert.Same(drop, Assert.Single(loot.Items));
+
+        screen.Player.Position += Vector2.UnitX;
+        Assert.True(screen.TryPickUpGroundItem(drop));
+        Assert.Empty(loot.Items);
+
+        if (SkeletonsAdventure.Game1.IfDev)
+        {
+            var testScreen = new GameScreen(game, assets, testGame: true);
+            loot = World.CurrentLevel.EntityManager.DroppedLootManager;
+            loot.RestoreDrops([drop]);
+            Assert.True(testScreen.TryPickUpGroundItem(drop));
+            Assert.False(testScreen.TryPickUpGroundItem(drop));
+        }
+    }
+
     [Theory]
     [InlineData(-100, -100)]
     [InlineData(127, 127)]
