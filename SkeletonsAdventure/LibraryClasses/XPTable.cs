@@ -1,10 +1,14 @@
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace SkeletonsAdventure.LibraryClasses
 {
     internal class XPTable
     {
+        private const int DefaultLevelCap = 100;
+        private const int DefaultCurveMultiplier = 16;
+        private const int PreviousCurveMultiplier = 20;
         public IReadOnlyList<int> PlayerLevelXPs { get; }
         public int MaximumLevel => PlayerLevelXPs.Count - 1;
         public int MaximumXP => PlayerLevelXPs[MaximumLevel];
@@ -58,19 +62,28 @@ namespace SkeletonsAdventure.LibraryClasses
                 }
                 if (thresholds.Count == 0)
                     throw new InvalidDataException($"The XP table is empty: {path}");
+                // Only migrate the old default. Keep custom thresholds and level caps.
+                if (!thresholds.SequenceEqual(DefaultThresholds(PreviousCurveMultiplier)))
+                    return thresholds;
             }
-            else
+
+            thresholds = DefaultThresholds(DefaultCurveMultiplier).ToList();
+            string temporary = path + $".{Guid.NewGuid():N}.tmp";
+            try
             {
-                List<string> lines = [];
-                for (int level = 0; level <= 100; level++)
-                {
-                    int xp = level == 0 ? 0 : (level + 1) * (level + 1) * 20;
-                    thresholds.Add(xp);
-                    lines.Add(FormattableString.Invariant($"{level},{xp}"));
-                }
-                File.WriteAllLines(path, lines);
+                File.WriteAllLines(temporary, thresholds.Select((xp, level) => FormattableString.Invariant($"{level},{xp}")));
+                File.Move(temporary, path, overwrite: true);
             }
+            finally
+            {
+                File.Delete(temporary);
+            }
+
             return thresholds;
         }
+
+        private static IEnumerable<int> DefaultThresholds(int multiplier) =>
+            Enumerable.Range(0, DefaultLevelCap + 1)
+                .Select(level => level == 0 ? 0 : (level + 1) * (level + 1) * multiplier);
     }
 }

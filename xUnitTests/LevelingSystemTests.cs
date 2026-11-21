@@ -57,13 +57,13 @@ public partial class UnitTest1
     [Theory]
     [InlineData(-1, 0)]
     [InlineData(0, 0)]
-    [InlineData(79, 0)]
-    [InlineData(80, 1)]
-    [InlineData(81, 1)]
-    [InlineData(179, 1)]
-    [InlineData(180, 2)]
-    [InlineData(204019, 99)]
-    [InlineData(204020, 100)]
+    [InlineData(63, 0)]
+    [InlineData(64, 1)]
+    [InlineData(65, 1)]
+    [InlineData(143, 1)]
+    [InlineData(144, 2)]
+    [InlineData(163215, 99)]
+    [InlineData(163216, 100)]
     [InlineData(int.MaxValue, 100)]
     public void XpThresholdsIncludeTheirExactBoundary(int xp, int expectedLevel)
     {
@@ -98,7 +98,9 @@ public partial class UnitTest1
     public void ProgressAndMaximumLevelFollowTheConfiguredTable()
     {
         using var directory = new SaveDirectory();
-        File.WriteAllText(Path.Combine(directory.Path, "PlayerLevels.txt"), "0,0\n1,10\n2,30");
+        string path = Path.Combine(directory.Path, "PlayerLevels.txt");
+        const string customTable = "0,0\n1,10\n2,30";
+        File.WriteAllText(path, customTable);
         var table = new XPTable(directory.Path);
         Assert.Equal(2, table.MaximumLevel);
         Assert.Equal(30, table.MaximumXP);
@@ -106,6 +108,24 @@ public partial class UnitTest1
         Assert.Equal((1, 1, true), table.GetProgress(30));
         Assert.Equal((1, 1, true), table.GetProgress(int.MaxValue));
         Assert.Throws<ArgumentOutOfRangeException>(() => table.GetLevelXPAtLevel(3));
+        Assert.Equal(customTable, File.ReadAllText(path));
+    }
+
+    [Fact]
+    public void PreviousDefaultXpCurveMigratesOnce()
+    {
+        using var directory = new SaveDirectory();
+        string path = Path.Combine(directory.Path, "PlayerLevels.txt");
+        File.WriteAllLines(path, Enumerable.Range(0, 101)
+            .Select(level => FormattableString.Invariant($"{level},{(level == 0 ? 0 : 20 * (level + 1) * (level + 1))}")));
+        var updated = new XPTable(directory.Path);
+        Assert.Equal(64, updated.GetLevelXPAtLevel(1));
+        Assert.Equal(1936, updated.GetLevelXPAtLevel(10));
+        Assert.Equal(163216, updated.MaximumXP);
+        string migrated = File.ReadAllText(path);
+        Assert.Contains("10,1936", migrated);
+        Assert.Equal(updated.PlayerLevelXPs, new XPTable(directory.Path).PlayerLevelXPs);
+        Assert.Equal(migrated, File.ReadAllText(path));
     }
 
     [Fact]
@@ -167,7 +187,7 @@ public partial class UnitTest1
             Assert.Throws<ArgumentOutOfRangeException>(() => player.XPModifier = modifier);
         Assert.Equal(0, player.TotalXP);
         Assert.Equal(1f, player.XPModifier);
-        player.GainXp(80);
+        player.GainXp(GameManager.XPTable.GetLevelXPAtLevel(1));
         Assert.Equal(5, player.AttributePoints);
         int attack = player.Attack;
         Assert.Throws<ArgumentOutOfRangeException>(() => player.ApplyAttributePoints(-1, 0, 0, 0));
@@ -180,28 +200,30 @@ public partial class UnitTest1
         Assert.Equal(attack + 5, player.Attack);
     }
 
-    [Fact]
-    public void LoadingAnOldThresholdSaveRepairsTheMissedLevelOnlyOnce()
+    [Theory]
+    [InlineData(80, 0, 1)]
+    [InlineData(280, 2, 3)]
+    public void LoadingAnOldThresholdSaveAwardsTheAdditionalLevelOnlyOnce(int totalXp, int oldLevel, int newLevel)
     {
         using var game = new SkeletonsAdventure.Game1();
         var assets = new GameManager(game);
         _ = new GameScreen(game, assets);
         var saved = World.ToData();
-        saved.PlayerData.totalXP = 80;
-        saved.PlayerData.EntityLevel = 0;
+        saved.PlayerData.totalXP = totalXp;
+        saved.PlayerData.EntityLevel = oldLevel;
         saved.PlayerData.attributePoints = 0;
         saved.PlayerData.CurrentHealth = 17;
         saved.PlayerData.mana = 7;
         _ = new GameScreen(game, assets, saved, assets.TexturesLibrary.SkeletonTexture);
-        Assert.Equal(1, World.Player.Level);
+        Assert.Equal(newLevel, World.Player.Level);
         Assert.Equal(5, World.Player.AttributePoints);
         Assert.Equal(17, World.Player.Health);
         Assert.Equal(7, World.Player.Mana);
         saved = World.ToData();
         _ = new GameScreen(game, assets, saved, assets.TexturesLibrary.SkeletonTexture);
-        Assert.Equal(1, World.Player.Level);
+        Assert.Equal(newLevel, World.Player.Level);
         Assert.Equal(5, World.Player.AttributePoints);
-        Assert.Equal(80, World.Player.TotalXP);
+        Assert.Equal(totalXp, World.Player.TotalXP);
     }
 
     [Fact]

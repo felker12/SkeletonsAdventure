@@ -3,6 +3,7 @@ using MonoGame.Extended.Tilemaps;
 using RpgLibrary.DataClasses;
 using RpgLibrary.GameObjectClasses;
 using RpgLibrary.QuestClasses;
+using SkeletonsAdventure.Content;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.Entities;
 using SkeletonsAdventure.GameObjects;
@@ -15,6 +16,32 @@ namespace xUnitTests;
 
 public partial class UnitTest1
 {
+    [Fact]
+    public void AnActiveSlaySkeletonsSaveReceivesTheRetunedRewardOnce()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        _ = new GameScreen(game, assets);
+        var quest = GameManager.GetQuestByName(BuiltInQuests.SlaySkeletons);
+        Assert.Equal(250, quest.Reward.XP);
+        quest.Reward.XP = 50;
+        Assert.True(World.Player.TryStartQuest(quest));
+        World.Player.GetActiveQuestByName(quest.Name).ProgressTask();
+
+        var saved = World.ToData();
+        _ = new GameScreen(game, assets, saved, assets.TexturesLibrary.SkeletonTexture);
+        var player = World.Player;
+        var restored = player.GetActiveQuestByName(quest.Name);
+        Assert.Equal(1, restored.ActiveTask.CompletedAmount);
+        Assert.Equal(250, restored.Reward.XP);
+        for (int kill = 1; kill < 10; kill++)
+            restored.ProgressTask();
+        player.CheckQuestCompleted();
+        player.CheckQuestCompleted();
+        Assert.Equal(250, player.TotalXP);
+        Assert.NotNull(player.GetCompletedQuestByName(quest.Name));
+    }
+
     [Fact]
     public void InteractionRequiresAnActiveMatchingTaskAndAValidUse()
     {

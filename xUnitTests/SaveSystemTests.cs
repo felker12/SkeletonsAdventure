@@ -132,6 +132,9 @@ public partial class UnitTest1
         var saved = World.ToData();
         var pair = saved.Levels.First(p => p.Value.EntityManagerData.EntityData.OfType<EnemyData>().Count() >= 2);
         var enemies = pair.Value.EntityManagerData.EntityData.OfType<EnemyData>().Take(2).ToArray();
+        var fresh = World.Levels[pair.Key].EntityManager.Entities.OfType<Enemy>()
+            .First(enemy => enemy.Position == enemies[0].Position && enemy.GetType().FullName == enemies[0].Type);
+        enemies[0].BaseXP = fresh.BaseXP - 3;
         enemies[0].CurrentHealth = 1;
         enemies[0].IsDead = false;
         enemies[0].GuaranteedItems = [new ItemBaseData("Coins", 7)];
@@ -145,6 +148,8 @@ public partial class UnitTest1
             var loaded = World.Levels[pair.Key].EntityManager.Entities.OfType<Enemy>().ToArray();
             var wounded = loaded.First(e => e.Position == enemies[0].Position && e.GetType().FullName == enemies[0].Type);
             Assert.Equal(1, wounded.Health);
+            Assert.Equal(fresh.BaseXP, wounded.BaseXP);
+            Assert.Equal(fresh.XP, wounded.XP);
             Assert.Equal(7, Assert.Single(wounded.GuaranteedDrops.Items).Quantity);
             var dead = loaded.First(e => e.Position == enemies[1].Position && e.GetType().FullName == enemies[1].Type);
             Assert.True(dead.IsDead);

@@ -201,7 +201,7 @@ namespace SkeletonsAdventure.GameWorld
             QuestReward questReward = new()
             {
                 Coins = 100,
-                XP = 50,
+                XP = 250,
                 Items = [.. ItemsClone.Values] // Convert the Dictionary to a List
             };
 

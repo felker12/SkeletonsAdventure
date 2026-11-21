@@ -6,7 +6,7 @@
     <BaseDefence>2</BaseDefence>
     <BaseAttack>7</BaseAttack>
     <EntityLevel>0</EntityLevel>
-    <BaseXP>4</BaseXP>
+    <BaseXP>8</BaseXP>
     <CurrentHealth>15</CurrentHealth>
     <Position>0 0</Position>
     <RespawnPosition>0 0</RespawnPosition>
