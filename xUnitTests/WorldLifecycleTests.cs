@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Tilemaps;
 using SkeletonsAdventure.Animations;
@@ -15,6 +16,113 @@ namespace xUnitTests;
 
 public partial class UnitTest1
 {
+    [Fact]
+    public void FittedSkillTreeRendersLearnedTextAtNativePixelAlignment()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        _ = new GameScreen(game, assets);
+        var pause = new ExitScreen(game, assets);
+        var tabs = pause.ExitScreenMenu.TabBar;
+        var skills = Assert.Single(tabs.TabMenus.Values.OfType<LearnSkillsMenu>());
+        tabs.SetActiveTab(skills);
+        skills.FitTree();
+
+        var fireball = Assert.Single(skills.ControlManager, control => control.Name == nameof(FireBall));
+        var graphics = game.GraphicsDevice;
+        var font = assets.FontsLibrary.Arial12;
+        var labelBounds = new Rectangle(fireball.Rectangle.X + 39, fireball.Rectangle.Y + 9, 80, font.LineSpacing);
+        using var batch = new SpriteBatch(graphics);
+        using var screen = new RenderTarget2D(graphics, graphics.Viewport.Width, graphics.Viewport.Height);
+        using var reference = new RenderTarget2D(graphics, labelBounds.Width, labelBounds.Height);
+        graphics.SetRenderTarget(screen);
+        pause.Draw(batch);
+        graphics.SetRenderTarget(reference);
+        graphics.Clear(MenuStyle.Selection);
+        batch.Begin(samplerState: SamplerState.PointClamp);
+        batch.DrawString(font, "Learned", Vector2.Zero, MenuStyle.Brass);
+        batch.End();
+        graphics.SetRenderTarget(null);
+
+        var actual = new Color[labelBounds.Width * labelBounds.Height];
+        var expected = new Color[actual.Length];
+        screen.GetData(0, labelBounds, actual, 0, actual.Length);
+        reference.GetData(expected);
+        Assert.True(actual.SequenceEqual(expected), "The fitted label should match the font rendered at native scale.");
+    }
+
+    [Fact]
+    public void SkillTreeZoomPanAndFocusKeepHitsInsideItsViewport()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        _ = new GameScreen(game, assets);
+        var pause = new ExitScreen(game, assets);
+        var tabs = pause.ExitScreenMenu.TabBar;
+        var skills = Assert.Single(tabs.TabMenus.Values.OfType<LearnSkillsMenu>());
+        tabs.SetActiveTab(skills);
+
+        var iceBullet = Assert.Single(skills.ControlManager, control => control.Name == nameof(IceBullet));
+        var fireball = Assert.Single(skills.ControlManager, control => control.Name == nameof(FireBall));
+        var learn = Assert.Single(skills.ControlManager, control => control is MenuButton && control.Text == "Learned");
+        var fittedBounds = iceBullet.Rectangle;
+        var anchor = fittedBounds.Center;
+        SendMouse(anchor);
+        SendMouse(anchor, wheel: 120);
+        Assert.True(iceBullet.Width > fittedBounds.Width);
+        Assert.InRange(Vector2.Distance(anchor.ToVector2(), iceBullet.Rectangle.Center.ToVector2()), 0f, 2f);
+        Assert.Equal(nameof(IceBullet), skills.GetSkillAt(anchor));
+        Assert.Equal("Learn", learn.Text);
+        Assert.False(learn.Enabled);
+
+        var zoomedBounds = iceBullet.Rectangle;
+        SendMouse(learn.Rectangle.Center, wheel: 240);
+        Assert.Equal(zoomedBounds, iceBullet.Rectangle);
+        Assert.Null(skills.GetSkillAt(learn.Rectangle.Center));
+
+        var openSpace = new Point(fireball.Rectangle.Center.X, fireball.Rectangle.Bottom + 8);
+        Assert.Null(skills.GetSkillAt(openSpace));
+        SendMouse(openSpace, wheel: 240, left: ButtonState.Pressed);
+        SendMouse(openSpace - new Point(10, 0), wheel: 240, left: ButtonState.Pressed);
+        Assert.Equal(zoomedBounds.X - 10, iceBullet.Rectangle.X);
+        SendMouse(openSpace - new Point(10, 0), wheel: 240);
+
+        var panned = iceBullet.Rectangle;
+        SendMouse(panned.Center, wheel: 240, left: ButtonState.Pressed);
+        SendMouse(panned.Center + new Point(10, 0), wheel: 240, left: ButtonState.Pressed);
+        Assert.Equal(panned, iceBullet.Rectangle);
+        SendMouse(panned.Center, wheel: 240);
+        SendMouse(panned.Center, wheel: 240, middle: ButtonState.Pressed);
+        SendMouse(panned.Center + new Point(10, 0), wheel: 240, middle: ButtonState.Pressed);
+        Assert.Equal(panned.X + 10, iceBullet.Rectangle.X);
+        SendMouse(panned.Center + new Point(10, 0), wheel: 240);
+
+        SendMouse(anchor, wheel: 2400);
+        SendMouse(anchor, wheel: 2400, middle: ButtonState.Pressed);
+        var beyondEdge = anchor - new Point(3000, 3000);
+        SendMouse(beyondEdge, wheel: 2400, middle: ButtonState.Pressed);
+        SendMouse(beyondEdge, wheel: 2400);
+        Assert.True(fireball.Rectangle.IsEmpty);
+        skills.ControlManager.NextControl();
+        skills.ControlManager.NextControl();
+        Assert.True(fireball.HasFocus);
+        Assert.Equal(nameof(FireBall), skills.GetSkillAt(fireball.Rectangle.Center));
+
+        var scissor = game.GraphicsDevice.ScissorRectangle;
+        using var batch = new Microsoft.Xna.Framework.Graphics.SpriteBatch(game.GraphicsDevice);
+        pause.Draw(batch);
+        Assert.Equal(scissor, game.GraphicsDevice.ScissorRectangle);
+
+        skills.FitTree();
+        Assert.Equal(fittedBounds, iceBullet.Rectangle);
+        Assert.Equal(nameof(IceBullet), skills.GetSkillAt(anchor));
+
+        void SendMouse(Point position, int wheel = 0, ButtonState left = ButtonState.Released,
+            ButtonState middle = ButtonState.Released) =>
+            skills.UpdateTreeInput(new MouseState(position.X, position.Y, wheel, left, middle,
+                ButtonState.Released, ButtonState.Released, ButtonState.Released));
+    }
+
     [Fact]
     public void SkillTabsEnforceBothMagicPathsAndPreviewLockedSkills()
     {
