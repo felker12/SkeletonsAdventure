@@ -41,7 +41,7 @@ namespace SkeletonsAdventure.GameMenu
             _saveMenu.ControlManager.AddRange(_saveActions);
             AddMenu(_saveMenu);
 
-            AddMenu(new PlayerInfoMenu(pixel, pixel, fonts.Arial12, MenuStyle.Panel) { Title = "Player", Visible = true });
+            AddMenu(new PlayerInfoMenu(pixel, fonts.Arial12, fonts.Arial16));
             AddMenu(new ItemsMenu(pixel, fonts.Arial12, fonts.Arial16));
             AddMenu(new QuestMenu(pixel, pixel, pixel, fonts.Arial12, fonts.Arial16, MenuStyle.Panel)
                 { Title = "Quests", Visible = true });

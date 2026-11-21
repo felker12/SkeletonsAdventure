@@ -1,5 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkeletonsAdventure.Controls;
+using SkeletonsAdventure.GameMenu;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.LibraryClasses;
 using SkeletonsAdventure.States;
@@ -8,6 +10,50 @@ namespace xUnitTests;
 
 public partial class UnitTest1
 {
+    [Fact]
+    public void PlayerTabStagesAdjustsAndAppliesOnlyAvailablePoints()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        _ = new GameScreen(game, assets);
+        var pause = new ExitScreen(game, assets);
+        var tabs = pause.ExitScreenMenu.TabBar;
+        var menu = Assert.Single(tabs.TabMenus.Values.OfType<PlayerInfoMenu>());
+        var player = World.Player;
+        player.GainXp(GameManager.XPTable.GetLevelXPAtLevel(1));
+        tabs.SetActiveTab(menu);
+
+        int attack = player.Attack;
+        int defence = player.Defence;
+        Assert.All(menu.ControlManager.OfType<MenuButton>().Where(button => button.Text == "-1"),
+            button => Assert.False(button.Enabled));
+        menu.AdjustPoints(0, 5);
+        menu.AdjustPoints(1, 1);
+        Assert.Equal(5, player.AttributePoints);
+        Assert.Equal(attack, player.Attack);
+        Assert.All(menu.ControlManager.OfType<MenuButton>().Where(button => button.Text == "+1"),
+            button => Assert.False(button.Enabled));
+
+        menu.AdjustPoints(0, -1);
+        menu.AdjustPoints(1, 1);
+        using var batch = new SpriteBatch(game.GraphicsDevice);
+        pause.Draw(batch);
+
+        menu.CancelPendingPoints();
+        Assert.Equal(5, player.AttributePoints);
+        Assert.Equal(attack, player.Attack);
+        Assert.Contains(menu.ControlManager.OfType<MenuButton>(), button => button.Text == "Apply points" && !button.Enabled);
+
+        menu.AdjustPoints(0, 5);
+        menu.AdjustPoints(1, 1);
+        menu.AdjustPoints(0, -1);
+        menu.AdjustPoints(1, 1);
+        menu.ApplyPendingPoints();
+        Assert.Equal(attack + 4, player.Attack);
+        Assert.Equal(defence + 1, player.Defence);
+        Assert.Equal(0, player.AttributePoints);
+    }
+
     [Theory]
     [InlineData(-1, 0)]
     [InlineData(0, 0)]
