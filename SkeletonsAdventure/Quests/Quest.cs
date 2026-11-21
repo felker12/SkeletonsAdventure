@@ -89,8 +89,10 @@ namespace SkeletonsAdventure.Quests
                 RequiredQuestNames.All(name => player.GetCompletedQuestByName(name) is not null);
         }
 
-        public bool CanStart(Player player) => !IsCompleted && Tasks.Count > 0 &&
-            !string.IsNullOrWhiteSpace(Name) && PlayerRequirementsMet(player) &&
+        public bool CanStart(Player player) => CanOffer(player) && PlayerRequirementsMet(player);
+
+        internal bool CanOffer(Player player) => player is not null && !IsCompleted && Tasks.Count > 0 &&
+            !string.IsNullOrWhiteSpace(Name) &&
             !CheckActiveQuest(player) && !CheckCompletedQuest(player);
 
         public void StartQuest()

@@ -198,11 +198,17 @@ public partial class UnitTest1
         followUp.RequiredQuestNames = [first.Name];
         var locked = SimpleQuest("High level");
         locked.Requirements.Level = 99;
+        locked.Requirements.Attack = World.Player.AttackExcludingEquipment + 1;
+        locked.Requirements.Mana = World.Player.ManaExcludingEquipment;
+        World.Player.Attack = locked.Requirements.Attack;
+        World.Player.Mana = 0;
         var node = new QuestNode(new QuestNodeData
         {
             Position = World.Player.Position, Width = 64, Height = 64, CooldownTime = 1000
         }, assets.FontsLibrary.Arial12) { Quests = [first, followUp, locked] };
         Assert.Equal(1, node.CheckAvailableQuestsToStart(World.Player));
+        Assert.True(node.CheckPlayerNear(World.Player));
+        Assert.Equal("Press R to Interact", node.Info.Text);
         var clonedNode = node.Clone();
         clonedNode.Quests[0].Tasks[0].CompletedAmount = 1;
         Assert.Equal(3, clonedNode.Quests.Count);
@@ -210,9 +216,15 @@ public partial class UnitTest1
         node.Interact(new GameTime(TimeSpan.FromSeconds(2), TimeSpan.Zero), World.Player);
         Assert.Single(World.Player.ActiveQuests);
         Assert.Equal(0, node.CheckAvailableQuestsToStart(World.Player));
+        Assert.True(node.CheckPlayerNear(World.Player));
+        Assert.Equal($"Next\nComplete First first\nHigh level\nRequirements not met: " +
+            $"Level: {World.Player.Level}/99, Attack: {World.Player.AttackExcludingEquipment}/{locked.Requirements.Attack}",
+            node.Info.Text);
         World.Player.ActiveQuests[0].ProgressTask();
         World.Player.CheckQuestCompleted();
         Assert.Equal(1, node.CheckAvailableQuestsToStart(World.Player));
+        Assert.True(node.CheckPlayerNear(World.Player));
+        Assert.Equal("Press R to Interact", node.Info.Text);
         node.Interact(new GameTime(TimeSpan.FromSeconds(2.5), TimeSpan.Zero), World.Player);
         Assert.Empty(World.Player.ActiveQuests);
         node.Visible = false;

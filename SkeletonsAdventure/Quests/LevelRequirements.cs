@@ -75,48 +75,16 @@ namespace SkeletonsAdventure.Quests
 
         public string MissingRequirementsText(Player player)
         {
-            string result = "Requirements not met: ";
-            bool previousRequirementMet;
-
+            List<string> missing = [];
             if (player.Level < Level)
-            {
-                result += $"Level: {player.Level}/{Level}";
-                previousRequirementMet = false;
-
-            }
-            else
-                previousRequirementMet = true;
-
-            if (player.Defence < Defence)
-            {
-                if (previousRequirementMet is false)
-                    result += ", ";
-
-                result += $"Defence: {player.DefenceExcludingEquipment}/{Defence}";
-                previousRequirementMet = false;
-            }
-            else
-                previousRequirementMet = true;
-
-            if (player.Attack < Attack)
-            {
-                if (previousRequirementMet is false)
-                    result += ", ";
-
-                result += $"Attack: {player.AttackExcludingEquipment}/{Attack}";
-            }
-            else
-                previousRequirementMet = true;
-
-            if(player.Mana < Mana)
-            {
-                if (previousRequirementMet is false)
-                    result += ", ";
-
-                result += $"Mana: {player.ManaExcludingEquipment}/{Mana}";
-            }
-
-            return result;
+                missing.Add($"Level: {player.Level}/{Level}");
+            if (player.DefenceExcludingEquipment < Defence)
+                missing.Add($"Defence: {player.DefenceExcludingEquipment}/{Defence}");
+            if (player.AttackExcludingEquipment < Attack)
+                missing.Add($"Attack: {player.AttackExcludingEquipment}/{Attack}");
+            if (player.ManaExcludingEquipment < Mana)
+                missing.Add($"Mana: {player.ManaExcludingEquipment}/{Mana}");
+            return $"Requirements not met: {string.Join(", ", missing)}";
         }
     }
 }

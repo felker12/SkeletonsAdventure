@@ -74,30 +74,32 @@ namespace SkeletonsAdventure.GameObjects
 
         public override bool CheckPlayerNear(Player player)
         {
-            if (Rectangle.Intersects(player.Rectangle))
+            Info.Text = "Press R to Interact";
+            if (!base.CheckPlayerNear(player))
+                return false;
+
+            if (!HasInteractionTask(player) && CheckAvailableQuestsToStart(player) == 0)
+                Info.Text = CheckAllCompleted(player) ? "All Quests Completed" : GetLockedQuestText(player);
+
+            return true;
+        }
+
+        private string GetLockedQuestText(Player player)
+        {
+            List<string> details = [];
+            foreach (var quest in Quests.Where(quest => quest.CanOffer(player)))
             {
-                Info.Visible = true;
-                Info.Text = $"Press R to Interact" +
-                    $"\nTotal Quests: {Quests.Count}" +
-                    $"\nActive Quests: {GetTotalActiveQuests(player)}" +
-                    $"\nCompleted Quests: {GetTotalCompletedQuests(player)}" +
-                    $"\nAll Quests Completed: {CheckAllCompleted(player)}";
+                details.Add(quest.Name);
+                if (quest.Requirements is { } requirements && !requirements.CheckRequirements(player))
+                    details.Add(requirements.MissingRequirementsText(player));
 
-                if (!HasInteractionTask(player) && CheckAvailableQuestsToStart(player) == 0)
-                    Info.Text = "No Available Quests to Start";
-
-                if (!HasInteractionTask(player) && CheckAllCompleted(player))
-                {
-                    Info.Text = "All Quests Completed";
-                }
-            }
-            else
-            {
-                Info.Visible = false;
-                Info.Text = "Press R to Interact";
+                string missingQuests = string.Join(", ", quest.RequiredQuestNames
+                    .Where(name => player.GetCompletedQuestByName(name) is null));
+                if (missingQuests.Length > 0)
+                    details.Add($"Complete {missingQuests} first");
             }
 
-            return Info.Visible;
+            return details.Count > 0 ? string.Join("\n", details) : "No Available Quests to Start";
         }
 
         public override void Interact(GameTime gameTime, Player player)
