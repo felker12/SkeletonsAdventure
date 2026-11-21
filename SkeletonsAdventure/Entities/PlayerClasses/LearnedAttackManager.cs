@@ -21,56 +21,9 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
                 LearnedAttacks[attackName] = attack;
         }
 
-        public bool CheckRequirements(BasicAttack attack)
-        {
-            //currently check both instead of using the commented out line to get the debug info provided by both methods
-            bool levelsMet = CheckAttackLevelRequirements(attack);
-            bool skillsMet = CheckAttackSkillRequirements(attack);
-
-            return levelsMet && skillsMet;
-
-            //return CheckAttackLevelRequirements(attack) && CheckAttackSkillRequirements(attack);
-        }
-
-        private bool CheckAttackLevelRequirements(BasicAttack attack)
-        {
-            if(attack.LevelRequirements is null) // No level requirements
-                return true;
-
-            // Check level requirements
-            if(attack.LevelRequirements.CheckRequirements(Player))
-                return true;
-            else
-            {
-                Debug.WriteLine(attack.LevelRequirements.MissingRequirementsText(Player));
-                return false;
-            }
-        }
-
-        private bool CheckAttackSkillRequirements(BasicAttack attack)
-        {
-            List<string> missingSkills = [];
-
-            // Check skill requirements
-            if (attack.SkillRequirementsNames is not null)
-            { 
-                foreach (string attackName in attack.SkillRequirementsNames)
-                {
-                    if(Contains(attackName) is false)
-                        missingSkills.Add(attackName);
-                }
-            }
-
-            if (missingSkills.Count > 0)
-            {
-                foreach (string skill in missingSkills)
-                    Debug.WriteLine($"Cannot learn attack {attack.Name}. Missing required skill: {skill}");
-
-                return false;
-            }
-
-            return true;
-        }
+        public bool CheckRequirements(BasicAttack attack) =>
+            (attack.LevelRequirements?.CheckRequirements(Player) ?? true) &&
+            (attack.SkillRequirementsNames?.All(Contains) ?? true);
 
         public bool Contains(string attackName)
         {

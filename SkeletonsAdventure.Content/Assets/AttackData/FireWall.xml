@@ -17,6 +17,8 @@
       <Attack>0</Attack>
       <Mana>0</Mana>
     </LevelRequirement>
-    <SkillRequirementsNames />
+    <SkillRequirementsNames>
+      <Item>FireBall</Item>
+    </SkillRequirementsNames>
   </Asset>
 </XnaContent>

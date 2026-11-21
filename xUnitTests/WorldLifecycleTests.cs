@@ -16,6 +16,58 @@ namespace xUnitTests;
 public partial class UnitTest1
 {
     [Fact]
+    public void SkillTabsEnforceBothMagicPathsAndPreviewLockedSkills()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        _ = new GameScreen(game, assets);
+        var pause = new ExitScreen(game, assets);
+        var tabs = pause.ExitScreenMenu.TabBar;
+        var skills = Assert.Single(tabs.TabMenus.Values.OfType<LearnSkillsMenu>());
+        var player = World.Player;
+        tabs.SetActiveTab(skills);
+
+        Assert.True(player.LearnedAttackManager.Contains(nameof(FireBall)));
+        var iceVolley = Assert.Single(skills.ControlManager, control => control.Name == nameof(IceBullets));
+        Assert.Equal(nameof(IceBullets), skills.GetSkillAt(iceVolley.Rectangle.Center));
+        skills.SelectSkill(nameof(IceBullets));
+        Assert.False(skills.LearnSelectedSkill());
+        using var batch = new Microsoft.Xna.Framework.Graphics.SpriteBatch(game.GraphicsDevice);
+        pause.Draw(batch);
+
+        skills.SelectSkill(nameof(BlueFireWave));
+        Assert.False(skills.LearnSelectedSkill());
+        skills.SelectSkill(nameof(FireWave));
+        Assert.True(skills.LearnSelectedSkill());
+        skills.SelectSkill(nameof(BlueFireWave));
+        Assert.True(skills.LearnSelectedSkill());
+
+        skills.SelectSkill(nameof(IcePillar));
+        Assert.False(skills.LearnSelectedSkill());
+        skills.SelectSkill(nameof(IceBullet));
+        Assert.False(skills.LearnSelectedSkill());
+        skills.SelectSkill(nameof(WaterBall));
+        skills.ShowMelee(true);
+        Assert.Null(skills.GetSkillAt(iceVolley.Rectangle.Center));
+        Assert.DoesNotContain(skills.ControlManager, control => control.Name is not null && control.Visible);
+        Assert.False(skills.LearnSelectedSkill());
+        pause.Draw(batch);
+        skills.ShowMelee(false);
+        Assert.True(skills.LearnSelectedSkill());
+        skills.SelectSkill(nameof(IceBullet));
+        Assert.True(skills.LearnSelectedSkill());
+        skills.SelectSkill(nameof(IcePillar));
+        Assert.True(skills.LearnSelectedSkill());
+        skills.SelectSkill(nameof(IceBullets));
+        Assert.False(skills.LearnSelectedSkill());
+        player.BaseMana = 100;
+        player.Mana = 0;
+        player.RefreshEquipmentStats();
+        skills.SelectSkill(nameof(IceBullets));
+        Assert.True(skills.LearnSelectedSkill());
+    }
+
+    [Fact]
     public void PauseItemsTabEquipsGearUpdatesStatsAndInspectsConsumables()
     {
         using var game = new SkeletonsAdventure.Game1();

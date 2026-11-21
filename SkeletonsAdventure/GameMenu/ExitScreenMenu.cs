@@ -48,8 +48,7 @@ namespace SkeletonsAdventure.GameMenu
 
             _evolutionMenu = new EvolutionMenu(pixel, pixel, fonts.Arial12, MenuStyle.Panel) { Title = "Evolution" };
             AddMenu(_evolutionMenu);
-            AddMenu(new LearnSkillsMenu(pixel, pixel, fonts.Arial12, MenuStyle.Panel, attackTemplates)
-                { Title = "Skills", Visible = true });
+            AddMenu(new LearnSkillsMenu(pixel, fonts.Arial12, fonts.Arial16, attackTemplates));
             AddMenu(new ActionBarMenu(pixel, pixel, fonts.Arial12, MenuStyle.Panel)
                 { Title = "Action Bar", Visible = true });
 
