@@ -68,6 +68,7 @@ namespace SkeletonsAdventure.GameObjects
 
         public InteractableObject(InteractableObjectData obj, SpriteFont font)
         {
+            TiledObjectId = obj.TiledObjectId;
             Info = new(font);
             TypeOfObject = obj.TypeOfObject;
             Active = obj.Active;
@@ -143,6 +144,7 @@ namespace SkeletonsAdventure.GameObjects
         {
             return new InteractableObjectData()
             {
+                TiledObjectId = TiledObjectId,
                 TypeOfObject = TypeOfObject,
                 Position = Position,
                 Width = Width,

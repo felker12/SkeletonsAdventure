@@ -21,6 +21,8 @@ namespace SkeletonsAdventure.Attacks
         /// <returns>True if the entity is on attack cooldown, false otherwise.</returns>
         public bool AttackingIsOnCoolDown(GameTime gameTime) => _hasCast && (gameTime.TotalGameTime - LastAttackTime).TotalMilliseconds < SourceEntity.AttackCoolDownLength;
 
+        internal bool HasAttackedSince(TimeSpan cutoff) => _hasCast && LastAttackTime >= cutoff;
+
         public void Draw(SpriteBatch spriteBatch)
         {
             if(SourceEntity.IsDead)

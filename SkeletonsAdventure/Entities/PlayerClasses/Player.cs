@@ -32,6 +32,9 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
         public int Mana { get; set; } = 0;
         public int BaseMana { get; set; } = 0;
         public int MaxMana { get; set; } = 0;
+        private static readonly TimeSpan ManaCombatWindow = TimeSpan.FromSeconds(5);
+        private const long RecoveryTicksPerMana = TimeSpan.TicksPerSecond * 5;
+        private long _manaRecoveryTicks;
         public int AttributePoints { get; set; } = 0;
         public float XPModifier
         {
@@ -612,6 +615,25 @@ namespace SkeletonsAdventure.Entities.PlayerClasses
         {
             CancelAim();
             base.Respawn();
+            Mana = MaxMana;
+            _manaRecoveryTicks = 0;
+        }
+
+        internal void RecoverMana(GameTime gameTime, bool enemyEngaged)
+        {
+            if (IsDead || Health <= 0 || Mana >= MaxMana)
+            {
+                _manaRecoveryTicks = 0;
+                return;
+            }
+
+            TimeSpan cutoff = gameTime.TotalGameTime - ManaCombatWindow;
+            bool inCombat = enemyEngaged || AttackManager.HasAttackedSince(cutoff) ||
+                (LastTimeAttacked != TimeSpan.Zero && LastTimeAttacked >= cutoff);
+            // One point every five combat seconds, with five times that rate outside combat.
+            _manaRecoveryTicks += Math.Max(0, gameTime.ElapsedGameTime.Ticks) * (inCombat ? 1 : 5);
+            Mana += (int)Math.Min((long)MaxMana - Mana, _manaRecoveryTicks / RecoveryTicksPerMana);
+            _manaRecoveryTicks = Mana == MaxMana ? 0 : _manaRecoveryTicks % RecoveryTicksPerMana;
         }
 
         public override void PerformAttack(GameTime gameTime, BasicAttack entityAttack)

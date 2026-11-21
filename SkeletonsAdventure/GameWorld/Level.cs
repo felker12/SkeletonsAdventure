@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using System.Linq;
 using MonoGame.Extended.Tilemaps;
 using MonoGame.Extended.Tilemaps.Rendering;
 using RpgLibrary.DataClasses;
@@ -163,6 +164,8 @@ namespace SkeletonsAdventure.GameWorld
             CollisionDetection.CheckEntityBoundaryCollisions(EntityManager.Entities, collisionLayers,
                 TileWidth, TileHeight, Width, Height, gameTime);
             EntityManager.ResolveAttackHits(gameTime);
+            Player.RecoverMana(gameTime, EntityManager.Entities.Any(entity => entity is Enemy
+                { IsDead: false, Health: > 0, Behavior: EnemyBehavior.Pursuing or EnemyBehavior.Investigating }));
 
             Camera.Update(Player.Position);
 

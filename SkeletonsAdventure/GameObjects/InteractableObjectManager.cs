@@ -57,9 +57,11 @@ namespace SkeletonsAdventure.GameObjects
             {
                 // Keep map-created subtypes, quests, requirements, animations and callbacks.
                 var obj = InteractableObjects.Find(candidate =>
-                    candidate.Position == objData.Position && candidate.TypeOfObject == objData.TypeOfObject);
-                if (obj is null)
-                    throw new System.IO.InvalidDataException($"Unknown saved interactable: {objData.TypeOfObject}");
+                    candidate.TypeOfObject == objData.TypeOfObject &&
+                    (objData.TiledObjectId > 0
+                        ? candidate.TiledObjectId == objData.TiledObjectId
+                        : candidate.Position == objData.Position)) ?? throw new System.IO.InvalidDataException(
+                        $"Unknown saved interactable: {objData.TypeOfObject} (Tiled ID {objData.TiledObjectId}, position {objData.Position})");
                 obj.Active = objData.Active;
                 obj.Visible = objData.Visible;
                 obj.CooldownTime = objData.CooldownTime;

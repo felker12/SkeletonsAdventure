@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using RpgLibrary.DataClasses;
 using RpgLibrary.EntityClasses;
+using RpgLibrary.GameObjectClasses;
 using RpgLibrary.ItemClasses;
 using RpgLibrary.WorldClasses;
 using SkeletonsAdventure.Engines;
@@ -154,21 +155,44 @@ public partial class UnitTest1
     }
 
     [Fact]
-    public void RestoringInteractablesKeepsConfiguredSubtypeAndRequirements()
+    public void RestoringInteractablesUsesTiledIdsForMovedObjectsAndPositionsForLegacySaves()
     {
+        using var directory = new SaveDirectory();
         using var game = new SkeletonsAdventure.Game1();
         var assets = new GameManager(game);
         _ = new GameScreen(game, assets);
         var manager = World.Levels.Values.First(l => l.InteractableObjectManager.Count > 0).InteractableObjectManager;
-        var original = manager.Objects.ToArray();
+        var original = manager.Objects[0];
+        Vector2 originalPosition = original.Position;
         var saved = manager.ToData();
-        saved.InteractableObjectsData[0].Active = false;
-        saved.InteractableObjectsData[0].LastInteractedTime = TimeSpan.FromSeconds(12);
-        manager.LoadFromData(saved);
-        Assert.False(manager.Objects[0].Active);
-        Assert.Equal(TimeSpan.FromSeconds(12), manager.Objects[0].LastInteractedTime);
-        for (int i = 0; i < original.Length; i++)
-            Assert.Same(original[i], manager.Objects[i]);
+        var state = saved.InteractableObjectsData[0];
+        state.Active = false;
+        state.LastInteractedTime = TimeSpan.FromSeconds(12);
+        Assert.True(state.TiledObjectId > 0);
+        string path = Path.Combine(directory.Path, "Interactables.xml");
+        XnaSerializer.Serialize(path, saved);
+
+        original.Position += new Vector2(16, 32);
+        var restored = XnaSerializer.Deserialize<InteractableObjectManagerData>(path);
+        Assert.Equal(original.TiledObjectId, restored.InteractableObjectsData[0].TiledObjectId);
+        manager.LoadFromData(restored);
+        Assert.Same(original, manager.Objects[0]);
+        Assert.Equal(originalPosition + new Vector2(16, 32), original.Position);
+        Assert.False(original.Active);
+        Assert.Equal(TimeSpan.FromSeconds(12), original.LastInteractedTime);
+
+        original.Position = originalPosition;
+        original.Active = true;
+        restored.InteractableObjectsData[0].TiledObjectId += 1000;
+        Assert.Throws<InvalidDataException>(() => manager.LoadFromData(restored));
+        Assert.True(original.Active);
+
+        var legacyXml = System.Xml.Linq.XDocument.Load(path);
+        foreach (var id in legacyXml.Descendants("TiledObjectId").ToArray())
+            id.Remove();
+        legacyXml.Save(path);
+        manager.LoadFromData(XnaSerializer.Deserialize<InteractableObjectManagerData>(path));
+        Assert.False(original.Active);
     }
 
     [Fact]

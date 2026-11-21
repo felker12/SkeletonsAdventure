@@ -13,6 +13,62 @@ namespace xUnitTests;
 
 public partial class UnitTest1
 {
+    [Fact]
+    public void ManaRecoversAtBothRatesAndRespawnRefillsIt()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        _ = new GameScreen(game, assets);
+        var player = World.Player;
+        player.Mana = 0;
+        var time = new GameTime();
+
+        Recover(0.5);
+        Assert.Equal(0, player.Mana);
+        Recover(0.5);
+        Assert.Equal(1, player.Mana);
+        Recover(4.5, enemyEngaged: true);
+        Assert.Equal(1, player.Mana);
+        Recover(0.5, enemyEngaged: true);
+        Assert.Equal(2, player.Mana);
+
+        player.PerformAttack(time, player.BasicAttack);
+        Recover(1);
+        Assert.Equal(2, player.Mana);
+        Recover(4);
+        Assert.Equal(3, player.Mana);
+        Recover(1);
+        Assert.Equal(4, player.Mana);
+
+        player.LastTimeAttacked = time.TotalGameTime;
+        Recover(1);
+        Assert.Equal(4, player.Mana);
+        Recover(30);
+        Assert.Equal(player.MaxMana, player.Mana);
+        player.Mana = 0;
+        Recover(0.5);
+        Assert.Equal(0, player.Mana);
+
+        player.EntityDied(time);
+        Recover(10);
+        Assert.Equal(0, player.Mana);
+        player.Respawn();
+        Assert.Equal(player.MaxMana, player.Mana);
+
+        player.Mana--;
+        Recover(0.5);
+        Assert.Equal(player.MaxMana - 1, player.Mana);
+        Recover(0.5);
+        Assert.Equal(player.MaxMana, player.Mana);
+
+        void Recover(double seconds, bool enemyEngaged = false)
+        {
+            time.ElapsedGameTime = TimeSpan.FromSeconds(seconds);
+            time.TotalGameTime += time.ElapsedGameTime;
+            player.RecoverMana(time, enemyEngaged);
+        }
+    }
+
     private sealed class LootCountingEnemy(EntityAssets assets) : Enemy(assets)
     {
         public int DropRolls { get; private set; }

@@ -4,6 +4,8 @@ namespace RpgLibrary.GameObjectClasses
 {
     public class InteractableObjectData
     {
+        [Microsoft.Xna.Framework.Content.ContentSerializer(Optional = true)]
+        public int TiledObjectId { get; set; }
         public string TypeOfObject { get; set; } = string.Empty;
         public Vector2 Position { get; set; } = new();
         public int Width { get; set; } = 32;
@@ -17,6 +19,7 @@ namespace RpgLibrary.GameObjectClasses
 
         public InteractableObjectData(InteractableObjectData interactableObjectData)
         {
+            TiledObjectId = interactableObjectData.TiledObjectId;
             TypeOfObject = interactableObjectData.TypeOfObject;
             Position = interactableObjectData.Position;
             Width = interactableObjectData.Width;
