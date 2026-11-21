@@ -4,6 +4,7 @@ using SkeletonsAdventure.Attacks;
 using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.Entities.PlayerClasses;
 using SkeletonsAdventure.GameWorld;
+using System.Linq;
 
 namespace SkeletonsAdventure.GameMenu
 {
@@ -14,29 +15,30 @@ namespace SkeletonsAdventure.GameMenu
         private const int DetailsLeft = 800;
         private const int TierTop = 85;
         private const int TierStep = 88;
-        private const int NodeHeight = 64;
+        private const int LevelsPerBand = 10;
+        private const int NodeHeight = 70;
         private const int TreeWidth = 780;
         private static readonly Rectangle TreeArea = new(0, 48, TreeWidth, LayoutHeight - 48);
 
         private static readonly string[] Branches = ["Fire", "Water / Ice", "Non-elemental"];
-        private static readonly string[] Tiers = ["Starter", "Intermediate", "Advanced", "Mastery"];
-        private static readonly (string Key, string Title, int Branch, int Tier, int Split)[] MagicLayout =
+        private static readonly (string Key, string Title, int Branch)[] MagicLayout =
         [
-            (nameof(FireBall), "Fireball", 0, 0, 0),
-            (nameof(FireWave), "Fire Wave", 0, 2, 0),
-            (nameof(BlueFireWave), "Blue Fire Wave", 0, 3, 0),
-            (nameof(WaterBall), "Water Ball", 1, 0, 0),
-            (nameof(IceBullet), "Ice Bullet", 1, 1, 0),
-            (nameof(IceBullets), "Ice Bullets", 1, 2, -1),
-            (nameof(IcePillar), "Ice Pillar", 1, 2, 1),
-            (nameof(TriangleAttack), "Triangle Attack", 2, 0, 0),
-            (nameof(SpinningTriangleAttack), "Spinning Triangle Attack", 2, 2, 0)
+            (nameof(FireBall), "Fireball", 0),
+            (nameof(FireWave), "Fire Wave", 0),
+            (nameof(BlueFireWave), "Blue Fire Wave", 0),
+            (nameof(WaterBall), "Water Ball", 1),
+            (nameof(IceBullet), "Ice Bullet", 1),
+            (nameof(IceBullets), "Ice Bullets", 1),
+            (nameof(IcePillar), "Ice Pillar", 1),
+            (nameof(TriangleAttack), "Triangle Attack", 2),
+            (nameof(SpinningTriangleAttack), "Spinning Triangle Attack", 2)
         ];
 
         private sealed record SkillNode(BasicAttack Attack, string Title, Rectangle Bounds, MenuButton Button);
         private enum PanGesture { None, Left, Middle }
 
         private readonly Dictionary<string, SkillNode> _nodes = [];
+        private readonly List<(int Level, int Top, int Height)> _bands = [];
         private readonly MenuButton _magicTab, _meleeTab, _fitTree, _learn;
         private readonly SpriteFont _font, _headingFont;
         private readonly Rectangle _treeContent;
@@ -82,25 +84,45 @@ namespace SkeletonsAdventure.GameMenu
             _learn = new(pixel, font, "Learn", () => LearnSelectedSkill(), primary: true);
             ControlManager.AddRange([_magicTab, _meleeTab]);
 
-            _treeContent = new Rectangle(0, TreeArea.Top, TreeWidth, TierTop + (Tiers.Length - 1) * TierStep + NodeHeight - TreeArea.Top);
-            foreach (var (key, title, branch, tier, split) in MagicLayout)
+            var skills = MagicLayout
+                .Select(skill => (skill.Key, skill.Title, skill.Branch, Attack: attackTemplates.GetValueOrDefault(skill.Key)))
+                .Where(skill => skill.Attack is not null)
+                .GroupBy(skill => Math.Max(0, skill.Attack.LevelRequirements.Level) / LevelsPerBand * LevelsPerBand)
+                .OrderBy(band => band.Key);
+            int top = TierTop;
+            int contentWidth = TreeWidth;
+            foreach (var band in skills)
             {
-                if (!attackTemplates.TryGetValue(key, out var attack))
-                    continue;
-
-                int width = split == 0 ? 172 : 104;
-                int center = BranchCenter(branch) + split * 56;
-                var bounds = new Rectangle(center - width / 2, TierTop + tier * TierStep, width, NodeHeight);
-                var button = new MenuButton(pixel, font, title, () =>
+                int rows = 1;
+                foreach (var branch in band.GroupBy(skill => skill.Branch))
                 {
-                    if (!_blockNodeClick)
-                        SelectSkill(key);
-                }) { Name = key };
-                _nodes.Add(key, new SkillNode(attack, title, bounds, button));
-                _treeContent = Rectangle.Union(_treeContent, bounds);
-                _selected ??= key;
-                ControlManager.Add(button);
+                    var entries = branch.OrderBy(skill => skill.Attack.LevelRequirements.Level).ToArray();
+                    rows = Math.Max(rows, (entries.Length + 1) / 2);
+                    for (int i = 0; i < entries.Length; i++)
+                    {
+                        var (key, title, _, attack) = entries[i];
+                        bool paired = (i / 2) * 2 + 1 < entries.Length;
+                        int width = paired ? 104 : 172;
+                        int splitOffset = i % 2 == 0 ? -56 : 56;
+                        int center = BranchCenter(branch.Key) + (paired ? splitOffset : 0);
+                        var bounds = new Rectangle(center - width / 2, top + i / 2 * TierStep, width, NodeHeight);
+                        var button = new MenuButton(pixel, font, title, () =>
+                        {
+                            if (!_blockNodeClick)
+                                SelectSkill(key);
+                        }) { Name = key };
+                        _nodes.Add(key, new SkillNode(attack, title, bounds, button));
+                        _selected ??= key;
+                        contentWidth = Math.Max(contentWidth, bounds.Right);
+                        ControlManager.Add(button);
+                    }
+                }
+
+                _bands.Add((band.Key, top, (rows - 1) * TierStep + NodeHeight));
+                top += rows * TierStep;
             }
+            int bottom = _bands.Count > 0 ? _bands[^1].Top + _bands[^1].Height : TierTop;
+            _treeContent = new Rectangle(0, TreeArea.Top, contentWidth, bottom - TreeArea.Top);
 
             ControlManager.AddRange([_fitTree, _learn]);
             ControlManager.FocusChanged += (control, _) =>
@@ -375,11 +397,11 @@ namespace SkeletonsAdventure.GameMenu
             for (int branch = 0; branch < Branches.Length; branch++)
                 DrawCentered(batch, Branches[branch], _headingFont, BranchCenter(branch), 51, 214, MenuStyle.Brass);
 
-            for (int tier = 0; tier < Tiers.Length; tier++)
+            foreach (var (level, y, height) in _bands)
             {
-                int y = TierTop + tier * TierStep;
-                batch.Draw(Texture, new Rectangle(_treeContent.Left, y, _treeContent.Width, NodeHeight), MenuStyle.Canvas);
-                batch.DrawString(_font, Tiers[tier], new Vector2(12, y + 23), MenuStyle.MutedText);
+                batch.Draw(Texture, new Rectangle(_treeContent.Left, y, _treeContent.Width, height), MenuStyle.Canvas);
+                DrawCentered(batch, level == 0 ? "Starter" : $"Level {level}", _font, 60, y + 17, 104, MenuStyle.MutedText);
+                DrawCentered(batch, $"{level}-{(long)level + LevelsPerBand - 1}", _font, 60, y + 38, 104, MenuStyle.MutedText);
             }
 
             var manager = _player.LearnedAttackManager;
@@ -399,12 +421,26 @@ namespace SkeletonsAdventure.GameMenu
                 node.Attack.DrawIcon(batch, new Vector2(bounds.X + 8, bounds.Y + 5), 26);
                 var (status, color) = GetStatus(node.Attack);
                 batch.DrawString(_font, status, new Vector2(bounds.X + 39, bounds.Y + 9), color);
-                DrawCentered(batch, node.Title, _font, bounds.Center.X, bounds.Y + 39, bounds.Width - 12, MenuStyle.Ivory);
+                int requiredLevel = node.Attack.LevelRequirements.Level;
+                DrawCentered(batch, node.Title, _font, bounds.Center.X, bounds.Y + (requiredLevel > 0 ? 29 : 39),
+                    bounds.Width - 12, MenuStyle.Ivory);
+                if (requiredLevel > 0)
+                    DrawCentered(batch, $"Requires level {requiredLevel}", _font, bounds.Center.X, bounds.Y + 49,
+                        bounds.Width - 12, MenuStyle.MutedText);
             }
         }
 
         private void DrawConnection(SpriteBatch batch, Rectangle parent, Rectangle child, Color color)
         {
+            if (parent.Top == child.Top)
+            {
+                var (left, right) = parent.Left < child.Left ? (parent, child) : (child, parent);
+                batch.Draw(Texture, new Rectangle(left.Right, left.Center.Y, right.Left - left.Right, 2), color);
+                return;
+            }
+
+            if (parent.Top > child.Top)
+                (parent, child) = (child, parent);
             int from = parent.Center.X;
             int to = child.Center.X;
             int bend = child.Top - (TierStep - NodeHeight) / 2;

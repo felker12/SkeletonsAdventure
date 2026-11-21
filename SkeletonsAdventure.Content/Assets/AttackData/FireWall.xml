@@ -12,7 +12,7 @@
     <ManaCost>1</ManaCost>
     <AttackDelay>500</AttackDelay>
     <LevelRequirement>
-      <Level>0</Level>
+      <Level>12</Level>
       <Defence>0</Defence>
       <Attack>0</Attack>
       <Mana>0</Mana>

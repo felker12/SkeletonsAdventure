@@ -136,43 +136,63 @@ public partial class UnitTest1
         tabs.SetActiveTab(skills);
 
         Assert.True(player.LearnedAttackManager.Contains(nameof(FireBall)));
-        var iceVolley = Assert.Single(skills.ControlManager, control => control.Name == nameof(IceBullets));
-        Assert.Equal(nameof(IceBullets), skills.GetSkillAt(iceVolley.Rectangle.Center));
-        skills.SelectSkill(nameof(IceBullets));
-        Assert.False(skills.LearnSelectedSkill());
+        var iceVolley = SkillBounds(skills, nameof(IceBullets));
+        Assert.Equal(SkillBounds(skills, nameof(IceBullet)).Top, SkillBounds(skills, nameof(FireWave)).Top);
+        Assert.Equal(SkillBounds(skills, nameof(IcePillar)).Top, iceVolley.Top);
+        Assert.Equal(100, assets.AttackTemplates[nameof(IceBullets)].LevelRequirements.Mana);
+        Assert.Equal(nameof(IceBullets), skills.GetSkillAt(iceVolley.Center));
+        Assert.False(Learn(nameof(IceBullets)));
         using var batch = new Microsoft.Xna.Framework.Graphics.SpriteBatch(game.GraphicsDevice);
         pause.Draw(batch);
 
-        skills.SelectSkill(nameof(BlueFireWave));
-        Assert.False(skills.LearnSelectedSkill());
-        skills.SelectSkill(nameof(FireWave));
-        Assert.True(skills.LearnSelectedSkill());
-        skills.SelectSkill(nameof(BlueFireWave));
-        Assert.True(skills.LearnSelectedSkill());
-
-        skills.SelectSkill(nameof(IcePillar));
-        Assert.False(skills.LearnSelectedSkill());
-        skills.SelectSkill(nameof(IceBullet));
-        Assert.False(skills.LearnSelectedSkill());
-        skills.SelectSkill(nameof(WaterBall));
+        Assert.False(Learn(nameof(WaterBall)));
+        AdvanceTo(1);
         skills.ShowMelee(true);
-        Assert.Null(skills.GetSkillAt(iceVolley.Rectangle.Center));
+        Assert.Null(skills.GetSkillAt(iceVolley.Center));
         Assert.DoesNotContain(skills.ControlManager, control => control.Name is not null && control.Visible);
         Assert.False(skills.LearnSelectedSkill());
         pause.Draw(batch);
         skills.ShowMelee(false);
-        Assert.True(skills.LearnSelectedSkill());
-        skills.SelectSkill(nameof(IceBullet));
-        Assert.True(skills.LearnSelectedSkill());
-        skills.SelectSkill(nameof(IcePillar));
-        Assert.True(skills.LearnSelectedSkill());
-        skills.SelectSkill(nameof(IceBullets));
-        Assert.False(skills.LearnSelectedSkill());
-        player.BaseMana = 100;
+        Assert.True(Learn(nameof(WaterBall)));
+        Assert.False(Learn(nameof(IceBullet)));
+
+        AdvanceTo(10);
+        Assert.False(Learn(nameof(FireWave)));
+        AdvanceTo(12);
+        Assert.True(Learn(nameof(FireWave)));
+        Assert.False(Learn(nameof(BlueFireWave)));
+
+        AdvanceTo(20);
+        Assert.False(Learn(nameof(IcePillar)));
+        Assert.True(Learn(nameof(IceBullet)));
+        Assert.True(Learn(nameof(IcePillar)));
+        Assert.False(Learn(nameof(IceBullets)));
+        AdvanceTo(22);
         player.Mana = 0;
-        player.RefreshEquipmentStats();
-        skills.SelectSkill(nameof(IceBullets));
-        Assert.True(skills.LearnSelectedSkill());
+        Assert.True(Learn(nameof(IceBullets)));
+        AdvanceTo(30);
+        Assert.True(Learn(nameof(BlueFireWave)));
+
+        var retuned = assets.AttackTemplates.ToDictionary(entry => entry.Key, entry => entry.Value);
+        retuned[nameof(FireWave)] = retuned[nameof(FireWave)].Clone();
+        retuned[nameof(FireWave)].LevelRequirements.Level = 5;
+        var retunedMenu = new LearnSkillsMenu(assets.TexturesLibrary.StatusBarTexture, assets.FontsLibrary.Arial12,
+            assets.FontsLibrary.Arial16, retuned);
+        retunedMenu.Arrange(skills.Rectangle);
+        retunedMenu.MenuOpened();
+        Assert.Equal(SkillBounds(retunedMenu, nameof(FireBall)).Top, SkillBounds(retunedMenu, nameof(FireWave)).Top);
+        retunedMenu.Draw(batch);
+
+        static Rectangle SkillBounds(LearnSkillsMenu menu, string name) =>
+            Assert.Single(menu.ControlManager, control => control.Name == name).Rectangle;
+
+        void AdvanceTo(int level) => player.GainXp(GameManager.XPTable.GetLevelXPAtLevel(level) - player.TotalXP);
+
+        bool Learn(string name)
+        {
+            skills.SelectSkill(name);
+            return skills.LearnSelectedSkill();
+        }
     }
 
     [Fact]
