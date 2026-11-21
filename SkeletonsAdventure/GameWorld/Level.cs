@@ -30,7 +30,6 @@ namespace SkeletonsAdventure.GameWorld
         public EntityManager EntityManager { get; private set; }
         public Tilemap TiledMap { get; private set; }
         public MinMaxPair EnemyLevels { get; private set; }
-        private GraphicsDevice GraphicsDevice { get; }
         public Vector2 PlayerStartPosition { get; set; } = new(80, 80);
         public Vector2 PlayerEndPosition { get; set; } = new(80, 80);//location of the exit so if the player comes back to the level this is where they will be placed
         public Vector2 PlayerRespawnPosition { get; set; } = new(80, 80);
@@ -51,7 +50,6 @@ namespace SkeletonsAdventure.GameWorld
         public Dictionary<string, Enemy> Enemies { get; private set; } = [];
 
         private TilemapSpriteBatchRenderer _tiledMapRenderer;
-        private OrthographicCamera _mapCamera;
         private TilemapTileLayer _mapCollisionLayer;
         private TilemapObjectLayer _mapSpawnerLayer;
         private TilemapTileLayer[] collisionLayers = [];
@@ -59,10 +57,9 @@ namespace SkeletonsAdventure.GameWorld
 
         public List<Rectangle> EnterExitLayerObjectRectangles { get; private set; } = []; //TODO used to temporarily see where hitboxes are for exits
 
-        public Level(GraphicsDevice graphics, Tilemap tiledMap, string name, Dictionary<string, Enemy> enemies, MinMaxPair enemyLevels,
+        public Level(Tilemap tiledMap, string name, Dictionary<string, Enemy> enemies, MinMaxPair enemyLevels,
             SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         {
-            GraphicsDevice = graphics;
             _exitFont = exitFont ?? throw new ArgumentNullException(nameof(exitFont));
             DamagePopUpManager = new(damageFont);
             InteractableObjectManager = new(_exitFont);
@@ -88,7 +85,6 @@ namespace SkeletonsAdventure.GameWorld
         private void CreateMap(Tilemap tiledMap, string name)
         {
             TiledMap = tiledMap;
-            _mapCamera = new(GraphicsDevice);
             _tiledMapRenderer = new() { BlendState = BlendState.AlphaBlend, SamplerState = SamplerState.PointClamp };
             _tiledMapRenderer.LoadTilemap(TiledMap);
             _mapCollisionLayer = TiledMap.Layers.GetLayer<TilemapTileLayer>("CollisionLayer");
@@ -128,10 +124,7 @@ namespace SkeletonsAdventure.GameWorld
 
         public void Draw(SpriteBatch spriteBatch)  
         {
-            // Use the same pixel-aligned position for the map and the game sprites.
-            var view = Camera.Transformation;
-            _mapCamera.Position = new Vector2(-view.M41, -view.M42);
-            _tiledMapRenderer.Draw(spriteBatch, _mapCamera);
+            _tiledMapRenderer.Draw(spriteBatch, Camera.View);
 
             spriteBatch.Begin(
                        SpriteSortMode.Immediate,
@@ -140,7 +133,7 @@ namespace SkeletonsAdventure.GameWorld
                        null,
                        null,
                        null,
-                       view);
+                       Camera.Transformation);
 
             EntityManager.Draw(spriteBatch);
             ChestManager.Draw(spriteBatch);

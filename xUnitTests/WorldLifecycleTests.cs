@@ -14,6 +14,53 @@ namespace xUnitTests;
 public partial class UnitTest1
 {
     [Fact]
+    public void FreeCameraPansAndZoomsOnlyInDevAndResetsWhenFollowingAgain()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        var screen = new GameScreen(game, assets);
+        var camera = screen.Camera;
+        var playerPosition = new Vector2(2000, 2000);
+        var viewport = game.GraphicsDevice.Viewport;
+        var screenCenter = new Vector2(viewport.Width, viewport.Height) / 2;
+        camera.Update(playerPosition);
+        Assert.Equal(screenCenter, Vector2.Transform(playerPosition, camera.Transformation));
+
+        var followedView = camera.Transformation;
+        camera.ToggleDetached(playerPosition);
+        Assert.Equal(SkeletonsAdventure.Game1.IfDev, camera.IsDetached);
+        if (!camera.IsDetached)
+        {
+            camera.MoveDetached(Vector2.UnitX, 1, TimeSpan.FromSeconds(1));
+            Assert.Equal(followedView, camera.Transformation);
+            return;
+        }
+
+        camera.Update(playerPosition + new Vector2(100, 100));
+        Assert.Equal(followedView, camera.Transformation);
+        camera.MoveDetached(Vector2.Zero, 1, TimeSpan.Zero);
+        Assert.Equal(1.25f, camera.Transformation.M11);
+        Assert.InRange(Vector2.Distance(screenCenter, Vector2.Transform(playerPosition, camera.Transformation)), 0f, 1f);
+        camera.MoveDetached(Vector2.UnitX, 0, TimeSpan.FromSeconds(1));
+        Assert.InRange(Vector2.Transform(playerPosition, camera.Transformation).X, screenCenter.X - 601, screenCenter.X - 599);
+
+        camera.MoveDetached(Vector2.Zero, -100, TimeSpan.Zero);
+        Assert.Equal(0.125f, camera.Transformation.M11);
+        camera.MoveDetached(Vector2.Zero, 100, TimeSpan.Zero);
+        Assert.Equal(4f, camera.Transformation.M11);
+        using var batch = new Microsoft.Xna.Framework.Graphics.SpriteBatch(game.GraphicsDevice);
+        screen.Draw(batch);
+
+        camera.ToggleDetached(playerPosition);
+        Assert.False(camera.IsDetached);
+        Assert.Equal(followedView, camera.Transformation);
+        camera.ToggleDetached(playerPosition);
+        World.SetCurrentLevel(World.Levels["Level1"]);
+        Assert.False(camera.IsDetached);
+        Assert.Equal(1f, camera.Transformation.M11);
+    }
+
+    [Fact]
     public void NewGameMenuFitsAvailableOptionsAndKeepsTestLoadoutSeparate()
     {
         using var game = new SkeletonsAdventure.Game1();

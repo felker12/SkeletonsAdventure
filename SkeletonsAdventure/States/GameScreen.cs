@@ -145,6 +145,15 @@ namespace SkeletonsAdventure.States
 
             ActionBar.Draw(spriteBatch);
 
+            if (Camera.IsDetached)
+            {
+                const string hint = "Free camera  |  Arrows to pan  |  Wheel to zoom  |  Scroll Lock to follow";
+                var font = Assets.FontsLibrary.Arial12;
+                var position = new Vector2(GraphicsDevice.Viewport.Width - font.MeasureString(hint).X - 12, 12);
+                spriteBatch.DrawString(font, hint, position + Vector2.One, Color.Black);
+                spriteBatch.DrawString(font, hint, position, Color.White);
+            }
+
             //FPS.Draw(spriteBatch, GameManager.InfoFont, new(10,10), Color.MonoGameOrange);
 
             spriteBatch.End();
@@ -154,6 +163,9 @@ namespace SkeletonsAdventure.States
 
         public override void Update(GameTime gameTime)
         {
+            if (Game1.IfDev)
+                UpdateFreeCamera(gameTime.ElapsedGameTime);
+
             CheckUnderMouse(gameTime);
 
             World.Update(gameTime, IsTestGame);
@@ -171,6 +183,24 @@ namespace SkeletonsAdventure.States
             LoadMessagesFromWorld();
             MessageBox.Update();
             //FPS.Update(gameTime);
+        }
+
+        private void UpdateFreeCamera(TimeSpan elapsed)
+        {
+            if (InputHandler.KeyPressed(Keys.Scroll))
+                Camera.ToggleDetached(Player.Position);
+            if (!Camera.IsDetached)
+                return;
+
+            var direction = new Vector2(
+                (InputHandler.KeyDown(Keys.Right) ? 1 : 0) - (InputHandler.KeyDown(Keys.Left) ? 1 : 0),
+                (InputHandler.KeyDown(Keys.Down) ? 1 : 0) - (InputHandler.KeyDown(Keys.Up) ? 1 : 0));
+            var mouse = InputHandler.MouseState;
+            float wheelNotches = 0;
+            if (!MessageBox.Visible || !MessageBox.Rectangle.Contains(mouse.Position))
+                wheelNotches = (mouse.ScrollWheelValue - InputHandler.LastMouseState.ScrollWheelValue) / 120f;
+
+            Camera.MoveDetached(direction, wheelNotches, elapsed);
         }
 
         internal void UpdatePlayerStatusBars()

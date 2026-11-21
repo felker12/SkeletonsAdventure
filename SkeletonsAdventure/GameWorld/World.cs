@@ -14,7 +14,7 @@ namespace SkeletonsAdventure.GameWorld
         public static Dictionary<string, Level> Levels { get; private set; }
         public static Level CurrentLevel { get; set; }
         public static Player Player { get; set; }
-        public static Camera Camera { get; set; } = new(Game1.ScreenWidth, Game1.ScreenHeight);
+        public static Camera Camera { get; private set; }
         public static GameTime TotalTimeInWorld { get; set; } = new();
         public static List<string> MessagesToAdd { get; private set; } = [];
 
@@ -22,13 +22,13 @@ namespace SkeletonsAdventure.GameWorld
             SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         {
             Player = player ?? throw new ArgumentNullException(nameof(player));
-            Camera = new(Game1.ScreenWidth, Game1.ScreenHeight);
+            Camera = new(graphics);
             TotalTimeInWorld = new();
             MessagesToAdd = [];
             //Clear the levels dictionary because the levels are static and will persist between game instances
             Levels = [];
 
-            LevelCreator levelCreator = new(content, graphics, exitFont, damageFont, leverAnimation);
+            LevelCreator levelCreator = new(content, exitFont, damageFont, leverAnimation);
             Levels = levelCreator.Levels;
 
             SetCurrentLevel(Levels["Level0"]);
@@ -124,7 +124,7 @@ namespace SkeletonsAdventure.GameWorld
 
             CurrentLevel = level;
             Camera.SetBounds(CurrentLevel.Width, CurrentLevel.Height);
-            Camera.Update(playerPosition);
+            Camera.ResumeFollowing(playerPosition);
             CurrentLevel.Player = Player;
             CurrentLevel.Camera = Camera;
             CurrentLevel.EntityManager.Player = Player;

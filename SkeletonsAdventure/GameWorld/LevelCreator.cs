@@ -9,20 +9,20 @@ namespace SkeletonsAdventure.GameWorld
     {
         public Dictionary<string, Level> Levels { get; private set; } = [];
 
-        public LevelCreator(GameContentManager content, GraphicsDevice graphics,
+        public LevelCreator(GameContentManager content,
             SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         { 
-            CreateLevels(content, graphics, exitFont, damageFont, leverAnimation);
+            CreateLevels(content, exitFont, damageFont, leverAnimation);
         }
 
-        private void CreateLevels(GameContentManager content, GraphicsDevice graphics,
+        private void CreateLevels(GameContentManager content,
             SpriteFont exitFont, SpriteFont damageFont, TiledAnimation leverAnimation)
         {
             foreach (string levelName in MapCatalog.LevelNames)
             {
                 var tiledMap = content.LoadSessionMap(MapCatalog.AssetName(levelName));
                 MinMaxPair pair = GetMinMaxPairFromTiledMap(tiledMap);
-                Level level = new(graphics, tiledMap, levelName, GameManager.EnemiesClone, pair,
+                Level level = new(tiledMap, levelName, GameManager.EnemiesClone, pair,
                     exitFont, damageFont, leverAnimation);
 
                 Levels.Add(level.Name, level);
