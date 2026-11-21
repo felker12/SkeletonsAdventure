@@ -481,6 +481,51 @@ public sealed class EditorProjectTests
         }
     }
 
+    [Fact]
+    public void EntityTextureImportAndRegistrationSaveTogetherWithTheEnemyTemplate()
+    {
+        using var directory = new TestDirectory();
+        string root = Path.Combine(directory.Path, "Assets");
+        Directory.CreateDirectory(Path.Combine(root, "Items"));
+        Directory.CreateDirectory(Path.Combine(root, "EntityData"));
+        Directory.CreateDirectory(Path.Combine(root, "TiledFiles"));
+        foreach (string map in new[] { "Level0", "Level0_Test", "Level1", "TestLevel" })
+            File.WriteAllText(Path.Combine(root, $"TiledFiles/{map}.tmx"), "<map />");
+        File.WriteAllText(Path.Combine(root, "TiledFiles/doors_lever_chest_animation.tsx"), "<tileset />");
+        WriteTextureCatalog(root);
+        string png = Path.Combine(directory.Path, "Goblin.PNG");
+        using (var bitmap = new Bitmap(92, 160))
+            bitmap.Save(png, System.Drawing.Imaging.ImageFormat.Png);
+
+        var project = EditorProject.Open(root);
+        project.AddEntityTexture("SpareBody", "EnemySheet");
+        project.AddEntityTexture("NewGoblinBody", png);
+        Assert.Throws<InvalidDataException>(() => project.AddEntityTexture("newgoblinbody", "EnemySheet"));
+        var enemy = project.Change(null, new EnemyData
+        {
+            Type = "SkeletonsAdventure.Entities.Goblin", TextureName = "NewGoblinBody", BaseHealth = 10
+        });
+        string imported = Path.Combine(root, "EntitySprites/Goblin.png");
+        Assert.True(project.IsDirty);
+        Assert.False(File.Exists(imported));
+        Assert.False(ContentReferenceValidator.ReadTextureCatalog(root).ContainsKey("NewGoblinBody"));
+
+        string catalogPath = Path.Combine(root, "TextureCatalog.xml");
+        File.AppendAllText(catalogPath, Environment.NewLine);
+        var conflict = Assert.Throws<ProjectSaveConflictException>(() => project.Save());
+        Assert.Equal(catalogPath, conflict.FilePath);
+        Assert.False(File.Exists(imported));
+
+        project.Save(new Dictionary<string, string?> { [conflict.FilePath] = conflict.Revision });
+        var reopened = EditorProject.Open(root);
+        Assert.Equal(File.ReadAllBytes(png), File.ReadAllBytes(imported));
+        Assert.Equal("EntitySprites/Goblin", reopened.EntityTextures["NewGoblinBody"]);
+        Assert.Equal("EnemySheet", reopened.EntityTextures["SpareBody"]);
+        Assert.Equal("NewGoblinBody", Assert.IsType<EnemyData>(
+            Assert.Single(reopened.Assets, asset => asset.Name == enemy.Name).Data).TextureName);
+        Assert.False(project.IsDirty);
+    }
+
     private static void WriteTextureCatalog(string root)
     {
         File.WriteAllBytes(Path.Combine(root, "EnemySheet.png"), []);

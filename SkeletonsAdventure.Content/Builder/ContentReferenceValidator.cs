@@ -177,10 +177,16 @@ internal static class ContentReferenceValidator
             .Where(texture => !ExcludedTextures.Contains(texture.Relative, StringComparer.Ordinal))
             .ToDictionary(texture => Path.ChangeExtension(texture.Relative, null), texture => texture.File, StringComparer.Ordinal);
 
-    internal static Dictionary<string, string> ReadTextureCatalog(string root)
+    internal static Dictionary<string, string> ReadTextureCatalog(string root, Stream? source = null)
     {
         string path = Path.Combine(root, TextureCatalog.AssetName + ".xml");
-        return ReadAsset<Dictionary<string, string>>(path) ?? throw Error(path, "Expected a texture catalog.");
+        try
+        {
+            var catalog = source is null ? XnaSerializer.Deserialize<Dictionary<string, string>>(path) :
+                XnaSerializer.Deserialize<Dictionary<string, string>>(source);
+            return catalog ?? throw new InvalidDataException("Expected a texture catalog.");
+        }
+        catch (Exception ex) { throw Error(path, ex.Message); }
     }
 
     private static Dictionary<string, bool> ValidateItems(string root, Dictionary<string, string> textureAssets)

@@ -79,7 +79,7 @@ public sealed class ItemDialogTests
                     var classes = Field<ComboBox>(dialog, "enemyClass");
                     Assert.Equal(ComboBoxStyle.DropDownList, classes.DropDownStyle);
                     Assert.Equal("Skeleton", classes.GetItemText(classes.SelectedItem));
-                    Assert.DoesNotContain(classes.Items.Cast<object>(), choice => classes.GetItemText(choice) == "Spider");
+                    Assert.Contains(classes.Items.Cast<object>(), choice => classes.GetItemText(choice) == "Spider (has template)");
                     var textures = Field<ComboBox>(dialog, "enemyTexture");
                     Assert.Equal(ComboBoxStyle.DropDownList, textures.DropDownStyle);
                     Assert.Equal("SkeletonBody", textures.SelectedItem);
@@ -105,6 +105,36 @@ public sealed class ItemDialogTests
             });
         }
         finally { Directory.Delete(root, recursive: true); }
+    }
+
+    [Fact]
+    public async Task NewEnemyTemplateListsOccupiedAndAvailableClassesWithoutAllowingDuplicates()
+    {
+        using var directory = new SpriteTestDirectory();
+        string root = Path.GetDirectoryName(directory.WriteImage("Sheet.png", new Size(16, 16)))!;
+        Directory.CreateDirectory(Path.Combine(root, "EntityData"));
+        Directory.CreateDirectory(Path.Combine(root, "Items"));
+        const string skeleton = "SkeletonsAdventure.Entities.Skeleton";
+        XnaSerializer.Serialize(Path.Combine(root, "EntityData/Skeleton.xml"),
+            new EnemyData { Type = skeleton, TextureName = "SkeletonBody" });
+        XnaSerializer.Serialize(Path.Combine(root, "TextureCatalog.xml"),
+            new Dictionary<string, string> { ["SkeletonBody"] = "Sheet" });
+        var project = EditorProject.Open(root);
+        project.AddEntityTexture("NewSprite", "Sheet");
+
+        await OnUiThread(() =>
+        {
+            using var dialog = new EnemyTemplateDialog(project, null);
+            var classes = Field<ComboBox>(dialog, "enemyClass");
+            var textures = Field<ComboBox>(dialog, "enemyTexture");
+            var save = Field<Button>(dialog, "acceptEnemyTemplate");
+            textures.SelectedItem = "NewSprite";
+            classes.SelectedItem = classes.Items.Cast<object>().Single(choice => classes.GetItemText(choice) == "Skeleton (has template)");
+            Assert.False(save.Enabled);
+            classes.SelectedItem = classes.Items.Cast<object>().Single(choice => classes.GetItemText(choice) == "Goblin");
+            Assert.True(save.Enabled);
+            Assert.Equal("NewSprite", dialog.ReadTemplate().TextureName);
+        });
     }
 
     [Fact]

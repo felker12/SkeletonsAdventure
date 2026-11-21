@@ -6,7 +6,7 @@ namespace RpgEditor;
 
 internal sealed class EnemyTemplateDialog : Form
 {
-    private readonly ComboBox enemyClass = new() { Name = "enemyClass", DropDownStyle = ComboBoxStyle.DropDownList, Width = 170 };
+    private readonly ComboBox enemyClass = new() { Name = "enemyClass", DropDownStyle = ComboBoxStyle.DropDownList, Width = 170, DropDownWidth = 250 };
     private readonly ComboBox texture = new() { Name = "enemyTexture", DropDownStyle = ComboBoxStyle.DropDownList, Width = 170 };
     private readonly ComboBox dropTable = new() { Name = "enemyDropTable", DropDownStyle = ComboBoxStyle.DropDownList, Width = 170 };
     private readonly NumericUpDown health = Number("baseEnemyHealth", 1);
@@ -40,9 +40,9 @@ internal sealed class EnemyTemplateDialog : Form
         var used = project.Assets.Select(entry => entry.Data).OfType<EnemyData>()
             .Where(enemy => !ReferenceEquals(enemy, data)).Select(enemy => enemy.Type).ToHashSet(StringComparer.Ordinal);
         enemyClass.DisplayMember = nameof(Choice.Label);
-        enemyClass.Items.AddRange(EnemyClassCatalog.Entries.Where(entry => !used.Contains(entry.Type))
-            .Select(entry => new Choice(entry.Type, EnemyClassCatalog.SpawnName(entry.Type))).OrderBy(choice => choice.Label).ToArray());
-        texture.Items.AddRange(ContentReferenceValidator.ReadTextureCatalog(project.Root).Keys.Order(StringComparer.Ordinal).ToArray());
+        enemyClass.Items.AddRange(EnemyClassCatalog.Entries.OrderBy(entry => EnemyClassCatalog.SpawnName(entry.Type))
+            .Select(entry => new Choice(entry.Type, used.Contains(entry.Type))).ToArray());
+        texture.Items.AddRange(project.EntityTextures.Keys.Order(StringComparer.Ordinal).ToArray());
         texture.SelectedItem = original.TextureName;
         DropTableChoice[] tables = [new("", "None"), new(DataAssetCatalog.BasicDropTable, "Basic Drop Table")];
         dropTable.DisplayMember = nameof(DropTableChoice.Label);
@@ -137,8 +137,10 @@ internal sealed class EnemyTemplateDialog : Form
 
     private void RefreshClass()
     {
-        string? selected = (enemyClass.SelectedItem as Choice)?.Type;
-        classStatus.Text = enemyClass.Items.Count == 0 ? "All registered enemy classes already have templates." :
+        var choice = enemyClass.SelectedItem as Choice;
+        string? selected = choice?.Type;
+        classStatus.Text = choice?.HasTemplate == true ? "This class already has a template. Select it in Entities and click Edit." :
+            enemyClass.Items.Cast<Choice>().All(option => option.HasTemplate) ? "All registered classes already have templates. Use Edit in Entities." :
             selected is null && original.Type.Length > 0 ? $"Choose a registered class to replace '{original.Type}'." : string.Empty;
         var entries = selected is null ? [] : spawns.ForClass(selected).ToArray();
         spawnList.BeginUpdate();
@@ -166,7 +168,8 @@ internal sealed class EnemyTemplateDialog : Form
     }
 
     private void UpdateSaveState() =>
-        save.Enabled = enemyClass.SelectedItem is Choice && texture.SelectedItem is string && dropTable.SelectedItem is DropTableChoice;
+        save.Enabled = enemyClass.SelectedItem is Choice { HasTemplate: false } &&
+            texture.SelectedItem is string && dropTable.SelectedItem is DropTableChoice;
 
     private static NumericUpDown Number(string name, int minimum = 0) =>
         new() { Name = name, Minimum = minimum, Maximum = int.MaxValue, Width = 100 };
@@ -187,6 +190,9 @@ internal sealed class EnemyTemplateDialog : Form
         return list;
     }
 
-    private sealed record Choice(string Type, string Label);
+    private sealed record Choice(string Type, bool HasTemplate)
+    {
+        public string Label => EnemyClassCatalog.SpawnName(Type) + (HasTemplate ? " (has template)" : "");
+    }
     private sealed record DropTableChoice(string Id, string Label);
 }

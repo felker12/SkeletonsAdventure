@@ -26,6 +26,8 @@ internal sealed class ProjectFileChange(string destination, string? staged, stri
                 case EntityData entity: XnaSerializer.Serialize(staged, entity); break;
                 case QuestData quest: XnaSerializer.Serialize(staged, quest); break;
                 case RPG metadata: XnaSerializer.Serialize(staged, metadata); break;
+                case Dictionary<string, string> catalog: XnaSerializer.Serialize(staged, catalog); break;
+                case byte[] image: File.WriteAllBytes(staged, image); break;
                 default: throw new InvalidOperationException("Unsupported editor asset.");
             }
             return new ProjectFileChange(path, staged, ProjectFileRevision.Read(staged));
