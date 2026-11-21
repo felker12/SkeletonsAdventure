@@ -12,6 +12,7 @@
     <RespawnPosition>0 0</RespawnPosition>
     <IsDead>false</IsDead>
     <LastDeathTime>PT0S</LastDeathTime>
+    <TextureName>SkeletonWarriorBody</TextureName>
     <DropTableName>BasicDropTable</DropTableName>
     <GuaranteedItems />
   </Asset>

@@ -35,17 +35,15 @@ namespace SkeletonsAdventure.GameWorld
                 if (enemyTypes.TryGetValue(data.Type, out var registration))
                 {
                     Type enemyType = registration.Type;
-                    //Dynamically create the specific enemy subclass and add to dictionary
-                    Texture2D texture = enemyType.Name switch
+                    Texture2D texture;
+                    try
                     {
-                        nameof(Goblin) => textures.GoblinTexture,
-                        nameof(Minotaur) => textures.MinotaurTexture,
-                        nameof(Spider) => textures.SpiderTexture,
-                        nameof(SkeletalBruiser) => textures.SkeletalBruiserTexture,
-                        nameof(SkeletonMage) => textures.SkeletonMageTexture,
-                        nameof(SkeletonWarrior) => textures.SkeletonWarriorTexture,
-                        _ => defaultAssets.Texture
-                    };
+                        texture = textures.GetTexture(data.TextureName);
+                    }
+                    catch (ContentLoadException ex)
+                    {
+                        throw new ContentLoadException($"Could not load texture '{data.TextureName}' for enemy asset '{contentPath}'. {ex.Message}", ex);
+                    }
                     Enemy en = (Enemy)Activator.CreateInstance(enemyType, data, defaultAssets with { Texture = texture });
                     en.GuaranteedDrops.Add(itemLoader.LoadGameItemsFromItemBaseData(data.GuaranteedItems));
                     if (registration.DefaultBones && skeletonDrop is not null && !data.GuaranteedItems.Any(item => item.Name == skeletonDrop.Name))

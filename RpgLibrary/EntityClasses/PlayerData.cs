@@ -25,9 +25,9 @@ namespace RpgLibrary.EntityClasses
             bonusManaFromAttributePoints;
         public PlayerEvolutionType EvolutionType = PlayerEvolutionType.Skeleton;
         public string TextureName = string.Empty;
-        public List<ItemData> backpack = new();
-        public List<QuestData> activeQuests = new();
-        public List<QuestData> completedQuests = new();
+        public List<ItemData> backpack = [];
+        public List<QuestData> activeQuests = [];
+        public List<QuestData> completedQuests = [];
         public string displayQuestName = string.Empty;
         public KillCounterData killCounter = new();
 

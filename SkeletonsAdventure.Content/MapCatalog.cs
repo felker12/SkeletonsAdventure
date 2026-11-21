@@ -38,6 +38,12 @@ internal static class DataAssetCatalog
     ];
 }
 
+internal static class TextureCatalog
+{
+    public const string AssetName = "TextureCatalog";
+    public const string SkeletonBody = "SkeletonBody";
+}
+
 internal static class EnemyClassCatalog
 {
     public const string NamespacePrefix = "SkeletonsAdventure.Entities.";

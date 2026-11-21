@@ -46,11 +46,17 @@ public sealed class ItemDialogTests
             const string skeleton = "SkeletonsAdventure.Entities.Skeleton";
             XnaSerializer.Serialize(Path.Combine(root, "EntityData/Skeleton.xml"), new EnemyData
             {
-                Type = skeleton, BaseHealth = 20, IsDead = true, CurrentHealth = 0,
+                Type = skeleton, TextureName = "SkeletonBody", BaseHealth = 20, IsDead = true, CurrentHealth = 0,
                 GuaranteedItems = [new("Coins", 2)]
             });
             XnaSerializer.Serialize(Path.Combine(root, "EntityData/Spider.xml"),
-                new EnemyData { Type = "SkeletonsAdventure.Entities.Spider", BaseHealth = 5 });
+                new EnemyData { Type = "SkeletonsAdventure.Entities.Spider", TextureName = "SpiderBody", BaseHealth = 5 });
+            XnaSerializer.Serialize(Path.Combine(root, "TextureCatalog.xml"), new Dictionary<string, string>
+            {
+                ["SkeletonBody"] = "Player/SkeletonSpriteSheet",
+                ["AlternateSkeletonBody"] = "Player/SkeletonSpriteSheet",
+                ["SpiderBody"] = "EntitySprites/spider"
+            });
             XnaSerializer.Serialize(Path.Combine(root, "Items/Bones.xml"), new ItemData { Name = "Bones" });
             foreach (string file in new[] { "Level0", "Level0_Test", "Level1", "TestLevel" })
                 File.WriteAllText(Path.Combine(root, $"TiledFiles/{file}.tmx"), "<map />");
@@ -74,6 +80,10 @@ public sealed class ItemDialogTests
                     Assert.Equal(ComboBoxStyle.DropDownList, classes.DropDownStyle);
                     Assert.Equal("Skeleton", classes.GetItemText(classes.SelectedItem));
                     Assert.DoesNotContain(classes.Items.Cast<object>(), choice => classes.GetItemText(choice) == "Spider");
+                    var textures = Field<ComboBox>(dialog, "enemyTexture");
+                    Assert.Equal(ComboBoxStyle.DropDownList, textures.DropDownStyle);
+                    Assert.Equal("SkeletonBody", textures.SelectedItem);
+                    textures.SelectedItem = "AlternateSkeletonBody";
                     var listedDrops = Field<ListView>(dialog, "guaranteedDrops");
                     Assert.Equal("Coins", listedDrops.Items[0].Text);
                     Assert.Equal("Game default", listedDrops.Items[1].SubItems[2].Text);
@@ -90,6 +100,7 @@ public sealed class ItemDialogTests
                 Assert.False(result.IsDead);
                 Assert.Equal(25, result.BaseHealth);
                 Assert.Equal(25, result.CurrentHealth);
+                Assert.Equal("AlternateSkeletonBody", result.TextureName);
                 Assert.Single(result.GuaranteedItems);
             });
         }

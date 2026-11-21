@@ -28,6 +28,9 @@ namespace xUnitTests
             using var game = new SkeletonsAdventure.Game1();
             var manager = new GameManager(game);
             Assert.Same(game.Content, manager.Content);
+            Assert.Same(manager.Content.Load<Texture2D>("EntitySprites/goblin"), GameManager.GetEnemyByName("Goblin").Texture);
+            Assert.Same(manager.TexturesLibrary.SkeletonTexture, GameManager.GetEnemyByName("Skeleton").Texture);
+            Assert.Same(manager.TexturesLibrary.SkeletonTexture, GameManager.GetEnemyByName("EliteSkeleton").Texture);
 
             Log("GameManager Loads");
         }
@@ -42,7 +45,7 @@ namespace xUnitTests
             var savedWorld = World.ToData();
             var level = World.Levels.Values.First(level => level.EntityManager.Entities.OfType<Enemy>().Any());
             var originalEnemy = level.EntityManager.Entities.OfType<Enemy>().First();
-            var playerTexture = manager.TexturesLibrary.GoblinTexture;
+            var playerTexture = manager.TexturesLibrary.GetTexture("GoblinBody");
 
             _ = new GameScreen(game, manager, savedWorld, playerTexture);
 

@@ -55,11 +55,12 @@ internal static class AssetList
 
         void Change(EditorAsset? original, ItemData? draftCopy = null)
         {
-            var replacement = showEditor(Project(), original?.Data ?? draftCopy);
-            if (replacement is null)
-                return;
             try
             {
+                var replacement = showEditor(Project(), original?.Data ?? draftCopy);
+                if (replacement is null)
+                    return;
+
                 bool propagate = false;
                 if (original is not null)
                 {

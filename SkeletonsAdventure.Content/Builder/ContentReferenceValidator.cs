@@ -87,6 +87,7 @@ internal static class ContentReferenceValidator
         string root = Path.GetFullPath(sourceDirectory);
         var paths = Files(root, "Items").Concat(Files(root, "EntityData")).Concat(Files(root, "Quests"))
             .Select(path => Path.ChangeExtension(Path.GetRelativePath(root, path), null).Replace('\\', '/'))
+            .Append(TextureCatalog.AssetName)
             .Order(StringComparer.Ordinal);
         string text = string.Join('\n', paths) + "\n";
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(destination))!);
@@ -97,8 +98,21 @@ internal static class ContentReferenceValidator
     public static void Validate(string sourceDirectory)
     {
         string root = Path.GetFullPath(sourceDirectory);
-        var items = ValidateItems(root);
-        var enemies = ValidateEnemies(root, items);
+        var textureAssets = TextureSources(root);
+        var textures = ReadTextureCatalog(root);
+        string catalogPath = Path.Combine(root, TextureCatalog.AssetName + ".xml");
+        if (!textures.ContainsKey(TextureCatalog.SkeletonBody))
+            throw Error(catalogPath, $"Missing required texture '{TextureCatalog.SkeletonBody}'.");
+        foreach (var (name, path) in textures)
+        {
+            if (string.IsNullOrWhiteSpace(name) || name != name.Trim())
+                throw Error(catalogPath, $"Invalid texture name '{name}'.");
+            if (string.IsNullOrWhiteSpace(path) || !textureAssets.ContainsKey(path))
+                throw Error(catalogPath, $"Texture '{name}' references asset '{path}', which is not included in the content build.");
+        }
+
+        var items = ValidateItems(root, textureAssets);
+        var enemies = ValidateEnemies(root, items, textures);
         var quests = ValidateQuests(root, items, enemies);
         var spawnerNames = enemies.Select(EnemyClassCatalog.SpawnName).ToHashSet(StringComparer.Ordinal);
 
@@ -163,9 +177,14 @@ internal static class ContentReferenceValidator
             .Where(texture => !ExcludedTextures.Contains(texture.Relative, StringComparer.Ordinal))
             .ToDictionary(texture => Path.ChangeExtension(texture.Relative, null), texture => texture.File, StringComparer.Ordinal);
 
-    private static Dictionary<string, bool> ValidateItems(string root)
+    internal static Dictionary<string, string> ReadTextureCatalog(string root)
     {
-        var textureAssets = TextureSources(root);
+        string path = Path.Combine(root, TextureCatalog.AssetName + ".xml");
+        return ReadAsset<Dictionary<string, string>>(path) ?? throw Error(path, "Expected a texture catalog.");
+    }
+
+    private static Dictionary<string, bool> ValidateItems(string root, Dictionary<string, string> textureAssets)
+    {
         var names = new Dictionary<string, string>(StringComparer.Ordinal);
         var items = new Dictionary<string, bool>(StringComparer.Ordinal);
         foreach (string path in Directory.EnumerateFiles(Path.Combine(root, "Items"), "*.xml", SearchOption.AllDirectories))
@@ -185,7 +204,7 @@ internal static class ContentReferenceValidator
         return items;
     }
 
-    private static HashSet<string> ValidateEnemies(string root, Dictionary<string, bool> items)
+    private static HashSet<string> ValidateEnemies(string root, Dictionary<string, bool> items, Dictionary<string, string> textures)
     {
         var enemies = new HashSet<string>(StringComparer.Ordinal);
         foreach (string path in Files(root, "EntityData"))
@@ -195,6 +214,10 @@ internal static class ContentReferenceValidator
                 throw Error(path, $"Unknown enemy class '{enemy.Type}'. Choose a registered enemy class.");
             if (string.IsNullOrWhiteSpace(enemy.Type) || !enemies.Add(enemy.Type))
                 throw Error(path, $"Missing or duplicate enemy type '{enemy.Type}'.");
+            if (string.IsNullOrWhiteSpace(enemy.TextureName))
+                throw Error(path, $"Enemy '{enemy.Type}' must declare a TextureName from the texture catalog.");
+            if (!textures.ContainsKey(enemy.TextureName))
+                throw Error(path, $"Enemy '{enemy.Type}' references unknown texture name '{enemy.TextureName}'.");
             if (enemy.DropTableName.Length > 0 && enemy.DropTableName != DataAssetCatalog.BasicDropTable)
                 throw Error(path, $"Unknown enemy drop table '{enemy.DropTableName}'.");
             foreach (var item in enemy.GuaranteedItems)

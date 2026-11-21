@@ -1,18 +1,16 @@
 ﻿
+using SkeletonsAdventure.Content;
 
 namespace SkeletonsAdventure.LibraryClasses
 {
     internal class TexturesLibrary
     {
+        private readonly ContentManager content;
+        private readonly Dictionary<string, string> texturePaths;
+
         //Entity Textures
         public Texture2D SkeletonTexture { get; private set; }
-        public Texture2D SpiderTexture { get; private set; }
-        public Texture2D GoblinTexture { get; private set; }
-        public Texture2D SkeletalBruiserTexture { get; private set; }
         public Texture2D ArmoredSkeletonTexture { get; private set; }
-        public Texture2D SkeletonWarriorTexture { get; private set; }
-        public Texture2D SkeletonMageTexture { get; private set; }
-        public Texture2D MinotaurTexture { get; private set; }
 
         //Attack Textures
         public Texture2D AttackAreaTexture { get; private set; }
@@ -45,6 +43,8 @@ namespace SkeletonsAdventure.LibraryClasses
 
         public TexturesLibrary(ContentManager content, GraphicsDevice graphicsDevice)
         {
+            this.content = content;
+            texturePaths = content.Load<Dictionary<string, string>>(TextureCatalog.AssetName);
             GraphicsDevice = graphicsDevice;
 
             //Entity Textures
@@ -101,15 +101,16 @@ namespace SkeletonsAdventure.LibraryClasses
 
         private void LoadEntityTextures(ContentManager content)
         {
-            SkeletonTexture = content.Load<Texture2D>(@"Player/SkeletonSpriteSheet");
+            SkeletonTexture = GetTexture(TextureCatalog.SkeletonBody);
             SkeletonAttackTexture = content.Load<Texture2D>(@"Player/SkeletonAttackSprites");
-            SpiderTexture = content.Load<Texture2D>(@"EntitySprites/spider");
-            GoblinTexture = content.Load<Texture2D>(@"EntitySprites/goblin");
-            SkeletalBruiserTexture = content.Load<Texture2D>(@"EntitySprites/SkeletalBruiser");
-            SkeletonWarriorTexture = content.Load<Texture2D>(@"EntitySprites/SkeletonWarrior");
-            SkeletonMageTexture = content.Load<Texture2D>(@"EntitySprites/SkeletonMage");
             ArmoredSkeletonTexture = content.Load<Texture2D>(@"Player/ArmoredSkeletonSpriteSheet");
-            MinotaurTexture = content.Load<Texture2D>(@"EntitySprites/MinotaurSpriteSheet");
+        }
+
+        public Texture2D GetTexture(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name) || !texturePaths.TryGetValue(name, out string path))
+                throw new ContentLoadException($"Unknown texture name '{name}' in '{TextureCatalog.AssetName}'.");
+            return content.Load<Texture2D>(path);
         }
 
         public Texture2D CreateTextureFromColor(Color color)

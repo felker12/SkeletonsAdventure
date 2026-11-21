@@ -143,6 +143,7 @@ public sealed class EditorProjectTests
         Directory.CreateDirectory(Path.Combine(root, "Items"));
         Directory.CreateDirectory(Path.Combine(root, "Quests"));
         Directory.CreateDirectory(Path.Combine(root, "TiledFiles"));
+        WriteTextureCatalog(root);
         foreach (string level in new[] { "Level0", "Level0_Test", "Level1", "TestLevel" })
             File.WriteAllText(Path.Combine(root, $"TiledFiles/{level}.tmx"), "<map />");
         File.WriteAllText(Path.Combine(root, "TiledFiles/doors_lever_chest_animation.tsx"), "<tileset />");
@@ -254,7 +255,9 @@ public sealed class EditorProjectTests
         Directory.CreateDirectory(Path.Combine(root, "EntityData"));
         Directory.CreateDirectory(Path.Combine(root, "Quests"));
         Directory.CreateDirectory(Path.Combine(root, "TiledFiles"));
-        XnaSerializer.Serialize(Path.Combine(root, "EntityData/Spider.xml"), new EnemyData { Type = "SkeletonsAdventure.Entities.Spider" });
+        WriteTextureCatalog(root);
+        XnaSerializer.Serialize(Path.Combine(root, "EntityData/Spider.xml"),
+            new EnemyData { Type = "SkeletonsAdventure.Entities.Spider", TextureName = "SpiderBody" });
         XnaSerializer.Serialize(Path.Combine(root, "Quests/Hunt.xml"), new QuestData { Name = "Hunt" });
         XnaSerializer.Serialize(Path.Combine(root, "Quests/Another Quest.xml"), new QuestData { Name = "Another Quest" });
         XnaSerializer.Serialize(Path.Combine(root, "Quests/Hunt Again.xml"), new QuestData { Name = "Hunt Again" });
@@ -291,7 +294,7 @@ public sealed class EditorProjectTests
         Assert.Equal(Map, File.ReadAllText(mapPath));
         File.WriteAllText(mapPath, Map.Replace("Hunt, Another Quest", "New Hunt, Another Quest", StringComparison.Ordinal));
 
-        project.Change(spider, new EnemyData { Type = "SkeletonsAdventure.Entities.Goblin" }, propagateRename: true);
+        project.Change(spider, new EnemyData((EnemyData)spider.Data) { Type = "SkeletonsAdventure.Entities.Goblin" }, propagateRename: true);
         var enemyError = Assert.Throws<InvalidDataException>(() => project.Save());
         Assert.Contains("Spawner object 42", enemyError.Message);
         File.WriteAllText(mapPath, File.ReadAllText(mapPath).Replace("name=\"Spider\"", "name=\"Goblin\"", StringComparison.Ordinal));
@@ -414,6 +417,7 @@ public sealed class EditorProjectTests
         using var directory = new TestDirectory();
         string root = System.IO.Path.Combine(directory.Path, "Assets");
         string itemPath = Write("Items/Weapons/Sword.xml");
+        WriteTextureCatalog(root);
         XnaSerializer.Serialize(itemPath, new WeaponData { Name = "Sword", Quantity = 1, TexturePath = "Sword" });
         File.WriteAllBytes(Write("Sword.png"), []);
         foreach (string map in new[] { "Level0", "Level0_Test", "Level1", "TestLevel" })
@@ -421,7 +425,8 @@ public sealed class EditorProjectTests
         File.WriteAllText(Write("TiledFiles/doors_lever_chest_animation.tsx"), "<tileset />");
         string enemyPath = Write("EntityData/SpiderData.xml");
         const string spiderClass = "SkeletonsAdventure.Entities.Spider";
-        XnaSerializer.Serialize(enemyPath, new EnemyData { Type = spiderClass, BaseHealth = 5 });
+        var spider = new EnemyData { Type = spiderClass, BaseHealth = 5, TextureName = "SpiderBody" };
+        XnaSerializer.Serialize(enemyPath, spider);
 
         var project = EditorProject.Open(directory.Path);
         Assert.True(project.IsGameContent);
@@ -441,7 +446,23 @@ public sealed class EditorProjectTests
         XnaSerializer.Serialize(enemyPath, new EnemyData { Type = "SkeletonsAdventure.Entities.Spiyder" });
         var enemyError = Assert.Throws<InvalidDataException>(() => ContentReferenceValidator.Validate(root));
         Assert.Contains("Unknown enemy class", enemyError.Message);
-        XnaSerializer.Serialize(enemyPath, new EnemyData { Type = spiderClass, BaseHealth = 5 });
+        XnaSerializer.Serialize(enemyPath, new EnemyData(spider) { TextureName = "" });
+        var missingName = Assert.Throws<InvalidDataException>(() => ContentReferenceValidator.Validate(root));
+        Assert.Contains("must declare a TextureName", missingName.Message);
+        XnaSerializer.Serialize(enemyPath, new EnemyData(spider) { TextureName = "MissingBody" });
+        var unknownName = Assert.Throws<InvalidDataException>(() => ContentReferenceValidator.Validate(root));
+        Assert.Contains("SpiderData.xml", unknownName.Message);
+        Assert.Contains("unknown texture name 'MissingBody'", unknownName.Message);
+        XnaSerializer.Serialize(enemyPath, spider);
+
+        string catalogPath = Path.Combine(root, "TextureCatalog.xml");
+        var catalog = ContentReferenceValidator.ReadTextureCatalog(root);
+        catalog["SpiderBody"] = "MissingSheet";
+        XnaSerializer.Serialize(catalogPath, catalog);
+        var missingSheet = Assert.Throws<InvalidDataException>(() => ContentReferenceValidator.Validate(root));
+        Assert.Contains("TextureCatalog.xml", missingSheet.Message);
+        Assert.Contains("Texture 'SpiderBody' references asset 'MissingSheet'", missingSheet.Message);
+        WriteTextureCatalog(root);
 
         var sword = opened.Assets.Single(asset => asset.Data is WeaponData);
         var broken = ((WeaponData)sword.Data).Clone();
@@ -458,6 +479,13 @@ public sealed class EditorProjectTests
             Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path)!);
             return path;
         }
+    }
+
+    private static void WriteTextureCatalog(string root)
+    {
+        File.WriteAllBytes(Path.Combine(root, "EnemySheet.png"), []);
+        XnaSerializer.Serialize(Path.Combine(root, "TextureCatalog.xml"),
+            new Dictionary<string, string> { ["SkeletonBody"] = "EnemySheet", ["SpiderBody"] = "EnemySheet" });
     }
 
     private sealed class TestDirectory : IDisposable

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic">
+  <Asset Type="Generic:Dictionary[string,string]">
+    <Item>
+      <Key>GoblinBody</Key>
+      <Value>EntitySprites/goblin</Value>
+    </Item>
+    <Item>
+      <Key>MinotaurBody</Key>
+      <Value>EntitySprites/MinotaurSpriteSheet</Value>
+    </Item>
+    <Item>
+      <Key>SkeletalBruiserBody</Key>
+      <Value>EntitySprites/SkeletalBruiser</Value>
+    </Item>
+    <Item>
+      <Key>SkeletonBody</Key>
+      <Value>Player/SkeletonSpriteSheet</Value>
+    </Item>
+    <Item>
+      <Key>SkeletonMageBody</Key>
+      <Value>EntitySprites/SkeletonMage</Value>
+    </Item>
+    <Item>
+      <Key>SkeletonWarriorBody</Key>
+      <Value>EntitySprites/SkeletonWarrior</Value>
+    </Item>
+    <Item>
+      <Key>SpiderBody</Key>
+      <Value>EntitySprites/spider</Value>
+    </Item>
+  </Asset>
+</XnaContent>

@@ -59,6 +59,7 @@ internal sealed class GameContentBuilder : ContentBuilder
 
         var xmlImporter = new XmlImporter();
         var xmlProcessor = new PassThroughProcessor();
+        content.Include<WildcardRule>(TextureCatalog.AssetName + ".xml", xmlImporter, xmlProcessor);
         content.Include<WildcardRule>("AttackData/*.xml", xmlImporter, xmlProcessor);
         content.Include<WildcardRule>("AttackData/*.Xml", xmlImporter, xmlProcessor);
         content.Include<WildcardRule>("EntityData/*.xml", xmlImporter, xmlProcessor);

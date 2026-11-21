@@ -7,6 +7,7 @@ namespace RpgEditor;
 internal sealed class EnemyTemplateDialog : Form
 {
     private readonly ComboBox enemyClass = new() { Name = "enemyClass", DropDownStyle = ComboBoxStyle.DropDownList, Width = 170 };
+    private readonly ComboBox texture = new() { Name = "enemyTexture", DropDownStyle = ComboBoxStyle.DropDownList, Width = 170 };
     private readonly ComboBox dropTable = new() { Name = "enemyDropTable", DropDownStyle = ComboBoxStyle.DropDownList, Width = 170 };
     private readonly NumericUpDown health = Number("baseEnemyHealth", 1);
     private readonly NumericUpDown attack = Number("baseEnemyAttack");
@@ -41,6 +42,8 @@ internal sealed class EnemyTemplateDialog : Form
         enemyClass.DisplayMember = nameof(Choice.Label);
         enemyClass.Items.AddRange(EnemyClassCatalog.Entries.Where(entry => !used.Contains(entry.Type))
             .Select(entry => new Choice(entry.Type, EnemyClassCatalog.SpawnName(entry.Type))).OrderBy(choice => choice.Label).ToArray());
+        texture.Items.AddRange(ContentReferenceValidator.ReadTextureCatalog(project.Root).Keys.Order(StringComparer.Ordinal).ToArray());
+        texture.SelectedItem = original.TextureName;
         DropTableChoice[] tables = [new("", "None"), new(DataAssetCatalog.BasicDropTable, "Basic Drop Table")];
         dropTable.DisplayMember = nameof(DropTableChoice.Label);
         dropTable.Items.AddRange(tables);
@@ -52,6 +55,7 @@ internal sealed class EnemyTemplateDialog : Form
         defence.Value = Math.Max(0, original.BaseDefence);
         xp.Value = Math.Max(0, original.BaseXP);
         enemyClass.SelectedIndexChanged += (_, _) => RefreshClass();
+        texture.SelectedIndexChanged += (_, _) => UpdateSaveState();
         dropTable.SelectedIndexChanged += (_, _) => UpdateSaveState();
         RefreshClass();
     }
@@ -62,6 +66,7 @@ internal sealed class EnemyTemplateDialog : Form
         return new EnemyData(original)
         {
             Type = selected.Type,
+            TextureName = (string)texture.SelectedItem!,
             BaseHealth = (int)health.Value,
             CurrentHealth = (int)health.Value,
             BaseAttack = (int)attack.Value,
@@ -86,6 +91,7 @@ internal sealed class EnemyTemplateDialog : Form
 
         var stats = new TableLayoutPanel { AutoSize = true, Dock = DockStyle.Top, ColumnCount = 2 };
         AddRow(stats, "Enemy class", enemyClass);
+        AddRow(stats, "Texture", texture);
         AddRow(stats, "Base health", health);
         AddRow(stats, "Base attack", attack);
         AddRow(stats, "Base defence", defence);
@@ -159,7 +165,8 @@ internal sealed class EnemyTemplateDialog : Form
             drops.Items.Add(new ListViewItem([bones.Name, bones.Quantity.ToString(), "Game default"]));
     }
 
-    private void UpdateSaveState() => save.Enabled = enemyClass.SelectedItem is Choice && dropTable.SelectedItem is DropTableChoice;
+    private void UpdateSaveState() =>
+        save.Enabled = enemyClass.SelectedItem is Choice && texture.SelectedItem is string && dropTable.SelectedItem is DropTableChoice;
 
     private static NumericUpDown Number(string name, int minimum = 0) =>
         new() { Name = name, Minimum = minimum, Maximum = int.MaxValue, Width = 100 };
