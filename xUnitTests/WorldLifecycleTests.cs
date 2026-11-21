@@ -14,6 +14,32 @@ namespace xUnitTests;
 public partial class UnitTest1
 {
     [Fact]
+    public void InventoryPopupFitsInViewportAtLowerRightCorner()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        var screen = new GameScreen(game, assets);
+        var popup = screen.GameItemPopUpBox;
+        var viewport = game.GraphicsDevice.Viewport.Bounds;
+        var anchor = new Point(viewport.Right - 1, viewport.Bottom - 1);
+        popup.Position = anchor.ToVector2();
+
+        var equip = popup.Buttons[0];
+        var drop = popup.Buttons[^1];
+        equip.Visible = drop.Visible = true;
+        equip.SetText("Equip Round Shield");
+        drop.SetText("Drop Round Shield");
+
+        popup.Update(new GameTime(), false, Matrix.Identity, viewport);
+
+        Assert.Equal(viewport.Right, popup.Rectangle.Right);
+        Assert.Equal(viewport.Bottom, popup.Rectangle.Bottom);
+        Assert.True(popup.Rectangle.Contains(anchor));
+        Assert.True(viewport.Contains(equip.Rectangle));
+        Assert.True(viewport.Contains(drop.Rectangle));
+    }
+
+    [Fact]
     public void CompiledMapsKeepTheirOwnOffsetsForSharedTilesets()
     {
         using var game = new SkeletonsAdventure.Game1();

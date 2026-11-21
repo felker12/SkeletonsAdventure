@@ -22,30 +22,17 @@ namespace SkeletonsAdventure.GameUI
             }
         }
 
-        public void Update(GameTime gameTime, bool transformMouse, Matrix transformation)
+        public void Update(GameTime gameTime, bool transformMouse, Matrix transformation, Rectangle? bounds = null)
         {
-            if (VisibleButtonsCount() > 0)
+            RecalculateSize(bounds);
+            foreach (GameButton button in Buttons)
             {
-                Height = VisibleButtonsHeight() + (int)ControlOffset.Y * 2;
-                Width = LongestButtonTextLength() + (int)ControlOffset.X * 2;
-                Vector2 offset = ControlOffset;
+                if (!button.Visible)
+                    continue;
 
-                foreach (GameButton button in Buttons)
-                {
-                    if (button.Visible)
-                    {
-                        button.TransformMouse = transformMouse;
-                        button.Transformation = transformation;
-                        button.Update(gameTime);
-                        button.Position = Position + offset;
-                        offset += new Vector2(0, button.Height);
-                    }
-                }
-            }
-            else
-            {
-                Height = 0;
-                Width = 0;
+                button.TransformMouse = transformMouse;
+                button.Transformation = transformation;
+                button.Update(gameTime);
             }
         }
 
@@ -123,12 +110,18 @@ namespace SkeletonsAdventure.GameUI
             return length;
         }
 
-        public void RecalculateSize()
+        public void RecalculateSize(Rectangle? bounds = null)
         {
             if (VisibleButtonsCount() > 0)
             {
                 Height = VisibleButtonsHeight() + (int)ControlOffset.Y * 2;
                 Width = LongestButtonTextLength() + (int)ControlOffset.X * 2;
+                if (bounds is { } viewport)
+                {
+                    Position = new(
+                        Math.Clamp(Position.X, viewport.Left, Math.Max(viewport.Left, viewport.Right - Width)),
+                        Math.Clamp(Position.Y, viewport.Top, Math.Max(viewport.Top, viewport.Bottom - Height)));
+                }
                 Vector2 offset = ControlOffset;
 
                 foreach (GameButton button in Buttons)

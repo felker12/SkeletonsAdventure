@@ -20,6 +20,7 @@ namespace SkeletonsAdventure.States
         private MouseState _mouseState, _lastMouseState;
         private GameButton equip, unequip, pickUp, drop, consume;
         private GameItem itemUnderMouse = null;
+        private Point _itemPopupAnchor;
 
         private Vector2 TransformedMousePosition => Vector2.Transform(new(_mouseState.X, _mouseState.Y), Matrix.Invert(Camera.Transformation));
         private Rectangle TransformedMouseRectangle => new((int)TransformedMousePosition.X, (int)TransformedMousePosition.Y, 1, 1);
@@ -287,14 +288,14 @@ namespace SkeletonsAdventure.States
                 foreach (GameItem item in BackpackMenu.Items)
                 {
                     Intersects(MouseRec, item.ItemRectangle, item, BoxSource.Panel);
-                    SetItemUnderMouse(item, MouseRec);
+                    SetItemUnderMouse(item, MouseRec, BoxSource.Panel);
                 }
             }
 
             foreach (GameItem item in World.CurrentLevel.EntityManager.DroppedLootManager.Items)
             {
                 Intersects(TransformedMouseRectangle, item.ItemRectangle, item, BoxSource.Game);
-                SetItemUnderMouse(item, TransformedMouseRectangle);
+                SetItemUnderMouse(item, TransformedMouseRectangle, BoxSource.Game);
             }
 
             //hide popupbox when no more items are under mouse
@@ -310,25 +311,14 @@ namespace SkeletonsAdventure.States
                     CheckMouseIntersectsInGame(gameTime, TransformedMouseRectangle);
                 else if (CurrentSource == BoxSource.Panel)
                     CheckMouseIntersectsInPanel(gameTime, MouseRec);
-
-                consume.SetText($"Consume {itemUnderMouse.Name}");
-                drop.SetText($"Drop {itemUnderMouse.Name}");
-
-                if (Player.EquippedItems.CheckRequirements(itemUnderMouse) is false)
-                    equip.SetText("Requirements not met");
-                else
-                    equip.SetText($"Equip {itemUnderMouse.Name}");
-
-                unequip.SetText($"Unequip {itemUnderMouse.Name}");
             }
         }
 
-        private void SetItemUnderMouse(GameItem item, Rectangle rectangle)
+        private void SetItemUnderMouse(GameItem item, Rectangle rectangle, BoxSource source)
         {
             if (GameItemPopUpBox.Visible)
             {
-                Rectangle rec = new((int)GameItemPopUpBox.Position.X, (int)GameItemPopUpBox.Position.Y, 1, 1);
-                if (rec.Intersects(item.ItemRectangle))
+                if (source == CurrentSource && item.ItemRectangle.Contains(_itemPopupAnchor))
                     itemUnderMouse = item;
             }
             else if (rectangle.Intersects(item.ItemRectangle))
@@ -337,28 +327,49 @@ namespace SkeletonsAdventure.States
 
         private void CheckMouseIntersectsInPanel(GameTime gameTime, Rectangle mouseRec)
         {
-            if (itemUnderMouse != null)
+            var viewport = GraphicsDevice.Viewport.Bounds;
+            if (itemUnderMouse is EquipableItem equipment)
             {
-                if (itemUnderMouse is EquipableItem equipable == true)
+                if (equipment.Equipped)
                 {
-                    if (equipable.Equipped == true)
-                        unequip.Visible = true;
-                    else if (equipable.Equipped == false)
-                        equip.Visible = true;
+                    unequip.Visible = true;
+                    SetActionLabel(unequip, "Unequip");
                 }
-                else if (itemUnderMouse is Consumable)
+                else
                 {
-                    consume.Visible = true;
+                    equip.Visible = true;
+                    if (Player.EquippedItems.CheckRequirements(equipment))
+                        SetActionLabel(equip, "Equip");
+                    else
+                        equip.SetText("Requirements not met");
                 }
+            }
+            else if (itemUnderMouse is Consumable)
+            {
+                consume.Visible = true;
+                SetActionLabel(consume, "Consume");
             }
 
             drop.Visible = true;
-
-            GameItemPopUpBox.Update(gameTime, false, Camera.Transformation);
+            SetActionLabel(drop, "Drop");
+            GameItemPopUpBox.Position = _itemPopupAnchor.ToVector2();
+            GameItemPopUpBox.Update(gameTime, false, Matrix.Identity, viewport);
 
             if (mouseRec.Intersects(GameItemPopUpBox.Rectangle) == false)
             {
                 GameItemPopUpBox.Visible = false;
+            }
+            else
+            {
+                foreach (var item in BackpackMenu.Items)
+                    item.ToolTip.Visible = false;
+            }
+
+            void SetActionLabel(GameButton button, string action)
+            {
+                string text = $"{action} {itemUnderMouse.Name}";
+                float availableWidth = viewport.Width - GameItemPopUpBox.ControlOffset.X * 2;
+                button.SetText(button.SpriteFont.MeasureString(text).X <= availableWidth ? text : action);
             }
         }
 
@@ -384,9 +395,8 @@ namespace SkeletonsAdventure.States
                 if (_mouseState.RightButton == ButtonState.Released && _lastMouseState.RightButton == ButtonState.Pressed)
                 {
                     CurrentSource = source;
-                    Vector2 mousePos = new(mouseRec.X, mouseRec.Y);
-
-                    GameItemPopUpBox.Position = mousePos;
+                    _itemPopupAnchor = mouseRec.Location;
+                    GameItemPopUpBox.Position = _itemPopupAnchor.ToVector2();
                     GameItemPopUpBox.Visible = true;
                     intersects = true;
                 }
