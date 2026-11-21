@@ -14,6 +14,30 @@ namespace xUnitTests;
 public partial class UnitTest1
 {
     [Fact]
+    public void CompiledMapsKeepTheirOwnOffsetsForSharedTilesets()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        _ = new GameScreen(game, assets);
+
+        var level = World.Levels["Level0"];
+        var map = level.TiledMap;
+        var layer = map.Layers.GetLayer<TilemapTileLayer>("InteractableObjectLayer");
+        const int markerColumn = 23;
+        const int markerRow = 24;
+        var marker = Assert.IsType<TilemapTile>(layer.GetTile(markerColumn, markerRow));
+        int localId = marker.GetLocalId(map.Tilesets, out var atlas);
+        Assert.Equal("ProjectUtumno_full", atlas.Name);
+        Assert.Equal(new Rectangle(1312, 896, 32, 32), atlas.GetTileRegion(localId));
+        var questNode = Assert.Single(level.InteractableObjectManager.Objects);
+        var markerBounds = new Rectangle(markerColumn * level.TileWidth,
+            (markerRow + 1) * level.TileHeight - atlas.TileHeight, atlas.TileWidth, atlas.TileHeight);
+        Assert.Equal(markerBounds, questNode.Rectangle);
+        Assert.Equal(1093, World.Levels["Level1"].TiledMap.Tilesets.Single(set => set.Name == atlas.Name).FirstGlobalId);
+        Assert.Equal(1, World.Levels["TestLevel"].TiledMap.Tilesets.Single(set => set.Name == atlas.Name).FirstGlobalId);
+    }
+
+    [Fact]
     public void FreeCameraPansAndZoomsOnlyInDevAndResetsWhenFollowingAgain()
     {
         using var game = new SkeletonsAdventure.Game1();

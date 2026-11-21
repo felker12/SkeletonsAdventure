@@ -69,9 +69,32 @@ internal sealed class GameContentBuilder : ContentBuilder
         content.Include<WildcardRule>("Quests/**/*.xml", xmlImporter, xmlProcessor);
 
         foreach (string levelName in MapCatalog.LevelNames)
-            content.Include<WildcardRule>(MapCatalog.AssetName(levelName) + ".tmx", new TiledTilemapImporter(), new TilemapProcessor());
+            content.Include<WildcardRule>(MapCatalog.AssetName(levelName) + ".tmx", new GameTilemapImporter(), new TilemapProcessor());
         content.Include<WildcardRule>(ContentReferenceValidator.LeverTileset, new TilemapTilesetImporter(), new TilemapTilesetProcessor());
 
         return content;
+    }
+}
+
+internal sealed class GameTilemapImporter : ContentImporter<TilemapProjectContentItem>
+{
+    public override TilemapProjectContentItem Import(string filename, ContentImporterContext context)
+    {
+        var project = new TiledTilemapImporter().Import(filename, context);
+        var tilesetImporter = new TilemapTilesetImporter();
+        string directory = Path.GetDirectoryName(Path.GetFullPath(filename))!;
+
+        // Extended 6.1.1 loses map-specific GID offsets when reading standalone tilesets.
+        foreach (var map in project.Data)
+        {
+            foreach (var entry in map.Tilesets.Where(entry => entry.IsExternal))
+            {
+                string path = Path.Combine(directory, entry.ExternalPath);
+                entry.InlineData = tilesetImporter.Import(path, context).Data;
+                entry.IsExternal = false;
+            }
+        }
+
+        return project;
     }
 }

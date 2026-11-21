@@ -13,12 +13,12 @@
     <SourceRectangle>512 1184 32 32</SourceRectangle>
     <TexturePath>TileSets/ProjectUtumno_full</TexturePath>
     <LevelRequirementData>
-      <Level>0</Level>
-      <Defence>0</Defence>
+      <Level>5</Level>
+      <Defence>20</Defence>
       <Attack>0</Attack>
       <Mana>0</Mana>
     </LevelRequirementData>
-    <NumberHands>Main</NumberHands>
+    <NumberHands>Off</NumberHands>
     <DefenceValue>10</DefenceValue>
   </Asset>
 </XnaContent>
