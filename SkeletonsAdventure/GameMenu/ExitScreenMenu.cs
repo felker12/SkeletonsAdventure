@@ -41,12 +41,8 @@ namespace SkeletonsAdventure.GameMenu
             _saveMenu.ControlManager.AddRange(_saveActions);
             AddMenu(_saveMenu);
 
-            var settings = new BaseMenu(pixel, MenuStyle.Panel) { Title = "Settings", Visible = true };
-            _settingsMessage = new Label(fonts.Arial16, "No settings available.") { TextColor = MenuStyle.MutedText };
-            settings.ControlManager.Add(_settingsMessage);
-            AddMenu(settings);
-
             AddMenu(new PlayerInfoMenu(pixel, pixel, fonts.Arial12, MenuStyle.Panel) { Title = "Player", Visible = true });
+            AddMenu(new ItemsMenu(pixel, fonts.Arial12, fonts.Arial16));
             AddMenu(new QuestMenu(pixel, pixel, pixel, fonts.Arial12, fonts.Arial16, MenuStyle.Panel)
                 { Title = "Quests", Visible = true });
 
@@ -56,6 +52,11 @@ namespace SkeletonsAdventure.GameMenu
                 { Title = "Skills", Visible = true });
             AddMenu(new ActionBarMenu(pixel, pixel, fonts.Arial12, MenuStyle.Panel)
                 { Title = "Action Bar", Visible = true });
+
+            var settings = new BaseMenu(pixel, MenuStyle.Panel) { Title = "Settings", Visible = true };
+            _settingsMessage = new Label(fonts.Arial16, "No settings available.") { TextColor = MenuStyle.MutedText };
+            settings.ControlManager.Add(_settingsMessage);
+            AddMenu(settings);
 
             foreach (BaseMenu menu in TabBar.TabMenus.Values)
             {

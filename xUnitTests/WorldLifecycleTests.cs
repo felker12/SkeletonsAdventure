@@ -3,8 +3,10 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Tilemaps;
 using SkeletonsAdventure.Animations;
 using SkeletonsAdventure.Attacks;
+using SkeletonsAdventure.Controls;
 using SkeletonsAdventure.Engines;
 using SkeletonsAdventure.GameEvents;
+using SkeletonsAdventure.GameMenu;
 using SkeletonsAdventure.GameWorld;
 using SkeletonsAdventure.ItemClasses;
 using SkeletonsAdventure.States;
@@ -13,6 +15,48 @@ namespace xUnitTests;
 
 public partial class UnitTest1
 {
+    [Fact]
+    public void PauseItemsTabEquipsGearUpdatesStatsAndInspectsConsumables()
+    {
+        using var game = new SkeletonsAdventure.Game1();
+        var assets = new GameManager(game);
+        game.GameScreen = new GameScreen(game, assets);
+        game.ExitScreen = new ExitScreen(game, assets);
+        var tabs = game.ExitScreen.ExitScreenMenu.TabBar;
+        Assert.Equal(new[] { "Save", "Player", "Items", "Quests", "Evolution", "Skills", "Action Bar", "Settings" },
+            tabs.TabMenus.Values.Select(menu => menu.Title));
+
+        var player = World.Player;
+        Assert.True(player.Backpack.Add(GameManager.GetItemByName("Sword")));
+        Assert.True(player.Backpack.Add(GameManager.GetItemByName("Bones")));
+        var sword = Assert.IsType<Weapon>(player.Backpack.Items[0]);
+        var bones = player.Backpack.Items[1];
+        int attackWithoutSword = player.Attack;
+        var items = Assert.Single(tabs.TabMenus.Values.OfType<ItemsMenu>());
+        tabs.SetActiveTab(items);
+        items.SelectItem(sword);
+        Assert.True(items.ToggleSelectedEquipment());
+        Assert.True(sword.Equipped);
+        Assert.Equal(attackWithoutSword + sword.AttackValue, player.Attack);
+        Assert.Contains(items.ControlManager.OfType<Label>(), label => label.Text.StartsWith($"Attack  {player.Attack}\n"));
+        Assert.True(items.ToggleSelectedEquipment());
+        Assert.False(sword.Equipped);
+        Assert.Equal(attackWithoutSword, player.Attack);
+
+        sword.LevelRequirements.Level = player.Level + 1;
+        items.SelectItem(sword);
+        Assert.Contains(items.ControlManager.OfType<MenuButton>(), button => button.Text == "Equip" && !button.Enabled);
+        Assert.False(items.ToggleSelectedEquipment());
+        Assert.Contains(items.ControlManager.OfType<Label>(), label => label.Text.Contains("Requirements not met"));
+
+        items.SelectItem(bones);
+        Assert.DoesNotContain(items.ControlManager.OfType<MenuButton>(), button => button.Visible && button.Text == "Equip");
+        Assert.False(items.ToggleSelectedEquipment());
+        Assert.Equal(1, bones.Quantity);
+        using var batch = new Microsoft.Xna.Framework.Graphics.SpriteBatch(game.GraphicsDevice);
+        game.ExitScreen.Draw(batch);
+    }
+
     [Fact]
     public void InventoryPopupFitsInViewportAtLowerRightCorner()
     {
