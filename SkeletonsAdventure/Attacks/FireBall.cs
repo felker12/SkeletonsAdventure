@@ -3,8 +3,11 @@ using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class FireBall : ShootingAttack
+    internal class FireBall : ShootingAttack, IMagicAttack
     {
+        public MagicElement Element => MagicElement.Fire;
+        public string DisplayName => "Fireball";
+
         public FireBall(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
             AnimatedAttack = true;

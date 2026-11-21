@@ -6,6 +6,8 @@ namespace SkeletonsAdventure.Attacks
 {
     internal class SpinningTriangleAttack : TriangleAttack
     {
+        public override string DisplayName => "Spinning Triangle Attack";
+
         protected float rotateAngle = 0f;
         protected readonly float rotateSpeed = .8f; // radians/sec adjust until looks 
         private readonly List<float> baseAngles = [];

@@ -3,8 +3,11 @@ using RpgLibrary.AttackData;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class IceBullets : MultiShotAttack
+    internal class IceBullets : MultiShotAttack, IMagicAttack
     {
+        public MagicElement Element => MagicElement.Water;
+        public string DisplayName => "Ice Bullets";
+
         public IceBullets(MultiShotAttackData data, Texture2D iconImage, ShootingAttack baseAttack) : base(data, iconImage, baseAttack)
         {
         }

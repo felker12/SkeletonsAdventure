@@ -4,8 +4,11 @@ using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class WaterBall : ShootingAttack
+    internal class WaterBall : ShootingAttack, IMagicAttack
     {
+        public MagicElement Element => MagicElement.Water;
+        public string DisplayName => "Water Ball";
+
         public WaterBall(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
             AnimatedAttack = true;

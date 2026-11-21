@@ -5,8 +5,11 @@ using System.Linq;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class IcePillar : PopUpAttack
+    internal class IcePillar : PopUpAttack, IMagicAttack
     {
+        public MagicElement Element => MagicElement.Water;
+        public string DisplayName => "Ice Pillar";
+
         public IcePillar(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
             Width = Texture.Width;

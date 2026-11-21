@@ -20,25 +20,12 @@ namespace SkeletonsAdventure.GameMenu
         private const int TreeWidth = 780;
         private static readonly Rectangle TreeArea = new(0, 48, TreeWidth, LayoutHeight - 48);
 
-        private static readonly string[] Branches = ["Fire", "Water / Ice", "Non-elemental"];
-        private static readonly (string Key, string Title, int Branch)[] MagicLayout =
-        [
-            (nameof(FireBall), "Fireball", 0),
-            (nameof(FireWave), "Fire Wave", 0),
-            (nameof(BlueFireWave), "Blue Fire Wave", 0),
-            (nameof(WaterBall), "Water Ball", 1),
-            (nameof(IceBullet), "Ice Bullet", 1),
-            (nameof(IceBullets), "Ice Bullets", 1),
-            (nameof(IcePillar), "Ice Pillar", 1),
-            (nameof(TriangleAttack), "Triangle Attack", 2),
-            (nameof(SpinningTriangleAttack), "Spinning Triangle Attack", 2)
-        ];
-
         private sealed record SkillNode(BasicAttack Attack, string Title, Rectangle Bounds, MenuButton Button);
         private enum PanGesture { None, Left, Middle }
 
         private readonly Dictionary<string, SkillNode> _nodes = [];
         private readonly List<(int Level, int Top, int Height)> _bands = [];
+        private readonly MagicElement[] _elements;
         private readonly MenuButton _magicTab, _meleeTab, _fitTree, _learn;
         private readonly SpriteFont _font, _headingFont;
         private readonly Rectangle _treeContent;
@@ -84,34 +71,39 @@ namespace SkeletonsAdventure.GameMenu
             _learn = new(pixel, font, "Learn", () => LearnSelectedSkill(), primary: true);
             ControlManager.AddRange([_magicTab, _meleeTab]);
 
-            var skills = MagicLayout
-                .Select(skill => (skill.Key, skill.Title, skill.Branch, Attack: attackTemplates.GetValueOrDefault(skill.Key)))
-                .Where(skill => skill.Attack is not null)
+            var magicAttacks = attackTemplates
+                .Where(entry => entry.Value is IMagicAttack)
+                .Select(entry => (entry.Key, Attack: entry.Value, Magic: (IMagicAttack)entry.Value))
+                .ToArray();
+            _elements = magicAttacks.Select(skill => skill.Magic.Element).Distinct().Order().ToArray();
+            var skills = magicAttacks
                 .GroupBy(skill => Math.Max(0, skill.Attack.LevelRequirements.Level) / LevelsPerBand * LevelsPerBand)
                 .OrderBy(band => band.Key);
             int top = TierTop;
-            int contentWidth = TreeWidth;
+            int contentWidth = Math.Max(TreeWidth, BranchCenter(_elements.Length - 1) + 107);
             foreach (var band in skills)
             {
                 int rows = 1;
-                foreach (var branch in band.GroupBy(skill => skill.Branch))
+                foreach (var branch in band.GroupBy(skill => skill.Magic.Element).OrderBy(branch => branch.Key))
                 {
-                    var entries = branch.OrderBy(skill => skill.Attack.LevelRequirements.Level).ToArray();
+                    var entries = branch.OrderBy(skill => skill.Attack.LevelRequirements.Level)
+                        .ThenBy(skill => skill.Magic.DisplayName, StringComparer.Ordinal).ToArray();
+                    int branchCenter = BranchCenter(Array.IndexOf(_elements, branch.Key));
                     rows = Math.Max(rows, (entries.Length + 1) / 2);
                     for (int i = 0; i < entries.Length; i++)
                     {
-                        var (key, title, _, attack) = entries[i];
+                        var (key, attack, magic) = entries[i];
                         bool paired = (i / 2) * 2 + 1 < entries.Length;
                         int width = paired ? 104 : 172;
                         int splitOffset = i % 2 == 0 ? -56 : 56;
-                        int center = BranchCenter(branch.Key) + (paired ? splitOffset : 0);
+                        int center = branchCenter + (paired ? splitOffset : 0);
                         var bounds = new Rectangle(center - width / 2, top + i / 2 * TierStep, width, NodeHeight);
-                        var button = new MenuButton(pixel, font, title, () =>
+                        var button = new MenuButton(pixel, font, magic.DisplayName, () =>
                         {
                             if (!_blockNodeClick)
                                 SelectSkill(key);
                         }) { Name = key };
-                        _nodes.Add(key, new SkillNode(attack, title, bounds, button));
+                        _nodes.Add(key, new SkillNode(attack, magic.DisplayName, bounds, button));
                         _selected ??= key;
                         contentWidth = Math.Max(contentWidth, bounds.Right);
                         ControlManager.Add(button);
@@ -394,8 +386,12 @@ namespace SkeletonsAdventure.GameMenu
 
         private void DrawTree(SpriteBatch batch)
         {
-            for (int branch = 0; branch < Branches.Length; branch++)
-                DrawCentered(batch, Branches[branch], _headingFont, BranchCenter(branch), 51, 214, MenuStyle.Brass);
+            for (int branch = 0; branch < _elements.Length; branch++)
+            {
+                var element = _elements[branch];
+                string title = element == MagicElement.NonElemental ? "Non-elemental" : element.ToString();
+                DrawCentered(batch, title, _headingFont, BranchCenter(branch), 51, 214, MenuStyle.Brass);
+            }
 
             foreach (var (level, y, height) in _bands)
             {

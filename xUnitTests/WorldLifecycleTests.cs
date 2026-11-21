@@ -16,6 +16,13 @@ namespace xUnitTests;
 
 public partial class UnitTest1
 {
+    private sealed class TestWaterSpell(FireBall attack) : FireBall(attack), IMagicAttack
+    {
+        MagicElement IMagicAttack.Element => MagicElement.Water;
+        string IMagicAttack.DisplayName => "Test Water Spell";
+        public override TestWaterSpell Clone() => new(this);
+    }
+
     [Fact]
     public void FittedSkillTreeRendersLearnedTextAtNativePixelAlignment()
     {
@@ -136,6 +143,10 @@ public partial class UnitTest1
         tabs.SetActiveTab(skills);
 
         Assert.True(player.LearnedAttackManager.Contains(nameof(FireBall)));
+        Assert.DoesNotContain(skills.ControlManager, control => control.Name == nameof(BasicAttack));
+        Assert.All(new[] { nameof(WaterBall), nameof(IceBullet), nameof(IceBullets), nameof(IcePillar) },
+            key => Assert.Equal(MagicElement.Water, Assert.IsAssignableFrom<IMagicAttack>(assets.AttackTemplates[key].Clone()).Element));
+        Assert.Equal(SkillBounds(skills, nameof(WaterBall)).Center.X, SkillBounds(skills, nameof(IceBullet)).Center.X);
         var iceVolley = SkillBounds(skills, nameof(IceBullets));
         Assert.Equal(SkillBounds(skills, nameof(IceBullet)).Top, SkillBounds(skills, nameof(FireWave)).Top);
         Assert.Equal(SkillBounds(skills, nameof(IcePillar)).Top, iceVolley.Top);
@@ -176,11 +187,19 @@ public partial class UnitTest1
         var retuned = assets.AttackTemplates.ToDictionary(entry => entry.Key, entry => entry.Value);
         retuned[nameof(FireWave)] = retuned[nameof(FireWave)].Clone();
         retuned[nameof(FireWave)].LevelRequirements.Level = 5;
+        var waterSpell = new TestWaterSpell((FireBall)retuned[nameof(FireBall)]);
+        waterSpell.LevelRequirements.Level = 1;
+        retuned.Add(waterSpell.Name, waterSpell);
         var retunedMenu = new LearnSkillsMenu(assets.TexturesLibrary.StatusBarTexture, assets.FontsLibrary.Arial12,
             assets.FontsLibrary.Arial16, retuned);
         retunedMenu.Arrange(skills.Rectangle);
         retunedMenu.MenuOpened();
         Assert.Equal(SkillBounds(retunedMenu, nameof(FireBall)).Top, SkillBounds(retunedMenu, nameof(FireWave)).Top);
+        var newSpell = Assert.Single(retunedMenu.ControlManager, control => control.Name == waterSpell.Name);
+        Assert.Equal(((IMagicAttack)waterSpell).DisplayName, newSpell.Text);
+        var waterBall = SkillBounds(retunedMenu, nameof(WaterBall));
+        Assert.Equal(waterBall.Top, newSpell.Rectangle.Top);
+        Assert.Equal(SkillBounds(retunedMenu, nameof(IceBullet)).Center.X, (newSpell.Rectangle.Center.X + waterBall.Center.X) / 2);
         retunedMenu.Draw(batch);
 
         static Rectangle SkillBounds(LearnSkillsMenu menu, string name) =>

@@ -4,8 +4,11 @@ using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class IceBullet : ShootingAttack
+    internal class IceBullet : ShootingAttack, IMagicAttack
     {
+        public MagicElement Element => MagicElement.Water;
+        public string DisplayName => "Ice Bullet";
+
         public IceBullet(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
             Initialize();

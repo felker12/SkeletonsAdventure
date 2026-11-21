@@ -5,8 +5,11 @@ using SkeletonsAdventure.Shapes;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class TriangleAttack : BasicAttack
+    internal class TriangleAttack : BasicAttack, IMagicAttack
     {
+        public MagicElement Element => MagicElement.NonElemental;
+        public virtual string DisplayName => "Triangle Attack";
+
         public List<Triangle> Triangles { get; private set; } = [];
         public override Rectangle HitBounds
         {

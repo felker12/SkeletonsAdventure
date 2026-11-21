@@ -4,8 +4,11 @@ using SkeletonsAdventure.Entities;
 
 namespace SkeletonsAdventure.Attacks
 {
-    internal class FireWave : ShootingAttack
+    internal class FireWave : ShootingAttack, IMagicAttack
     {
+        public MagicElement Element => MagicElement.Fire;
+        public string DisplayName => "Fire Wave";
+
         public FireWave(AttackData attackData, Texture2D texture, SpriteFont infoFont, Entity source = null) : base(attackData, texture, infoFont, source)
         {
             AnimatedAttack = true;
